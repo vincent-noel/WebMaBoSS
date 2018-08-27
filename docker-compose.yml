@@ -1,0 +1,78 @@
+#docker-compose.yml
+version: '3.3'
+services:
+
+  app-curie-atcurie:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+
+      args:
+        - HTTP_PROXY=http://10.3.0.200:3128
+        - HTTPS_PROXY=http://10.3.0.200:3128
+        - NO_PROXY=localhost, 127.0.0.1, *curie.fr
+        - http_proxy=http://10.3.0.200:3128
+        - https_proxy=http://10.3.0.200:3128
+        - no_proxy=localhost, 127.0.0.1, *curie.fr
+
+
+    environment:
+      - HTTP_PROXY=http://10.3.0.200:3128
+      - HTTPS_PROXY=http://10.3.0.200:3128
+      - NO_PROXY=localhost, 127.0.0.1, *curie.fr
+      - http_proxy=http://10.3.0.200:3128
+      - https_proxy=http://10.3.0.200:3128
+      - no_proxy=localhost, 127.0.0.1, *curie.fr
+
+    image: app-curie
+    container_name: app-curie
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+    user: user
+    volumes:
+      - /home/labestiol/Work/code/AppCurie:/appCurie
+      - /home/labestiol/Work/code/GINsim-python/ginsim:/opt/conda/lib/python3.6/site-packages/ginsim
+#      - /home/labestiol/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
+      - /home/labestiol/Work/code/pyMaBoSS/maboss:/opt/conda/lib/python3.6/site-packages/maboss
+
+    restart: unless-stopped
+
+  app-curie:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+
+    image: app-curie
+    container_name: app-curie
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+    user: user
+    volumes:
+      - /home/labestiol/Work/code/AppCurie:/appCurie
+      - /home/labestiol/Work/code/GINsim-python/ginsim:/opt/conda/lib/python3.6/site-packages/ginsim
+ #     - /home/labestiol/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
+      - /home/labestiol/Work/code/pyMaBoSS/maboss:/opt/conda/lib/python3.6/site-packages/maboss
+
+    restart: unless-stopped
+
+  cypress:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile-cypress
+      args:
+        - HTTP_PROXY=http://10.3.0.200:3128
+        - HTTPS_PROXY=http://10.3.0.200:3128
+        - NO_PROXY=localhost, 127.0.0.1, *curie.fr
+        - http_proxy=http://10.3.0.200:3128
+        - https_proxy=http://10.3.0.200:3128
+        - no_proxy=localhost, 127.0.0.1, *curie.fr
+
+    environment:
+      - DISPLAY=unix$DISPLAY
+
+    volumes:
+     - /tmp/.X11-unix:/tmp/.X11-unix
+
+    network_mode: 'host'

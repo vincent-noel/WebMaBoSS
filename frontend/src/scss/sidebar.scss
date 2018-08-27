@@ -1,0 +1,133 @@
+:root {
+  --sidebar-width: 200px;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+
+#wrapper {
+  padding-left: 0;
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+
+  &.toggled {
+    padding-left: var(--sidebar-width);
+
+    #sidebar-wrapper {
+      width: var(--sidebar-width);
+    }
+
+    #page-content-wrapper {
+      position: relative;
+      margin-right: calc(0px - var(--sidebar-width));
+    }
+  }
+
+  @include media-breakpoint-up(md) {
+    padding-left: var(--sidebar-width);
+
+    &.toggled {
+
+      #sidebar-wrapper {
+        width: var(--sidebar-width);
+      }
+
+      #page-content-wrapper {
+        position: relative;
+        margin-right: 0;
+      }
+    }
+
+    #sidebar-wrapper {
+      width: var(--sidebar-width);
+    }
+  }
+}
+
+#sidebar-wrapper {
+  z-index: 1000;
+  position: fixed;
+  left: var(--sidebar-width);
+  width: 0;
+  height: 100%;
+  margin-left: calc(0px - var(--sidebar-width));
+  overflow-y: auto;
+  background: #dddddd;
+
+
+  -webkit-transition: all 0.5s ease;
+  -moz-transition: all 0.5s ease;
+  -o-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+
+  padding: 1rem 0rem;
+
+  @include media-breakpoint-up(md) {
+    width: 0;
+  }
+}
+
+
+
+#page-content-wrapper {
+  width: 100%;
+  position: relative;
+  padding: 15px;
+
+  @include media-breakpoint-up(md) {
+    padding: 20px;
+    position: relative;
+
+  }
+
+}
+
+
+/* Toggle style */
+
+#menu-toggle {
+  z-index: 5;
+  position: fixed;
+  right: 15px;
+  top: 65px;
+  display: block;
+  @include media-breakpoint-up(md) {
+    display: none;
+  }
+
+}
+
+/* Sidebar Styles */
+
+.sidebar-nav {
+  position: absolute;
+  width: var(--sidebar-width);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.sidebar-nav li {
+  text-indent: 20px;
+  line-height: 40px;
+}
+
+.sidebar-nav li a {
+  display: block;
+  text-decoration: none;
+  color: #000;
+}
+
+.sidebar-nav li a:hover {
+  text-decoration: none;
+  color: #555555;
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sidebar-nav li a:active, .sidebar-nav li a:focus {
+  text-decoration: none;
+}

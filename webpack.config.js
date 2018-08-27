@@ -1,0 +1,41 @@
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin");
+
+module.exports = {
+  module: {
+	rules: [
+	  {
+		test: /\.js$/,
+		exclude: /node_modules/,
+		use: {
+		  loader: "babel-loader"
+		}
+	  }, {
+        test: /\.css$/,
+        use: [ 'style-loader', 'css-loader' ]
+      }, {
+        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        loader: 'file-loader?name=public/fonts/[name].[ext]'
+	  }, {
+		test: /\.scss$/,
+		use: [
+			"style-loader", // creates style nodes from JS strings
+			"css-loader", // translates CSS into CommonJS
+			"sass-loader" // compiles Sass to CSS, using Node Sass by default
+		]
+	  }
+	]
+  },
+  optimization: {
+    minimizer: [
+	  new UglifyJsPlugin({
+		test: /\.js/
+	  })
+    ]
+  },
+  plugins: [
+    new CompressionPlugin({
+		test: /\.js/
+	})
+  ]
+};

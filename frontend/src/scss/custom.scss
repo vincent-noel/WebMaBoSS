@@ -1,0 +1,19 @@
+@import "node_modules/bootstrap/scss/functions";
+@import "node_modules/bootstrap/scss/variables";
+
+//$grid-breakpoints: (
+//  // Extra small screen / phone
+//  xs: 0,
+//  // Small screen / phone
+//  sm: 200px,
+//  // Medium screen / tablet
+//  md: 200px,
+//  // Large screen / desktop
+//  lg: 200px,
+//  // Extra large screen / wide desktop
+//  xl: 200px
+//);
+
+
+@import "node_modules/bootstrap/scss/bootstrap";
+@import "sidebar";
