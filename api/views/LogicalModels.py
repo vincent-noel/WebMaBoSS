@@ -15,19 +15,23 @@ class LogicalModels(APIView):
 		return Response(serializer.data)
 
 	def post(self, request):
-		model = LogicalModel(
-			name=request.data['name'],
-			file=request.data['file']
-		)
-
-		model.save()
-		return Response(status=status.HTTP_200_OK)
-
-	def delete(self, request, pk=None, format=None):
-		id = request.data['id']
 
 		try:
-			model = LogicalModel.objects.get(id=id)
+			model = LogicalModel(
+				name=request.data['name'],
+				file=request.data['file']
+			)
+
+			model.save()
+
+			return Response(status=status.HTTP_200_OK)
+
+		except:
+			raise Http404
+
+	def delete(self, request, pk=None, format=None):
+		try:
+			model = LogicalModel.objects.get(id=request.data['id'])
 			model.delete()
 
 		except LogicalModel.DoesNotExist:

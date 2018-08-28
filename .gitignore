@@ -1,5 +1,17 @@
+# Webpacked JS
 frontend/static/
+
+# Nodes modules
 node_modules/
+
+# Database / Files
 db.sqlite3
 media/
+
+# PyCharm conf
 .idea/
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
