@@ -6,10 +6,15 @@ from api.views.LogicalModel import LogicalModelName, LogicalModelGraph, LogicalM
 from api.views.LogicalModels import LogicalModels
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
 from api.views.MaBoSSSimulation import LogicalModelSimulation, MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj
+from api.views.AuthView import TestAuthView, LogoutViewEx
+from rest_auth.views import LoginView
 
 urlpatterns = [
-	path('api/logical_models/', LogicalModels.as_view()),
+	path('api/is_logged_in/', TestAuthView.as_view(), name='is_logged_in', ),
+	path('api/logout/', LogoutViewEx.as_view(), name='logout', ),
+	path('api/login/', LoginView.as_view(), name='login', ),
 
+	path('api/logical_models/', LogicalModels.as_view()),
 
 	path('api/logical_model/<int:pk>/name/', LogicalModelName.as_view()),
 	path('api/logical_model/<int:pk>/graph/', LogicalModelGraph.as_view()),
