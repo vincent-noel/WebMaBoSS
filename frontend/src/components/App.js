@@ -1,6 +1,5 @@
 import $ from 'jquery';
 import Popper from 'popper.js';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min';
 
 import '../scss/custom.scss';
@@ -9,6 +8,10 @@ import React, {Component} from "react";
 import {BrowserRouter as Router, Route} from "react-router-dom";
 
 import Index from "./Index";
+
+import SignIn from "./auth/SignIn";
+import SignOut from "./auth/SignOut";
+
 import Models from "./models/Models";
 import Data from "./Data";
 import Overview from "./model/overview/Overview";
@@ -23,6 +26,8 @@ class App extends Component {
 			<Router>
 				<React.Fragment>
 					<Route exact path="/" component={Index} />
+					<Route exact path="/login/" component={SignIn} />
+					<Route exact path="/logout/" component={SignOut} />
 					<Route path="/models/" component={Models} />
 					<Route path="/data/" component={Data} />
 
