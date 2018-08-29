@@ -5,7 +5,7 @@ USER root
 WORKDIR /
 
 RUN apt-get -qq update
-RUN apt-get install -y python3 python3-pip curl software-properties-common nano
+RUN apt-get install -y python3 python3-pip curl software-properties-common nano git
 
 # Installing Node.js
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
