@@ -17,7 +17,7 @@ class LogicalModelSimulation(APIView):
 	def post(self, request, pk):
 		try:
 
-			model = LogicalModel.objects.get(pk=pk)
+			model = LogicalModel.objects.get(user=request.user, pk=pk)
 			import ginsim
 			path = join(settings.MEDIA_ROOT, model.file.path)
 			ginsim_model = ginsim.load(path)

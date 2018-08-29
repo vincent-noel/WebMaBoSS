@@ -1,9 +1,13 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_delete
+from django.contrib.auth.models import User
 from os import remove
 from os.path import join
 
+def path_logical_model(instance, filename):
+
+	return join(instance.user.username, 'logical_models', filename)
 
 def remove_logical_model(sender, instance, **kwargs):
 
@@ -14,9 +18,9 @@ def remove_logical_model(sender, instance, **kwargs):
 # Create your models here.
 class LogicalModel(models.Model):
 
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=256)
-	file = models.FileField(upload_to='logical_models')
-
+	file = models.FileField(upload_to=path_logical_model)
 
 pre_delete.connect(remove_logical_model, sender=LogicalModel)
 

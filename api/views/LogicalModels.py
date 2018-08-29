@@ -10,7 +10,7 @@ from api.serializers import LogicalModelSerializer
 class LogicalModels(APIView):
 
 	def get(self, request, format=None):
-		models = LogicalModel.objects.all()
+		models = LogicalModel.objects.filter(user=request.user)
 		serializer = LogicalModelSerializer(models, many=True)
 		return Response(serializer.data)
 
@@ -18,6 +18,7 @@ class LogicalModels(APIView):
 
 		try:
 			model = LogicalModel(
+				user=request.user,
 				name=request.data['name'],
 				file=request.data['file']
 			)
@@ -31,7 +32,7 @@ class LogicalModels(APIView):
 
 	def delete(self, request, pk=None, format=None):
 		try:
-			model = LogicalModel.objects.get(id=request.data['id'])
+			model = LogicalModel.objects.get(user=request.user, id=request.data['id'])
 			model.delete()
 
 		except LogicalModel.DoesNotExist:

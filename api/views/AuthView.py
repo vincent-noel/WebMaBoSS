@@ -1,5 +1,6 @@
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions, status
+from rest_framework.response import Response
 from rest_auth.views import LogoutView
 
 class TestAuthView(APIView):
