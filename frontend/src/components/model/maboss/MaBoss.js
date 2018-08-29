@@ -31,7 +31,8 @@ class MaBoss extends React.Component {
 		  method: "post",
 		  body: formData,
 		  headers: new Headers({
-			  'X-CSRFToken': getCSRFToken()
+			'Authorization': "Token " + sessionStorage.getItem("api_key"),
+			'X-CSRFToken': getCSRFToken()
 		  })
 		};
 

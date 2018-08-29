@@ -18,7 +18,15 @@ class ModelGraphRaw extends React.Component {
 	getGraph(modelId) {
 		// Getting the graph via the API
 
-		fetch("/api/logical_model/" + modelId + "/graph_raw/")
+		fetch(
+			"/api/logical_model/" + modelId + "/graph_raw/",
+			{
+				method: "get",
+				headers: new Headers({
+					'Authorization': "Token " + sessionStorage.getItem("api_key")
+				})
+			}
+		)
 		.then(response => {	return response.json(); })
 		.then(
 			data => { this.setState({loaded: true, data: data})}

@@ -14,7 +14,15 @@ class ModelSteadyStatesResult extends Component {
 	getGraph() {
 
 		// Getting the graph via the API
-		fetch("/api/logical_model/" + this.props.modelId + "/steady_states/")
+		fetch(
+			"/api/logical_model/" + this.props.modelId + "/steady_states/",
+			{
+				method: "get",
+				headers: new Headers({
+					'Authorization': "Token " + sessionStorage.getItem("api_key")
+				})
+			}
+		)
 		.then(response => {
 			return response.json();
 		})

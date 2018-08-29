@@ -24,7 +24,15 @@ class MenuPage extends React.Component {
 	}
 
 	getName(modelId) {
-		fetch("/api/logical_model/" + modelId + "/name/")
+		fetch(
+			"/api/logical_model/" + modelId + "/name/",
+			{
+				method: "get",
+				headers: new Headers({
+					'Authorization': "Token " + sessionStorage.getItem("api_key")
+				})
+			}
+		)
 		.then(response => {return response.json()})
 		.then(data => {this.setState({modelName: data['name']})});
 	}

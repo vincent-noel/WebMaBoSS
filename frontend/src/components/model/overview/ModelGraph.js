@@ -16,7 +16,15 @@ class ModelGraph extends Component {
 	getGraph(modelId) {
 		// Getting the graph via the API
 
-		fetch("/api/logical_model/" + modelId + "/graph/")
+		fetch(
+			"/api/logical_model/" + modelId + "/graph/",
+			{
+				method: "get",
+				headers: new Headers({
+					'Authorization': "Token " + sessionStorage.getItem("api_key")
+				})
+			}
+		)
 		.then(response => {	return response.blob(); })
 
 		// toBase64

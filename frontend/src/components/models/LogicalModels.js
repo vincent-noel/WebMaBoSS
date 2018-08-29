@@ -26,14 +26,22 @@ class LogicalModels extends Component {
 	}
 
 	getData(){
-		fetch(this.props.endpoint)
-			.then(response => {
-				if (response.status !== 200) {
-					return this.setState({ placeholder: "Something went wrong" });
-				}
-				return response.json();
-			})
-			.then(data => this.setState({ data: data, loaded: true }));
+		fetch(
+			this.props.endpoint,
+			{
+				method: "get",
+				headers: new Headers({
+					'Authorization': "Token " + sessionStorage.getItem("api_key")
+				})
+			}
+		)
+		.then(response => {
+			if (response.status !== 200) {
+				return this.setState({ placeholder: "Something went wrong" });
+			}
+			return response.json();
+		})
+		.then(data => this.setState({ data: data, loaded: true }));
 	}
 	componentDidMount() {
 		this.getData();

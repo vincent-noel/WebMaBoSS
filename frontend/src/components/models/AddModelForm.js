@@ -38,6 +38,7 @@ class AddModelForm extends React.Component {
 	  method: "post",
 	  body: formData,
 	  headers: new Headers({
+		  'Authorization': "Token " + sessionStorage.getItem("api_key"),
 		  'X-CSRFToken': getCSRFToken()
 	  })
 	};
