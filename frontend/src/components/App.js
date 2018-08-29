@@ -11,6 +11,7 @@ import Index from "./Index";
 
 import SignIn from "./auth/SignIn";
 import SignOut from "./auth/SignOut";
+import Register from "./auth/Register";
 
 import Models from "./models/Models";
 import Data from "./Data";
@@ -26,8 +27,12 @@ class App extends Component {
 			<Router>
 				<React.Fragment>
 					<Route exact path="/" component={Index} />
+
 					<Route exact path="/login/" component={SignIn} />
 					<Route exact path="/logout/" component={SignOut} />
+					<Route exact path="/profile/" component={Index} />
+					<Route exact path="/register/" component={Register} />
+
 					<Route path="/models/" component={Models} />
 					<Route path="/data/" component={Data} />
 

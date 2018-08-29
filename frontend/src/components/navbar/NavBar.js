@@ -18,10 +18,17 @@ class NavBar extends React.Component {
 					<div className="collapse navbar-collapse" id="navbarsExampleDefault">
 						<ul className="navbar-nav ml-auto">
 							{sessionStorage.getItem("api_key") === null ? (
-								<NavBarItem url="/login/" name="Sign in"/>) : (
-								<NavBarItem url="/logout/" name="Logout" />)
-							}
-							<NavBarItem url="/settings/" name="Settings"/>
+								<React.Fragment>
+									<NavBarItem url="/login/" name="Sign in"/>
+									<NavBarItem url="/register/" name="Register" />
+								</React.Fragment>
+
+							) : (
+								<React.Fragment>
+									<NavBarItem url="/profile" name="Profile" />
+									<NavBarItem url="/logout/" name="Logout" />
+								</React.Fragment>
+							)}
 						</ul>
 					</div>
 				</nav>

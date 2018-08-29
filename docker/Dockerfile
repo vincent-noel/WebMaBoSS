@@ -17,7 +17,7 @@ RUN pip install pip --upgrade \
     && easy_install -U distribute
 
 # Installing django
-RUN pip install django djangorestframework django-rest-auth git+https://github.com/vincent-noel/GINsim-python.git
+RUN pip install django djangorestframework django-rest-auth[with_social] git+https://github.com/vincent-noel/GINsim-python.git
 
 # Installing test tools
 RUN apt-get install -y xvfb libgtk2.0-0 libxtst6 libxss1 libgconf-2-4 libnss3 libasound2
