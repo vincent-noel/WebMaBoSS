@@ -1,15 +1,23 @@
 from django.test import TestCase
+from django.conf import settings
 from rest_framework.test import APIClient
 from rest_framework import status
 from json import loads
-from os.path import join, dirname
-
+from os.path import join, dirname, exists
+from os import makedirs
+from shutil import rmtree
 
 class TestModels(TestCase):
 
-	fixtures = ['users.json']
+	fixtures = ['user.json']
 
 	def testListModels(self):
+
+		# Making sure media root is empty
+		if exists(settings.MEDIA_ROOT):
+			rmtree(settings.MEDIA_ROOT)
+
+		# makedirs(settings.MEDIA_ROOT, exist_ok=True)
 
 		client = APIClient()
 

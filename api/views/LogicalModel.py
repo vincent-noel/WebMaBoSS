@@ -9,29 +9,37 @@ from api.models import LogicalModel
 from api.serializers import LogicalModelNameSerializer
 
 from os.path import join
+from rest_framework.exceptions import PermissionDenied
+
+import ginsim
 
 
 class LogicalModelName(APIView):
 
 	def get(self, request, pk):
-		try:
 
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
 			model = LogicalModel.objects.get(user=request.user, pk=pk)
 			serializer = LogicalModelNameSerializer(model)
 
 			return Response(serializer.data)
+
 		except LogicalModel.DoesNotExist:
 			raise Http404
-
 
 
 class LogicalModelGraph(APIView):
 
 	def get(self, request, pk):
-		try:
 
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
 			model = LogicalModel.objects.get(user=request.user, pk=pk)
-			import ginsim
 			path = join(settings.MEDIA_ROOT, model.file.path)
 			ginsim_model = ginsim.load(path)
 			fig = ginsim.get_image(ginsim_model)
@@ -42,22 +50,23 @@ class LogicalModelGraph(APIView):
 			raise Http404
 
 
-
-
 class LogicalModelGraphRaw(APIView):
 
 	def get(self, request, pk):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
 		try:
 
-			model = LogicalModel.objects.get(pk=pk)
-			import ginsim
+			model = LogicalModel.objects.get(user=request.user, pk=pk)
 			path = join(settings.MEDIA_ROOT, model.file.path)
 			ginsim_model = ginsim.load(path)
 
-			from ginsim.gateway import japi
+			# from ginsim.gateway import japi
 			# This won't work in parallel... but that's ok for now
 			filename = join(settings.TMP_ROOT, "reggraph")
-			japi.gs.service("reggraph").export(ginsim_model, filename)
+			ginsim.gateway.japi.gs.service("reggraph").export(ginsim_model, filename)
 
 			edges = []
 			nodes = []
@@ -69,9 +78,6 @@ class LogicalModelGraphRaw(APIView):
 					edges.append((a, b, (1 if sign == "->" else 0)))
 
 			nodes = list(set(nodes))
-
-			# print(nodes)
-			# print(edges)
 
 			return Response(
 				{
