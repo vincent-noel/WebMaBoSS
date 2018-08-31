@@ -8,12 +8,16 @@
     "dev": "webpack --mode development ./frontend/src/index.js --output ./frontend/static/frontend/index.js",
     "build": "webpack --mode production ./frontend/src/index.js --output ./frontend/static/frontend/index.js",
     "flush": "python ./manage.py flush --no-input",
-    "e2e": "cypress open --project ./frontend/"
+    "e2e": "cypress open --project ./frontend/",
+    "s-test": "mocha frontend/tests/*.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
+    "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
+    "@fortawesome/react-fontawesome": "^0.1.0-11",
     "babel-core": "^6.26.3",
     "babel-loader": "^7.1.5",
     "babel-plugin-transform-class-properties": "^6.24.1",
@@ -21,12 +25,15 @@
     "babel-preset-react": "^6.24.1",
     "bootstrap": "^4.1.3",
     "chart.js": "^2.7.2",
+    "chromedriver": "^2.41.0",
+    "compression-webpack-plugin": "^1.1.11",
     "css-loader": "^1.0.0",
-    "cypress": "^3.0.3",
     "file-loader": "^2.0.0",
-    "filesaverjs": "^1.2.0",
+    "geckodriver": "^1.12.2",
     "install": "^0.12.1",
     "jquery": "^3.3.1",
+    "mocha": "^5.2.0",
+    "node-sass": "^4.9.3",
     "popper.js": "^1.14.4",
     "prop-types": "^15.6.2",
     "react": "^16.4.2",
@@ -35,19 +42,12 @@
     "react-dom": "^16.4.2",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
+    "sass-loader": "^7.1.0",
     "script-loader": "^0.7.2",
+    "selenium-webdriver": "^4.0.0-alpha.1",
     "style-loader": "^0.22.1",
     "weak-key": "^1.0.0",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
-  },
-  "dependencies": {
-    "@fortawesome/fontawesome-svg-core": "^1.2.0-14",
-    "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
-    "@fortawesome/react-fontawesome": "^0.1.0-11",
-    "compression-webpack-plugin": "^1.1.11",
-    "node-sass": "^4.9.3",
-    "sass-loader": "^7.1.0",
-    "uglifyjs-webpack-plugin": "^1.3.0"
   }
 }
