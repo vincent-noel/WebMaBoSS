@@ -60,7 +60,7 @@ services:
   app-curie-test:
     build:
       context: ./
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/Dockerfile-test
 
     image: vnoel/app-curie:latest
     container_name: app-curie
