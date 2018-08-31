@@ -18,7 +18,7 @@ RUN pip install pip --upgrade \
     && easy_install -U distribute
 
 # Installing django
-RUN pip install django djangorestframework django-rest-auth[with_social] git+https://github.com/vincent-noel/GINsim-python.git
+RUN pip install --upgrade django djangorestframework django-rest-auth[with_social] git+https://github.com/vincent-noel/GINsim-python.git
 
 # Exposing port 8000 for server access
 EXPOSE 8000

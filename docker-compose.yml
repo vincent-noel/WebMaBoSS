@@ -33,7 +33,7 @@ services:
     volumes:
       - /home/labestiol/Work/code/AppCurie:/appCurie
       - /home/labestiol/Work/code/GINsim-python/ginsim:/opt/conda/lib/python3.6/site-packages/ginsim
-#      - /home/labestiol/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
+      - /home/labestiol/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
       - /home/labestiol/Work/code/pyMaBoSS/maboss:/opt/conda/lib/python3.6/site-packages/maboss
 
     restart: unless-stopped
@@ -52,7 +52,7 @@ services:
     volumes:
       - /home/labestiol/Work/code/AppCurie:/appCurie
       - /home/labestiol/Work/code/GINsim-python/ginsim:/opt/conda/lib/python3.6/site-packages/ginsim
- #     - /home/labestiol/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
+      - /home/labestiol/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
       - /home/labestiol/Work/code/pyMaBoSS/maboss:/opt/conda/lib/python3.6/site-packages/maboss
 
     restart: unless-stopped
