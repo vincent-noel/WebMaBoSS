@@ -8,20 +8,20 @@ services:
 before_script:
   - apk add --no-cache py2-pip
   - pip install docker-compose
+  - docker-compose -v
 
 build:
   stage: build
   script:
-    - docker-compose -v
-    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
-    - docker build -t vnoel/app-curie:latest docker
-    - docker push vnoel/app-curie:latest
+#    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+    - docker-compose build app-curie-test
+#    - docker push vnoel/app-curie:latest
 
 test:
   stage: test
   script:
-    - docker-compose -v
-    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
-    - docker pull vnoel/app-curie:latest
-    - docker run --name app-curie -v ${PWD}:/appCurie -d vnoel/app-curie:latest
+#    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+#    - docker pull vnoel/app-curie:latest
+#    - docker run --name app-curie -v ${PWD}:/appCurie -d vnoel/app-curie:latest
+    - docker-compose up -d app-curie-test
     - docker exec -t app-curie bash -c "cd /appCurie; python manage.py test -v 3 --settings=AppCurie.test_settings"

@@ -57,6 +57,22 @@ services:
 
     restart: unless-stopped
 
+  app-curie-test:
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+
+    image: app-curie
+    container_name: app-curie
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+    user: user
+    volumes:
+      - ${PWD}:/appCurie
+
+    restart: unless-stopped
+
   cypress:
     build:
       context: .
