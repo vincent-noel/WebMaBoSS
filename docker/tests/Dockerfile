@@ -33,7 +33,7 @@ RUN \
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install django djangorestframework django-rest-auth[with_social] selenium git+https://github.com/vincent-noel/GINsim-python.git
+    && pip install --upgrade django djangorestframework django-rest-auth[with_social] selenium git+https://github.com/vincent-noel/GINsim-python.git
 
 RUN yarn \
     && npm run dev

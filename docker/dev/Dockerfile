@@ -32,7 +32,7 @@ RUN \
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install django djangorestframework django-rest-auth[with_social] selenium
+    && pip install --upgrade django djangorestframework django-rest-auth[with_social] selenium
 
 # Exposing port 8000 for server access
 EXPOSE 8000
