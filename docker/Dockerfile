@@ -19,9 +19,6 @@ RUN pip install pip --upgrade \
 # Installing django
 RUN pip install django djangorestframework django-rest-auth[with_social] git+https://github.com/vincent-noel/GINsim-python.git
 
-# Installing test tools
-RUN apt-get install -y xvfb libgtk2.0-0 libxtst6 libxss1 libgconf-2-4 libnss3 libasound2
-
 # Exposing port 8000 for server access
 EXPOSE 8000
 # Exposing port 8888 for notebook access
