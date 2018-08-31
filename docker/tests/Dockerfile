@@ -31,12 +31,12 @@ RUN \
 # Updating pip
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
-    && easy_install -U distribute
+    && easy_install -U distribute \
     && pip install django djangorestframework django-rest-auth[with_social] selenium git+https://github.com/vincent-noel/GINsim-python.git
 
 RUN yarn \
     && npm run dev
-    
+
 # Exposing port 8000 for server access
 EXPOSE 8000
 # Exposing port 8888 for notebook access
