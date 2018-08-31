@@ -5,7 +5,7 @@ services:
   app-curie-atcurie:
     build:
       context: ./
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/dev/Dockerfile
 
       args:
         - HTTP_PROXY=http://10.3.0.200:3128
@@ -41,7 +41,7 @@ services:
   app-curie:
     build:
       context: ./
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/dev/Dockerfile
 
     image: app-curie
     container_name: app-curie
@@ -60,7 +60,7 @@ services:
   app-curie-test:
     build:
       context: ./
-      dockerfile: docker/Dockerfile-test
+      dockerfile: docker/tests/Dockerfile
 
     image: vnoel/app-curie:latest
     container_name: app-curie
@@ -72,23 +72,3 @@ services:
       - ${PWD}:/appCurie
 
     restart: unless-stopped
-
-  cypress:
-    build:
-      context: .
-      dockerfile: docker/Dockerfile-cypress
-      args:
-        - HTTP_PROXY=http://10.3.0.200:3128
-        - HTTPS_PROXY=http://10.3.0.200:3128
-        - NO_PROXY=localhost, 127.0.0.1, *curie.fr
-        - http_proxy=http://10.3.0.200:3128
-        - https_proxy=http://10.3.0.200:3128
-        - no_proxy=localhost, 127.0.0.1, *curie.fr
-
-    environment:
-      - DISPLAY=unix$DISPLAY
-
-    volumes:
-     - /tmp/.X11-unix:/tmp/.X11-unix
-
-    network_mode: 'host'
