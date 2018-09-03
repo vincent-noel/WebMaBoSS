@@ -6,6 +6,8 @@ from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 
+from rest_framework.authtoken.models import Token
+
 from time import sleep
 
 
@@ -16,8 +18,9 @@ class TestLoginChrome (TestChrome):
 	def testLogin(self):
 
 		driver = self.get("/")
+		sleep(1)
 
-		self.assertTrue(driver.execute_script("return window.sessionStorage.getItem('api_key');") is None)
+		self.assertIsNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
 
 		driver.find_element_by_xpath("/html/body/section/div/nav/div/ul/li[1]/a").click()
 
@@ -26,16 +29,21 @@ class TestLoginChrome (TestChrome):
 		driver.find_element_by_id('username').send_keys('admin')
 		driver.find_element_by_id('password').send_keys('test_password')
 		driver.find_element_by_id('submit_login').click()
-
 		sleep(1)
+
 		self.assertCurrentURL('/')
 
-		self.assertTrue(driver.execute_script("return window.sessionStorage.getItem('api_key');") is not None)
+		self.assertIsNotNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
+		self.assertEqual(
+			driver.execute_script("return window.sessionStorage.getItem('api_key');"),
+			Token.objects.get(user_id=1).key
+		)
 
 		driver.find_element_by_xpath("/html/body/section/div/nav/div[2]/ul/li[2]/a").click()
 		sleep(1)
 
 		self.assertCurrentURL('/login/')
+		self.assertIsNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
 
 
 class TestLoginFirefox(TestFirefox):
@@ -45,8 +53,9 @@ class TestLoginFirefox(TestFirefox):
 	def testLogin(self):
 
 		driver = self.get("/")
+		sleep(1)
 
-		self.assertTrue(driver.execute_script("return window.sessionStorage.getItem('api_key');") is None)
+		self.assertIsNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
 
 		driver.find_element_by_xpath("/html/body/section/div/nav/div/ul/li[1]/a").click()
 
@@ -55,13 +64,13 @@ class TestLoginFirefox(TestFirefox):
 		driver.find_element_by_id('username').send_keys('admin')
 		driver.find_element_by_id('password').send_keys('test_password')
 		driver.find_element_by_id('submit_login').click()
-
 		sleep(1)
+
 		self.assertCurrentURL('/')
-		self.assertTrue(driver.execute_script("return window.sessionStorage.getItem('api_key');") is not None)
+		self.assertIsNotNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
 
 		driver.find_element_by_xpath("/html/body/section/div/nav/div[2]/ul/li[2]/a").click()
-
 		sleep(1)
 
 		self.assertCurrentURL('/login/')
+		self.assertIsNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
