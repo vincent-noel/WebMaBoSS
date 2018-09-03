@@ -1,12 +1,12 @@
-from django.test import LiveServerTestCase
+from .TestFrontend import TestFrontend
 from selenium import webdriver
 from selenium.webdriver.firefox.options import Options as FireFoxOptions
 
 
-class TestFirefox(LiveServerTestCase):
+class TestFirefox(TestFrontend):
 
 	def __init__(self, *args, **kwargs):
-		LiveServerTestCase.__init__(self, *args, **kwargs)
+		TestFrontend.__init__(self, *args, **kwargs)
 		self.driver = None
 
 	def setUp(self):
@@ -17,12 +17,4 @@ class TestFirefox(LiveServerTestCase):
 			firefox_options=options,
 			executable_path='geckodriver'
 		)
-
-	def tearDown(self):
-		self.driver.quit()
-
-	def get(self, url):
-		self.driver.get(self.live_server_url + url)
-		return self.driver
-
 
