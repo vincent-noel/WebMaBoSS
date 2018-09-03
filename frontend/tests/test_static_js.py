@@ -3,11 +3,12 @@ from .TestFirefox import TestFirefox
 
 from django.conf import settings
 from os.path import isfile, join
+from time import sleep
 
 
 class TestStaticJSChrome (TestChrome):
 
-	def testTitle(self):
+	def testMainJS(self):
 
 		self.assertTrue(isfile(join(settings.BASE_DIR, "frontend", "static", "index.js.gz")))
 
@@ -22,7 +23,7 @@ class TestStaticJSChrome (TestChrome):
 
 class TestStaticJSFirefox(TestFirefox):
 
-	def testFirefox(self):
+	def testMainJS(self):
 
 		self.assertTrue(isfile(join(settings.BASE_DIR, "frontend", "static", "index.js.gz")))
 
