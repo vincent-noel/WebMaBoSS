@@ -23,4 +23,5 @@ test:
     - docker login -u vnoel -p $DOCKERHUB_PASSWORD
     - docker pull vnoel/app-curie:latest
     - docker-compose up -d app-curie-test
+    - docker exec -t app-curie npm run dev
     - docker exec -t app-curie python manage.py test -v 3 --settings=AppCurie.test_settings
