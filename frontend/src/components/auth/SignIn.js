@@ -16,9 +16,6 @@ class SignIn extends React.Component {
 			errorMessages: [],
 		};
 
-		this.responseStatus = undefined;
-		this.responseMessage = "";
-
 		this.handleSubmit.bind(this);
 		this.handleUsernameChange.bind(this);
 		this.handlePasswordChange.bind(this);
@@ -27,25 +24,17 @@ class SignIn extends React.Component {
 	handleSubmit(e) {
 
 		e.preventDefault();
-
 		const formData = new FormData();
 		formData.append('username', this.state.username);
 		formData.append('password', this.state.password);
 
 		const conf = {
 		  method: "post",
-		  body: formData,
-		  headers: new Headers({
-			  'X-CSRFToken': getCSRFToken()
-		  })
+		  body: formData
 		};
 
 		fetch("/api/login/", conf)
-		.then(response => {
-
-			this.responseStatus = response.status;
-			return response.json();
-		})
+		.then(response => response.json())
 		.then(json_response => {
 
 			this.setState({
@@ -99,7 +88,7 @@ class SignIn extends React.Component {
 		return <Page>
 			<div className="container">
 				<br/>
-				<form onSubmit={(e) => this.handleSubmit(e)}>
+				<form onSubmit={(e) => this.handleSubmit(e)} id="form_login">
 				<div className="card">
 					<div className="card-header">
 						Sign in
@@ -131,7 +120,7 @@ class SignIn extends React.Component {
 							/>
 						</div>
 						<div>
-							<button type="submit" className="btn btn-primary">
+							<button type="submit" className="btn btn-primary" id="submit_login">
 								Sign in
 							</button>
 						</div>
