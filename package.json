@@ -6,10 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development ./frontend/src/index.js --output ./frontend/static/frontend/index.js",
-    "build": "webpack --mode production ./frontend/src/index.js --output ./frontend/static/frontend/index.js",
-    "flush": "python ./manage.py flush --no-input",
-    "e2e": "cypress open --project ./frontend/",
-    "s-test": "mocha frontend/tests/*.js"
+    "build": "webpack --mode production ./frontend/src/index.js --output ./frontend/static/frontend/index.js"
   },
   "keywords": [],
   "author": "",
