@@ -3,7 +3,7 @@ import getCSRFToken from "../commons/getCSRFToken";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 
-class DeleteModelForm extends Component {
+class DeleteForm extends Component {
 
 
   handleSubmit = e => {
@@ -11,7 +11,6 @@ class DeleteModelForm extends Component {
 
 
 	const formData = new FormData();
-	formData.append('project', sessionStorage.getItem('project'));
 	formData.append('id',this.props.id);
 
 	const conf = {
@@ -19,15 +18,11 @@ class DeleteModelForm extends Component {
 	  body: formData,
 	  headers: new Headers({
 		'Authorization': "Token " + sessionStorage.getItem("api_key"),
-		'X-CSRFToken': getCSRFToken()
 	  })
 	};
 
 	fetch(this.props.endpoint, conf)
-		.then(response => {
-			console.log(response);
-			this.props.updateParent();
-		});
+	.then(response => { this.props.updateParent();});
   };
   render() {
   	const style_td_min = {'width': '1%', 'whiteSpace': 'nowrap'};
@@ -44,4 +39,4 @@ class DeleteModelForm extends Component {
 	);
   }
 }
-export default DeleteModelForm;
+export default DeleteForm;

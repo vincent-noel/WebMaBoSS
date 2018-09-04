@@ -1,9 +1,9 @@
-import React, { Component } from "react";
+import React from "react";
 import PropTypes from "prop-types";
-import AddModelForm from "./AddModelForm";
+import AddProjectForm from "./AddProjectForm";
 
 
-class LogicalModels extends Component {
+class Projects extends React.Component {
 	static propTypes = {
 		endpoint: PropTypes.string.isRequired,
 		render: PropTypes.func.isRequired
@@ -17,7 +17,7 @@ class LogicalModels extends Component {
 		this.state = {
 			data: [],
 			loaded: false,
-			placeholder: "Loading the list of models"
+			placeholder: "Loading..."
 		};
 	}
 
@@ -27,17 +27,17 @@ class LogicalModels extends Component {
 
 	getData(){
 		fetch(
-			this.props.endpoint + sessionStorage.getItem('project') + "/",
+			this.props.endpoint,
 			{
 				method: "get",
 				headers: new Headers({
 					'Authorization': "Token " + sessionStorage.getItem("api_key")
-				}),
+				})
 			}
 		)
 		.then(response => {
 			if (response.status !== 200) {
-				return this.setState({ placeholder: "Unable to get the list of models" });
+				return this.setState({ placeholder: "Something went wrong" });
 			}
 			return response.json();
 		})
@@ -48,12 +48,10 @@ class LogicalModels extends Component {
 	}
 	render() {
 		const { data, loaded, placeholder } = this.state;
-		return (
-
-		<div>
+		return <div>
 			{loaded ? this.props.render(data, this.updateParent) : <p>{placeholder}</p>}
-			<AddModelForm updateParent={this.updateParent} />
-		</div>);
+			<AddProjectForm updateParent={this.updateParent} />
+		</div>;
 	}
 }
-export default LogicalModels;
+export default Projects;

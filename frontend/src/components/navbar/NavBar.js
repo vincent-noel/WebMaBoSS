@@ -8,22 +8,6 @@ class NavBar extends React.Component {
 
 	render(){
 
-		// if (isConnected()) {
-		//
-		// 	const conf = {
-		// 	  method: "get",
-		// 	  headers: new Headers({
-		// 		  'Authorization': "Token " + sessionStorage.getItem("api_key"),
-		// 		  // 'X-CSRFToken': getCSRFToken()
-		// 	  })
-		// 	};
-		//
-		// 	fetch("/api/is_logged_in/", conf)
-		// 	.then(response => response.json())
-		// 	.then(response_json => { console.log(response_json); })
-		//
-		// }
-
 		return (
 			<nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 				<NavBarBrand/>

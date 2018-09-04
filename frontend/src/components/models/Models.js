@@ -1,5 +1,4 @@
 import React from "react";
-
 import Page from "../Page";
 import LogicalModels from "./LogicalModels";
 import TableModels from "./TableModels";
@@ -8,6 +7,7 @@ class Models extends React.Component {
 	render () {
 		return (
 			<Page>
+				<h2>Models</h2><hr/><br/>
 				<LogicalModels endpoint="/api/logical_models/"
 					render={(data, updateParent) => <TableModels data={data} updateParent={updateParent} />} />
 			</Page>

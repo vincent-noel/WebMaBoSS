@@ -25,4 +25,4 @@ test:
     - docker-compose up -d app-curie-test
     - docker exec -t app-curie yarn
     - docker exec -t app-curie npm run dev
-    - docker exec -t app-curie python manage.py test -v 3 --settings=AppCurie.test_settings
+#    - docker exec -t app-curie python manage.py test -v 3 --settings=AppCurie.test_settings

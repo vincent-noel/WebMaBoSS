@@ -2,21 +2,20 @@ import React from "react";
 import {Button, ButtonGroup, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import getCSRFToken from "../commons/getCSRFToken";
 
-class AddModelForm extends React.Component {
+class AddProjectForm extends React.Component {
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
 			name: "",
-			file: undefined,
-			fileName: "Select file... ",
+			description: "",
 			modal: false
 
 		};
 		this.toggle = this.toggle.bind(this);
 		this.handleNameChange.bind(this);
-		this.handleFileChange.bind(this);
+		this.handleDescriptionChange.bind(this);
 		this.handleSubmit.bind(this);
 	}
 
@@ -28,8 +27,8 @@ class AddModelForm extends React.Component {
 		this.setState({name: e.target.value});
 	};
 
-	handleFileChange(e) {
-		this.setState({file: e.target.files[0], fileName: e.target.files[0].name});
+	handleDescriptionChange(e) {
+		this.setState({description: e.target.value});
 	};
 
 	handleSubmit(e) {
@@ -37,25 +36,23 @@ class AddModelForm extends React.Component {
 
 		const formData = new FormData();
 		formData.append('project', sessionStorage.getItem('project'));
-		formData.append('file', this.state.file);
 		formData.append('name', this.state.name);
+		formData.append('description', this.state.description);
 
 		const conf = {
 			method: "post",
 			body: formData,
 			headers: new Headers({
 				'Authorization': "Token " + sessionStorage.getItem("api_key"),
-				'X-CSRFToken': getCSRFToken()
 			})
 		};
 
-		fetch("/api/logical_models/", conf)
+		fetch("/api/projects/", conf)
 			.then(response => {
 
 				this.setState({
 					name: "",
-					file: undefined,
-					fileName: "Select file...",
+					description: "",
 					modal: false
 				});
 				this.props.updateParent();
@@ -66,12 +63,12 @@ class AddModelForm extends React.Component {
 	render() {
 		return <React.Fragment>
 			<Button type="button" color="primary" onClick={this.toggle}>
-				New model
+				New project
 			</Button>
 			<Modal isOpen={this.state.modal} toggle={this.toggle}>
 				<form onSubmit={(e) => this.handleSubmit(e)}>
 					<Card>
-						<CardHeader>Add new model</CardHeader>
+						<CardHeader>Add new project</CardHeader>
 						<CardBody>
 							<div className="form-group">
 								<label htmlFor="modelName">Name</label>
@@ -86,24 +83,21 @@ class AddModelForm extends React.Component {
 								/>
 							</div>
 							<div className="form-group">
-								<label htmlFor="modelFile">File</label>
-								<div className="custom-file" id="customFile">
-									<input
-										id="modelFile"
-										type="file"
-										className="custom-file-input"
-										name="file"
-										onChange={(e) => this.handleFileChange(e)}
-										aria-describedby="fileHelp" required/>
-									<label className="custom-file-label"
-										   htmlFor="modelFile">{this.state.fileName}</label>
-								</div>
+								<label htmlFor="modelDescription">Description</label>
+								<textarea
+									className="form-control"
+									id="modelDescription"
+									rows="6"
+									placeholder="Enter a brief description of the project"
+									onChange={(e) => this.handleDescriptionChange(e)}
+								>
+								</textarea>
 							</div>
 						</CardBody>
 						<CardFooter>
 							<ButtonGroup className="d-flex">
 								<Button color="danger" className="mr-auto" onClick={this.toggle}>Close</Button>
-								<Button type="submit" color="primary" className="ml-auto">Load model</Button>
+								<Button type="submit" color="primary" className="ml-auto">Create model</Button>
 							</ButtonGroup>
 						</CardFooter>
 					</Card>
@@ -113,4 +107,4 @@ class AddModelForm extends React.Component {
 	}
 }
 
-export default AddModelForm;
+export default AddProjectForm;
