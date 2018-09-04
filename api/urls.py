@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 
 from api.views.LogicalModel import LogicalModelName, LogicalModelGraph, LogicalModelGraphRaw
 from api.views.LogicalModels import LogicalModels
+from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
 from api.views.MaBoSSSimulation import LogicalModelSimulation, MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj
 from api.views.AuthView import TestAuthView, LogoutViewEx
@@ -18,8 +19,10 @@ urlpatterns = [
 	path('account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
 	path('account-confirm-email/<str:key>/', VerifyEmailView.as_view(), name='account_confirm_email'),
 
+	path('api/projects/', Projects.as_view()),
 
 	path('api/logical_models/', LogicalModels.as_view()),
+	path('api/logical_models/<int:pk>/', LogicalModels.as_view()),
 
 	path('api/logical_model/<int:pk>/name/', LogicalModelName.as_view()),
 	path('api/logical_model/<int:pk>/graph/', LogicalModelGraph.as_view()),

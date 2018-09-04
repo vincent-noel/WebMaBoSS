@@ -28,7 +28,7 @@ def remove_project_path(sender, instance, **kwargs):
 
 
 def path_logical_model(instance, filename):
-	return join(instance.user.project.path, 'logical_models', filename)
+	return join(instance.project.path, 'logical_models', filename)
 
 
 def remove_logical_model(sender, instance, **kwargs):
