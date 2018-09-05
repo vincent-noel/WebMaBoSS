@@ -10,5 +10,6 @@ urlpatterns = [
 	path('register/', views.index, name="register"),
 	path('models/', views.index, name="models"),
 	path('data/', views.index, name="data"),
+	path('model/', views.index, name="model"),
 	path('model/.*', views.index, name="model"),
 ]
