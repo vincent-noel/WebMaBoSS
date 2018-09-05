@@ -23,7 +23,7 @@ class DeleteModelForm extends Component {
 	  })
 	};
 
-	fetch(this.props.endpoint, conf)
+	fetch(this.props.endpoint + sessionStorage.getItem('project') + "/" + this.props.id, conf)
 		.then(response => {
 			console.log(response);
 			this.props.updateParent();

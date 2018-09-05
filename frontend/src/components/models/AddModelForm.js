@@ -36,7 +36,6 @@ class AddModelForm extends React.Component {
 		e.preventDefault();
 
 		const formData = new FormData();
-		formData.append('project', sessionStorage.getItem('project'));
 		formData.append('file', this.state.file);
 		formData.append('name', this.state.name);
 
@@ -49,7 +48,7 @@ class AddModelForm extends React.Component {
 			})
 		};
 
-		fetch("/api/logical_models/", conf)
+		fetch("/api/logical_models/" + sessionStorage.getItem('project') + "/", conf)
 			.then(response => {
 
 				this.setState({

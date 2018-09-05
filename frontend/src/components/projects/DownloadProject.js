@@ -10,7 +10,7 @@ class DownloadProject extends Component {
 		<td style={style_td_min}>
 		  <a href={this.props.url}>
 			<button type="button" className="btn btn-info">
-				<FontAwesomeIcon icon={faSave} />
+				<FontAwesomeIcon icon={faSave}/>
 			</button>
 		  </a>
 		</td>

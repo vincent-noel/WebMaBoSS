@@ -16,10 +16,14 @@ class Projects(APIView):
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
-		projects = Project.objects.filter(user=request.user)
-		serializer = ProjectSerializer(projects, many=True)
+		try:
+			projects = Project.objects.filter(user=request.user)
+			serializer = ProjectSerializer(projects, many=True)
 
-		return Response(serializer.data)
+			return Response(serializer.data)
+
+		except Project.DoesNotExist:
+			raise Http404
 
 
 	def post(self, request):
@@ -36,15 +40,20 @@ class Projects(APIView):
 		return Response(status=status.HTTP_200_OK)
 
 
-	def delete(self, request, pk=None, format=None):
+	def delete(self, request, project):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
+
 		try:
-			model = Project.objects.get(user=request.user, id=int(request.data['id']))
+			model = Project.objects.get(id=project)
+
+			if model.user != request.user:
+				raise PermissionDenied
+
 			model.delete()
+			return Response(status=status.HTTP_200_OK)
 
 		except Project.DoesNotExist:
 			raise Http404
 
-		return Response(status=status.HTTP_200_OK)

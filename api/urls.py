@@ -20,9 +20,10 @@ urlpatterns = [
 	path('account-confirm-email/<str:key>/', VerifyEmailView.as_view(), name='account_confirm_email'),
 
 	path('api/projects/', Projects.as_view()),
+	path('api/projects/<int:project>', Projects.as_view()),
 
-	path('api/logical_models/', LogicalModels.as_view()),
-	path('api/logical_models/<int:pk>/', LogicalModels.as_view()),
+	path('api/logical_models/<int:project>/', LogicalModels.as_view()),
+	path('api/logical_models/<int:project>/<int:model>', LogicalModels.as_view()),
 
 	path('api/logical_model/<int:pk>/name/', LogicalModelName.as_view()),
 	path('api/logical_model/<int:pk>/graph/', LogicalModelGraph.as_view()),

@@ -3,63 +3,93 @@ from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
 
-from django.http import Http404
+from django.http import Http404, FileResponse
+from django.conf import settings
 
 from api.models import LogicalModel, Project
 from api.serializers import LogicalModelSerializer
+from os.path import join, basename
 
 
 class LogicalModels(APIView):
 
-	def get(self, request, pk):
+	def get(self, request, project, model=None):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
-		if Project.objects.filter(user=request.user, id=pk).exists():
+		try:
+			t_project = Project.objects.get(id=project)
 
-			models = LogicalModel.objects.filter(
-				project=Project.objects.get(user=request.user, id=pk)
-			)
-			serializer = LogicalModelSerializer(models, many=True)
+			if t_project.user != request.user:
+				raise PermissionDenied
 
-			return Response(serializer.data)
-		else:
+			if model is None:
+
+				models = LogicalModel.objects.filter(
+					project=t_project
+				)
+				serializer = LogicalModelSerializer(models, many=True)
+
+				return Response(serializer.data)
+
+			else:
+				t_model = LogicalModel.objects.get(project=t_project, id=model)
+
+				return FileResponse(
+					open(join(settings.MEDIA_ROOT, t_model.file.path), 'rb'),
+					as_attachment=True, filename=basename(t_model.file.path)
+				)
+
+		except Project.DoesNotExist:
 			raise Http404
 
-	def post(self, request):
+		except LogicalModel.DoesNotExist:
+			raise Http404
+
+
+	def post(self, request, project):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
-		if Project.objects.filter(user=request.user, id=int(request.data['project'])).exists():
+		try:
+			t_project = Project.objects.get(id=project)
+
+			if t_project.user != request.user:
+				raise PermissionDenied
 
 			LogicalModel(
-				project=Project.objects.get(user=request.user, id=int(request.data['project'])),
+				project=t_project,
 				name=request.data['name'],
 				file=request.data['file']
 			).save()
 
 			return Response(status=status.HTTP_200_OK)
 
-		else:
+		except Project.DoesNotExist:
 			raise Http404
 
 
-	def delete(self, request, pk=None, format=None):
+	def delete(self, request, project, model):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
-		try:
-			if Project.objects.filter(user=request.user, id=int(request.data['project'])).exists():
 
-				model = LogicalModel.objects.get(
-					project=Project.objects.get(user=request.user, id=int(request.data['project'])),
-					id=request.data['id']
-				)
-				model.delete()
-			else:
-				raise Http404
+		try:
+			t_project = Project.objects.get(id=project)
+
+			if t_project.user != request.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(
+				project=t_project,
+				id=request.data['id']
+			)
+			model.delete()
+
+		except Project.DoesNotExist:
+			raise Http404
 
 		except LogicalModel.DoesNotExist:
 			raise Http404
