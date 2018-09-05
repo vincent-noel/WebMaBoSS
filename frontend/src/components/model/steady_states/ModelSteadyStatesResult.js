@@ -15,7 +15,7 @@ class ModelSteadyStatesResult extends Component {
 
 		// Getting the graph via the API
 		fetch(
-			"/api/logical_model/" + this.props.modelId + "/steady_states/",
+			"/api/logical_model/" + sessionStorage.getItem('project') + "/" + this.props.modelId + "/steady_states",
 			{
 				method: "get",
 				headers: new Headers({

@@ -38,9 +38,9 @@ class App extends Component {
 					<Route path="/models/" component={Models} />
 					<Route path="/data/" component={Data} />
 
-					<Route exact path="/model/:modelId/" component={Overview} />
-					<Route path="/model/:modelId/steady_states/" component={ModelSteadyStates} />
-					<Route path="/model/:modelId/maboss/" component={MaBoss} />
+					<Route exact path="/model/" component={Overview} />
+					<Route path="/model/steady_states/" component={ModelSteadyStates} />
+					<Route path="/model/maboss/" component={MaBoss} />
 				</React.Fragment>
 			</Router>
 		)

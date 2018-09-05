@@ -11,9 +11,9 @@ import ModelGraph from "./ModelGraph";
 class Overview extends React.Component {
 
 	render() {
-		return <MenuPage modelId={this.props.match.params.modelId} path={this.props.match.path}>
-			<ModelName modelId={this.props.match.params.modelId} />
-			<ModelGraph modelId={this.props.match.params.modelId} />
+		return <MenuPage modelId={sessionStorage.getItem('model')} path={this.props.match.path}>
+			<ModelName modelId={sessionStorage.getItem('model')} />
+			<ModelGraph modelId={sessionStorage.getItem('model')} />
 			{/*<ModelGraphRaw modelId={this.props.match.params.modelId} />*/}
 			{/*<ModelGraphSBGN modelId={this.props.match.params.modelId} />*/}
 		</MenuPage>;

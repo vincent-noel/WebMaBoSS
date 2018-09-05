@@ -5,7 +5,7 @@ from rest_framework import status
 from django.http import Http404, HttpResponse
 from django.conf import settings
 
-from api.models import LogicalModel
+from api.models import LogicalModel, Project
 from api.serializers import LogicalModelNameSerializer
 
 from os.path import join
@@ -16,16 +16,23 @@ import ginsim
 
 class LogicalModelName(APIView):
 
-	def get(self, request, pk):
+	def get(self, request, project_id, model_id):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
 		try:
-			model = LogicalModel.objects.get(user=request.user, pk=pk)
+			project = Project.objects.get(id=project_id)
+			if request.user != project.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
 			serializer = LogicalModelNameSerializer(model)
 
 			return Response(serializer.data)
+
+		except Project.DoesNotExist:
+			raise Http404
 
 		except LogicalModel.DoesNotExist:
 			raise Http404
@@ -33,18 +40,25 @@ class LogicalModelName(APIView):
 
 class LogicalModelGraph(APIView):
 
-	def get(self, request, pk):
+	def get(self, request, project_id, model_id):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
 		try:
-			model = LogicalModel.objects.get(user=request.user, pk=pk)
+			project = Project.objects.get(id=project_id)
+			if request.user != project.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
 			path = join(settings.MEDIA_ROOT, model.file.path)
 			ginsim_model = ginsim.load(path)
 			fig = ginsim.get_image(ginsim_model)
 
 			return HttpResponse(fig, content_type="image/png")
+
+		except Project.DoesNotExist:
+			raise Http404
 
 		except LogicalModel.DoesNotExist:
 			raise Http404
@@ -52,14 +66,17 @@ class LogicalModelGraph(APIView):
 
 class LogicalModelGraphRaw(APIView):
 
-	def get(self, request, pk):
+	def get(self, request, project_id, model_id):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
 		try:
+			project = Project.objects.get(id=project_id)
+			if request.user != project.user:
+				raise PermissionDenied
 
-			model = LogicalModel.objects.get(user=request.user, pk=pk)
+			model = LogicalModel.objects.get(project=project, id=model_id)
 			path = join(settings.MEDIA_ROOT, model.file.path)
 			ginsim_model = ginsim.load(path)
 
@@ -86,6 +103,9 @@ class LogicalModelGraphRaw(APIView):
 				},
 				status=status.HTTP_200_OK
 			)
+
+		except Project.DoesNotExist:
+			raise Http404
 
 		except LogicalModel.DoesNotExist:
 			raise Http404

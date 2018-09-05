@@ -26,6 +26,9 @@ class MaBossNodesProbTraj extends React.Component {
 		});
 	}
 
+	componentWillUnmount() {
+		clearInterval(this.nodesProbTrajChecker);
+	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 

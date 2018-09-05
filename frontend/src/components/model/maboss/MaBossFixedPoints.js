@@ -43,6 +43,11 @@ class MaBossFixedPoints extends React.Component {
 	}
 
 
+	componentWillUnmount() {
+		clearInterval(this.fixedPointsChecker);
+	}
+
+
 	render() {
 		if (this.state.fptableLoaded) {
 

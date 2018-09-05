@@ -30,6 +30,9 @@ def remove_project_path(sender, instance, **kwargs):
 def path_logical_model(instance, filename):
 	return join(instance.project.path, 'logical_models', filename)
 
+def path_simulation_model(instance, filename):
+	return join(instance.project.path, 'simulations', filename)
+
 
 def remove_logical_model(sender, instance, **kwargs):
 	if instance.file:
@@ -66,7 +69,7 @@ pre_delete.connect(remove_logical_model, sender=LogicalModel)
 class MaBoSSSimulation(models.Model):
 
 	project = models.ForeignKey(Project, on_delete=models.CASCADE)
-	model_file = models.FileField(upload_to=path_logical_model)
+	model_file = models.FileField(upload_to=path_simulation_model)
 
 	fptable = models.CharField(max_length=102400, null=True)
 	nodes_probtraj = models.CharField(max_length=102400, null=True)

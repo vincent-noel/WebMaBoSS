@@ -1,30 +1,43 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
+from django.core.files import File
 from django.http import Http404
 from django.conf import settings
 # from django.core.serializers.json import DjangoJSONEncoder
 
-from api.models import LogicalModel, MaBoSSSimulation
+from api.models import LogicalModel, MaBoSSSimulation, Project
 
 from threading import Thread
 from os.path import join
-from django.utils.six import BytesIO
 from rest_framework.parsers import JSONParser
+
 
 class LogicalModelSimulation(APIView):
 
-	def post(self, request, pk):
-		try:
+	def post(self, request, project_id, model_id):
 
-			model = LogicalModel.objects.get(user=request.user, pk=pk)
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+
+			if project.user != request.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
 			import ginsim
 			path = join(settings.MEDIA_ROOT, model.file.path)
+			maboss_simulation = MaBoSSSimulation(
+				project=project,
+				model_file=File(path)
+			)
+			maboss_simulation.save()
+
 			ginsim_model = ginsim.load(path)
 			maboss_model = ginsim.to_maboss(ginsim_model)
-
-			maboss_simulation = MaBoSSSimulation()
-			maboss_simulation.save()
 
 			maboss_model.update_parameters(
 				sample_count=int(request.POST['sampleCount']),

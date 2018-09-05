@@ -10,7 +10,7 @@ class LogicalModelEntry extends Component {
 
     return <tr>
         <td>
-            <NavLink to={"/model/" + this.props.entry.id + "/"}>{this.props.entry.name}</NavLink>
+            <NavLink to={"/model/"} onClick={() => {sessionStorage.setItem('model', this.props.entry.id)}}>{this.props.entry.name}</NavLink>
         </td>
         <DownloadModel url={this.props.entry.file} id={this.props.entry.id}/>
         <DeleteModelForm endpoint="/api/logical_models/" updateParent={this.props.updateParent} id={this.props.entry.id}/>

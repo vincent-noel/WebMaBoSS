@@ -25,7 +25,7 @@ class MenuPage extends React.Component {
 
 	getName(modelId) {
 		fetch(
-			"/api/logical_model/" + modelId + "/name/",
+			"/api/logical_model/" + sessionStorage.getItem('project') + "/" + modelId + "/name",
 			{
 				method: "get",
 				headers: new Headers({

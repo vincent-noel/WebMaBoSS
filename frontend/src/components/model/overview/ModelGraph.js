@@ -17,7 +17,7 @@ class ModelGraph extends Component {
 		// Getting the graph via the API
 
 		fetch(
-			"/api/logical_model/" + modelId + "/graph/",
+			"/api/logical_model/" + sessionStorage.getItem('project') + "/" + this.props.modelId + "/graph",
 			{
 				method: "get",
 				headers: new Headers({

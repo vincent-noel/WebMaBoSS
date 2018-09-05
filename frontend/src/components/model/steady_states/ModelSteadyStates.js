@@ -8,9 +8,9 @@ class ModelSteadyStates extends React.Component {
 
 	render() {
 		return (
-			<MenuPage modelId={this.props.match.params.modelId} path={this.props.match.path}>
-				<ModelName modelId={this.props.match.params.modelId} />
-				<ModelSteadyStatesResult modelId={this.props.match.params.modelId} />
+			<MenuPage modelId={sessionStorage.getItem('model')} path={this.props.match.path}>
+				<ModelName modelId={sessionStorage.getItem('model')} />
+				<ModelSteadyStatesResult modelId={sessionStorage.getItem('model')} />
 			</MenuPage>
 		);
 	}

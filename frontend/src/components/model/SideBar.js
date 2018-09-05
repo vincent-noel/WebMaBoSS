@@ -25,13 +25,13 @@ class SideBar extends Component {
 				<br/>
 				<ul className="sidebar-nav">
 					<li>
-						<NavLink to={ "/model/" + this.props.modelId + "/"}>Overview</NavLink>
+						<NavLink to={ "/model/"}>Overview</NavLink>
 					</li>
 					<li>
-						<NavLink to={"/model/" + this.props.modelId + "/steady_states/"}>Steady States</NavLink>
+						<NavLink to={"/model/steady_states/"}>Steady States</NavLink>
 					</li>
 					<li>
-						<NavLink to={"/model/" + this.props.modelId + "/maboss/"}>MaBoSS simulation</NavLink>
+						<NavLink to={"/model/maboss/"}>MaBoSS simulation</NavLink>
 					</li>
 				</ul>
 			</div>

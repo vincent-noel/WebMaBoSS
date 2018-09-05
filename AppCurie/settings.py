@@ -150,3 +150,5 @@ STATICFILES_DIRS = (
 )
 
 TMP_ROOT = '/tmp/'
+
+APPEND_SLASH=False

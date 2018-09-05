@@ -16,7 +16,7 @@ class ModelDropdown extends React.Component {
 
 	getModels() {
 		fetch(
-			"/api/logical_models/",
+			"/api/logical_models/" + sessionStorage.getItem('project') + "/",
 			{
 				method: "get",
 				headers: new Headers({

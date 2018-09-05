@@ -25,11 +25,11 @@ urlpatterns = [
 	path('api/logical_models/<int:project>/', LogicalModels.as_view()),
 	path('api/logical_models/<int:project>/<int:model>', LogicalModels.as_view()),
 
-	path('api/logical_model/<int:pk>/name/', LogicalModelName.as_view()),
-	path('api/logical_model/<int:pk>/graph/', LogicalModelGraph.as_view()),
-	path('api/logical_model/<int:pk>/graph_raw/', LogicalModelGraphRaw.as_view()),
-	path('api/logical_model/<int:pk>/steady_states/', LogicalModelSteadyStates.as_view()),
-	path('api/logical_model/<int:pk>/maboss/', LogicalModelSimulation.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/name', LogicalModelName.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/graph', LogicalModelGraph.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/graph_raw', LogicalModelGraphRaw.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', LogicalModelSimulation.as_view()),
 
 	path('api/maboss/<int:pk>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
 	path('api/maboss/<int:pk>/states_trajs/', MaBoSSResultsStatesProbTraj.as_view()),

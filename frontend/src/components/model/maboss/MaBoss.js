@@ -36,7 +36,7 @@ class MaBoss extends React.Component {
 		  })
 		};
 
-		fetch("/api/logical_model/" + this.props.match.params.modelId + "/maboss/", conf)
+		fetch("/api/logical_model/" + sessionStorage.getItem('project') + "/" + sessionStorage.getItem('model') + "/maboss", conf)
 		.then(response => {	return response.json(); })
 		.then(data => { this.setState({simulationId: data['simulation_id']})});
 	}
@@ -44,10 +44,10 @@ class MaBoss extends React.Component {
 	render() {
 
 		return (
-			<MenuPage modelId={this.props.match.params.modelId} path={this.props.match.path}>
-				<ModelName modelId={this.props.match.params.modelId}/>
-				<MaBossForm modelId={this.props.match.params.modelId} onSubmit={(e, data) => this.onSubmit(e, data)}/>
-				<MaBossResult modelId={this.props.match.params.modelId} simulationId={this.state.simulationId}/>
+			<MenuPage modelId={sessionStorage.getItem('model')} path={this.props.match.path}>
+				<ModelName modelId={sessionStorage.getItem('model')}/>
+				<MaBossForm modelId={sessionStorage.getItem('model')} onSubmit={(e, data) => this.onSubmit(e, data)}/>
+				<MaBossResult modelId={sessionStorage.getItem('model')} simulationId={this.state.simulationId}/>
 			</MenuPage>
 		);
 	}
