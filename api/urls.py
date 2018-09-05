@@ -10,14 +10,18 @@ from api.views.MaBoSSSimulation import LogicalModelSimulation, MaBoSSResultsFixe
 from api.views.AuthView import TestAuthView, LogoutViewEx
 from rest_auth.views import LoginView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
+from rest_framework.documentation import include_docs_urls
+
 
 urlpatterns = [
-	path('api/is_logged_in/', TestAuthView.as_view(), name='is_logged_in', ),
-	path('api/logout/', LogoutViewEx.as_view(), name='logout', ),
-	path('api/login/', LoginView.as_view(), name='login', ),
-	path('api/register/', RegisterView.as_view(), name='register'),
-	path('account-confirm-email/', VerifyEmailView.as_view(), name='account_email_verification_sent'),
-	path('account-confirm-email/<str:key>/', VerifyEmailView.as_view(), name='account_confirm_email'),
+	path('api/', include_docs_urls(title='AppCurie API')),
+
+	path('api/auth/is_logged_in', TestAuthView.as_view(), name='is_logged_in', ),
+	path('api/auth/logout', LogoutViewEx.as_view(), name='logout', ),
+	path('api/auth/login', LoginView.as_view(), name='login', ),
+	path('api/auth/register', RegisterView.as_view(), name='register'),
+	path('api/auth/account-confirm-email', VerifyEmailView.as_view(), name='account_email_verification_sent'),
+	path('api/auth/account-confirm-email/<str:key>', VerifyEmailView.as_view(), name='account_confirm_email'),
 
 	path('api/projects/', Projects.as_view()),
 	path('api/projects/<int:project>', Projects.as_view()),

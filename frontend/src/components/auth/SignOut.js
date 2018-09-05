@@ -13,7 +13,7 @@ class SignOut extends React.Component {
 		  })
 		};
 
-		fetch("/api/logout/", conf)
+		fetch("/api/auth/logout", conf)
 		.then(response => {
 			sessionStorage.clear();
 			this.props.history.push("/login/");

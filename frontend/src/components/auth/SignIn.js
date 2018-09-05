@@ -1,5 +1,7 @@
 import React from "react";
-import Page from "../Page";
+import {Card, CardHeader, CardBody} from "reactstrap";
+
+import FullPage from "../FullPage";
 import getCSRFToken from "../commons/getCSRFToken";
 import ErrorAlert from "../commons/ErrorAlert";
 
@@ -33,7 +35,7 @@ class SignIn extends React.Component {
 		  body: formData
 		};
 
-		fetch("/api/login/", conf)
+		fetch("/api/auth/login", conf)
 		.then(response => response.json())
 		.then(json_response => {
 
@@ -85,50 +87,47 @@ class SignIn extends React.Component {
 
 	render(){
 
-		return <Page>
-			<div className="container">
-				<br/>
-				<form onSubmit={(e) => this.handleSubmit(e)} id="form_login">
-				<div className="card">
-					<div className="card-header">
-						Sign in
-					</div>
-					<div className="card-body">
-						<ErrorAlert errorMessages={this.state.errorMessages}/>
-						<div className="form-group">
-							<label htmlFor="username">Username</label>
-							<input
-								id="username"
-								className={"form-control" + (this.state.usernameHasError?" is-invalid":"")}
-								type="text"
-								name="username"
-								onChange={(e) => this.handleUsernameChange(e)}
-								value={this.state.username}
-								required
-							/>
-						</div>
-						<div className="form-group">
-							<label htmlFor="password">Password</label>
-							<input
-								id="password"
-								className={"form-control" + (this.state.passwordHasError?" is-invalid":"")}
-								type="password"
-								name="password"
-								onChange={(e) => this.handlePasswordChange(e)}
-								value={this.state.password}
-								required
-							/>
-						</div>
-						<div>
-							<button type="submit" className="btn btn-primary" id="submit_login">
-								Sign in
-							</button>
-						</div>
-					</div>
+		return <FullPage>
+				<div className="d-flex justify-content-center">
+					<form onSubmit={(e) => this.handleSubmit(e)} id="form_login">
+					<Card style={{width: '20em'}}>
+						<CardHeader>Sign in</CardHeader>
+						<CardBody>
+							<ErrorAlert errorMessages={this.state.errorMessages}/>
+							<div className="form-group">
+								<label htmlFor="username">Username</label>
+								<input
+									id="username"
+									className={"form-control" + (this.state.usernameHasError?" is-invalid":"")}
+									type="text"
+									name="username"
+									onChange={(e) => this.handleUsernameChange(e)}
+									value={this.state.username}
+									required
+								/>
+							</div>
+							<div className="form-group">
+								<label htmlFor="password">Password</label>
+								<input
+									id="password"
+									className={"form-control" + (this.state.passwordHasError?" is-invalid":"")}
+									type="password"
+									name="password"
+									onChange={(e) => this.handlePasswordChange(e)}
+									value={this.state.password}
+									required
+								/>
+							</div>
+							<div>
+								<button type="submit" className="btn btn-primary" id="submit_login">
+									Sign in
+								</button>
+							</div>
+						</CardBody>
+					</Card>
+					</form>
 				</div>
-			</form>
-			</div>
-		</Page>;
+		</FullPage>;
 	}
 }
 

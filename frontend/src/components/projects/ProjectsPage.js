@@ -1,6 +1,6 @@
 import React from "react";
 
-import Page from "../Page";
+import FullPage from "../FullPage";
 import Projects from "./Projects";
 import TableProjects from "./TableProjects";
 import isConnected from "../commons/isConnected";
@@ -15,13 +15,13 @@ class ProjectsPage extends React.Component {
 	render () {
 		if (isConnected()) {
 			return (
-				<Page>
+				<FullPage>
 					<h2>Projects</h2><br/>
 
 					<Projects endpoint="/api/projects/"
 							  render={(data, updateParent) => <TableProjects data={data}
 																			 updateParent={updateParent}/>}/>
-				</Page>
+				</FullPage>
 			);
 		}
 		else return null;

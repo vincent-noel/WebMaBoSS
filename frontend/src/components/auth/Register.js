@@ -1,5 +1,7 @@
 import React from "react";
-import Page from "../Page";
+import {Card, CardHeader, CardBody} from "reactstrap";
+
+import FullPage from "../FullPage";
 import getCSRFToken from "../commons/getCSRFToken";
 import ErrorAlert from "../commons/ErrorAlert";
 
@@ -45,7 +47,7 @@ class Register extends React.Component {
 		  })
 		};
 
-		fetch("/api/register/", conf)
+		fetch("/api/auth/register", conf)
 		.then(response => response.json())
 		.then(json_response => {
 
@@ -114,15 +116,12 @@ class Register extends React.Component {
 
 	render(){
 
-		return <Page>
-			<div className="container">
-				<br/>
+		return <FullPage>
+			<div className="d-flex justify-content-center">
 				<form onSubmit={(e) => this.handleSubmit(e)}>
-				<div className="card">
-					<div className="card-header">
-						Register to App-Curie
-					</div>
-					<div className="card-body">
+					<Card style={{width: '20em'}}>
+						<CardHeader>Register to App-Curie</CardHeader>
+						<CardBody>
 						<ErrorAlert errorMessages={this.state.errorMessages}/>
 						<div className="form-group">
 							<label htmlFor="username">Username</label>
@@ -179,11 +178,11 @@ class Register extends React.Component {
 								Register
 							</button>
 						</div>
-					</div>
-				</div>
-			</form>
+						</CardBody>
+					</Card>
+				</form>
 			</div>
-		</Page>;
+		</FullPage>;
 	}
 }
 
