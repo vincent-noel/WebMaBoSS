@@ -11,7 +11,7 @@ class TableModels extends Component {
 	};
 
 	render() {
-
+		console.log(this.props);
 		return !this.props.data.length ? (
 			<div>
 				<p>Nothing to show</p>
@@ -22,14 +22,14 @@ class TableModels extends Component {
 				  <table className="table table-striped">
 					<thead>
 					  <tr>
-						  <th>Name</th>
+						  	<th>Name</th>
 						{/*{Object.entries(this.props.data[0]).map(el => <th key={key(el)}>{el[0]}</th>)}*/}
-						<th></th><th></th>
+ 							<th></th>
 					  </tr>
 					</thead>
 					<tbody>
 					  {this.props.data.map(el => (
-						<LogicalModelEntry key={el.id} entry={el} updateParent={this.props.updateParent}/>
+						<LogicalModelEntry key={el.id} entry={el} updateParent={this.props.updateParent} edit={this.props.edit}/>
 					  ))}
 					</tbody>
 				  </table>

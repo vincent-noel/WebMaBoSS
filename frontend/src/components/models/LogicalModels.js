@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import AddModelForm from "./AddModelForm";
-
+import {getProject} from "../commons/sessionVariables";
 
 class LogicalModels extends Component {
 	static propTypes = {
@@ -27,7 +26,7 @@ class LogicalModels extends Component {
 
 	getData(){
 		fetch(
-			this.props.endpoint + sessionStorage.getItem('project') + "/",
+			this.props.endpoint + getProject() + "/",
 			{
 				method: "get",
 				headers: new Headers({
@@ -47,13 +46,12 @@ class LogicalModels extends Component {
 		this.getData();
 	}
 	render() {
-		const { data, loaded, placeholder } = this.state;
-		return (
+		if (this.state.loaded) {
+			return this.props.render(this.state.data, this.updateParent);
 
-		<div>
-			{loaded ? this.props.render(data, this.updateParent) : <p>{placeholder}</p>}
-			<AddModelForm updateParent={this.updateParent} />
-		</div>);
+		} else {
+			return <p>{this.state.placeholder}</p>
+		}
 	}
 }
 export default LogicalModels;

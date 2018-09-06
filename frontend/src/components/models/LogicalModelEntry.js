@@ -1,19 +1,39 @@
 import React, { Component } from "react";
-import DeleteModelForm from "./DeleteModelForm";
-import DownloadModel from "./DownloadModel";
 import {NavLink} from "react-router-dom";
-
+import {ButtonToolbar} from "reactstrap";
+import DownloadButton from "../commons/buttons/DownloadButton";
+import DeleteButton from "../commons/buttons/DeleteButton";
+import EditButton from "../commons/buttons/EditButton";
+import {getProject, setModel} from "../commons/sessionVariables";
 
 class LogicalModelEntry extends Component {
 
   render() {
-
+    console.log(this.props);
     return <tr>
         <td>
-            <NavLink to={"/model/"} onClick={() => {sessionStorage.setItem('model', this.props.entry.id)}}>{this.props.entry.name}</NavLink>
+            <NavLink to={"/model/"} onClick={() => {setModel(this.props.entry.id)}}>{this.props.entry.name}</NavLink>
         </td>
-        <DownloadModel url={this.props.entry.file} id={this.props.entry.id}/>
-        <DeleteModelForm endpoint="/api/logical_models/" updateParent={this.props.updateParent} id={this.props.entry.id}/>
+        <td>
+            <ButtonToolbar className="justify-content-end">
+                <EditButton
+                    endpoint={"/api/logical_models/" + getProject() + "/"}
+                    id={this.props.entry.id}
+                    edit={this.props.edit}
+                    update={this.props.updateParent}
+                />
+                <DownloadButton
+                    endpoint={"/api/logical_models/" + getProject() + "/"}
+                    filename={this.props.entry.file.split("/").pop()}
+                    id={this.props.entry.id}
+                />
+                <DeleteButton
+                    endpoint={"/api/logical_models/" + getProject() + "/"}
+                    update={this.props.updateParent}
+                    id={this.props.entry.id}
+                />
+            </ButtonToolbar>
+        </td>
     </tr>;
   }
 }

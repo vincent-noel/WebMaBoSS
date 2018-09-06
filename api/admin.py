@@ -1,5 +1,8 @@
 from django.contrib import admin
-from api.models import Project, LogicalModel, MaBoSSSimulation
+# from api.models.Project import Project
+# from api.models.MaBoSS import MaBoSSSimulation
+# from api.models.LogicalModel import LogicalModel
+from api.models import Project, MaBoSSSimulation, LogicalModel
 # Register your models here.
 
 admin.site.register(Project)

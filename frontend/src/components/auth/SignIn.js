@@ -2,8 +2,8 @@ import React from "react";
 import {Card, CardHeader, CardBody} from "reactstrap";
 
 import FullPage from "../FullPage";
-import getCSRFToken from "../commons/getCSRFToken";
 import ErrorAlert from "../commons/ErrorAlert";
+import {isConnected, setAPIKey} from "../commons/sessionVariables";
 
 class SignIn extends React.Component {
 
@@ -46,7 +46,7 @@ class SignIn extends React.Component {
 			});
 
 			if ('key' in json_response) {
-				sessionStorage.setItem("api_key", json_response['key']);
+				setAPIKey(json_response['key']);
 				this.props.history.push("/");
 
 			} else if ('username' in json_response || 'password' in json_response) {
@@ -85,8 +85,13 @@ class SignIn extends React.Component {
 		this.setState({password: e.target.value});
 	}
 
-	render(){
+	componentWillMount() {
+		if (isConnected()) {
+			this.props.history.push("/");
+		}
+	}
 
+	render(){
 		return <FullPage>
 				<div className="d-flex justify-content-center">
 					<form onSubmit={(e) => this.handleSubmit(e)} id="form_login">

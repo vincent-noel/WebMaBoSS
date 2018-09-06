@@ -2,7 +2,7 @@ from django.urls import path, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from api.views.LogicalModel import LogicalModelName, LogicalModelGraph, LogicalModelGraphRaw
+from api.views.LogicalModel import LogicalModelFile, LogicalModelName, LogicalModelGraph, LogicalModelGraphRaw
 from api.views.LogicalModels import LogicalModels
 from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
@@ -24,11 +24,12 @@ urlpatterns = [
 	path('api/auth/account-confirm-email/<str:key>', VerifyEmailView.as_view(), name='account_confirm_email'),
 
 	path('api/projects/', Projects.as_view()),
-	path('api/projects/<int:project>', Projects.as_view()),
+	path('api/projects/<int:project_id>', Projects.as_view()),
 
-	path('api/logical_models/<int:project>/', LogicalModels.as_view()),
-	path('api/logical_models/<int:project>/<int:model>', LogicalModels.as_view()),
+	path('api/logical_models/<int:project_id>/', LogicalModels.as_view()),
+	path('api/logical_models/<int:project_id>/<int:model_id>', LogicalModels.as_view()),
 
+	path('api/logical_model/<int:project_id>/<int:model_id>/file', LogicalModelFile.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/name', LogicalModelName.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph', LogicalModelGraph.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph_raw', LogicalModelGraphRaw.as_view()),

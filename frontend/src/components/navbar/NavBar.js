@@ -1,7 +1,7 @@
 import React from "react";
 import NavBarBrand from "./NavBarBrand";
 import NavBarItem from "./NavBarItem";
-import isConnected from "../commons/isConnected";
+import {isConnected} from "../commons/sessionVariables";
 
 
 class NavBar extends React.Component {

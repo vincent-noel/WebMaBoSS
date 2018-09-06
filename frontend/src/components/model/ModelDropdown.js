@@ -24,12 +24,7 @@ class ModelDropdown extends React.Component {
 				})
 			}
 		)
-		.then(response => {
-			// if (response.status !== 200) {
-			// 	return this.setState({ placeholder: "Something went wrong" });
-			// }
-			return response.json();
-		})
+		.then(response => response.json())
 		.then(data => this.setState({ models: data, loaded: true }));
 	}
 
@@ -59,8 +54,9 @@ class ModelDropdown extends React.Component {
 					</button>
 					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 						{this.state.models.map((model, id) => {
+							sessionStorage.setItem('model', model.id);
 							return <NavLink
-								to={this.props.path.replace(":modelId", model.id)}
+								to={this.props.path}
 								className="dropdown-item" key={model.id}
 								onClick={(e) => this.onModelChanged(e, model.id, model.name)}>{model.name}
 							</NavLink>

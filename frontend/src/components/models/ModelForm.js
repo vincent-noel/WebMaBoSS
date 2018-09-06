@@ -1,13 +1,14 @@
 import React from "react";
-import {Button, ButtonGroup, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import getCSRFToken from "../commons/getCSRFToken";
 
-class AddModelForm extends React.Component {
+class ModelForm extends React.Component {
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
+			id: null,
 			name: "",
 			file: undefined,
 			fileName: "Select file... ",
@@ -49,28 +50,49 @@ class AddModelForm extends React.Component {
 		};
 
 		fetch("/api/logical_models/" + sessionStorage.getItem('project') + "/", conf)
-			.then(response => {
+		.then(response => {
 
-				this.setState({
-					name: "",
-					file: undefined,
-					fileName: "Select file...",
-					modal: false
-				});
-				this.props.updateParent();
+			this.setState({
+				name: "",
+				file: undefined,
+				fileName: "Select file...",
+				modal: false
 			});
+			this.props.updateParent();
+		});
 
 	};
 
+
+	shouldComponentUpdate(nextProps, nextState) {
+
+		if (nextProps.id != this.props.id ){
+
+			if (nextProps.id !== null) {
+
+				this.setState({
+					id: nextProps.id.id,
+					name: nextProps.id.name,
+					// description: nextProps.id.description,
+				});
+			} else {
+				this.setState({
+					id: null,
+					name: "",
+					// description: "",
+				});
+			}
+		}
+		return true;
+	}
+
+
 	render() {
 		return <React.Fragment>
-			<Button type="button" color="primary" onClick={this.toggle}>
-				New model
-			</Button>
-			<Modal isOpen={this.state.modal} toggle={this.toggle}>
+			<Modal isOpen={this.props.status} toggle={() => {if (this.props.status) {this.props.hide();} else {this.props.show(this.state.id)}}}>
 				<form onSubmit={(e) => this.handleSubmit(e)}>
 					<Card>
-						<CardHeader>Add new model</CardHeader>
+						<CardHeader>{this.state.id !== null ? "Edit" : "Create new"} model</CardHeader>
 						<CardBody>
 							<div className="form-group">
 								<label htmlFor="modelName">Name</label>
@@ -100,10 +122,10 @@ class AddModelForm extends React.Component {
 							</div>
 						</CardBody>
 						<CardFooter>
-							<ButtonGroup className="d-flex">
+							<ButtonToolbar className="d-flex">
 								<Button color="danger" className="mr-auto" onClick={this.toggle}>Close</Button>
 								<Button type="submit" color="primary" className="ml-auto">Load model</Button>
-							</ButtonGroup>
+							</ButtonToolbar>
 						</CardFooter>
 					</Card>
 				</form>
@@ -112,4 +134,4 @@ class AddModelForm extends React.Component {
 	}
 }
 
-export default AddModelForm;
+export default ModelForm;

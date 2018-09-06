@@ -22,7 +22,9 @@ class TestLoginChrome (TestChrome):
 
 		self.assertIsNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
 
-		driver.find_element_by_xpath("/html/body/section/div/nav/div/ul/li[1]/a").click()
+		login_link = driver.find_element_by_xpath("/html/body/section/div/nav/div/ul/li[1]/a")
+		self.assertEqual(login_link.get_attribute('innerHTML'), 'Sign in')
+		login_link.click()
 
 		self.assertCurrentURL('/login/')
 
@@ -39,7 +41,10 @@ class TestLoginChrome (TestChrome):
 			Token.objects.get(user_id=1).key
 		)
 
-		driver.find_element_by_xpath("/html/body/section/div/nav/div[2]/ul/li[2]/a").click()
+		logout_link = driver.find_element_by_xpath("/html/body/section/div/nav/div[2]/ul/li[2]/a")
+		self.assertEqual(logout_link.get_attribute('innerHTML'), "Logout")
+		logout_link.click()
+
 		sleep(1)
 
 		self.assertCurrentURL('/login/')
@@ -57,7 +62,9 @@ class TestLoginFirefox(TestFirefox):
 
 		self.assertIsNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
 
-		driver.find_element_by_xpath("/html/body/section/div/nav/div/ul/li[1]/a").click()
+		login_link = driver.find_element_by_xpath("/html/body/section/div/nav/div/ul/li[1]/a")
+		self.assertEqual(login_link.get_attribute('innerHTML'), 'Sign in')
+		login_link.click()
 
 		self.assertCurrentURL('/login/')
 
@@ -68,8 +75,15 @@ class TestLoginFirefox(TestFirefox):
 
 		self.assertCurrentURL('/')
 		self.assertIsNotNone(driver.execute_script("return window.sessionStorage.getItem('api_key');"))
+		self.assertEqual(
+			driver.execute_script("return window.sessionStorage.getItem('api_key');"),
+			Token.objects.get(user_id=1).key
+		)
 
-		driver.find_element_by_xpath("/html/body/section/div/nav/div[2]/ul/li[2]/a").click()
+		logout_link = driver.find_element_by_xpath("/html/body/section/div/nav/div[2]/ul/li[2]/a")
+		self.assertEqual(logout_link.get_attribute('innerHTML'), "Logout")
+		logout_link.click()
+
 		sleep(1)
 
 		self.assertCurrentURL('/login/')

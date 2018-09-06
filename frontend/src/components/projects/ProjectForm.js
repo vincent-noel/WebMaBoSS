@@ -1,26 +1,21 @@
 import React from "react";
-import {Button, ButtonGroup, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import getCSRFToken from "../commons/getCSRFToken";
+import {Button, ButtonGroup, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 
-class AddProjectForm extends React.Component {
+class ProjectForm extends React.Component {
 
 	constructor(props) {
 		super(props);
 
 		this.state = {
+			id: null,
 			name: "",
 			description: "",
-			modal: false
+			// modal: false
 
 		};
-		this.toggle = this.toggle.bind(this);
 		this.handleNameChange.bind(this);
 		this.handleDescriptionChange.bind(this);
 		this.handleSubmit.bind(this);
-	}
-
-	toggle() {
-		this.setState({modal: !this.state.modal});
 	}
 
 	handleNameChange(e) {
@@ -35,40 +30,59 @@ class AddProjectForm extends React.Component {
 		e.preventDefault();
 
 		const formData = new FormData();
-		formData.append('project', sessionStorage.getItem('project'));
 		formData.append('name', this.state.name);
 		formData.append('description', this.state.description);
 
 		const conf = {
-			method: "post",
+			method: this.state.id === null ? "post" : "put",
 			body: formData,
 			headers: new Headers({
 				'Authorization': "Token " + sessionStorage.getItem("api_key"),
 			})
 		};
 
-		fetch("/api/projects/", conf)
+		fetch("/api/projects/" + (this.state.id !== null ? this.state.id : ""), conf)
 			.then(response => {
 
+				this.props.hide();
 				this.setState({
+					id: null,
 					name: "",
 					description: "",
-					modal: false
 				});
-				this.props.updateParent();
+				this.props.updateProjects();
 			});
-
 	};
 
+	shouldComponentUpdate(nextProps, nextState) {
+
+		if (nextProps.id != this.props.id ){
+
+			if (nextProps.id !== null) {
+
+				this.setState({
+					id: nextProps.id.id,
+					name: nextProps.id.name,
+					description: nextProps.id.description,
+				});
+			} else {
+				this.setState({
+					id: null,
+					name: "",
+					description: "",
+				});
+			}
+		}
+		return true;
+	}
+
 	render() {
+
 		return <React.Fragment>
-			<Button type="button" color="primary" onClick={this.toggle}>
-				New project
-			</Button>
-			<Modal isOpen={this.state.modal} toggle={this.toggle}>
+			<Modal isOpen={this.props.status} toggle={() => {if (this.props.status) {this.props.hide()} else {this.props.show(this.props.id)}}}>
 				<form onSubmit={(e) => this.handleSubmit(e)}>
 					<Card>
-						<CardHeader>Add new project</CardHeader>
+						<CardHeader>{(this.props.id !== null) ? "Editing a project" : "Add new project"}</CardHeader>
 						<CardBody>
 							<div className="form-group">
 								<label htmlFor="modelName">Name</label>
@@ -95,10 +109,10 @@ class AddProjectForm extends React.Component {
 							</div>
 						</CardBody>
 						<CardFooter>
-							<ButtonGroup className="d-flex">
-								<Button color="danger" className="mr-auto" onClick={this.toggle}>Close</Button>
-								<Button type="submit" color="primary" className="ml-auto">Create model</Button>
-							</ButtonGroup>
+							<ButtonToolbar className="d-flex">
+								<Button color="danger" className="mr-auto" onClick={() => {if (this.props.status) {this.props.hide()} else {this.props.show(this.props.id)}}}>Close</Button>
+								<Button type="submit" color="primary" className="ml-auto">{this.props.id !== null ? "Save" : "Create"} project</Button>
+							</ButtonToolbar>
 						</CardFooter>
 					</Card>
 				</form>
@@ -107,4 +121,4 @@ class AddProjectForm extends React.Component {
 	}
 }
 
-export default AddProjectForm;
+export default ProjectForm;

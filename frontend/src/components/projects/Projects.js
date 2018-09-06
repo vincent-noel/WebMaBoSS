@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from "prop-types";
-import AddProjectForm from "./AddProjectForm";
 
 
 class Projects extends React.Component {
@@ -12,20 +11,17 @@ class Projects extends React.Component {
 	constructor(props) {
 		super(props);
 
-		this.updateParent = this.updateParent.bind(this);
+		this.updateProjects = this.updateProjects.bind(this);
 
 		this.state = {
 			data: [],
 			loaded: false,
-			placeholder: "Loading..."
+			placeholder: "Loading...",
+
 		};
 	}
 
-	updateParent() {
-		this.getData();
-	}
-
-	getData(){
+	updateProjects(){
 		fetch(
 			this.props.endpoint,
 			{
@@ -44,14 +40,15 @@ class Projects extends React.Component {
 		.then(data => this.setState({ data: data, loaded: true }));
 	}
 	componentDidMount() {
-		this.getData();
+		this.updateProjects();
 	}
 	render() {
-		const { data, loaded, placeholder } = this.state;
-		return <div>
-			{loaded ? this.props.render(data, this.updateParent) : <p>{placeholder}</p>}
-			<AddProjectForm updateParent={this.updateParent} />
-		</div>;
+		if (this.state.loaded) {
+			return this.props.render(this.state.data, this.updateProjects)
+
+		} else {
+			return <p>{this.state.placeholder}</p>
+		}
 	}
 }
 export default Projects;

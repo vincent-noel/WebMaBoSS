@@ -44,11 +44,11 @@ class ModelSteadyStatesResult extends Component {
 			const style_inactive = { 'backgroundColor': 'red' };
 
 			return (
-				<table>
+				<table style={{maxWidth: "100%", minWidth: "100%"}}>
 					<thead><tr>
 					<th>#</th>
-					{Object.keys(this.state.data[0]).map(key => {
-						return <th key={key}>{key}</th>
+					{Object.keys(this.state.data[0]).map((key, index) => {
+						return <th key={key} data-toggle="tooltip" data-placement="top" title={key}></th>
 					})}
 					</tr></thead>
 

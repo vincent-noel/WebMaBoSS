@@ -13,33 +13,31 @@ from os.path import join, basename
 
 class LogicalModels(APIView):
 
-	def get(self, request, project, model=None):
+	def get(self, request, project_id, model_id=None):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
 		try:
-			t_project = Project.objects.get(id=project)
+			project = Project.objects.get(id=project_id)
 
-			if t_project.user != request.user:
+			if project.user != request.user:
 				raise PermissionDenied
 
-			if model is None:
+			if model_id is None:
 
 				models = LogicalModel.objects.filter(
-					project=t_project
+					project=project
 				)
 				serializer = LogicalModelSerializer(models, many=True)
 
 				return Response(serializer.data)
 
 			else:
-				t_model = LogicalModel.objects.get(project=t_project, id=model)
+				model = LogicalModel.objects.get(project=project, id=model_id)
+				serializer = LogicalModelSerializer(model)
 
-				return FileResponse(
-					open(join(settings.MEDIA_ROOT, t_model.file.path), 'rb'),
-					as_attachment=True, filename=basename(t_model.file.path)
-				)
+				return Response(serializer.data)
 
 		except Project.DoesNotExist:
 			raise Http404
@@ -48,19 +46,19 @@ class LogicalModels(APIView):
 			raise Http404
 
 
-	def post(self, request, project):
+	def post(self, request, project_id):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
 		try:
-			t_project = Project.objects.get(id=project)
+			project = Project.objects.get(id=project_id)
 
-			if t_project.user != request.user:
+			if project.user != request.user:
 				raise PermissionDenied
 
 			LogicalModel(
-				project=t_project,
+				project=project,
 				name=request.data['name'],
 				file=request.data['file']
 			).save()
@@ -71,20 +69,20 @@ class LogicalModels(APIView):
 			raise Http404
 
 
-	def delete(self, request, project, model):
+	def delete(self, request, project_id, model_id):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
 		try:
-			t_project = Project.objects.get(id=project)
+			project = Project.objects.get(id=project_id)
 
-			if t_project.user != request.user:
+			if project.user != request.user:
 				raise PermissionDenied
 
 			model = LogicalModel.objects.get(
-				project=t_project,
-				id=request.data['id']
+				project=project,
+				id=model_id
 			)
 			model.delete()
 

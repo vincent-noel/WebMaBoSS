@@ -21,13 +21,12 @@ class TableProjects extends Component {
 					<thead>
 					  <tr>
 						  <th>Name</th>
-						{/*{Object.entries(this.props.data[0]).map(el => <th key={key(el)}>{el[0]}</th>)}*/}
-						<th></th>
+						  <th></th>
 					  </tr>
 					</thead>
 					<tbody>
 					  {this.props.data.map(el => (
-						<ProjectEntry key={el.id} entry={el} updateParent={this.props.updateParent}/>
+						<ProjectEntry key={el.id} entry={el} updateProjects={this.props.updateProjects} edit={this.props.edit}/>
 					  ))}
 					</tbody>
 				  </table>

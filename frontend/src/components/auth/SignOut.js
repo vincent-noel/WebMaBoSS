@@ -1,6 +1,5 @@
 import React from "react";
-import getCSRFToken from "../commons/getCSRFToken";
-
+import {clearAPIKey} from "../commons/sessionVariables";
 
 class SignOut extends React.Component {
 
@@ -8,14 +7,11 @@ class SignOut extends React.Component {
 
 		const conf = {
 		  method: "post",
-		  headers: new Headers({
-			  'X-CSRFToken': getCSRFToken()
-		  })
 		};
 
 		fetch("/api/auth/logout", conf)
 		.then(response => {
-			sessionStorage.clear();
+			clearAPIKey();
 			this.props.history.push("/login/");
 		});
 

@@ -11,16 +11,26 @@ from api.serializers import ProjectSerializer
 
 class Projects(APIView):
 
-	def get(self, request, format=None):
+	def get(self, request, project_id=None):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
 		try:
-			projects = Project.objects.filter(user=request.user)
-			serializer = ProjectSerializer(projects, many=True)
+			if project_id is None:
+				projects = Project.objects.filter(user=request.user)
+				serializer = ProjectSerializer(projects, many=True)
 
-			return Response(serializer.data)
+				return Response(serializer.data)
+			else:
+				project = Project.objects.get(id=project_id)
+
+				if project.user != request.user:
+					raise PermissionDenied
+
+				serializer = ProjectSerializer(project)
+
+				return Response(serializer.data)
 
 		except Project.DoesNotExist:
 			raise Http404
@@ -39,19 +49,37 @@ class Projects(APIView):
 
 		return Response(status=status.HTTP_200_OK)
 
-
-	def delete(self, request, project):
+	def put(self, request, project_id):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
 
 		try:
-			model = Project.objects.get(id=project)
+			project = Project.objects.get(id=project_id)
 
-			if model.user != request.user:
+			if project.user != request.user:
 				raise PermissionDenied
 
-			model.delete()
+			project.name = request.data['name']
+			project.description = request.data['description']
+			project.save()
+
+		except Project.DoesNotExist:
+			raise Http404
+
+
+	def delete(self, request, project_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+
+			if project.user != request.user:
+				raise PermissionDenied
+
+			project.delete()
 			return Response(status=status.HTTP_200_OK)
 
 		except Project.DoesNotExist:

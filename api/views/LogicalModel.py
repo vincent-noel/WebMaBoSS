@@ -2,7 +2,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, FileResponse
 from django.conf import settings
 
 from api.models import LogicalModel, Project
@@ -13,6 +13,31 @@ from rest_framework.exceptions import PermissionDenied
 
 import ginsim
 
+class LogicalModelFile(APIView):
+
+	def get(self, request, project_id, model_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+
+			if project.user != request.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
+
+			return FileResponse(
+				open(join(settings.MEDIA_ROOT, model.file.path), 'rb'),
+				as_attachment=True, filename=basename(model.file.path)
+			)
+
+		except Project.DoesNotExist:
+			raise Http404
+
+		except LogicalModel.DoesNotExist:
+			raise Http404
 
 class LogicalModelName(APIView):
 
