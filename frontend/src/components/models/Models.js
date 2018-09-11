@@ -50,7 +50,7 @@ class Models extends React.Component {
 							<Button type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
 
 							<ModelForm
-								updateParent={this.updateParent}
+								updateParent={updateParent}
 								status={this.state.showModelForm}
 								id={this.state.idModelForm}
 								show={this.showModelForm}

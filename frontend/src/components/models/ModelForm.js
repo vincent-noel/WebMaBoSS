@@ -59,6 +59,7 @@ class ModelForm extends React.Component {
 				fileName: "Select file...",
 				modal: false
 			});
+			this.props.hide();
 			this.props.updateParent();
 		});
 
@@ -124,7 +125,7 @@ class ModelForm extends React.Component {
 						</CardBody>
 						<CardFooter>
 							<ButtonToolbar className="d-flex">
-								<Button color="danger" className="mr-auto" onClick={this.toggle}>Close</Button>
+								<Button color="danger" className="mr-auto" onClick={() => this.props.hide()}>Close</Button>
 								<Button type="submit" color="primary" className="ml-auto">Load model</Button>
 							</ButtonToolbar>
 						</CardFooter>
