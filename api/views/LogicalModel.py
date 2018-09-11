@@ -12,6 +12,8 @@ from os.path import join
 from rest_framework.exceptions import PermissionDenied
 
 import ginsim
+from json import loads
+
 
 class LogicalModelFile(APIView):
 
@@ -88,6 +90,29 @@ class LogicalModelGraph(APIView):
 		except LogicalModel.DoesNotExist:
 			raise Http404
 
+	def post(self, request, project_id, model_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+			if request.user != project.user:
+				raise PermissionDenied
+
+			steady_state = loads(request.data['steady_state'])
+			model = LogicalModel.objects.get(project=project, id=model_id)
+			path = join(settings.MEDIA_ROOT, model.file.path)
+			ginsim_model = ginsim.load(path)
+			fig = ginsim.get_image(ginsim_model, steady_state)
+
+			return HttpResponse(fig, content_type="image/png")
+
+		except Project.DoesNotExist:
+			raise Http404
+
+		except LogicalModel.DoesNotExist:
+			raise Http404
 
 class LogicalModelGraphRaw(APIView):
 
