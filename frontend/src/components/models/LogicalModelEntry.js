@@ -9,7 +9,7 @@ import {getProject, setModel} from "../commons/sessionVariables";
 class LogicalModelEntry extends Component {
 
   render() {
-    console.log(this.props);
+
     return <tr>
         <td>
             <NavLink to={"/model/"} onClick={() => {setModel(this.props.entry.id)}}>{this.props.entry.name}</NavLink>
@@ -17,18 +17,19 @@ class LogicalModelEntry extends Component {
         <td>
             <ButtonToolbar className="justify-content-end">
                 <EditButton
-                    endpoint={"/api/logical_models/" + getProject() + "/"}
+
+                    endpoint={"/api/logical_models/" + this.props.project + "/"}
                     id={this.props.entry.id}
                     edit={this.props.edit}
                     update={this.props.updateParent}
                 />
                 <DownloadButton
-                    endpoint={"/api/logical_models/" + getProject() + "/"}
+                    endpoint={"/api/logical_models/" + this.props.project + "/"}
                     filename={this.props.entry.file.split("/").pop()}
                     id={this.props.entry.id}
                 />
                 <DeleteButton
-                    endpoint={"/api/logical_models/" + getProject() + "/"}
+                    endpoint={"/api/logical_models/" + this.props.project + "/"}
                     update={this.props.updateParent}
                     id={this.props.entry.id}
                 />

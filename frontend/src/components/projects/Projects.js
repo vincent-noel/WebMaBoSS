@@ -1,5 +1,6 @@
 import React from "react";
 import PropTypes from "prop-types";
+import {getAPIKey} from "../commons/sessionVariables";
 
 
 class Projects extends React.Component {
@@ -27,7 +28,7 @@ class Projects extends React.Component {
 			{
 				method: "get",
 				headers: new Headers({
-					'Authorization': "Token " + sessionStorage.getItem("api_key")
+					'Authorization': "Token " + getAPIKey()
 				})
 			}
 		)

@@ -1,5 +1,6 @@
 import React from "react";
 import {ReactCytoscape} from 'react-cytoscape';
+import {getAPIKey} from "../../commons/sessionVariables";
 
 class ModelGraphRaw extends React.Component {
 
@@ -23,7 +24,7 @@ class ModelGraphRaw extends React.Component {
 			{
 				method: "get",
 				headers: new Headers({
-					'Authorization': "Token " + sessionStorage.getItem("api_key")
+					'Authorization': "Token " + getAPIKey()
 				})
 			}
 		)

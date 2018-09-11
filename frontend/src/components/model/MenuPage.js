@@ -5,6 +5,7 @@ import Page from "../Page";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faBars } from '@fortawesome/free-solid-svg-icons';
+import {getAPIKey, getModel, getProject} from "../commons/sessionVariables";
 
 class MenuPage extends React.Component {
 
@@ -13,11 +14,11 @@ class MenuPage extends React.Component {
 
 		this.state = {
 			toggled : true,
-			modelId: this.props.modelId,
+			modelId: getModel(),
 			modelName: undefined
 		};
 
-		this.getName(this.props.modelId);
+		this.getName(getModel());
 
 		this.toggle.bind(this);
 		this.onModelChanged.bind(this);
@@ -25,11 +26,11 @@ class MenuPage extends React.Component {
 
 	getName(modelId) {
 		fetch(
-			"/api/logical_model/" + sessionStorage.getItem('project') + "/" + modelId + "/name",
+			"/api/logical_model/" + getProject() + "/" + modelId + "/name",
 			{
 				method: "get",
 				headers: new Headers({
-					'Authorization': "Token " + sessionStorage.getItem("api_key")
+					'Authorization': "Token " + getAPIKey()
 				})
 			}
 		)
@@ -48,7 +49,7 @@ class MenuPage extends React.Component {
 
 	render() {
 		return (
-			<Page>
+			<Page path={this.props.path}>
 				<div id="wrapper" className={this.state.toggled?"toggled":""}>
 					<SideBar
 						modelId={this.state.modelId} modelName={this.state.modelName}

@@ -1,5 +1,6 @@
 import React from "react";
 import {Button, ButtonGroup, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import {getAPIKey} from "../commons/sessionVariables";
 
 class ProjectForm extends React.Component {
 
@@ -37,7 +38,7 @@ class ProjectForm extends React.Component {
 			method: this.state.id === null ? "post" : "put",
 			body: formData,
 			headers: new Headers({
-				'Authorization': "Token " + sessionStorage.getItem("api_key"),
+				'Authorization': "Token " + getAPIKey(),
 			})
 		};
 

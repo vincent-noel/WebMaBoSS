@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import getCSRFToken from "../commons/getCSRFToken";
+import {getAPIKey, getProject} from "../commons/sessionVariables";
 
 class ModelForm extends React.Component {
 
@@ -44,12 +45,12 @@ class ModelForm extends React.Component {
 			method: "post",
 			body: formData,
 			headers: new Headers({
-				'Authorization': "Token " + sessionStorage.getItem("api_key"),
+				'Authorization': "Token " + getAPIKey(),
 				'X-CSRFToken': getCSRFToken()
 			})
 		};
 
-		fetch("/api/logical_models/" + sessionStorage.getItem('project') + "/", conf)
+		fetch("/api/logical_models/" + getProject() + "/", conf)
 		.then(response => {
 
 			this.setState({

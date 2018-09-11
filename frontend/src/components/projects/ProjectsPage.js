@@ -45,7 +45,7 @@ class ProjectsPage extends React.Component {
 
 		if (isConnected()) {
 			return (
-				<FullPage>
+				<FullPage path={this.props.match.path}>
 					<h2>Projects</h2><br/>
 
 					<Projects endpoint="/api/projects/"

@@ -4,6 +4,7 @@ import FullPage from "../FullPage";
 import LogicalModels from "./LogicalModels";
 import TableModels from "./TableModels";
 import ModelForm from "./ModelForm";
+import {getProject} from "../commons/sessionVariables";
 
 class Models extends React.Component {
 
@@ -12,9 +13,11 @@ class Models extends React.Component {
 
 		this.showModelForm = this.showModelForm.bind(this);
 		this.hideModelForm = this.hideModelForm.bind(this);
+		this.updateProject = this.updateProject.bind(this);
 		this.state = {
 			showModelForm: false,
 			idModelForm: null,
+			project: getProject()
 		}
 	}
 
@@ -31,14 +34,18 @@ class Models extends React.Component {
 		})
 	}
 
+	updateProject() {
+		this.setState({project: getProject()});
+	}
+
 	render () {
 		return (
-			<FullPage>
+			<FullPage path={this.props.match.path} updateProject={this.updateProject}>
 				<h2>Models</h2>
 				<LogicalModels endpoint="/api/logical_models/"
 					render={(data, updateParent) => {
 						return <React.Fragment>
-							<TableModels data={data} updateParent={updateParent} edit={this.showModelForm} />
+							<TableModels data={data} updateParent={updateParent} edit={this.showModelForm} project={this.state.project}/>
 
 							<Button type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
 

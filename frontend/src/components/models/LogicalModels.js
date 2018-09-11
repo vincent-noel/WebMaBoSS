@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {getProject} from "../commons/sessionVariables";
+import {getAPIKey, getProject} from "../commons/sessionVariables";
 
 class LogicalModels extends Component {
 	static propTypes = {
@@ -30,7 +30,7 @@ class LogicalModels extends Component {
 			{
 				method: "get",
 				headers: new Headers({
-					'Authorization': "Token " + sessionStorage.getItem("api_key")
+					'Authorization': "Token " + getAPIKey()
 				}),
 			}
 		)
@@ -45,9 +45,11 @@ class LogicalModels extends Component {
 	componentDidMount() {
 		this.getData();
 	}
+
+
 	render() {
 		if (this.state.loaded) {
-			return this.props.render(this.state.data, this.updateParent);
+			return this.props.render(this.state.data, this.updateParent, this.props.project);
 
 		} else {
 			return <p>{this.state.placeholder}</p>

@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {getAPIKey, getProject} from "../../commons/sessionVariables";
 
 class ModelSteadyStatesResult extends Component {
 
@@ -15,11 +16,11 @@ class ModelSteadyStatesResult extends Component {
 
 		// Getting the graph via the API
 		fetch(
-			"/api/logical_model/" + sessionStorage.getItem('project') + "/" + this.props.modelId + "/steady_states",
+			"/api/logical_model/" + getProject() + "/" + this.props.modelId + "/steady_states",
 			{
 				method: "get",
 				headers: new Headers({
-					'Authorization': "Token " + sessionStorage.getItem("api_key")
+					'Authorization': "Token " + getAPIKey()
 				})
 			}
 		)

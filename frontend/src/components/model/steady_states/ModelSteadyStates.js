@@ -2,15 +2,16 @@ import React from "react";
 import MenuPage from "../MenuPage";
 import ModelName from "../ModelName";
 import ModelSteadyStatesResult from "./ModelSteadyStatesResult";
+import {getModel} from "../../commons/sessionVariables";
 
 
 class ModelSteadyStates extends React.Component {
 
 	render() {
 		return (
-			<MenuPage modelId={sessionStorage.getItem('model')} path={this.props.match.path}>
-				<ModelName modelId={sessionStorage.getItem('model')} />
-				<ModelSteadyStatesResult modelId={sessionStorage.getItem('model')} />
+			<MenuPage path={this.props.match.path}>
+				<ModelName modelId={getModel()} />
+				<ModelSteadyStatesResult modelId={getModel()} />
 			</MenuPage>
 		);
 	}

@@ -1,5 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
+import {getAPIKey, getProject, setModel} from "../commons/sessionVariables";
 
 class ModelDropdown extends React.Component {
 
@@ -16,11 +17,11 @@ class ModelDropdown extends React.Component {
 
 	getModels() {
 		fetch(
-			"/api/logical_models/" + sessionStorage.getItem('project') + "/",
+			"/api/logical_models/" + getProject() + "/",
 			{
 				method: "get",
 				headers: new Headers({
-					'Authorization': "Token " + sessionStorage.getItem("api_key")
+					'Authorization': "Token " + getAPIKey()
 				})
 			}
 		)
@@ -33,6 +34,7 @@ class ModelDropdown extends React.Component {
 	}
 
 	onModelChanged(e, model_id, name) {
+		setModel(model_id);
 		this.props.onModelChanged(e, model_id);
 	}
 
@@ -54,7 +56,6 @@ class ModelDropdown extends React.Component {
 					</button>
 					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
 						{this.state.models.map((model, id) => {
-							sessionStorage.setItem('model', model.id);
 							return <NavLink
 								to={this.props.path}
 								className="dropdown-item" key={model.id}

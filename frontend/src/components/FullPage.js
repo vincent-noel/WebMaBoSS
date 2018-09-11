@@ -5,7 +5,7 @@ class FullPage extends React.Component {
 
 	render() {
 		return (
-			<Page>
+			<Page path={this.props.path} updateProject={this.props.updateProject}>
 				<div className="container" style={{paddingTop: '1.5rem'}}>
 					{this.props.children}
 				</div>

@@ -4,6 +4,7 @@ import MenuPage from "../MenuPage";
 import ModelName from "../ModelName";
 
 import ModelGraph from "./ModelGraph";
+import {getModel} from "../../commons/sessionVariables";
 // import ModelGraphRaw from "./ModelGraphRaw";
 // import ModelGraphSBGN from "./ModelGraphSBGN";
 
@@ -11,9 +12,9 @@ import ModelGraph from "./ModelGraph";
 class Overview extends React.Component {
 
 	render() {
-		return <MenuPage modelId={sessionStorage.getItem('model')} path={this.props.match.path}>
-			<ModelName modelId={sessionStorage.getItem('model')} />
-			<ModelGraph modelId={sessionStorage.getItem('model')} />
+		return <MenuPage path={this.props.match.path}>
+			<ModelName modelId={getModel()} />
+			<ModelGraph modelId={getModel()} />
 			{/*<ModelGraphRaw modelId={this.props.match.params.modelId} />*/}
 			{/*<ModelGraphSBGN modelId={this.props.match.params.modelId} />*/}
 		</MenuPage>;

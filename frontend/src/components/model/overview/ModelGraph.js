@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import {getAPIKey, getProject} from "../../commons/sessionVariables";
 
 class ModelGraph extends Component {
 
@@ -17,11 +18,11 @@ class ModelGraph extends Component {
 		// Getting the graph via the API
 
 		fetch(
-			"/api/logical_model/" + sessionStorage.getItem('project') + "/" + this.props.modelId + "/graph",
+			"/api/logical_model/" + getProject() + "/" + this.props.modelId + "/graph",
 			{
 				method: "get",
 				headers: new Headers({
-					'Authorization': "Token " + sessionStorage.getItem("api_key")
+					'Authorization': "Token " + getAPIKey()
 				})
 			}
 		)

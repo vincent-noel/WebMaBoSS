@@ -4,6 +4,7 @@ import {Card, CardHeader, CardBody} from "reactstrap";
 import FullPage from "../FullPage";
 import getCSRFToken from "../commons/getCSRFToken";
 import ErrorAlert from "../commons/ErrorAlert";
+import {setAPIKey} from "../commons/sessionVariables";
 
 
 class Register extends React.Component {
@@ -59,7 +60,7 @@ class Register extends React.Component {
 			};
 
 			if ('key' in json_response) {
-				sessionStorage.setItem("api_key", json_response['key']);
+				setAPIKey(json_response['key']);
 				this.props.history.push("/");
 
 			} else if (
@@ -116,7 +117,7 @@ class Register extends React.Component {
 
 	render(){
 
-		return <FullPage>
+		return <FullPage path={this.props.match.path} >
 			<div className="d-flex justify-content-center">
 				<form onSubmit={(e) => this.handleSubmit(e)}>
 					<Card style={{width: '20em'}}>

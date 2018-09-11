@@ -92,7 +92,7 @@ class SignIn extends React.Component {
 	}
 
 	render(){
-		return <FullPage>
+		return <FullPage path={this.props.match.path}>
 				<div className="d-flex justify-content-center">
 					<form onSubmit={(e) => this.handleSubmit(e)} id="form_login">
 					<Card style={{width: '20em'}}>

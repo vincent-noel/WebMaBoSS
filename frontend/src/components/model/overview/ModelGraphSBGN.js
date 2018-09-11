@@ -1,4 +1,5 @@
 import React from "react";
+import {getAPIKey} from "../../commons/sessionVariables";
 // import "sbgnviz";
 
 class ModelGraphSBGN extends React.Component {
@@ -23,7 +24,7 @@ class ModelGraphSBGN extends React.Component {
 			{
 				method: "get",
 				headers: new Headers({
-					'Authorization': "Token " + sessionStorage.getItem("api_key")
+					'Authorization': "Token " + getAPIKey()
 				})
 			}
 		)

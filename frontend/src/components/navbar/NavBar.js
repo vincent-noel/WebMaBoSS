@@ -1,6 +1,7 @@
 import React from "react";
 import NavBarBrand from "./NavBarBrand";
 import NavBarItem from "./NavBarItem";
+import ProjectDropdown from "./ProjectDropdown";
 import {isConnected} from "../commons/sessionVariables";
 
 
@@ -12,17 +13,33 @@ class NavBar extends React.Component {
 			<nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 				<NavBarBrand/>
 				{ isConnected() ? (
-					<div className="collapse navbar-collapse" id="navbarsExampleDefault">
-						<ul className="navbar-nav mr-auto">
-							<NavBarItem url="/models/" name="Models"/>
-							<NavBarItem url="/data/" name="Data"/>
-						</ul>
-					</div>
+					<React.Fragment>
+						<div className="collapse navbar-collapse">
+							<ul className="navbar-nav mr-auto">
+								<NavBarItem url="/models/" name="Models"/>
+								<NavBarItem url="/data/" name="Data"/>
+							</ul>
+						</div>
+
+						{
+							this.props.path !== "/" ?
+							<div className="collapse navbar-collapse">
+								<ul className="navbar-nav mr-auto">
+									<ProjectDropdown
+										// projectName={""}
+										// onProjectChan={(e, model_id) => this.props.onProjectChanged(e, model_id)}
+										updateProject={this.props.updateProject}
+										path={this.props.path}
+									/>
+								</ul>
+							</div> : null
+						}
+					</React.Fragment>
 				) : (
 					null
 				)}
 
-				<div className="collapse navbar-collapse" id="navbarsExampleDefault">
+				<div className="collapse navbar-collapse">
 					<ul className="navbar-nav ml-auto">
 						{ isConnected() ? (
 							<React.Fragment>

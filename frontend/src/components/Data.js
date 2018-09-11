@@ -4,7 +4,7 @@ import FullPage from "./FullPage";
 class Data extends React.Component {
 
 	render(){
-		return <FullPage/>;
+		return <FullPage path={this.props.match.path}/>;
 	}
 }
 

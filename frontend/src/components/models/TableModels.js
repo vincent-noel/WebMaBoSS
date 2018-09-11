@@ -10,8 +10,16 @@ class TableModels extends Component {
 		data: PropTypes.array.isRequired
 	};
 
+	shouldComponentUpdate(nextProps, nextState) {
+
+		if (nextProps.project !== this.props.project) {
+			this.props.updateParent();
+		}
+		return true;
+	}
+
 	render() {
-		console.log(this.props);
+
 		return !this.props.data.length ? (
 			<div>
 				<p>Nothing to show</p>
@@ -23,13 +31,17 @@ class TableModels extends Component {
 					<thead>
 					  <tr>
 						  	<th>Name</th>
-						{/*{Object.entries(this.props.data[0]).map(el => <th key={key(el)}>{el[0]}</th>)}*/}
  							<th></th>
 					  </tr>
 					</thead>
 					<tbody>
 					  {this.props.data.map(el => (
-						<LogicalModelEntry key={el.id} entry={el} updateParent={this.props.updateParent} edit={this.props.edit}/>
+						<LogicalModelEntry
+							project={this.props.project}
+							key={el.id} entry={el}
+							updateParent={this.props.updateParent}
+							edit={this.props.edit}
+						/>
 					  ))}
 					</tbody>
 				  </table>
