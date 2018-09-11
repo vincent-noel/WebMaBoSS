@@ -6,7 +6,7 @@ from django.core.files import File
 from django.http import Http404
 from django.conf import settings
 # from django.core.serializers.json import DjangoJSONEncoder
-
+from api.serializers import MaBoSSSimulationSerializer
 from api.models import LogicalModel, MaBoSSSimulation, Project
 
 from threading import Thread
@@ -15,6 +15,30 @@ from rest_framework.parsers import JSONParser
 
 
 class LogicalModelSimulation(APIView):
+
+	def get(self, request, project_id, model_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+
+			if project.user != request.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
+			simulations = MaBoSSSimulation.objects.filter(model=model)
+			serializer = MaBoSSSimulationSerializer(simulations, many=True)
+			return Response(serializer.data)
+
+		except LogicalModel.DoesNotExist:
+			raise Http404
+
+		except Project.DoesNotExist:
+			raise Http404
+
+
 
 	def post(self, request, project_id, model_id):
 
@@ -32,6 +56,7 @@ class LogicalModelSimulation(APIView):
 			path = join(settings.MEDIA_ROOT, model.file.path)
 			maboss_simulation = MaBoSSSimulation(
 				project=project,
+				model=model,
 				model_file=File(path)
 			)
 			maboss_simulation.save()
@@ -54,6 +79,8 @@ class LogicalModelSimulation(APIView):
 		except LogicalModel.DoesNotExist:
 			raise Http404
 
+		except Project.DoesNotExist:
+			raise Http404
 
 from django.db import transaction
 import json

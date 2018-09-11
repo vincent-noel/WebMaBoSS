@@ -11,11 +11,11 @@ from api.views.AuthView import TestAuthView, LogoutViewEx
 from rest_auth.views import LoginView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
 from rest_framework.documentation import include_docs_urls
-
+from django.conf.urls import include
 
 urlpatterns = [
 	path('api/', include_docs_urls(title='AppCurie API')),
-
+	re_path('api-auth/', include('rest_framework.urls')),
 	path('api/auth/is_logged_in', TestAuthView.as_view(), name='is_logged_in', ),
 	path('api/auth/logout', LogoutViewEx.as_view(), name='logout', ),
 	path('api/auth/login', LoginView.as_view(), name='login', ),
@@ -26,6 +26,7 @@ urlpatterns = [
 	path('api/projects/', Projects.as_view()),
 	path('api/projects/<int:project_id>', Projects.as_view()),
 
+	# path('api/logical_models/', LogicalModels.as_view()),
 	path('api/logical_models/<int:project_id>/', LogicalModels.as_view()),
 	path('api/logical_models/<int:project_id>/<int:model_id>', LogicalModels.as_view()),
 

@@ -58,8 +58,15 @@ class MaBossFixedPoints extends React.Component {
 					backgroundColor: Object.values(this.state.fptable['State']).map((value, index) => { return this.props.colormap[index]})
 				}]
 			};
+
+			const options = {
+				legend: {
+					position: 'bottom',
+				}
+			};
+
 			return (
-				<Pie data={data}/>
+				<Pie data={data} options={options}/>
 			);
 		} else if (this.props.simulationId !== undefined) {
 			return <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />

@@ -21,6 +21,7 @@ def remove_simulation_model(sender, instance, **kwargs):
 class MaBoSSSimulation(models.Model):
 
 	project = models.ForeignKey(Project, on_delete=models.CASCADE)
+	model = models.ForeignKey(LogicalModel, on_delete=models.CASCADE)
 	model_file = models.FileField(upload_to=path_simulation_model)
 
 	fptable = models.CharField(max_length=102400, null=True)

@@ -42,7 +42,6 @@ class MaBossStatesProbTraj extends React.Component {
 
 	}
 
-
 	render() {
 
 		if (this.state.statesProbTrajLoaded) {
@@ -64,8 +63,14 @@ class MaBossStatesProbTraj extends React.Component {
 				)
 			};
 
+			const options = {
+				legend: {
+					position: 'bottom',
+				}
+			};
+
 			return (
-				<Line data={data}/>
+				<Line data={data} options={options}/>
 			);
 		} else if (this.props.simulationId !== undefined) {
 			return <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />

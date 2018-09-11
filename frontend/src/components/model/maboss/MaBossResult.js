@@ -1,6 +1,7 @@
 import React from "react";
 import MaBossFixedPoints from "./MaBossFixedPoints";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
+import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
 
 
 class MaBossResult extends React.Component {
@@ -18,21 +19,31 @@ class MaBossResult extends React.Component {
 				<li className="nav-item">
 					<a className="nav-link" data-toggle="tab" href="#npt">Nodes probability trajectories</a>
 				</li>
+				<li className="nav-item">
+					<a className="nav-link" data-toggle="tab" href="#spt">States probability trajectories</a>
+				</li>
 			</ul>
 			<div className="tab-content">
 				<div className="tab-pane container active" id="fp">
 					<MaBossFixedPoints
-					modelId={this.props.modelId}
-					simulationId={this.props.simulationId}
-					colormap={MaBossResult.colormap}
-				/>
+						modelId={this.props.modelId}
+						simulationId={this.props.simulationId}
+						colormap={MaBossResult.colormap}
+					/>
 				</div>
 				<div className="tab-pane container fade" id="npt">
 					<MaBossNodesProbTraj
-					modelId={this.props.modelId}
-					simulationId={this.props.simulationId}
-					colormap={MaBossResult.colormap}
-				/>
+						modelId={this.props.modelId}
+						simulationId={this.props.simulationId}
+						colormap={MaBossResult.colormap}
+					/>
+				</div>
+				<div className="tab-pane container fade" id="spt">
+					<MaBossStatesProbTraj
+						modelId={this.props.modelId}
+						simulationId={this.props.simulationId}
+						colormap={MaBossResult.colormap}
+					/>
 				</div>
 			</div>
 			</React.Fragment>
