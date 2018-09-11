@@ -45,6 +45,9 @@ class MenuPage extends React.Component {
 	onModelChanged(e, id) {
 		this.setState({modelId: id});
 		this.getName(id);
+		if (this.props.onModelChanged !== undefined) {
+			this.props.onModelChanged();
+		}
 	}
 
 	render() {

@@ -1,8 +1,6 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import getCSRFToken from "../../commons/getCSRFToken";
-import {getAPIKey, getModel, getProject} from "../../commons/sessionVariables";
+
 
 class OldSimForm extends React.Component {
 
@@ -12,7 +10,6 @@ class OldSimForm extends React.Component {
 		this.state = {
 			selectedSimulation: "Please select a simulation",
 			selectedSimulationId: null,
-			listSimulations: []
 		};
 
 	}
@@ -22,41 +19,11 @@ class OldSimForm extends React.Component {
 		this.props.onSubmit(this.state.selectedSimulationId);
 	}
 
-	loadListSimulations() {
-		const conf = {
-		  method: "get",
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-			'X-CSRFToken': getCSRFToken()
-		  })
-		};
-
-		fetch("/api/logical_model/" + getProject() + "/" + getModel() + "/maboss", conf)
-		.then(response => {	return response.json(); })
-		.then(data => {
-			this.setState({listSimulations: data});
-		});
-
-	}
-
 	onSimulationChanged(simulation) {
 		this.setState({
 			selectedSimulation: "Simulation " + simulation,
 			selectedSimulationId: simulation
 		})
-	}
-
-	componentDidMount() {
-		this.loadListSimulations();
-	}
-
-
-	shouldComponentUpdate(nextProps, nextState) {
-		if (nextProps.status !== this.props.status) {
-			this.loadListSimulations();
-		}
-
-		return true;
 	}
 
 
@@ -74,7 +41,7 @@ class OldSimForm extends React.Component {
 									{this.state.selectedSimulation}
 								</button>
 								<div className="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{width: '100%'}}>
-									{this.state.listSimulations.map((simulation, id) => {
+									{this.props.listOfSimulations.map((simulation, id) => {
 										return <a
 											className="dropdown-item" key={simulation.id}
 											onClick={(e) => this.onSimulationChanged(simulation.id)}
