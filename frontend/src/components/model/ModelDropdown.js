@@ -60,20 +60,20 @@ class ModelDropdown extends React.Component {
 
 		} else {
 			const style = {
-				width: "100%"
+				width: "12rem"
 			};
 			return (
-				<div className="dropdown container-fluid">
+				<div className="dropdown" align="center">
 					<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
 							data-toggle="dropdown"
 							aria-haspopup="true" aria-expanded="false" style={style}>
 						{this.props.modelName}
 					</button>
-					<div className="dropdown-menu" aria-labelledby="dropdownMenuButton">
+					<div className="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton" style={style}>
 						{this.state.models.map((model, id) => {
 							return <NavLink
 								to={this.props.path}
-								className="dropdown-item" key={model.id}
+								className="dropdown-item bg-dark" key={model.id}
 								onClick={(e) => this.onModelChanged(e, model.id, model.name)}>{model.name}
 							</NavLink>
 

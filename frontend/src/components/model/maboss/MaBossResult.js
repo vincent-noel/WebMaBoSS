@@ -5,6 +5,8 @@ import MaBossFixedPoints from "./MaBossFixedPoints";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
 import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
 
+import classnames from 'classnames';
+
 
 class MaBossResult extends React.Component {
 
@@ -33,13 +35,22 @@ class MaBossResult extends React.Component {
 
 					<Nav tabs>
 						<NavItem>
-							<NavLink onClick={() => this.toggle('fp')}>Steady states distribution</NavLink>
+							<NavLink
+								onClick={() => this.toggle('fp')}
+							  	className={classnames({ active: this.state.activeTab === 'fp' })}
+							>Steady states distribution</NavLink>
 						</NavItem>
 						<NavItem>
-							<NavLink onClick={() => this.toggle('npt')}>Nodes probability trajectories</NavLink>
+							<NavLink
+								onClick={() => this.toggle('npt')}
+								className={classnames({ active: this.state.activeTab === 'npt' })}
+							>Nodes probability trajectories</NavLink>
 						</NavItem>
 						<NavItem>
-							<NavLink onClick={() => this.toggle('spt')}>States probability trajectories</NavLink>
+							<NavLink
+								onClick={() => this.toggle('spt')}
+								className={classnames({ active: this.state.activeTab === 'spt' })}
+							>States probability trajectories</NavLink>
 						</NavItem>
 					</Nav>
 					<TabContent activeTab={this.state.activeTab}>
@@ -58,11 +69,11 @@ class MaBossResult extends React.Component {
 							/>
 						</TabPane>
 						<TabPane tabId="spt">
-							<MaBossStatesProbTraj
-								modelId={this.props.modelId}
-								simulationId={this.props.simulationId}
-								colormap={MaBossResult.colormap}
-							/>
+							{/*<MaBossStatesProbTraj*/}
+								{/*modelId={this.props.modelId}*/}
+								{/*simulationId={this.props.simulationId}*/}
+								{/*colormap={MaBossResult.colormap}*/}
+							{/*/>*/}
 						</TabPane>
 					</TabContent>
 				</React.Fragment>

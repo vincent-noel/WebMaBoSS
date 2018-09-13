@@ -58,7 +58,7 @@ class ProjectDropdown extends React.Component {
 			if (this.state.projects.length > 0) {
 				return (
 
-					<div className="dropdown container-fluid">
+					<div className="dropdown" align="center">
 						<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
 								data-toggle="dropdown"
 								aria-haspopup="true" aria-expanded="false" style={{width: '15rem'}}>
