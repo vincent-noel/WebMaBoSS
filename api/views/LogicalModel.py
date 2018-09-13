@@ -65,6 +65,31 @@ class LogicalModelName(APIView):
 			raise Http404
 
 
+
+class LogicalModelNodes(APIView):
+
+	def get(self, request, project_id, model_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+			if request.user != project.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
+			path = join(settings.MEDIA_ROOT, model.file.path)
+			ginsim_model = ginsim.load(path)
+			maboss_model = ginsim.to_maboss(ginsim_model)
+			return Response(list(maboss_model.network.keys()))
+
+		except Project.DoesNotExist:
+			raise Http404
+
+		except LogicalModel.DoesNotExist:
+			raise Http404
+
 class LogicalModelGraph(APIView):
 
 	def get(self, request, project_id, model_id):

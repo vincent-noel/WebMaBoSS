@@ -2,7 +2,7 @@ from django.urls import path, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from api.views.LogicalModel import LogicalModelFile, LogicalModelName, LogicalModelGraph, LogicalModelGraphRaw
+from api.views.LogicalModel import LogicalModelFile, LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw
 from api.views.LogicalModels import LogicalModels
 from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
@@ -32,6 +32,7 @@ urlpatterns = [
 
 	path('api/logical_model/<int:project_id>/<int:model_id>/file', LogicalModelFile.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/name', LogicalModelName.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/nodes', LogicalModelNodes.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph', LogicalModelGraph.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph_raw', LogicalModelGraphRaw.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
