@@ -66,7 +66,7 @@ class ModelSteadyStatesResult extends Component {
 							data-toggle="tooltip" data-placement="top"
 					   		title={key}
 
-						></th>
+						><div><span>{key}</span></div></th>
 					})}
 					<th></th>
 					</tr></thead>
