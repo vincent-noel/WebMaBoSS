@@ -10,7 +10,6 @@ class SideBar extends Component {
 	}
 
 	onModelChanged(e, model_id) {
-
 		this.props.onModelChanged(e, model_id);
 	}
 
@@ -18,6 +17,7 @@ class SideBar extends Component {
 		return (
 			<div id="sidebar-wrapper">
 				<ModelDropdown
+					project={this.props.project}
 					modelName={this.props.modelName}
 					onModelChanged={(e, model_id) => this.props.onModelChanged(e, model_id)}
 					path={this.props.path}

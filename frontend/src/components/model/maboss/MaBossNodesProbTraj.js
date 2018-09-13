@@ -1,5 +1,6 @@
 import React from "react";
 import {Line} from "react-chartjs-2";
+import LoadingIcon from "../../commons/LoadingIcon";
 
 
 class MaBossNodesProbTraj extends React.Component {
@@ -26,9 +27,14 @@ class MaBossNodesProbTraj extends React.Component {
 		});
 	}
 
+	componentDidMount() {
+		this.nodesProbTrajChecker = setInterval(() => this.getNodesProbtraj(this.props.simulationId), 1000);
+	}
+
 	componentWillUnmount() {
 		clearInterval(this.nodesProbTrajChecker);
 	}
+
 
 	shouldComponentUpdate(nextProps, nextState) {
 
@@ -76,7 +82,7 @@ class MaBossNodesProbTraj extends React.Component {
 				<Line data={data} options={options}/>
 			);
 		} else if (this.props.simulationId !== undefined) {
-			return <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />
+			return <LoadingIcon width="200px"/>
 		} else {
 			return <div/>
 		}

@@ -1,6 +1,7 @@
 import React from "react";
+import ReactDOMServer from "react-dom/server";
 import {Line} from "react-chartjs-2";
-
+import LoadingIcon from "../../commons/LoadingIcon";
 
 class MaBossStatesProbTraj extends React.Component {
 
@@ -13,6 +14,21 @@ class MaBossStatesProbTraj extends React.Component {
 		};
 
 		this.statesProbTrajChecker = undefined;
+		this.chartRef = this.chartRef.bind(this);
+		this.legendRef = this.legendRef.bind(this);
+		this.legend = undefined;
+	}
+
+	chartRef(ref) {
+		if (ref !== null) {
+			this.legend = ref.chartInstance.generateLegend();
+		}
+	}
+
+	legendRef(ref) {
+		if (ref !== null){
+			ref.innerHTML = this.legend;
+		}
 	}
 
 	getStateProbtraj(simulationId) {
@@ -42,19 +58,26 @@ class MaBossStatesProbTraj extends React.Component {
 
 	}
 
+	componentDidMount() {
+		this.statesProbTrajChecker = setInterval(() => this.getStateProbtraj(this.props.simulationId), 1000);
+	}
+
+	componentWillUnmount() {
+		clearInterval(this.statesProbTrajChecker);
+	}
+
 	render() {
 
 		if (this.state.statesProbTrajLoaded) {
 
 			const probtraj = this.state.statesProbTraj;
-			const data = {
+			let data = {
+				labels: Object.keys(Object.values(probtraj)[0]),
 				datasets : Object.keys(probtraj).map(
 					(key, index) => {
 						return {
 							label: key,
-							data: Object.keys(probtraj[key]).map(
-								(key2, index) => { return {x: key2, y: probtraj[key][key2]}; }
-							),
+							data: Object.values(probtraj[key]),
 							fill: false,
             				backgroundColor: this.props.colormap[index%this.props.colormap.length],
           					borderColor: this.props.colormap[index%this.props.colormap.length],
@@ -63,17 +86,33 @@ class MaBossStatesProbTraj extends React.Component {
 				)
 			};
 
-			const options = {
+			let options = {
 				legend: {
-					position: 'bottom',
+					display: false,
+
+				},
+				legendCallback: (chart) => {
+					return (ReactDOMServer.renderToStaticMarkup(<ul className="chart-legend">
+						{
+							chart.data.datasets.map((dataset, index) => {
+								return <li key={index}>
+									<span style={{backgroundColor: dataset.backgroundColor}}></span>
+									{dataset.label}
+								</li>;
+							})
+						}
+					</ul>))
 				}
 			};
 
 			return (
-				<Line data={data} options={options}/>
+				<React.Fragment>
+					<Line data={data} options={options} ref={this.chartRef}/>
+					<div ref={this.legendRef}></div>
+				</React.Fragment>
 			);
 		} else if (this.props.simulationId !== undefined) {
-			return <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />
+			return <LoadingIcon width="200px"/>
 		} else {
 			return <div/>
 		}

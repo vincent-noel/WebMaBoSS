@@ -6,7 +6,7 @@ from api.views.LogicalModel import LogicalModelFile, LogicalModelName, LogicalMo
 from api.views.LogicalModels import LogicalModels
 from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
-from api.views.MaBoSSSimulation import LogicalModelSimulation, MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj
+from api.views.MaBoSSSimulation import LogicalModelSimulation, MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj, MaBoSSSimulationRemove
 from api.views.AuthView import TestAuthView, LogoutViewEx
 from rest_auth.views import LoginView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
@@ -37,6 +37,7 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', LogicalModelSimulation.as_view()),
 
+	path('api/maboss/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),
 	path('api/maboss/<int:pk>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
 	path('api/maboss/<int:pk>/states_trajs/', MaBoSSResultsStatesProbTraj.as_view()),
 	path('api/maboss/<int:pk>/nodes_trajs/', MaBoSSResultsNodesProbTraj.as_view()),

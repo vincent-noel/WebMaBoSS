@@ -1,4 +1,5 @@
 import React, {Component} from "react";
+import LoadingIcon from "../commons/LoadingIcon";
 
 class ModelName extends Component {
 
@@ -11,15 +12,12 @@ class ModelName extends Component {
 	}
 
 	render() {
-		let modelName = this.state.placeholder;
-
-		if (this.props.modelName !== undefined) {
-			modelName = this.props.modelName;
-		}
-
 		return (
 			<React.Fragment>
-				<h1>Model {modelName}</h1>
+				{this.props.modelName !== undefined ?
+					<h1>Model {this.props.modelName}</h1> :
+					<LoadingIcon width="5rem"/>
+				}
 				<br/>
 			</React.Fragment>
 		);

@@ -1,6 +1,9 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import {getAPIKey, getProject, setModel} from "../commons/sessionVariables";
+import {setModel, getModel, clearModel} from "../commons/sessionVariables";
+import {getModelsFromAPI} from "../commons/apiCalls";
+import LoadingIcon from "../commons/LoadingIcon";
+
 
 class ModelDropdown extends React.Component {
 
@@ -9,28 +12,23 @@ class ModelDropdown extends React.Component {
 		this.state = {
 			loaded: false,
 			models: [],
+			selectedModelId: null,
+			selectedModelName: null
 		};
 
 		this.onModelChanged.bind(this);
 	}
 
 
-	getModels() {
-		fetch(
-			"/api/logical_models/" + getProject() + "/",
-			{
-				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => response.json())
-		.then(data => this.setState({ models: data, loaded: true }));
+	getModels(project_id) {
+
+		getModelsFromAPI(project_id, (models) => {
+			this.setState({ models: models, loaded: true });
+		});
 	}
 
 	componentDidMount(){
-		this.getModels();
+		this.getModels(this.props.project);
 	}
 
 	onModelChanged(e, model_id, name) {
@@ -38,10 +36,27 @@ class ModelDropdown extends React.Component {
 		this.props.onModelChanged(e, model_id);
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		if (nextProps.project !== this.props.project) {
+
+			console.log("project changed !");
+			this.getModels(nextProps.project);
+			clearModel();
+
+		}
+		if (nextState.models !== this.state.models) {
+			if (getModel() === null){
+				this.onModelChanged(null, nextState.models[0].id, nextState.models[0].name);
+}
+		}
+
+		return true;
+	}
+
 	render() {
 
 		if (!this.state.loaded) {
-			return  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" width="20px"/>;
+			return <LoadingIcon width="1rem" />;
 
 		} else {
 			const style = {

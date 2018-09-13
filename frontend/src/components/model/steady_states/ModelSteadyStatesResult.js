@@ -1,7 +1,9 @@
 import React, {Component} from "react";
-import {getAPIKey, getProject} from "../../commons/sessionVariables";
+import {getAPIKey} from "../../commons/sessionVariables";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faEye } from '@fortawesome/free-solid-svg-icons';
+import LoadingIcon from "../../commons/LoadingIcon";
+import Graph from "./Graph";
 
 class ModelSteadyStatesResult extends Component {
 
@@ -11,87 +13,59 @@ class ModelSteadyStatesResult extends Component {
 		this.state = {
 			data: null,
 			loaded: false,
-			graph: null
+			selectedSteadyState: null,
 		};
 	}
 
-	getGraph() {
+	getSteadyStates(model_id) {
 
 		// Getting the graph via the API
 		fetch(
-			"/api/logical_model/" + getProject() + "/" + this.props.modelId + "/steady_states",
-			{
+			"/api/logical_model/" + this.props.project + "/" + model_id + "/steady_states", {
 				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
+				headers: new Headers({'Authorization': "Token " + getAPIKey()})
 			}
 		)
-		.then(response => {
-			return response.json();
-		})
+		.then(response => response.json())
 
 		// Finally, setting state
-		.then(
-			data => this.setState({data: data, loaded: true})
-		);
+		.then(data => this.setState({data: data, loaded: true, selectedSteadyState: null}));
 	}
 
 
-	getGraphBySteadyState(i_steady_state) {
-
-			const body = new FormData();
-			body.append('steady_state', JSON.stringify(this.state.data[i_steady_state]));
-			fetch(
-			"/api/logical_model/" + getProject() + "/" + this.props.modelId + "/graph",
-			{
-				method: "post",
-				body: body,
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => {	return response.blob(); })
-
-		// toBase64
-		.then(
-			blob => new Promise((resolve, reject) => {
-				const reader = new FileReader;
-				reader.onerror = reject;
-				reader.onload = () => {
-					resolve(reader.result);
-				};
-				reader.readAsDataURL(blob);
-			})
-		)
-
-		// Finally, setting state
-		.then(
-			data => {
-				this.setState({graph: data});
-			}
-		);
+	toggleGraph(steady_state) {
+		if (this.state.selectedSteadyState !== steady_state){
+			this.setState({selectedSteadyState: steady_state});
+		} else {
+			this.setState({selectedSteadyState: null});
+		}
 	}
 
 	componentDidMount() {
-		this.getGraph();
+		this.getSteadyStates(this.props.modelId);
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+
+		if (nextProps.modelId !== this.props.modelId) {
+			this.getSteadyStates(nextProps.modelId);
+			return false;
+		}
+		return true;
 	}
 
 	render() {
 		if (this.state.loaded) {
-			console.log(this.state.data);
-			const style_active = { 'backgroundColor': 'green', 'height': '1rem', 'border': '1px solid black'};
-			const style_inactive = { 'backgroundColor': 'red', 'height': '1rem', 'border': '1px solid black'};
 
 			return (
 				<React.Fragment>
-				<table style={{maxWidth: "100%", minWidth: "100%"}}>
+				<table className="table-steadystates">
 					<thead><tr>
 					{Object.keys(this.state.data[0]).map((key, index) => {
 						return <th key={key}
 							data-toggle="tooltip" data-placement="top"
-					   		title={key} style={{'height': '1rem'}}
+					   		title={key}
+
 						></th>
 					})}
 					<th></th>
@@ -103,13 +77,31 @@ class ModelSteadyStatesResult extends Component {
 							<tr key={index}>
 							{Object.keys(steady_state).map((key, subindex) => {
 								if (steady_state[key] > 0) {
-									return <td key={subindex} style={style_active}></td>;
+									return <td
+										key={subindex}
+										className="active"
+										data-toggle="tooltip"
+										data-placement="top"
+					   					title={key}
+									></td>;
 								} else {
-									return <td key={subindex} style={style_inactive}></td>;
+									return <td
+										key={subindex}
+										className="inactive"
+										data-toggle="tooltip"
+										data-placement="top"
+					   					title={key}
+									></td>;
 								}
 							})}
-							<td style={{'width': '1rem', 'height': '1rem', 'border': '1px solid black'}}>
-								<button className="btn btn-primary" style={{padding: '0 0.5rem'}} onClick={() => {this.getGraphBySteadyState(index);}}>
+							<td
+								className="actions"
+							>
+								<button
+									className="btn btn-primary"
+
+									onClick={() => {this.toggleGraph(steady_state);}}
+								>
 									<FontAwesomeIcon icon={faEye} size="sm" />
 								</button>
 							</td>
@@ -120,21 +112,22 @@ class ModelSteadyStatesResult extends Component {
 				</table>
 
 				{
-					this.state.graph !== null ?
-						<img
-							src={this.state.graph}
-							style={{
-								'maxWidth': '100%',
-								'maxHeight': '100%'
-							}}
-						/> : null
+					this.state.selectedSteadyState !== null ?
+						<React.Fragment>
+							<br/><br/>
+							<Graph
+								project={this.props.project}
+								modelId={this.props.modelId}
+								steadyState={this.state.selectedSteadyState}
+							/>
+						</React.Fragment> : null
 				}
 				</React.Fragment>
 			);
 
 
 		} else {
-			return <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />;
+			return <LoadingIcon width={"200px"}/>;
 		}
 
 	}

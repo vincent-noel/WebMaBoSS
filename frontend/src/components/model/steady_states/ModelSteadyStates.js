@@ -10,8 +10,8 @@ class ModelSteadyStates extends React.Component {
 	render() {
 		return (
 			<MenuPage path={this.props.match.path}>
-				<ModelName modelId={getModel()} />
-				<ModelSteadyStatesResult modelId={getModel()} />
+				<ModelName />
+				<ModelSteadyStatesResult />
 			</MenuPage>
 		);
 	}

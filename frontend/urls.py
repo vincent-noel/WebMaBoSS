@@ -11,4 +11,5 @@ urlpatterns = [
 	path('models/', views.index, name="models"),
 	path('data/', views.index, name="data"),
 	re_path('model/.*', views.index, name="model"),
+	# re_path('images/.*', views.index, name="images"),
 ]

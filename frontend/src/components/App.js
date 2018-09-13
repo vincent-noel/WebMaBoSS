@@ -21,7 +21,6 @@ import Overview from "./model/overview/Overview";
 import ModelSteadyStates from "./model/steady_states/ModelSteadyStates";
 import MaBoss from "./model/maboss/MaBoss";
 
-
 class App extends Component {
 
 	render(){
@@ -35,12 +34,13 @@ class App extends Component {
 					<Route exact path="/profile/" component={Index} />
 					<Route exact path="/register/" component={Register} />
 
-					<Route path="/models/" component={Models} />
-					<Route path="/data/" component={Data} />
+					<Route exact path="/models/" component={Models} />
+					<Route exact path="/data/" component={Data} />
 
 					<Route exact path="/model/" component={Overview} />
 					<Route path="/model/steady_states/" component={ModelSteadyStates} />
 					<Route path="/model/maboss/" component={MaBoss} />
+
 				</React.Fragment>
 			</Router>
 		)

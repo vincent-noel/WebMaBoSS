@@ -1,4 +1,6 @@
 import React from "react";
+import {TabContent, TabPane, Nav, NavItem, NavLink} from "reactstrap";
+
 import MaBossFixedPoints from "./MaBossFixedPoints";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
 import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
@@ -8,46 +10,64 @@ class MaBossResult extends React.Component {
 
 	static colormap = ['#4c72b0', '#55a868', '#c44e52', '#8172b2', '#ccb974', '#64b5cd', '#4c72b0', '#55a868', '#c44e52', '#8172b2'];
 
+	constructor(props){
+		super(props);
+
+		this.toggle = this.toggle.bind(this);
+		this.state = {
+			activeTab: 'fp'
+		}
+	}
+
+	toggle(tab) {
+		if (this.state.activeTab !== tab) {
+			this.setState({activeTab: tab});
+		}
+	}
+
 	render() {
 
-		return (
-			<React.Fragment>
-			<ul className="nav nav-tabs">
-				<li className="nav-item">
-					<a className="nav-link active" data-toggle="tab" href="#fp">Steady states probability</a>
-				</li>
-				<li className="nav-item">
-					<a className="nav-link" data-toggle="tab" href="#npt">Nodes probability trajectories</a>
-				</li>
-				<li className="nav-item">
-					<a className="nav-link" data-toggle="tab" href="#spt">States probability trajectories</a>
-				</li>
-			</ul>
-			<div className="tab-content">
-				<div className="tab-pane container active" id="fp">
-					<MaBossFixedPoints
-						modelId={this.props.modelId}
-						simulationId={this.props.simulationId}
-						colormap={MaBossResult.colormap}
-					/>
-				</div>
-				<div className="tab-pane container fade" id="npt">
-					<MaBossNodesProbTraj
-						modelId={this.props.modelId}
-						simulationId={this.props.simulationId}
-						colormap={MaBossResult.colormap}
-					/>
-				</div>
-				<div className="tab-pane container fade" id="spt">
-					<MaBossStatesProbTraj
-						modelId={this.props.modelId}
-						simulationId={this.props.simulationId}
-						colormap={MaBossResult.colormap}
-					/>
-				</div>
-			</div>
-			</React.Fragment>
-		);
+		if (this.props.simulationId !== null) {
+			return (
+				<React.Fragment>
+
+					<Nav tabs>
+						<NavItem>
+							<NavLink onClick={() => this.toggle('fp')}>Steady states distribution</NavLink>
+						</NavItem>
+						<NavItem>
+							<NavLink onClick={() => this.toggle('npt')}>Nodes probability trajectories</NavLink>
+						</NavItem>
+						<NavItem>
+							<NavLink onClick={() => this.toggle('spt')}>States probability trajectories</NavLink>
+						</NavItem>
+					</Nav>
+					<TabContent activeTab={this.state.activeTab}>
+						<TabPane tabId="fp">
+							<MaBossFixedPoints
+								modelId={this.props.modelId}
+								simulationId={this.props.simulationId}
+								colormap={MaBossResult.colormap}
+							/>
+						</TabPane>
+						<TabPane tabId="npt">
+							<MaBossNodesProbTraj
+								modelId={this.props.modelId}
+								simulationId={this.props.simulationId}
+								colormap={MaBossResult.colormap}
+							/>
+						</TabPane>
+						<TabPane tabId="spt">
+							<MaBossStatesProbTraj
+								modelId={this.props.modelId}
+								simulationId={this.props.simulationId}
+								colormap={MaBossResult.colormap}
+							/>
+						</TabPane>
+					</TabContent>
+				</React.Fragment>
+			);
+		} else return null;
 
 	}
 }

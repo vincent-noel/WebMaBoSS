@@ -13,10 +13,10 @@ class Overview extends React.Component {
 
 	render() {
 		return <MenuPage path={this.props.match.path}>
-			<ModelName modelId={getModel()} />
-			<ModelGraph modelId={getModel()} />
-			{/*<ModelGraphRaw modelId={this.props.match.params.modelId} />*/}
-			{/*<ModelGraphSBGN modelId={this.props.match.params.modelId} />*/}
+			<ModelName />
+			<ModelGraph />
+			{/*<ModelGraphRaw />*/}
+			{/*<ModelGraphSBGN />*/}
 		</MenuPage>;
 	}
 }

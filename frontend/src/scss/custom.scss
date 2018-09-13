@@ -17,3 +17,57 @@
 
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "sidebar";
+
+.table-steadystates {
+
+  max-width: 100%;
+  min-width: 100%;
+
+  th {
+    height: 1rem
+  }
+
+  td {
+    height: 1rem;
+    border : 1px solid black;
+
+    &.active {
+      background-color: green;
+    }
+
+    &.inactive {
+      background-color: red;
+    }
+
+    &.actions {
+      width : 1rem;
+
+      button {
+        padding: 0 0.5rem;
+      }
+
+    }
+  }
+}
+
+.chart-legend {
+
+
+    list-style:none;
+
+    li {
+
+      font-size: 0.75rem;
+
+      span {
+
+        width:30px;
+        height:10px;
+        display:inline-block;
+        margin-right:5px;
+
+      }
+    }
+
+
+}

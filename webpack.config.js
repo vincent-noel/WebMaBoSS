@@ -24,6 +24,23 @@ module.exports = {
 			"sass-loader" // compiles Sass to CSS, using Node Sass by default
 		]
 	  }
+	  // ,
+		// {
+		// test: /\.(gif|png|jpe?g|svg)$/i,
+  	// 	use: [
+		// 	{
+		// 	  loader: 'file-loader',
+	  //
+		// 	  // loader: 'image-webpack-loader',
+		// 	  options: {
+		// 		// bypassOnDebug: true, // webpack@1.x
+		// 		// disable: true, // webpack@2.x and newer
+		// 		// name: 'images/[name].[ext]',
+		// 		// outputPath: '/images/',
+		// 	  },
+		// 	}
+		// ]
+	  // }
 	]
   },
   optimization: {

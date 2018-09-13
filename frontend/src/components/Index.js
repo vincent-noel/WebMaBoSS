@@ -1,10 +1,10 @@
 import React from "react";
-import Page from "./Page";
+import FullPage from "./FullPage";
 
 class Index extends React.Component {
 
 	render(){
-		return <Page/>;
+		return <FullPage path={this.props.match.path}/>;
 	}
 }
 

@@ -34,8 +34,8 @@ class Models extends React.Component {
 		})
 	}
 
-	updateProject() {
-		this.setState({project: getProject()});
+	updateProject(project) {
+		this.setState({project: project});
 	}
 
 	render () {

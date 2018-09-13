@@ -1,7 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import getCSRFToken from "../../commons/getCSRFToken";
-import {getAPIKey, getProject} from "../../commons/sessionVariables";
+
 
 class NewSimForm extends React.Component {
 
@@ -40,59 +39,6 @@ class NewSimForm extends React.Component {
 			timeTick: this.state.timeTick,
 		});
 	}
-	// handleSubmit(e) {
-	// 	e.preventDefault();
-	//
-	// 	const formData = new FormData();
-	// 	formData.append('file', this.state.file);
-	// 	formData.append('name', this.state.name);
-	//
-	// 	const conf = {
-	// 		method: "post",
-	// 		body: formData,
-	// 		headers: new Headers({
-	// 			'Authorization': "Token " + getAPIKey(),
-	// 			'X-CSRFToken': getCSRFToken()
-	// 		})
-	// 	};
-	//
-	// 	fetch("/api/logical_models/" + getProject() + "/", conf)
-	// 	.then(response => {
-	//
-	// 		this.setState({
-	// 			name: "",
-	// 			file: undefined,
-	// 			fileName: "Select file...",
-	// 			modal: false
-	// 		});
-	// 		this.props.updateParent();
-	// 	});
-	//
-	// };
-
-	//
-	// shouldComponentUpdate(nextProps, nextState) {
-	//
-	// 	if (nextProps.id != this.props.id ){
-	//
-	// 		if (nextProps.id !== null) {
-	//
-	// 			this.setState({
-	// 				id: nextProps.id.id,
-	// 				name: nextProps.id.name,
-	// 				// description: nextProps.id.description,
-	// 			});
-	// 		} else {
-	// 			this.setState({
-	// 				id: null,Comme discuté précedemment, je me marie le wee
-	// 				name: "",
-	// 				// description: "",
-	// 			});
-	// 		}
-	// 	}
-	// 	return true;
-	// }
-
 
 	render() {
 		return <React.Fragment>

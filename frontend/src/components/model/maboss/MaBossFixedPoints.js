@@ -1,6 +1,6 @@
 import React from "react";
 import {Pie} from "react-chartjs-2";
-
+import LoadingIcon from "../../commons/LoadingIcon";
 
 class MaBossFixedPoints extends React.Component {
 
@@ -13,6 +13,8 @@ class MaBossFixedPoints extends React.Component {
 		};
 
 		this.fixedPointsChecker = undefined;
+
+
 	}
 
 	getFixedPoints(simulationId) {
@@ -26,6 +28,9 @@ class MaBossFixedPoints extends React.Component {
 		});
 	}
 
+	componentDidMount() {
+		this.fixedPointsChecker = setInterval(() => this.getFixedPoints(this.props.simulationId), 1000);
+	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 
@@ -34,7 +39,7 @@ class MaBossFixedPoints extends React.Component {
 			return false;
 		}
 
-		if (this.props.simulationId !== nextProps.simulationId) {
+		if (this.props.simulationId !== nextProps.simulationId && nextProps.simulationId !== null) {
 			this.fixedPointsChecker = setInterval(() => this.getFixedPoints(nextProps.simulationId), 1000);
 			return true;
 		}
@@ -68,8 +73,8 @@ class MaBossFixedPoints extends React.Component {
 			return (
 				<Pie data={data} options={options}/>
 			);
-		} else if (this.props.simulationId !== undefined) {
-			return <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />
+		} else if (this.props.simulationId !== null) {
+			return <LoadingIcon width="200px"/>
 		} else {
 			return <div/>
 		}

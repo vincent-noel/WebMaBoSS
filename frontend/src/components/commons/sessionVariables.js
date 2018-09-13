@@ -10,8 +10,12 @@ function getModel() {
     return sessionStorage.getItem("model");
 }
 
-function setModel(project) {
-    return sessionStorage.setItem("model", project);
+function setModel(model) {
+    return sessionStorage.setItem("model", model);
+}
+
+function clearModel() {
+    sessionStorage.removeItem("model");
 }
 
 function setAPIKey(api_key) {
@@ -29,4 +33,4 @@ function isConnected() {
 function clearAPIKey() {
     sessionStorage.removeItem("api_key");
 }
-export {getProject, setProject, getModel, setModel, setAPIKey, getAPIKey, isConnected, clearAPIKey};
+export {getProject, setProject, getModel, setModel, clearModel, setAPIKey, getAPIKey, isConnected, clearAPIKey};

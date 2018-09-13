@@ -1,6 +1,8 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import {setProject, getProject, getAPIKey} from "../commons/sessionVariables";
+import {getProjects} from "../commons/apiCalls";
+import LoadingIcon from "../commons/LoadingIcon";
 
 class ProjectDropdown extends React.Component {
 
@@ -17,32 +19,23 @@ class ProjectDropdown extends React.Component {
 	}
 
 	getProjects() {
-		fetch(
-			"/api/projects/",
-			{
-				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => response.json())
-		.then(data => {
-			this.setState({ projects: data, loaded: true });
+		getProjects((projects) => {
+			this.setState({ projects: projects, loaded: true });
 			if (getProject() !== null) {
-				for (const project in data) {
-					if (data[project].id === parseInt(getProject())) {
-						this.setState({projectName: data[project].name});
+				for (const project in projects) {
+					if (projects[project].id === parseInt(getProject())) {
+						this.setState({projectName: projects[project].name});
 						break;
 					}
 				}
 			} else {
-				if (data.length > 0){
-					setProject(data[0].id);
-					this.setState({projectName: data[0].name});
+				if (projects.length > 0){
+					setProject(projects[0].id);
+					this.setState({projectName: projects[0].name});
 				}
 			}
 		});
+
 	}
 
 	componentDidMount(){
@@ -51,18 +44,15 @@ class ProjectDropdown extends React.Component {
 	}
 
 	onProjectChanged(project_id, name) {
-		console.log("Switching to project " + project_id + " : " + name);
 		setProject(project_id);
-		console.log("New project : " + getProject());
 		this.setState({projectName: name});
-
-		this.props.updateProject();
+		this.props.updateProject(project_id);
 	}
 
 	render() {
 
 		if (!this.state.loaded) {
-			return  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" width="20px"/>;
+			return <LoadingIcon width="5rem"/>;
 
 		} else {
 			if (this.state.projects.length > 0) {

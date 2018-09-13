@@ -145,6 +145,7 @@ class MaBoSSResultsFixedPoints(APIView):
 			return Response(
 					{
 						'fixed_points': fixed_points,
+						'status': simulation.status
 					},
 					status=status.HTTP_200_OK
 				)
@@ -160,17 +161,19 @@ class MaBoSSResultsStatesProbTraj(APIView):
 			simulation = MaBoSSSimulation.objects.get(id=int(pk))
 			if simulation.states_probtraj is not None:
 				states_probtraj = json.loads(simulation.states_probtraj)
+
 			else:
 				states_probtraj = None
 
 			return Response(
 				{
 					'states_probtraj': states_probtraj,
+					'status': simulation.status
 				},
 				status=status.HTTP_200_OK
 			)
 
-		except:
+		except MaBoSSSimulation.DoesNotExist:
 			raise Http404
 
 class MaBoSSResultsNodesProbTraj(APIView):
@@ -181,16 +184,42 @@ class MaBoSSResultsNodesProbTraj(APIView):
 			simulation = MaBoSSSimulation.objects.get(id=int(pk))
 			if simulation.nodes_probtraj is not None:
 				nodes_probtraj = json.loads(simulation.nodes_probtraj)
+
 			else:
 				nodes_probtraj = None
 
 			return Response(
 				{
 					'nodes_probtraj': nodes_probtraj,
+					'status': simulation.status
 				},
 				status=status.HTTP_200_OK
 			)
 
-		except:
+		except MaBoSSSimulation.DoesNotExist:
+			raise Http404
+
+
+class MaBoSSSimulationRemove(APIView):
+
+	def delete(self, request, simulation_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			simulation = MaBoSSSimulation.objects.get(id=simulation_id)
+
+			if simulation.project.user != request.user:
+				raise PermissionDenied
+
+			simulation.delete()
+
+			return Response(status=status.HTTP_200_OK)
+
+		except LogicalModel.DoesNotExist:
+			raise Http404
+
+		except Project.DoesNotExist:
 			raise Http404
 

@@ -14,32 +14,31 @@ class NavBar extends React.Component {
 				<NavBarBrand/>
 				{ isConnected() ? (
 					<React.Fragment>
-						<div className="collapse navbar-collapse">
+						<div className="collapse navbar-collapse" id="navbarsExampleDefault">
 							<ul className="navbar-nav mr-auto">
 								<NavBarItem url="/models/" name="Models"/>
 								<NavBarItem url="/data/" name="Data"/>
 							</ul>
 						</div>
 
-						{
-							this.props.path !== "/" ?
-							<div className="collapse navbar-collapse">
-								<ul className="navbar-nav mr-auto">
-									<ProjectDropdown
-										// projectName={""}
-										// onProjectChan={(e, model_id) => this.props.onProjectChanged(e, model_id)}
-										updateProject={this.props.updateProject}
-										path={this.props.path}
-									/>
-								</ul>
-							</div> : null
+						{ this.props.path !== "/" ?
+						<div className="collapse navbar-collapse" id="navbarsExampleDefault">
+							<ul className="navbar-nav mr-auto">
+								<ProjectDropdown
+									// projectName={""}
+									// onProjectChan={(e, model_id) => this.props.onProjectChanged(e, model_id)}
+									updateProject={this.props.updateProject}
+									path={this.props.path}
+								/>
+							</ul>
+						</div> : null
 						}
 					</React.Fragment>
 				) : (
 					null
 				)}
 
-				<div className="collapse navbar-collapse">
+				<div className="collapse navbar-collapse" id="navbarsExampleDefault">
 					<ul className="navbar-nav ml-auto">
 						{ isConnected() ? (
 							<React.Fragment>

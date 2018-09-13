@@ -26,6 +26,16 @@ class OldSimForm extends React.Component {
 		})
 	}
 
+	shouldComponentUpdate(nextProps, nextState) {
+		if (nextProps.listOfSimulations !== this.props.listOfSimulations) {
+			this.setState({
+				selectedSimulation: "Please select a simulation",
+				selectedSimulationId: null
+			})
+		}
+		return true;
+	}
+
 
 	render() {
 		return <React.Fragment>
@@ -55,6 +65,7 @@ class OldSimForm extends React.Component {
 						<CardFooter>
 							<ButtonToolbar className="d-flex">
 								<Button color="danger" className="mr-auto" onClick={() => {this.props.toggle();}}>Close</Button>
+								<Button color="danger" className="ml-auto mr-auto" onClick={() => {this.props.remove(this.state.selectedSimulationId);}}>Remove</Button>
 								<Button type="submit" color="default" className="ml-auto">Submit</Button>
 							</ButtonToolbar>
 						</CardFooter>

@@ -15,13 +15,15 @@ class MenuPage extends React.Component {
 		this.state = {
 			toggled : true,
 			modelId: getModel(),
-			modelName: undefined
+			modelName: undefined,
+			project: getProject()
 		};
 
 		this.getName(getModel());
 
 		this.toggle.bind(this);
 		this.onModelChanged.bind(this);
+		this.updateProject = this.updateProject.bind(this);
 	}
 
 	getName(modelId) {
@@ -50,11 +52,16 @@ class MenuPage extends React.Component {
 		}
 	}
 
+	updateProject(project) {
+		this.setState({project: project})
+	}
+
 	render() {
 		return (
-			<Page path={this.props.path}>
+			<Page path={this.props.path} updateProject={this.updateProject}>
 				<div id="wrapper" className={this.state.toggled?"toggled":""}>
 					<SideBar
+						project={this.state.project}
 						modelId={this.state.modelId} modelName={this.state.modelName}
 						onModelChanged={(e, id) => this.onModelChanged(e, id)}
 						path={this.props.path}
@@ -64,7 +71,8 @@ class MenuPage extends React.Component {
     						this.props.children,
 							(child => React.cloneElement(child, {
 								modelId: this.state.modelId,
-								modelName: this.state.modelName
+								modelName: this.state.modelName,
+								project: this.state.project
 							}))
 						)}
 					</div>
