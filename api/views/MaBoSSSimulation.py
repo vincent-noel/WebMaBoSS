@@ -2,18 +2,20 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
+from rest_framework.parsers import JSONParser
+
 from django.core.files import File
 from django.http import Http404
 from django.conf import settings
-# from django.core.serializers.json import DjangoJSONEncoder
+from django.db import transaction
+
 from api.serializers import MaBoSSSimulationSerializer
 from api.models import LogicalModel, MaBoSSSimulation, Project
 
 from threading import Thread
 from os.path import join
-from rest_framework.parsers import JSONParser
+from json import loads, dumps
 import ginsim
-from json import loads
 import maboss
 
 class LogicalModelSimulation(APIView):
@@ -54,7 +56,6 @@ class LogicalModelSimulation(APIView):
 				raise PermissionDenied
 
 			model = LogicalModel.objects.get(project=project, id=model_id)
-			import ginsim
 			path = join(settings.MEDIA_ROOT, model.file.path)
 			maboss_simulation = MaBoSSSimulation(
 				project=project,
@@ -80,12 +81,7 @@ class LogicalModelSimulation(APIView):
 
 
 			for var, istate in loads(request.POST['initialStates']).items():
-				if istate == [0, 1]:
-					maboss_model.network.set_istate(var, [0.5, 0.5])
-				elif istate == 1:
-					maboss_model.network.set_istate(var, [0, 1])
-				else: #if istate == 0:
-					maboss_model.network.set_istate(var, [1, 0])
+				maboss_model.network.set_istate(var, [float(istate['0']), float(istate['1'])])
 
 
 			thread = Thread(target=run_simulation, args=(maboss_model, maboss_simulation.id))
@@ -100,8 +96,6 @@ class LogicalModelSimulation(APIView):
 		except Project.DoesNotExist:
 			raise Http404
 
-from django.db import transaction
-import json
 
 def run_simulation(maboss_model, maboss_simulation_id):
 
@@ -115,7 +109,6 @@ def run_simulation(maboss_model, maboss_simulation_id):
 		res = maboss_model.run()
 
 		fixed_points = res.get_fptable()
-		# print("get_fptable done")
 		fixed_points_json = fixed_points.to_json()
 
 		with transaction.atomic():
@@ -124,7 +117,6 @@ def run_simulation(maboss_model, maboss_simulation_id):
 			maboss_simulation.save()
 
 		states_probtraj = res.get_states_probtraj()
-		# print("get_states_probtraj done")
 		states_probtraj_json = states_probtraj.to_json()
 
 		with transaction.atomic():
@@ -132,7 +124,6 @@ def run_simulation(maboss_model, maboss_simulation_id):
 			maboss_simulation.save()
 
 		nodes_probtraj = res.get_nodes_probtraj()
-		# print("get_nodes_probtraj done")
 		nodes_probtraj_json = nodes_probtraj.to_json()
 
 		with transaction.atomic():
@@ -148,12 +139,12 @@ def run_simulation(maboss_model, maboss_simulation_id):
 
 class MaBoSSResultsFixedPoints(APIView):
 
-	def get(self, request, pk):
+	def get(self, request, simulation_id):
 
 		try:
-			simulation = MaBoSSSimulation.objects.get(id=int(pk))
+			simulation = MaBoSSSimulation.objects.get(id=simulation_id)
 			if simulation.fixpoints is not None:
-				fixed_points = json.loads(simulation.fixpoints)
+				fixed_points = loads(simulation.fixpoints)
 			else:
 				fixed_points = None
 
@@ -170,12 +161,12 @@ class MaBoSSResultsFixedPoints(APIView):
 
 class MaBoSSResultsStatesProbTraj(APIView):
 
-	def get(self, request, pk):
+	def get(self, request, simulation_id):
 
 		try:
-			simulation = MaBoSSSimulation.objects.get(id=int(pk))
+			simulation = MaBoSSSimulation.objects.get(id=simulation_id)
 			if simulation.states_probtraj is not None:
-				states_probtraj = json.loads(simulation.states_probtraj)
+				states_probtraj = loads(simulation.states_probtraj)
 
 			else:
 				states_probtraj = None
@@ -193,12 +184,12 @@ class MaBoSSResultsStatesProbTraj(APIView):
 
 class MaBoSSResultsNodesProbTraj(APIView):
 
-	def get(self, request, pk):
+	def get(self, request, simulation_id):
 
 		try:
-			simulation = MaBoSSSimulation.objects.get(id=int(pk))
+			simulation = MaBoSSSimulation.objects.get(id=simulation_id)
 			if simulation.nodes_probtraj is not None:
-				nodes_probtraj = json.loads(simulation.nodes_probtraj)
+				nodes_probtraj = loads(simulation.nodes_probtraj)
 
 			else:
 				nodes_probtraj = None
@@ -238,33 +229,7 @@ class MaBoSSSimulationRemove(APIView):
 		except Project.DoesNotExist:
 			raise Http404
 
-
-class MaBossInitialState(APIView):
-
-	def get(self, request, project_id, model_id):
-
-		if request.user.is_anonymous:
-			raise PermissionDenied
-
-		try:
-			project = Project.objects.get(id=project_id)
-			if request.user != project.user:
-				raise PermissionDenied
-
-			model = LogicalModel.objects.get(project=project, id=model_id)
-			path = join(settings.MEDIA_ROOT, model.file.path)
-			ginsim_model = ginsim.load(path)
-			maboss_model = ginsim.to_maboss(ginsim_model)
-
-			return Response(maboss_model.get_initial_state())
-
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
-
-class MaBossInternalVariables(APIView):
+class MaBossSettings(APIView):
 
 	def get(self, request, project_id, model_id):
 
@@ -280,7 +245,41 @@ class MaBossInternalVariables(APIView):
 			path = join(settings.MEDIA_ROOT, model.file.path)
 			ginsim_model = ginsim.load(path)
 			maboss_model = ginsim.to_maboss(ginsim_model)
-			return Response({var: value.is_internal for var, value in maboss_model.network.items()})
+
+			internal_variables = {var: value.is_internal for var, value in maboss_model.network.items()}
+			initial_states = maboss_model.network.get_istate()
+
+			# Here the problem is the variables with more than two states, who appear in the initial states as :
+			# (Var_1, Var_2, Var_3) : {(0, 0, 0): 1, (1, 0, 0): 0, (1, 1, 0): 0, (1, 1, 1): 0}
+			# The nice thing is that it shows the constraint that the state (0, 1, 1) is impossible. But I'm not sure
+			# how to show this constraint on the interface (Probably merging them as a single multi state variable,
+			# which they are. But for now, we just treat them as individual variables, ie. without the constraint.
+
+			fixed_initial_states = {}
+			for var, value in initial_states.items():
+				if isinstance(var, tuple):
+
+					t_values = {}
+					for i, subvar in enumerate(var):
+						t_values.update({subvar: {0: 0, 1: 0}})
+
+					for tuple_states, tuple_value in value.items():
+						for i_tuple, t_tuple in enumerate(tuple_states):
+							subvar = var[i_tuple]
+							t_value = t_values[subvar]
+							tt_value = t_value[t_tuple] + tuple_value
+							t_value.update({t_tuple: tt_value})
+							t_values.update({subvar: t_value})
+
+					fixed_initial_states.update(t_values)
+
+				else:
+					fixed_initial_states.update({var: value})
+
+			return Response({
+				'internal_variables': internal_variables,
+				'initial_states': fixed_initial_states
+			})
 
 		except Project.DoesNotExist:
 			raise Http404

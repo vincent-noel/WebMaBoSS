@@ -8,7 +8,7 @@ from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
 from api.views.MaBoSSSimulation import (
 	LogicalModelSimulation, MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj,
-	MaBoSSSimulationRemove, MaBossInitialState, MaBossInternalVariables
+	MaBoSSSimulationRemove, MaBossSettings
 )
 from api.views.AuthView import TestAuthView, LogoutViewEx
 from rest_auth.views import LoginView
@@ -40,11 +40,12 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph_raw', LogicalModelGraphRaw.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', LogicalModelSimulation.as_view()),
-	path('api/logical_model/<int:project_id>/<int:model_id>/maboss/initial_states/', MaBossInitialState.as_view()),
-	path('api/logical_model/<int:project_id>/<int:model_id>/maboss/internal_variables/', MaBossInternalVariables.as_view()),
+	# path('api/logical_model/<int:project_id>/<int:model_id>/maboss/initial_states/', MaBossInitialState.as_view()),
+	# path('api/logical_model/<int:project_id>/<int:model_id>/maboss/internal_variables/', MaBossInternalVariables.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/maboss/settings/', MaBossSettings.as_view()),
 
 	path('api/maboss/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),
-	path('api/maboss/<int:pk>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
-	path('api/maboss/<int:pk>/states_trajs/', MaBoSSResultsStatesProbTraj.as_view()),
-	path('api/maboss/<int:pk>/nodes_trajs/', MaBoSSResultsNodesProbTraj.as_view()),
+	path('api/maboss/<int:simulation_id>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
+	path('api/maboss/<int:simulation_id>/states_trajs/', MaBoSSResultsStatesProbTraj.as_view()),
+	path('api/maboss/<int:simulation_id>/nodes_trajs/', MaBoSSResultsNodesProbTraj.as_view()),
 ]
