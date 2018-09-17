@@ -12,7 +12,9 @@ from api.models import LogicalModel, MaBoSSSimulation, Project
 from threading import Thread
 from os.path import join
 from rest_framework.parsers import JSONParser
-
+import ginsim
+from json import loads
+import maboss
 
 class LogicalModelSimulation(APIView):
 
@@ -70,6 +72,22 @@ class LogicalModelSimulation(APIView):
 				time_tick=float(request.POST['timeTick'])
 			)
 
+			print(loads(request.POST['initialStates']))
+			print(loads(request.POST['internalVariables']))
+
+			for var, internal in loads(request.POST['internalVariables']).items():
+				maboss_model.network[var].is_internal = internal
+
+
+			for var, istate in loads(request.POST['initialStates']).items():
+				if istate == [0, 1]:
+					maboss_model.network.set_istate(var, [0.5, 0.5])
+				elif istate == 1:
+					maboss_model.network.set_istate(var, [0, 1])
+				else: #if istate == 0:
+					maboss_model.network.set_istate(var, [1, 0])
+
+
 			thread = Thread(target=run_simulation, args=(maboss_model, maboss_simulation.id))
 			thread.start()
 
@@ -97,9 +115,8 @@ def run_simulation(maboss_model, maboss_simulation_id):
 		res = maboss_model.run()
 
 		fixed_points = res.get_fptable()
-		print("get_fptable done")
+		# print("get_fptable done")
 		fixed_points_json = fixed_points.to_json()
-		print("to json done")
 
 		with transaction.atomic():
 			maboss_simulation.fixpoints = fixed_points_json
@@ -107,18 +124,16 @@ def run_simulation(maboss_model, maboss_simulation_id):
 			maboss_simulation.save()
 
 		states_probtraj = res.get_states_probtraj()
-		print("get_states_probtraj done")
+		# print("get_states_probtraj done")
 		states_probtraj_json = states_probtraj.to_json()
-		print("to json done")
 
 		with transaction.atomic():
 			maboss_simulation.states_probtraj = states_probtraj_json
 			maboss_simulation.save()
 
 		nodes_probtraj = res.get_nodes_probtraj()
-		print("get_nodes_probtraj done")
+		# print("get_nodes_probtraj done")
 		nodes_probtraj_json = nodes_probtraj.to_json()
-		print("to json done")
 
 		with transaction.atomic():
 			maboss_simulation.nodes_probtraj = nodes_probtraj_json
@@ -223,3 +238,52 @@ class MaBoSSSimulationRemove(APIView):
 		except Project.DoesNotExist:
 			raise Http404
 
+
+class MaBossInitialState(APIView):
+
+	def get(self, request, project_id, model_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+			if request.user != project.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
+			path = join(settings.MEDIA_ROOT, model.file.path)
+			ginsim_model = ginsim.load(path)
+			maboss_model = ginsim.to_maboss(ginsim_model)
+
+			return Response(maboss_model.get_initial_state())
+
+		except Project.DoesNotExist:
+			raise Http404
+
+		except LogicalModel.DoesNotExist:
+			raise Http404
+
+class MaBossInternalVariables(APIView):
+
+	def get(self, request, project_id, model_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+			if request.user != project.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
+			path = join(settings.MEDIA_ROOT, model.file.path)
+			ginsim_model = ginsim.load(path)
+			maboss_model = ginsim.to_maboss(ginsim_model)
+			return Response({var: value.is_internal for var, value in maboss_model.network.items()})
+
+		except Project.DoesNotExist:
+			raise Http404
+
+		except LogicalModel.DoesNotExist:
+			raise Http404
