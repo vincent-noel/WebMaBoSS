@@ -1,0 +1,234 @@
+$line_height: 1.5rem;
+$switch_width: 3rem;
+$switch_border: 0.2rem;
+$switch_height: 1.5rem;
+
+$switch_ON_color: #2196F3;
+$switch_OFF_color: #ccc;
+$switch_button_color: white;
+
+
+ /* The switch - the box around the slider */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: $switch_width;
+  height: $switch_height;
+  margin: (($line_height - $switch_height)/2) 0;
+
+  input {
+    display: none
+  };
+
+  .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $switch_OFF_color;
+    -webkit-transition: .4s;
+    transition: .4s;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: $switch_height - (2 * $switch_border);
+      width: $switch_height - (2 * $switch_border);
+      left: $switch_border;
+      bottom: $switch_border;
+      background-color: $switch_button_color;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    &.round {
+       border-radius: $switch_height;
+
+      &:before {
+        border-radius: 50%;
+      }
+    }
+  }
+
+  input:checked + .slider {
+    background-color: $switch_ON_color;
+  }
+
+  input:focus + .slider {
+    box-shadow: 0 0 1px $switch_ON_color;
+  }
+
+  input:checked + .slider:before {
+    -webkit-transform: translateX($switch_width / 2);
+    -ms-transform: translateX($switch_width / 2);
+    transform: translateX($switch_width / 2);
+  }
+}
+
+
+$switch3_width: 3rem;
+$switch3_height: 1.5rem;
+$switch3_border: 0.2rem;
+
+$switch3_OFF_color: red;
+$switch3_RAND_color: #ccc;
+$switch3_ON_color: green;
+$switch3_button_color: white;
+
+ /* The 3-positions switch - the box around the slider */
+.switch-3 {
+  position: relative;
+  display: inline-block;
+  width: $switch3_width;
+  height: $switch3_height;
+  margin: (($line_height - $switch3_height)/2) 0;
+
+  input {
+    display: none
+  };
+
+  .switch-3-label-off {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: $switch3_width / 3;
+    height: $switch3_height;
+  }
+
+  .switch-3-label-na {
+    position: absolute;
+    left: $switch3_width / 3;
+    top: 0;
+    width: $switch3_width / 3;
+    height: $switch3_height;
+  }
+
+  .switch-3-label-on {
+    position: absolute;
+    left: $switch3_width * 2 / 3;
+    top: 0;
+    width: $switch3_width / 3;
+    height: $switch3_height;
+  }
+
+  .slider-3 {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: $switch3_RAND_color;
+    -webkit-transition: .4s;
+    transition: .4s;
+    pointer-events: none;
+
+    &:before {
+      position: absolute;
+      content: "";
+      height: $switch3_height - ($switch3_border*2);
+      width: $switch3_height - ($switch3_border*2);
+      left: $switch3_border;
+      bottom: $switch3_border;
+      background-color: $switch3_button_color;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+
+    &.round {
+       border-radius: $switch3_height;
+
+      &:before {
+        border-radius: 50%;
+      }
+    }
+  }
+
+  input:checked + label + input:not(:checked) + label + input:not(:checked) + label + .slider-3 {
+    background-color: $switch3_OFF_color;
+  }
+
+  input:not(:checked) + label + input:checked + label + input:not(:checked) + label + .slider-3 {
+    background-color: $switch3_RAND_color;
+      &:before {
+        -webkit-transform: translateX(($switch3_width - $switch3_height)/2);
+        -ms-transform: translateX(($switch3_width - $switch3_height)/2);
+        transform: translateX(($switch3_width - $switch3_height)/2);
+    }
+  }
+
+  input:not(:checked) + label + input:not(:checked) + label + input:checked + label + .slider-3 {
+    background-color: $switch3_ON_color;
+      &:before {
+        -webkit-transform: translateX($switch3_width - $switch3_height);
+        -ms-transform: translateX($switch3_width - $switch3_height);
+        transform: translateX($switch3_width - $switch3_height);
+    }
+  }
+
+  input:focus + .slider-3 {
+    box-shadow: 0 0 1px $switch3_ON_color;
+  }
+
+}
+
+$range-width: 4.5rem;
+$range-height: 1.5rem;
+$range-thumb-radius: 50%;
+$range-background-color: #d3d3d3;
+$range-button-color: white;
+$range-button-border: 0.2rem;
+
+.range {
+   position: relative;
+  display: inline-block;
+
+  width: $range-width; /* Width of the outside container */
+      height: $range-height; /* Specified height */
+         background: $range-background-color; /* Grey background */
+      border-radius: 1.3rem;
+
+
+  /* The slider itself */
+  .slider {
+    position: absolute;
+    left: $range-button-border;
+    bottom: $range-button-border;
+      -webkit-appearance: none;  /* Override default CSS styles */
+      appearance: none;
+      width: $range-width - (2 * $range-button-border); /* Full-width */
+      height: $range-height - (2 * $range-button-border); /* Specified height */
+      background: $range-background-color; /* Grey background */
+      outline: none; /* Remove outline */
+      -webkit-transition: .2s; /* 0.2 seconds transition on hover */
+      transition: opacity .2s;
+      border-radius: 1.3rem;
+
+  }
+
+  /* Mouse-over effects */
+  .slider:hover {
+      //opacity: 1; /* Fully shown on mouse-over */
+  }
+
+  /* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+  .slider::-webkit-slider-thumb {
+      -webkit-appearance: none; /* Override default look */
+      appearance: none;
+      border-radius: $range-thumb-radius;
+      width: $range-height - (2 * $range-button-border); /* Set a specific slider handle width */
+      height: $range-height - (2 * $range-button-border); /* Slider handle height */
+      background: $range-button-color;
+      cursor: pointer; /* Cursor on hover */
+  }
+
+  .slider::-moz-range-thumb {
+    border-radius: $range-thumb-radius;
+      width: $range-height - (2 * $range-button-border); /* Set a specific slider handle width */
+      height: $range-height - (2 * $range-button-border); /* Slider handle height */
+      background: $range-button-color;
+      cursor: pointer; /* Cursor on hover */
+  }
+}
