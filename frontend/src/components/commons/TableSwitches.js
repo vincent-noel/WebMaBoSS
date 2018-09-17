@@ -1,8 +1,8 @@
 import React from "react";
-import LoadingIcon from "../../commons/LoadingIcon";
-import Switch from "../../commons/buttons/Switch";
-import Switch3Pos from "../../commons/buttons/Switch3Pos";
-import Range from "../../commons/buttons/Range";
+import LoadingIcon from "./LoadingIcon";
+import Switch from "./buttons/Switch";
+import Switch3Pos from "./buttons/Switch3Pos";
+import Range from "./buttons/Range";
 
 class TableSwitches extends React.Component {
 
@@ -23,36 +23,21 @@ class TableSwitches extends React.Component {
 													return <Switch3Pos
 														id={this.props.id + "-" + key}
 														updateCallback={(value) => {this.props.updateCallback(key, value)}}
-														value={(() => {
-															switch (JSON.stringify(this.props.dict[key])) {
-																case '0':
-																	return 'off';
-
-																case '1':
-																	return 'on';
-
-																case '[0, 1]':
-																	return 'na';
-
-																default:
-																	return null;
-															}
-														})()
-														}
+														value={this.props.dict[key]}
 													/>;
 
 												case 'switch' :
 													return <Switch
 														id={this.props.id + "-" + key}
 														updateCallback={(value) => {this.props.updateCallback(key, value)}}
-														checked={this.props.dict[key]===1}
+														checked={this.props.dict[key]}
 													/>;
 
 												case 'range' :
 													return <Range
 														id={this.props.id + "-" + key}
 														updateCallback={(value) => {this.props.updateCallback(key, value)}}
-														value={this.props.dict[key][1]}
+														value={this.props.dict[key]}
 													/>;
 												default: return null;
 											}

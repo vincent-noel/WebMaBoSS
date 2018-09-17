@@ -3,11 +3,11 @@ import PropTypes from "prop-types";
 
 class Range extends Component {
 
-	// static propTypes = {
-	// 	checked: PropTypes.bool.isRequired,
-	// 	updateCallback: PropTypes.func.isRequired,
-	// 	id: PropTypes.string.isRequired,
-	// };
+	static propTypes = {
+		value: PropTypes.number.isRequired,
+		updateCallback: PropTypes.func.isRequired,
+		id: PropTypes.string.isRequired,
+	};
 
 	constructor (props) {
 		super(props);
@@ -18,7 +18,7 @@ class Range extends Component {
 	}
 
 	changeValue(value) {
-		this.setState({value: value});
+		this.setState({value: value/100});
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -34,7 +34,7 @@ class Range extends Component {
 			<input type="range" className="slider"
 				   id={this.props.id + "slider"}
 				   onChange={(e) => {this.changeValue(e.target.value)}}
-				   value={this.props.value}
+				   defaultValue={this.props.value*100}
 			/>
 		</label>;
   	}
