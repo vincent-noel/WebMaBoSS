@@ -3,6 +3,7 @@ import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.min';
 
 import '../scss/custom.scss';
+import '../scss/toggle_switch.scss';
 
 import React, {Component} from "react";
 import {BrowserRouter as Router, Route} from "react-router-dom";

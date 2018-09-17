@@ -1,5 +1,8 @@
 import React from "react";
-import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import {Nav, NavItem, NavLink, TabPane, TabContent, Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import classnames from 'classnames';
+import {getAPIKey} from "../../commons/sessionVariables";
+import TableSwitches from "../../commons/TableSwitches";
 
 
 class NewSimForm extends React.Component {
@@ -10,12 +13,91 @@ class NewSimForm extends React.Component {
 		this.state = {
 			sampleCount: 1000,
 			maxTime: 50,
-			timeTick: 1
+			timeTick: 1,
+
+			activeTab: 'general',
+
+			listNodes: [],
+			initialStates: {},
+			internalVariables: {},
 		};
 
 		this.handleSampleCountChange.bind(this);
 		this.handleMaxTimeChange.bind(this);
 		this.handleTimeTickChange.bind(this);
+		this.getNodes.bind(this);
+		this.toggleTab.bind(this);
+		this.updateInitialState = this.updateInitialState.bind(this);
+		this.updateInternalVariables = this.updateInternalVariables.bind(this);
+	}
+
+	getNodes() {
+
+		const conf = {
+		  method: "get",
+		  headers: new Headers({
+			'Authorization': "Token " + getAPIKey(),
+		  })
+		};
+
+		fetch("/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/nodes", conf)
+		.then(response => response.json())
+		.then(response => this.setState({listNodes: response}))
+	}
+
+	getInitialStates() {
+		const conf = {
+		  method: "get",
+		  headers: new Headers({
+			'Authorization': "Token " + getAPIKey(),
+		  })
+		};
+
+		fetch("/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/maboss/initial_states/", conf)
+		.then(response => response.json())
+		.then(response => this.setState({initialStates: response}))
+	}
+
+	getInternalVariables() {
+		const conf = {
+		  method: "get",
+		  headers: new Headers({
+			'Authorization': "Token " + getAPIKey(),
+		  })
+		};
+
+		fetch("/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/maboss/internal_variables/", conf)
+		.then(response => response.json())
+		.then(response => this.setState({internalVariables: response}))
+	}
+
+	updateInitialState(node, value) {
+		let initial_states = this.state.initialStates;
+		switch (value) {
+			case 'on':
+				initial_states[node] = 1;
+				break;
+
+			case 'off':
+				initial_states[node] = 0;
+				break;
+
+			case 'na':
+				initial_states[node] = [0, 1];
+				break;
+
+			default:
+				break;
+		}
+
+		// initial_states[node] = value;
+		this.setState({initialStates: initial_states});
+	}
+
+	updateInternalVariables(node) {
+		let internal_variables = this.state.internalVariables;
+		internal_variables[node] = !internal_variables[node];
+		this.setState({internalVariables: internal_variables});
 	}
 
 	handleSampleCountChange(e) {
@@ -30,6 +112,12 @@ class NewSimForm extends React.Component {
 		this.setState({timeTick: e.target.value});
 	}
 
+	toggleTab(tab) {
+		if (this.state.activeTab !== tab) {
+			this.setState({activeTab: tab });
+    	}
+	}
+
 	onSubmit(e) {
 		e.preventDefault();
 
@@ -37,7 +125,15 @@ class NewSimForm extends React.Component {
 			sampleCount: this.state.sampleCount,
 			maxTime: this.state.maxTime,
 			timeTick: this.state.timeTick,
+			initialStates: this.state.initialStates,
+			internalVariables: this.state.internalVariables,
 		});
+	}
+
+	componentDidMount() {
+		this.getNodes();
+		this.getInitialStates();
+		this.getInternalVariables();
 	}
 
 	render() {
@@ -47,30 +143,71 @@ class NewSimForm extends React.Component {
 					<Card>
 						<CardHeader>Create new simulation</CardHeader>
 						<CardBody>
-							<div className="form-group row">
-								<label htmlFor="sampleCount" className="col-sm-2 col-form-label">Sample count</label>
-								<div className="col-sm-10">
-									<input type="numbers" className="form-control" id="sampleCount" placeholder="1000"
-										   value={this.state.sampleCount} onChange={(e) => this.handleSampleCountChange(e)}
+							<Nav tabs>
+								<NavItem>
+									<NavLink
+									  	className={classnames({ active: this.state.activeTab === 'general' })}
+              							onClick={() => { this.toggleTab('general'); }}
+									>General</NavLink>
+								</NavItem>
+								<NavItem>
+									<NavLink
+									  	className={classnames({ active: this.state.activeTab === 'initial_states' })}
+              							onClick={() => { this.toggleTab('initial_states'); }}
+									>Initial states</NavLink>
+								</NavItem>
+								<NavItem>
+									<NavLink
+									  	className={classnames({ active: this.state.activeTab === 'internal_variables' })}
+              							onClick={() => { this.toggleTab('internal_variables'); }}
+									>Internal variables</NavLink>
+								</NavItem>
+							</Nav>
+							<TabContent activeTab={this.state.activeTab}>
+								<br/>
+								<TabPane tabId="general">
+									<div className="form-group row">
+										<label htmlFor="sampleCount" className="col-sm-2 col-form-label">Sample count</label>
+										<div className="col-sm-10">
+											<input type="numbers" className="form-control" id="sampleCount" placeholder="1000"
+												   value={this.state.sampleCount} onChange={(e) => this.handleSampleCountChange(e)}
+											/>
+										</div>
+									</div>
+									<div className="form-group row">
+										<label htmlFor="maxTime" className="col-sm-2 col-form-label">Max time</label>
+										<div className="col-sm-10">
+											<input type="number" className="form-control" id="maxTime" placeholder="100"
+												   value={this.state.maxTime} onChange={(e) => this.handleMaxTimeChange(e)}
+											/>
+										</div>
+									</div>
+									<div className="form-group row">
+										<label htmlFor="timeTick" className="col-sm-2 col-form-label">Time tick</label>
+										<div className="col-sm-10">
+											<input type="number" className="form-control" id="timeTick" placeholder="1"
+												   value={this.state.timeTick} onChange={(e) => this.handleTimeTickChange(e)}
+											/>
+										</div>
+									</div>
+								</TabPane>
+								<TabPane tabId="initial_states">
+									<TableSwitches
+										id={"is"}
+										type='3pos'
+										dict={this.state.initialStates}
+										updateCallback={this.updateInitialState}
 									/>
-								</div>
-							</div>
-							<div className="form-group row">
-								<label htmlFor="maxTime" className="col-sm-2 col-form-label">Max time</label>
-								<div className="col-sm-10">
-									<input type="number" className="form-control" id="maxTime" placeholder="100"
-										   value={this.state.maxTime} onChange={(e) => this.handleMaxTimeChange(e)}
+								</TabPane>
+								<TabPane tabId="internal_variables">
+									<TableSwitches
+										id={"in"}
+										type='switch'
+										dict={this.state.internalVariables}
+										updateCallback={this.updateInternalVariables}
 									/>
-								</div>
-							</div>
-							<div className="form-group row">
-								<label htmlFor="timeTick" className="col-sm-2 col-form-label">Time tick</label>
-								<div className="col-sm-10">
-									<input type="number" className="form-control" id="timeTick" placeholder="1"
-										   value={this.state.timeTick} onChange={(e) => this.handleTimeTickChange(e)}
-									/>
-								</div>
-							</div>
+								</TabPane>
+							</TabContent>
 						</CardBody>
 						<CardFooter>
 							<ButtonToolbar className="d-flex">

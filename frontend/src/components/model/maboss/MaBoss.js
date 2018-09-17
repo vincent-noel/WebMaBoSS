@@ -46,6 +46,8 @@ class MaBoss extends React.Component {
 		formData.append('sampleCount', data.sampleCount);
 		formData.append('maxTime', data.maxTime);
 		formData.append('timeTick', data.timeTick);
+		formData.append('initialStates', JSON.stringify(data.initialStates));
+		formData.append('internalVariables', JSON.stringify(data.internalVariables));
 
 		const conf = {
 		  method: "post",
