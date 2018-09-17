@@ -73,15 +73,12 @@ class LogicalModelSimulation(APIView):
 				time_tick=float(request.POST['timeTick'])
 			)
 
-			print(loads(request.POST['initialStates']))
-			print(loads(request.POST['internalVariables']))
-
 			for var, internal in loads(request.POST['internalVariables']).items():
 				maboss_model.network[var].is_internal = internal
 
 
 			for var, istate in loads(request.POST['initialStates']).items():
-				maboss_model.network.set_istate(var, [float(istate['0']), float(istate['1'])])
+				maboss_model.network.set_istate(var, [1.0-float(istate), float(istate)])
 
 
 			thread = Thread(target=run_simulation, args=(maboss_model, maboss_simulation.id))
