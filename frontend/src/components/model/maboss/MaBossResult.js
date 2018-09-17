@@ -69,11 +69,11 @@ class MaBossResult extends React.Component {
 							/>
 						</TabPane>
 						<TabPane tabId="spt">
-							{/*<MaBossStatesProbTraj*/}
-								{/*modelId={this.props.modelId}*/}
-								{/*simulationId={this.props.simulationId}*/}
-								{/*colormap={MaBossResult.colormap}*/}
-							{/*/>*/}
+							<MaBossStatesProbTraj
+								modelId={this.props.modelId}
+								simulationId={this.props.simulationId}
+								colormap={MaBossResult.colormap}
+							/>
 						</TabPane>
 					</TabContent>
 				</React.Fragment>
