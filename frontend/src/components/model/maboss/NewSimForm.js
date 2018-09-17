@@ -25,14 +25,14 @@ class NewSimForm extends React.Component {
 		this.handleSampleCountChange.bind(this);
 		this.handleMaxTimeChange.bind(this);
 		this.handleTimeTickChange.bind(this);
-		this.getNodes.bind(this);
+
 		this.toggleTab.bind(this);
+
 		this.updateInitialState = this.updateInitialState.bind(this);
 		this.updateInternalVariables = this.updateInternalVariables.bind(this);
 	}
 
-	getNodes() {
-
+	getSettings() {
 		const conf = {
 		  method: "get",
 		  headers: new Headers({
@@ -40,57 +40,35 @@ class NewSimForm extends React.Component {
 		  })
 		};
 
-		fetch("/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/nodes", conf)
+		fetch("/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/maboss/settings/", conf)
 		.then(response => response.json())
-		.then(response => this.setState({listNodes: response}))
-	}
+		.then(response => {
 
-	getInitialStates() {
-		const conf = {
-		  method: "get",
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-		  })
-		};
+			const initial_states = Object.keys(response['initial_states']).reduce(
+				(acc, key) => {
+					acc[key] = response['initial_states'][key]['1'];
+					return acc;
+				}, {}
+			);
 
-		fetch("/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/maboss/initial_states/", conf)
-		.then(response => response.json())
-		.then(response => this.setState({initialStates: response}))
-	}
-
-	getInternalVariables() {
-		const conf = {
-		  method: "get",
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-		  })
-		};
-
-		fetch("/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/maboss/internal_variables/", conf)
-		.then(response => response.json())
-		.then(response => this.setState({internalVariables: response}))
+			const internal_variables = Object.keys(response['internal_variables']).reduce(
+				(acc, key) => {
+					acc[key] = response['internal_variables'][key] === 1;
+					return acc;
+				}, {}
+			);
+			this.setState(
+			{
+				internalVariables: internal_variables,
+				initialStates: initial_states,
+				listNodes: Object.keys(response['initial_states'])
+			}
+		)})
 	}
 
 	updateInitialState(node, value) {
 		let initial_states = this.state.initialStates;
-		switch (value) {
-			case 'on':
-				initial_states[node] = 1;
-				break;
-
-			case 'off':
-				initial_states[node] = 0;
-				break;
-
-			case 'na':
-				initial_states[node] = [0, 1];
-				break;
-
-			default:
-				break;
-		}
-
-		// initial_states[node] = value;
+		initial_states[node] = value;
 		this.setState({initialStates: initial_states});
 	}
 
@@ -131,9 +109,7 @@ class NewSimForm extends React.Component {
 	}
 
 	componentDidMount() {
-		this.getNodes();
-		this.getInitialStates();
-		this.getInternalVariables();
+		this.getSettings();
 	}
 
 	render() {
@@ -194,7 +170,7 @@ class NewSimForm extends React.Component {
 								<TabPane tabId="initial_states">
 									<TableSwitches
 										id={"is"}
-										type='3pos'
+										type='range'
 										dict={this.state.initialStates}
 										updateCallback={this.updateInitialState}
 									/>
