@@ -5,6 +5,7 @@ import LogicalModels from "./LogicalModels";
 import TableModels from "./TableModels";
 import ModelForm from "./ModelForm";
 import {getProject} from "../commons/sessionVariables";
+import ExportModelForm from "./ExportModelForm";
 
 class Models extends React.Component {
 
@@ -13,10 +14,16 @@ class Models extends React.Component {
 
 		this.showModelForm = this.showModelForm.bind(this);
 		this.hideModelForm = this.hideModelForm.bind(this);
+		this.showExportModelForm = this.showExportModelForm.bind(this);
+		this.hideExportModelForm = this.hideExportModelForm.bind(this);
 		this.updateProject = this.updateProject.bind(this);
+
 		this.state = {
 			showModelForm: false,
 			idModelForm: null,
+			showExportModelForm: false,
+			idExportModelForm: null,
+			filenameExportModelForm: null,
 			project: getProject()
 		}
 	}
@@ -34,6 +41,22 @@ class Models extends React.Component {
 		})
 	}
 
+	showExportModelForm(id, filename) {
+		this.setState({
+			showExportModelForm: true,
+			idExportModelForm: id,
+			filenameExportModelForm: filename,
+		})
+	}
+
+	hideExportModelForm() {
+		this.setState({
+			showExportModelForm: false,
+			idExportModelForm: null,
+			filenameExportModelForm: null
+		})
+	}
+
 	updateProject(project) {
 		this.setState({project: project});
 	}
@@ -45,7 +68,13 @@ class Models extends React.Component {
 				<LogicalModels endpoint="/api/logical_models/"
 					render={(data, updateParent) => {
 						return <React.Fragment>
-							<TableModels data={data} updateParent={updateParent} edit={this.showModelForm} project={this.state.project}/>
+							<TableModels
+								data={data}
+								updateParent={updateParent}
+								edit={this.showModelForm}
+								project={this.state.project}
+								download={this.showExportModelForm}
+							/>
 
 							<Button type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
 
@@ -55,6 +84,14 @@ class Models extends React.Component {
 								id={this.state.idModelForm}
 								show={this.showModelForm}
 								hide={this.hideModelForm}
+							/>
+							<ExportModelForm
+								project={this.state.project}
+								id={this.state.idExportModelForm}
+								filename={this.state.filenameExportModelForm}
+								status={this.state.showExportModelForm}
+								show={this.showExportModelForm}
+								hide={this.hideExportModelForm}
 							/>
 						</React.Fragment>
 						}

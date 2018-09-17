@@ -41,6 +41,7 @@ class TableModels extends Component {
 							key={el.id} entry={el}
 							updateParent={this.props.updateParent}
 							edit={this.props.edit}
+							download={this.props.download}
 						/>
 					  ))}
 					</tbody>

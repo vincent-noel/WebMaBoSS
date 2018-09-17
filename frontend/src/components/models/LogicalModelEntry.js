@@ -4,7 +4,7 @@ import {ButtonToolbar} from "reactstrap";
 import DownloadButton from "../commons/buttons/DownloadButton";
 import DeleteButton from "../commons/buttons/DeleteButton";
 import EditButton from "../commons/buttons/EditButton";
-import {getProject, setModel} from "../commons/sessionVariables";
+import {setModel} from "../commons/sessionVariables";
 
 class LogicalModelEntry extends Component {
 
@@ -17,16 +17,13 @@ class LogicalModelEntry extends Component {
         <td>
             <ButtonToolbar className="justify-content-end">
                 <EditButton
-
                     endpoint={"/api/logical_models/" + this.props.project + "/"}
                     id={this.props.entry.id}
                     edit={this.props.edit}
                     update={this.props.updateParent}
                 />
                 <DownloadButton
-                    endpoint={"/api/logical_models/" + this.props.project + "/"}
-                    filename={this.props.entry.file.split("/").pop()}
-                    id={this.props.entry.id}
+                    onClick={() => this.props.download(this.props.entry.id, this.props.entry.file.split("/").pop())}
                 />
                 <DeleteButton
                     endpoint={"/api/logical_models/" + this.props.project + "/"}
