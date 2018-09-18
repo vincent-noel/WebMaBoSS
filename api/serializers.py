@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from api.models import LogicalModel, Project, MaBoSSSimulation
+from api.models import LogicalModel, Project, MaBoSSSimulation, MaBoSSServer
 
 class LogicalModelSerializer(serializers.ModelSerializer):
     class Meta:
@@ -20,3 +20,8 @@ class MaBoSSSimulationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MaBoSSSimulation
         fields = ['id']
+
+class MaBoSSServerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = MaBoSSServer
+        fields = '__all__'

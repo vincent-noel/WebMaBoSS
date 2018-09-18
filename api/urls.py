@@ -10,7 +10,7 @@ from api.views.MaBoSSSimulation import (
 	LogicalModelSimulation, MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj,
 	MaBoSSSimulationRemove, MaBossSettings
 )
-from api.views.maboss.MaBossServer import MaBoSSServer
+from api.views.maboss.MaBossServerView import MaBoSSServerView
 from api.views.AuthView import TestAuthView, LogoutViewEx
 from rest_auth.views import LoginView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
@@ -47,6 +47,7 @@ urlpatterns = [
 	path('api/maboss/<int:simulation_id>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
 	path('api/maboss/<int:simulation_id>/states_trajs/', MaBoSSResultsStatesProbTraj.as_view()),
 	path('api/maboss/<int:simulation_id>/nodes_trajs/', MaBoSSResultsNodesProbTraj.as_view()),
-	path('api/maboss/servers/', MaBoSSServer.as_view())
+	path('api/maboss/servers/', MaBoSSServerView.as_view()),
+	path('api/maboss/servers/<int:server_id>', MaBoSSServerView.as_view())
 
 ]
