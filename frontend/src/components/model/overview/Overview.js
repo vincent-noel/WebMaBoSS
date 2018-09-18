@@ -4,7 +4,6 @@ import MenuPage from "../MenuPage";
 import ModelName from "../ModelName";
 
 import ModelGraph from "./ModelGraph";
-import {getModel} from "../../commons/sessionVariables";
 // import ModelGraphRaw from "./ModelGraphRaw";
 // import ModelGraphSBGN from "./ModelGraphSBGN";
 
