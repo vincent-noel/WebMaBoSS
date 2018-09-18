@@ -42,7 +42,7 @@ class NavBar extends React.Component {
 					<ul className="navbar-nav ml-auto">
 						{ isConnected() ? (
 							<React.Fragment>
-								<NavBarItem url="/profile" name="Profile" />
+								<NavBarItem url="/profile/" name="Profile" />
 								<NavBarItem url="/logout/" name="Logout" />
 							</React.Fragment>
 						) : (
