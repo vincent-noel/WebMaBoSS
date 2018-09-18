@@ -3,7 +3,7 @@ import {Card, CardHeader, CardBody} from "reactstrap";
 
 import FullPage from "../FullPage";
 import ErrorAlert from "../commons/ErrorAlert";
-import {isConnected, setAPIKey} from "../commons/sessionVariables";
+import {isConnected, setAPIKey, setUser} from "../commons/sessionVariables";
 
 class SignIn extends React.Component {
 
@@ -47,6 +47,7 @@ class SignIn extends React.Component {
 
 			if ('key' in json_response) {
 				setAPIKey(json_response['key']);
+				setUser(this.state.username);
 				this.props.history.push("/");
 
 			} else if ('username' in json_response || 'password' in json_response) {

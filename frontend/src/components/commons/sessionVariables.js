@@ -26,6 +26,18 @@ function getAPIKey() {
     return sessionStorage.getItem("api_key");
 }
 
+function setUser(username) {
+    sessionStorage.setItem("user", JSON.stringify({'username': username}));
+}
+
+function getUsername() {
+    return JSON.parse(sessionStorage.getItem("user"))['username']
+}
+
+function clearUser() {
+    sessionStorage.removeItem("user");
+}
+
 function isConnected() {
     return (sessionStorage.getItem("api_key") !== null);
 }
@@ -33,4 +45,10 @@ function isConnected() {
 function clearAPIKey() {
     sessionStorage.removeItem("api_key");
 }
-export {getProject, setProject, getModel, setModel, clearModel, setAPIKey, getAPIKey, isConnected, clearAPIKey};
+export {
+    getProject, setProject,
+    getModel, setModel, clearModel,
+    setAPIKey, getAPIKey, clearAPIKey,
+    setUser, getUsername, clearUser,
+    isConnected,
+};

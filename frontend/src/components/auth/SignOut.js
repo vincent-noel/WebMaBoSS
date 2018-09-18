@@ -1,5 +1,5 @@
 import React from "react";
-import {clearAPIKey} from "../commons/sessionVariables";
+import {clearAPIKey, clearUser} from "../commons/sessionVariables";
 
 class SignOut extends React.Component {
 
@@ -12,6 +12,7 @@ class SignOut extends React.Component {
 		fetch("/api/auth/logout", conf)
 		.then(response => {
 			clearAPIKey();
+			clearUser();
 			this.props.history.push("/login/");
 		});
 
