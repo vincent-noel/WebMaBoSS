@@ -16,7 +16,7 @@ class ModelName extends Component {
 			<React.Fragment>
 				{this.props.modelName !== undefined ?
 					<h1>Model {this.props.modelName}</h1> :
-					<LoadingIcon width="5rem"/>
+					<LoadingIcon width="1rem"/>
 				}
 				<br/>
 			</React.Fragment>

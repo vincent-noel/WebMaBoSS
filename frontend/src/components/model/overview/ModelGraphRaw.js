@@ -1,6 +1,7 @@
 import React from "react";
 import {ReactCytoscape} from 'react-cytoscape';
 import {getAPIKey} from "../../commons/sessionVariables";
+import LoadingIcon from "../../commons/LoadingIcon";
 
 class ModelGraphRaw extends React.Component {
 
@@ -147,7 +148,7 @@ class ModelGraphRaw extends React.Component {
 			);
 
 		} else {
-			return <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />;
+			return <LoadingIcon width="3rem"/>;
 		}
 
 	}

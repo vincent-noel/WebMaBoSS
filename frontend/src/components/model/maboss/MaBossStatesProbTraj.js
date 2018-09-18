@@ -112,7 +112,7 @@ class MaBossStatesProbTraj extends React.Component {
 				</React.Fragment>
 			);
 		} else if (this.props.simulationId !== undefined) {
-			return <LoadingIcon width="200px"/>
+			return <LoadingIcon width="3rem"/>
 		} else {
 			return <div/>
 		}

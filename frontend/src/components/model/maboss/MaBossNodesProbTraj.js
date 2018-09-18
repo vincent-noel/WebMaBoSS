@@ -82,7 +82,7 @@ class MaBossNodesProbTraj extends React.Component {
 				<Line data={data} options={options}/>
 			);
 		} else if (this.props.simulationId !== undefined) {
-			return <LoadingIcon width="200px"/>
+			return <LoadingIcon width="3rem"/>
 		} else {
 			return <div/>
 		}

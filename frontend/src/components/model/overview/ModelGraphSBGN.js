@@ -1,5 +1,6 @@
 import React from "react";
 import {getAPIKey} from "../../commons/sessionVariables";
+import LoadingIcon from "../../commons/LoadingIcon";
 // import "sbgnviz";
 
 class ModelGraphSBGN extends React.Component {
@@ -66,7 +67,7 @@ class ModelGraphSBGN extends React.Component {
 			);
 
 		} else {
-			return <img src="https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif" />;
+			return <LoadingIcon width="3rem"/>;
 		}
 
 	}

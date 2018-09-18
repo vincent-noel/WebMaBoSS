@@ -71,7 +71,7 @@ class Graph extends Component {
 					'maxHeight': '100%'
 				}}
 			/>;
-		} else return <LoadingIcon width={"200px"}/>;
+		} else return <LoadingIcon width="3rem"/>;
 	}
 }
 

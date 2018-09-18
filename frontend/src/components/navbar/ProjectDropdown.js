@@ -52,7 +52,7 @@ class ProjectDropdown extends React.Component {
 	render() {
 
 		if (!this.state.loaded) {
-			return <LoadingIcon width="5rem"/>;
+			return <LoadingIcon width="1rem" dark/>;
 
 		} else {
 			if (this.state.projects.length > 0) {

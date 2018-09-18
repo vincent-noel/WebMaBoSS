@@ -51,7 +51,7 @@ class TableSwitches extends React.Component {
 					</tbody>
 				</table>
 			</div>
-		} else return <LoadingIcon width="200px"/>
+		} else return <LoadingIcon width="3rem"/>
 	}
 }
 
