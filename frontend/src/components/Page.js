@@ -1,13 +1,20 @@
 import React from "react";
 import NavBar from "./navbar/NavBar";
 import PropTypes from "prop-types";
-
+import {isConnected} from "./commons/sessionVariables";
+import history from './history';
 
 class Page extends React.Component {
 
 	static propTypes = {
 		path: PropTypes.string.isRequired,
 	};
+
+	componentWillMount() {
+		if (!isConnected() && this.props.path !== "/register/") {
+			history.push("/login/");
+		}
+	}
 
 	render() {
 		const page_style = { 'paddingTop': '3.5rem' };
