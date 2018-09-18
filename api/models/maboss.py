@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_delete
+from django.contrib.auth.models import User
 
 from api.models.project import Project
 from api.models.logical_model import LogicalModel
@@ -49,3 +50,8 @@ class MaBoSSSimulation(models.Model):
 
 pre_delete.connect(remove_simulation_model, sender=MaBoSSSimulation)
 
+class MaBoSSServer(models.Model):
+
+	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	host = models.CharField(max_length=256)
+	port = models.IntegerField()
