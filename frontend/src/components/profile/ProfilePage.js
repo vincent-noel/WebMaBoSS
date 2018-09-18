@@ -9,7 +9,6 @@ class ProfilePage extends React.Component {
 
 	static propTypes = {
 		path: PropTypes.string.isRequired,
-		project: PropTypes.string.isRequired,
 	};
 
 	render() {
