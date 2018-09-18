@@ -35,48 +35,36 @@ class ProjectsPage extends React.Component {
 		})
 	}
 
-	componentWillMount() {
-		if (!isConnected()) {
-			this.props.history.push("/login/");
-		}
-	}
-
 	render () {
 
-		if (isConnected()) {
-			return (
-				<FullPage path={this.props.match.path}>
-					<h2>Projects</h2><br/>
+		return <FullPage path={this.props.match.path}>
+			<h2>Projects</h2><br/>
 
-					<Projects endpoint="/api/projects/"
-					render={
-						(data, updateProjects) => {
-							return <React.Fragment>
-								<TableProjects
-									data={data}
-									updateProjects={updateProjects}
-									edit={this.showProjectForm}
-								/>
-								<Button type="button" color="primary" onClick={() => {this.showProjectForm(null);}}>
-									New project
-								</Button>
-								<ProjectForm
-									id={this.state.idProjectForm}
-									status={this.state.showProjectForm}
-									show={this.showProjectForm}
-									hide={this.hideProjectForm}
-									updateProjects={updateProjects}
-								/>
-							</React.Fragment>
-						}
-					}
-					/>
+			<Projects endpoint="/api/projects/"
+			render={
+				(data, updateProjects) => {
+					return <React.Fragment>
+						<TableProjects
+							data={data}
+							updateProjects={updateProjects}
+							edit={this.showProjectForm}
+						/>
+						<Button type="button" color="primary" onClick={() => {this.showProjectForm(null);}}>
+							New project
+						</Button>
+						<ProjectForm
+							id={this.state.idProjectForm}
+							status={this.state.showProjectForm}
+							show={this.showProjectForm}
+							hide={this.hideProjectForm}
+							updateProjects={updateProjects}
+						/>
+					</React.Fragment>
+				}
+			}
+			/>
 
-				</FullPage>
-			);
-		}
-		else return null;
-
+		</FullPage>;
 	}
 }
 
