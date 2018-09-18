@@ -14,7 +14,7 @@ module.exports = {
         test: /\.css$/,
         use: [ 'style-loader', 'css-loader' ]
       }, {
-        test: /\.(eot|svg|ttf|woff|woff2)$/,
+        test: /\.(eot|ttf|woff|woff2)$/,
         loader: 'file-loader?name=public/fonts/[name].[ext]'
 	  }, {
 		test: /\.scss$/,
@@ -24,23 +24,23 @@ module.exports = {
 			"sass-loader" // compiles Sass to CSS, using Node Sass by default
 		]
 	  }
-	  // ,
-		// {
-		// test: /\.(gif|png|jpe?g|svg)$/i,
-  	// 	use: [
-		// 	{
-		// 	  loader: 'file-loader',
-	  //
-		// 	  // loader: 'image-webpack-loader',
-		// 	  options: {
-		// 		// bypassOnDebug: true, // webpack@1.x
-		// 		// disable: true, // webpack@2.x and newer
-		// 		// name: 'images/[name].[ext]',
-		// 		// outputPath: '/images/',
-		// 	  },
-		// 	}
-		// ]
-	  // }
+	  ,
+		{
+		test: /\.(gif|png|jpe?g|svg)$/i,
+  		use: [
+			{
+			  loader: 'file-loader',
+
+			  // loader: 'image-webpack-loader',
+			  options: {
+				// bypassOnDebug: true, // webpack@1.x
+				// disable: true, // webpack@2.x and newer
+				name: '[name].[ext]',
+				outputPath: '/images/',
+			  },
+			}
+		]
+	  }
 	]
   },
   optimization: {
