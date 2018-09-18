@@ -127,7 +127,7 @@ class ModelSteadyStatesResult extends Component {
 
 
 		} else {
-			return <LoadingIcon width={"200px"}/>;
+			return <LoadingIcon width="3rem"/>;
 		}
 
 	}
