@@ -6,7 +6,9 @@ import '../scss/custom.scss';
 import '../scss/toggle_switch.scss';
 
 import React, {Component} from "react";
-import {BrowserRouter as Router, Route} from "react-router-dom";
+import {Router, Route} from "react-router-dom";
+
+import history from './history';
 
 import Profile from "./profile/Profile";
 import SignIn from "./auth/SignIn";
@@ -20,13 +22,13 @@ import Data from "./Data";
 import Overview from "./model/overview/Overview";
 import ModelSteadyStates from "./model/steady_states/ModelSteadyStates";
 import MaBoss from "./model/maboss/MaBoss";
-import MaBoSSSettings from "./profile/MaBoSSSettings";
+import MaBoSSSettings from "./profile/maboss_settings/MaBoSSSettings";
 
 class App extends Component {
 
 	render(){
 		return (
-			<Router>
+			<Router history={history}>
 				<React.Fragment>
 					<Route exact path="/" component={ProjectsPage} />
 

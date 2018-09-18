@@ -1,5 +1,6 @@
 import React from "react";
 import {Card, CardHeader, CardBody} from "reactstrap";
+import history from '../history';
 
 import FullPage from "../FullPage";
 import ErrorAlert from "../commons/ErrorAlert";
@@ -48,7 +49,7 @@ class SignIn extends React.Component {
 			if ('key' in json_response) {
 				setAPIKey(json_response['key']);
 				setUser(this.state.username);
-				this.props.history.push("/");
+				history.push("/");
 
 			} else if ('username' in json_response || 'password' in json_response) {
 
@@ -88,7 +89,7 @@ class SignIn extends React.Component {
 
 	componentWillMount() {
 		if (isConnected()) {
-			this.props.history.push("/");
+			history.push("/");
 		}
 	}
 

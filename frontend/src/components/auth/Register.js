@@ -1,5 +1,6 @@
 import React from "react";
 import {Card, CardHeader, CardBody} from "reactstrap";
+import history from '../history';
 
 import FullPage from "../FullPage";
 import getCSRFToken from "../commons/getCSRFToken";
@@ -61,7 +62,7 @@ class Register extends React.Component {
 
 			if ('key' in json_response) {
 				setAPIKey(json_response['key']);
-				this.props.history.push("/");
+				history.push("/");
 
 			} else if (
 				'email' in json_response || 'username' in json_response	|| 'password1' in json_response
