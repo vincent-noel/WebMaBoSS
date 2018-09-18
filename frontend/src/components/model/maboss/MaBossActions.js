@@ -59,6 +59,7 @@ class MaBossActions extends React.Component {
 				</ButtonToolbar>
 				<br/>
 				<NewSimForm
+					project={this.props.project}
 					modelId={this.props.modelId}
 					onSubmit={this.onSubmit}
 					status={this.state.showNewSimForm}
