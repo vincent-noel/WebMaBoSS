@@ -7,7 +7,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import {getAPIKey, getModel, getProject} from "../commons/sessionVariables";
 
-class MenuPage extends React.Component {
+class ModelPage extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -53,7 +53,7 @@ class MenuPage extends React.Component {
 	}
 
 	updateProject(project) {
-		this.setState({project: project})
+		this.setState({project: project});
 	}
 
 	render() {
@@ -85,4 +85,4 @@ class MenuPage extends React.Component {
 	}
 }
 
-export default MenuPage;
+export default ModelPage;

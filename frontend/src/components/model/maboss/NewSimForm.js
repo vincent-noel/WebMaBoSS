@@ -32,7 +32,7 @@ class NewSimForm extends React.Component {
 		this.updateInternalVariables = this.updateInternalVariables.bind(this);
 	}
 
-	getSettings() {
+	getSettings(project_id, model_id) {
 		const conf = {
 		  method: "get",
 		  headers: new Headers({
@@ -40,7 +40,7 @@ class NewSimForm extends React.Component {
 		  })
 		};
 
-		fetch("/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/maboss/settings/", conf)
+		fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss/settings/", conf)
 		.then(response => response.json())
 		.then(response => {
 
@@ -109,7 +109,21 @@ class NewSimForm extends React.Component {
 	}
 
 	componentDidMount() {
-		this.getSettings();
+		this.getSettings(this.props.project, this.props.modelId);
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		if (nextProps.project !== this.props.project) {
+			return false;
+		}
+
+		if (nextProps.modelId !== this.props.modelId) {
+			this.getSettings(nextProps.project, nextProps.modelId);
+			return false;
+		}
+
+		return true;
+
 	}
 
 	render() {

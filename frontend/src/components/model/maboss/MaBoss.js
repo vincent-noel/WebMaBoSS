@@ -1,5 +1,5 @@
 import React from "react";
-import MenuPage from "../MenuPage";
+import ModelPage from "../ModelPage";
 import ModelName from "../ModelName";
 
 import MaBossResult from "./MaBossResult";
@@ -22,6 +22,8 @@ class MaBoss extends React.Component {
 		this.onSubmitOldSim = this.onSubmitOldSim.bind(this);
 		this.removeOldSim = this.removeOldSim.bind(this);
 		this.loadListSimulations = this.loadListSimulations.bind(this);
+		this.onModelChanged = this.onModelChanged.bind(this);
+		this.onProjectChanged = this.onProjectChanged.bind(this);
 	}
 
 
@@ -58,7 +60,7 @@ class MaBoss extends React.Component {
 		};
 
 		fetch("/api/logical_model/" + getProject() + "/" + getModel() + "/maboss", conf)
-		.then(response => {	return response.json(); })
+		.then(response => response.json())
 		.then(data => { this.setState({showNewSimForm: false, simulationId: data['simulation_id']})});
 
 	}
@@ -69,7 +71,6 @@ class MaBoss extends React.Component {
 
 	removeOldSim(simulation_id) {
 
-
 		const conf = {
 		  method: "delete",
 		  headers: new Headers({
@@ -78,8 +79,13 @@ class MaBoss extends React.Component {
 		};
 
 		fetch("/api/maboss/" + simulation_id + "/", conf)
-		.then(response => {	this.loadListSimulations() })
+		.then(response => {	this.loadListSimulations(); })
 
+	}
+
+
+	onModelChanged() {
+		this.loadListSimulations();
 	}
 
 	componentDidMount() {
@@ -89,7 +95,10 @@ class MaBoss extends React.Component {
 	render() {
 
 		return (
-			<MenuPage path={this.props.match.path} onModelChanged={this.loadListSimulations}>
+			<ModelPage
+				path={this.props.match.path}
+				onModelChanged={this.onModelChanged}
+			>
 				<ModelName />
 				<MaBossActions
 					onSubmit={this.onSubmit}
@@ -98,7 +107,7 @@ class MaBoss extends React.Component {
 					remove={this.removeOldSim}
 				/>
 				<MaBossResult simulationId={this.state.simulationId}/>
-			</MenuPage>
+			</ModelPage>
 		);
 	}
 }

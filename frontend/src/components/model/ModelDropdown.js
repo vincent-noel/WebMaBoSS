@@ -21,7 +21,6 @@ class ModelDropdown extends React.Component {
 
 
 	getModels(project_id) {
-
 		getModelsFromAPI(project_id, (models) => {
 			this.setState({ models: models, loaded: true });
 		});
@@ -38,16 +37,15 @@ class ModelDropdown extends React.Component {
 
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.project !== this.props.project) {
-
-			console.log("project changed !");
 			this.getModels(nextProps.project);
 			clearModel();
+			return false;
 
 		}
 		if (nextState.models !== this.state.models) {
 			if (getModel() === null){
 				this.onModelChanged(null, nextState.models[0].id, nextState.models[0].name);
-}
+			}
 		}
 
 		return true;
