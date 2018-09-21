@@ -23,7 +23,7 @@ class MaBoss extends React.Component {
 		this.removeOldSim = this.removeOldSim.bind(this);
 		this.loadListSimulations = this.loadListSimulations.bind(this);
 		this.onModelChanged = this.onModelChanged.bind(this);
-		this.onProjectChanged = this.onProjectChanged.bind(this);
+		// this.onProjectChanged = this.onProjectChanged.bind(this);
 	}
 
 
