@@ -18,6 +18,14 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "sidebar";
 
+div.page {
+  padding-top: 3.5rem;
+}
+
+div.fullpage {
+  padding-top: 1.5rem;
+}
+
 .table-steadystates {
 
   max-width: 100%;
