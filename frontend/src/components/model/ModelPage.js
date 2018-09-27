@@ -1,11 +1,11 @@
 import React from "react";
 
 import SideBar from "./SideBar";
-import Page from "../Page";
 
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faBars } from '@fortawesome/free-solid-svg-icons';
 import {getAPIKey, getModel, getProject} from "../commons/sessionVariables";
+import MenuPage from "../MenuPage";
+import {ProjectContext, ModelContext} from "../context";
+
 
 class ModelPage extends React.Component {
 
@@ -13,22 +13,17 @@ class ModelPage extends React.Component {
 		super(props);
 
 		this.state = {
-			toggled : true,
 			modelId: getModel(),
 			modelName: undefined,
-			project: getProject()
 		};
 
 		this.getName(getModel());
-
-		this.toggle.bind(this);
-		this.onModelChanged.bind(this);
-		this.updateProject = this.updateProject.bind(this);
+		this.onModelChanged = this.onModelChanged.bind(this);
 	}
 
-	getName(modelId) {
+	getName(project_id, model_id) {
 		fetch(
-			"/api/logical_model/" + getProject() + "/" + modelId + "/name",
+			"/api/logical_model/" + project_id + "/" + model_id + "/name",
 			{
 				method: "get",
 				headers: new Headers({
@@ -40,47 +35,34 @@ class ModelPage extends React.Component {
 		.then(data => {this.setState({modelName: data['name']})});
 	}
 
-	toggle(e) {
-		this.setState({toggled: !this.state.toggled});
-	}
-
-	onModelChanged(e, id) {
-		this.setState({modelId: id});
-		this.getName(id);
-		if (this.props.onModelChanged !== undefined) {
-			this.props.onModelChanged();
-		}
-	}
-
-	updateProject(project) {
-		this.setState({project: project});
+	onModelChanged(project_id, model_id) {
+		this.setState({modelId: model_id});
+		this.getName(project_id, model_id);
 	}
 
 	render() {
+		console.log("Rendering model page");
 		return (
-			<Page path={this.props.path} updateProject={this.updateProject}>
-				<div id="wrapper" className={this.state.toggled?"toggled":""}>
-					<SideBar
-						project={this.state.project}
-						modelId={this.state.modelId} modelName={this.state.modelName}
-						onModelChanged={(e, id) => this.onModelChanged(e, id)}
-						path={this.props.path}
-					/>
-					<div id="page-content-wrapper">
-    					{React.Children.map(
-    						this.props.children,
-							(child => React.cloneElement(child, {
-								modelId: this.state.modelId,
-								modelName: this.state.modelName,
-								project: this.state.project
-							}))
-						)}
-					</div>
-					<a className="btn btn-secondary" id="menu-toggle" onClick={(e) => this.toggle(e)} >
-						<FontAwesomeIcon icon={faBars} />
-					</a>
-				</div>
-			</Page>
+			<ModelContext.Provider value={{
+				modelId: this.state.modelId,
+				modelName: this.state.modelName,
+				onModelChanged: this.onModelChanged
+			}}>
+				<MenuPage
+					path={this.props.path}
+					sidebar={<ProjectContext.Consumer>
+							{(projectContext => <SideBar
+								project={projectContext.project}
+								modelId={this.state.modelId} modelName={this.state.modelName}
+								onModelChanged={this.onModelChanged}
+								path={this.props.path}
+							/>)}
+						</ProjectContext.Consumer>
+					}
+				>
+					{this.props.children}
+				</MenuPage>
+			</ModelContext.Provider>
 		);
 	}
 }

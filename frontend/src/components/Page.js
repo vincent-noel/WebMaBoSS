@@ -1,14 +1,31 @@
 import React from "react";
 import NavBar from "./navbar/NavBar";
 import PropTypes from "prop-types";
-import {isConnected} from "./commons/sessionVariables";
+import {getProject, isConnected} from "./commons/sessionVariables";
 import history from './history';
+import {ProjectContext} from './context';
+
 
 class Page extends React.Component {
 
 	static propTypes = {
 		path: PropTypes.string.isRequired,
 	};
+
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			project: getProject()
+		};
+		this.updateProject = this.updateProject.bind(this);
+
+	}
+
+	updateProject(project) {
+		this.setState({project: project});
+	}
+
 
 	componentWillMount() {
 		if (!isConnected() && this.props.path !== "/register/") {
@@ -17,12 +34,15 @@ class Page extends React.Component {
 	}
 
 	render() {
-		const page_style = { 'paddingTop': '3.5rem' };
 		return (
+			<ProjectContext.Provider value={{project: this.state.project, updateProject: this.updateProject}}>
 			<div className="container-fluid">
-				<NavBar path={this.props.path} updateProject={this.props.updateProject}/>
-				<div className="page" style={page_style}>{this.props.children}</div>
+				<NavBar path={this.props.path}/>
+				<div className="page">
+					{this.props.children}
+				</div>
 			</div>
+			</ProjectContext.Provider>
 		);
 	}
 }

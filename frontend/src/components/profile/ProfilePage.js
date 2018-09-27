@@ -3,6 +3,7 @@ import React from "react";
 import SideBar from "./SideBar";
 import MenuPage from "../MenuPage";
 import PropTypes from "prop-types";
+import recursiveCloneChildren from "../commons/recursiveCloneChildren";
 
 
 class ProfilePage extends React.Component {
@@ -12,12 +13,11 @@ class ProfilePage extends React.Component {
 	};
 
 	render() {
-		return <MenuPage
-				path={this.props.path}
-				sidebar={<SideBar project={this.props.project} path={this.props.path}/>}
-			>
-				{this.props.children}
-			</MenuPage>;
+		return <MenuPage path={this.props.path}
+			sidebar={<SideBar path={this.props.path}/>}
+		>
+			{this.props.children}
+		</MenuPage>;
 	}
 }
 

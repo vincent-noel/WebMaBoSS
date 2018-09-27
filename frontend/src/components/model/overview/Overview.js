@@ -6,14 +6,30 @@ import ModelName from "../ModelName";
 import ModelGraph from "./ModelGraph";
 // import ModelGraphRaw from "./ModelGraphRaw";
 // import ModelGraphSBGN from "./ModelGraphSBGN";
-
+import {ProjectContext, ModelContext} from "../../context";
 
 class Overview extends React.Component {
 
 	render() {
 		return <ModelPage path={this.props.match.path}>
-			<ModelName />
-			<ModelGraph />
+			<ProjectContext.Consumer>
+				{projectContext => (
+				<ModelContext.Consumer>
+					{modelContext => (
+					<React.Fragment>
+						<ModelName
+							project={projectContext.project}
+							modelId={modelContext.modelId}
+							modelName={modelContext.modelName}
+						/>
+						<ModelGraph
+							project={projectContext.project}
+							modelId={modelContext.modelId}
+							modelName={modelContext.modelName}
+						/>
+					</React.Fragment>)}
+				</ModelContext.Consumer>)}
+			</ProjectContext.Consumer>
 			{/*<ModelGraphRaw />*/}
 			{/*<ModelGraphSBGN />*/}
 		</ModelPage>;

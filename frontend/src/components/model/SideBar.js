@@ -1,17 +1,9 @@
-import React, {Component} from "react";
+import React from "react";
 import {NavLink} from "react-router-dom";
 import ModelDropdown from "./ModelDropdown";
 
-class SideBar extends Component {
 
-	constructor(props){
-		super(props);
-		this.onModelChanged.bind(this);
-	}
-
-	onModelChanged(e, model_id) {
-		this.props.onModelChanged(e, model_id);
-	}
+class SideBar extends React.Component {
 
 	render(){
 		return (
@@ -19,7 +11,7 @@ class SideBar extends Component {
 				<ModelDropdown
 					project={this.props.project}
 					modelName={this.props.modelName}
-					onModelChanged={(e, model_id) => this.props.onModelChanged(e, model_id)}
+					onModelChanged={this.props.onModelChanged}
 					path={this.props.path}
 				/>
 				<br/>

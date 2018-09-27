@@ -1,6 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import {setModel, getModel, clearModel} from "../commons/sessionVariables";
+import {setModel, getModel, clearModel, getAPIKey} from "../commons/sessionVariables";
 import {getModelsFromAPI} from "../commons/apiCalls";
 import LoadingIcon from "../commons/LoadingIcon";
 
@@ -12,16 +12,12 @@ class ModelDropdown extends React.Component {
 		this.state = {
 			loaded: false,
 			models: [],
-			selectedModelId: null,
-			selectedModelName: null
 		};
-
-		this.onModelChanged.bind(this);
 	}
 
-
 	getModels(project_id) {
-		getModelsFromAPI(project_id, (models) => {
+		getModelsFromAPI(project_id)
+		.then(models => {
 			this.setState({ models: models, loaded: true });
 		});
 	}
@@ -30,22 +26,14 @@ class ModelDropdown extends React.Component {
 		this.getModels(this.props.project);
 	}
 
-	onModelChanged(e, model_id, name) {
-		setModel(model_id);
-		this.props.onModelChanged(e, model_id);
-	}
-
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.project !== this.props.project) {
 			this.getModels(nextProps.project);
-			clearModel();
 			return false;
-
 		}
+
 		if (nextState.models !== this.state.models) {
-			if (getModel() === null){
-				this.onModelChanged(null, nextState.models[0].id, nextState.models[0].name);
-			}
+			this.props.onModelChanged(nextProps.project, nextState.models[0].id);
 		}
 
 		return true;
@@ -72,7 +60,7 @@ class ModelDropdown extends React.Component {
 							return <NavLink
 								to={this.props.path}
 								className="dropdown-item bg-dark" key={model.id}
-								onClick={(e) => this.onModelChanged(e, model.id, model.name)}>{model.name}
+								onClick={() => this.props.onModelChanged(this.props.project, model.id)}>{model.name}
 							</NavLink>
 
 						})}

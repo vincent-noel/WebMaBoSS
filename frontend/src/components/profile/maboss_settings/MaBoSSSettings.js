@@ -41,7 +41,6 @@ class MaBoSSSettings extends React.Component {
 	render() {
 		return <ProfilePage
 			path={this.props.match.path}
-			project={getProject()}
 		>
 			<h2>MaBoSS servers</h2>
 			<MaBoSSServers endpoint={this.serversAPIEndpoint}

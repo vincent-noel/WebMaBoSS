@@ -27,7 +27,7 @@ class MaBoss extends React.Component {
 	}
 
 
-	loadListSimulations() {
+	loadListSimulations(project_id, model_id) {
 		const conf = {
 		  method: "get",
 		  headers: new Headers({
@@ -35,10 +35,9 @@ class MaBoss extends React.Component {
 		  })
 		};
 
-		fetch("/api/logical_model/" + getProject() + "/" + getModel() + "/maboss", conf)
+		fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss", conf)
 		.then(response => {	return response.json(); })
 		.then(data => { this.setState({listOfSimulations: data}); });
-
 	}
 
 
@@ -79,17 +78,22 @@ class MaBoss extends React.Component {
 		};
 
 		fetch("/api/maboss/" + simulation_id + "/", conf)
-		.then(response => {	this.loadListSimulations(); })
+		.then(response => {	this.loadListSimulations(getProject(), getModel()); })
 
 	}
 
-
 	onModelChanged() {
-		this.loadListSimulations();
+		this.loadListSimulations(getProject(), getModel());
 	}
 
 	componentDidMount() {
-		this.loadListSimulations();
+		this.loadListSimulations(getProject(), getModel());
+	}
+
+	shouldComponentUpdate(nextProps) {
+		console.log("Maboss new props : ");
+		console.log(nextProps);
+		return true;
 	}
 
 	render() {

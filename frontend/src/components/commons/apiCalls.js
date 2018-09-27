@@ -11,15 +11,13 @@ function getProjects(callback) {
 	.then(data => { callback(data); });
 }
 
-function getModelsFromAPI(project_id, callback) {
-	fetch(
+function getModelsFromAPI(project_id) {
+	return fetch(
 		"/api/logical_models/" + project_id + "/", {
 			method: "get",
 			headers: new Headers({'Authorization': "Token " + getAPIKey()})
 		}
-	)
-	.then(response => response.json())
-	.then(data => { callback(data); });
+	).then(response => response.json());
 }
 
 export {getProjects, getModelsFromAPI};

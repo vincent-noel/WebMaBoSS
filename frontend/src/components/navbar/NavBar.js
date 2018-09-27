@@ -3,7 +3,7 @@ import NavBarBrand from "./NavBarBrand";
 import NavBarItem from "./NavBarItem";
 import ProjectDropdown from "./ProjectDropdown";
 import {isConnected} from "../commons/sessionVariables";
-
+import {ProjectContext} from "../context";
 
 class NavBar extends React.Component {
 
@@ -24,12 +24,13 @@ class NavBar extends React.Component {
 						{ this.props.path !== "/" ?
 						<div className="collapse navbar-collapse" id="navbarsExampleDefault">
 							<ul className="navbar-nav mr-auto">
-								<ProjectDropdown
-									// projectName={""}
-									// onProjectChan={(e, model_id) => this.props.onProjectChanged(e, model_id)}
-									updateProject={this.props.updateProject}
+								<ProjectContext.Consumer>
+								{(projectContext) => <ProjectDropdown
 									path={this.props.path}
-								/>
+									project={projectContext.project}
+									updateProject={projectContext.updateProject}
+								/>}
+								</ProjectContext.Consumer>
 							</ul>
 						</div> : null
 						}
