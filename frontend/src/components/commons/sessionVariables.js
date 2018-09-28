@@ -1,5 +1,5 @@
 function getProject() {
-    return sessionStorage.getItem("project");
+    return parseInt(sessionStorage.getItem("project"));
 }
 
 function setProject(project) {
@@ -7,7 +7,7 @@ function setProject(project) {
 }
 
 function getModel() {
-    return sessionStorage.getItem("model");
+    return parseInt(sessionStorage.getItem("model"));
 }
 
 function setModel(model) {
