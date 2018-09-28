@@ -1,6 +1,7 @@
 import React, {Component} from "react";
-import {getAPIKey} from "../../commons/sessionVariables";
 import LoadingIcon from "../../commons/LoadingIcon";
+import {APICalls} from "../../commons/apiCalls";
+
 
 class ModelGraph extends Component {
 
@@ -12,57 +13,34 @@ class ModelGraph extends Component {
 			loaded: false,
 		};
 
-		this.mounted = false;
+		this.getGraphCall = null;
 	}
 
-	getGraph(modelId) {
-		// Getting the graph via the API
+	getGraph(project_id, model_id) {
+		this.setState({loaded: false, data: null});
 
-		fetch(
-			"/api/logical_model/" + this.props.project + "/" + modelId + "/graph",
-			{
-				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => {	return response.blob(); })
-
-		// toBase64
-		.then(
-			blob => new Promise((resolve, reject) => {
-				const reader = new FileReader;
-				reader.onerror = reject;
-				reader.onload = () => {
-					resolve(reader.result);
-				};
-				reader.readAsDataURL(blob);
-			})
-		)
-
-		// Finally, setting state
-		.then(
-			data => {
-				if (this.mounted) this.setState({data: data, loaded: true});
-			}
-		);
+		this.getGraphCall = APICalls.getGraph(project_id, model_id);
+		this.getGraphCall.promise.then(data => this.setState({data: data, loaded: true}));
 	}
 
 
 	componentDidMount() {
-		this.mounted = true;
-		this.getGraph(this.props.modelId);
+		this.getGraph(this.props.project, this.props.modelId);
 	}
 
 	componentWillUnmount() {
-		this.mounted = false;
+		this.getGraphCall.cancel();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
+		if (nextProps.project !== this.props.project) {
+			return false;
+		}
+
 		if (nextProps.modelId !== this.props.modelId) {
+			this.getGraphCall.cancel();
 			this.setState({loaded: false});
-			this.getGraph(nextProps.modelId);
+			this.getGraph(nextProps.project, nextProps.modelId);
 			return false;
 
 		}
@@ -72,11 +50,7 @@ class ModelGraph extends Component {
 	render() {
 
 		if (this.state.loaded) {
-			const style_image = {
-				'maxWidth': '100%',
-				'maxHeight': '100%'
-			};
-			return <img src={this.state.data} style={style_image} />
+			return <img src={this.state.data} className="fullsize" />
 		} else {
 			return <LoadingIcon width="3rem"/>;
 		}

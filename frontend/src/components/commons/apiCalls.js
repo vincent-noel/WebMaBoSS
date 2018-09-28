@@ -1,4 +1,5 @@
 import {getAPIKey} from "./sessionVariables";
+import makeCancelable from "./makeCancelable";
 
 function getProjects(callback) {
 	fetch(
@@ -20,4 +21,34 @@ function getModelsFromAPI(project_id) {
 	).then(response => response.json());
 }
 
-export {getProjects, getModelsFromAPI};
+class APICalls {
+
+	static getGraph(project_id, model_id) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/graph",
+				{
+					method: "get",
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey()
+					})
+				}
+			)
+				.then(response => {
+					return response.blob();
+				})
+				.then(
+					blob => new Promise((resolve, reject) => {
+						const reader = new FileReader;
+						reader.onerror = reject;
+						reader.onload = () => {
+							resolve(reader.result);
+						};
+						reader.readAsDataURL(blob);
+					})
+				)
+		);
+
+	}
+}
+export {getProjects, getModelsFromAPI, APICalls};
