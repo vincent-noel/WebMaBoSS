@@ -1,6 +1,7 @@
 import React from "react";
 import {Pie} from "react-chartjs-2";
 import LoadingIcon from "../../commons/LoadingIcon";
+import APICalls from "../../commons/apiCalls";
 
 class MaBossFixedPoints extends React.Component {
 
@@ -9,18 +10,19 @@ class MaBossFixedPoints extends React.Component {
 
 		this.state = {
 			fptableLoaded: false,
-			fptable: undefined,
+			fptable: null,
 		};
 
-		this.fixedPointsChecker = undefined;
-
-
+		this.fixedPointsChecker = null;
+		this.getFixedPointsCall = null;
 	}
 
 	getFixedPoints(simulationId) {
-		fetch("/api/maboss/" + simulationId + "/fixed_points/")
-		.then(response => {	return response.json(); })
-		.then(data => {
+
+
+		this.setState({fptableLoaded: false, fptable: null});
+		this.getFixedPointsCall = APICalls.getFixedPoints(simulationId);
+		this.getFixedPointsCall.promise.then(data => {
 			if (data['fixed_points'] !== null) {
 				clearInterval(this.fixedPointsChecker);
 				this.setState({fptableLoaded: true, fptable: data['fixed_points']})
@@ -35,13 +37,14 @@ class MaBossFixedPoints extends React.Component {
 	shouldComponentUpdate(nextProps, nextState) {
 
 		if (this.props.modelId !== nextProps.modelId) {
-			this.setState({fptableLoaded: false, fptable: undefined});
+			this.setState({fptableLoaded: false, fptable: null});
 			return false;
 		}
 
 		if (this.props.simulationId !== nextProps.simulationId && nextProps.simulationId !== null) {
+			this.getFixedPointsCall.cancel();
 			this.fixedPointsChecker = setInterval(() => this.getFixedPoints(nextProps.simulationId), 1000);
-			return true;
+			return false;
 		}
 		return true;
 
@@ -49,6 +52,7 @@ class MaBossFixedPoints extends React.Component {
 
 
 	componentWillUnmount() {
+		this.getFixedPointsCall.cancel();
 		clearInterval(this.fixedPointsChecker);
 	}
 

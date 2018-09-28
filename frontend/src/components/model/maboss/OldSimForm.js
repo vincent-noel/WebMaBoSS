@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import {getAPIKey} from "../../commons/sessionVariables";
+import APICalls from "../../commons/apiCalls";
 
 
 class OldSimForm extends React.Component {
@@ -14,6 +14,8 @@ class OldSimForm extends React.Component {
 			selectedSimulationId: null,
 		};
 
+		this.getListSimulationCall = null;
+		this.removeSimulationCall = null;
 	}
 
 	loadListSimulations(project_id, model_id) {
@@ -23,30 +25,17 @@ class OldSimForm extends React.Component {
 			selectedSimulationId: null
 		});
 
-		const conf = {
-		  method: "get",
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-		  })
-		};
-
-		fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss", conf)
-		.then(response => {	return response.json(); })
-		.then(data => { this.setState({listOfSimulations: data}); this.props.showOldSimButton(data.length > 0); });
+		this.getListSimulationCall = APICalls.getListOfMaBoSSSimulations(project_id, model_id);
+		this.getListSimulationCall.promise.then(data => {
+			this.setState({listOfSimulations: data});
+			this.props.showOldSimButton(data.length > 0);
+		});
 	}
 
 	removeOldSim(simulation_id) {
 
-		const conf = {
-		  method: "delete",
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-		  })
-		};
-
-		fetch("/api/maboss/" + simulation_id + "/", conf)
-		.then(response => {	this.loadListSimulations(this.props.project, this.props.modelId); })
-
+		this.removeSimulationCall = APICalls.deleteMaBossSimulation(simulation_id);
+		this.removeSimulationCall.promise.then(response => this.loadListSimulations(this.props.project, this.props.modelId))
 	}
 
 	onSubmit(e) {
@@ -64,8 +53,14 @@ class OldSimForm extends React.Component {
 	componentDidMount() {
 		this.loadListSimulations(this.props.project, this.props.modelId);
 	}
+
+	componentWillUnmount() {
+		if (this.getListSimulationCall !== null) this.getListSimulationCall.cancel();
+		if (this.removeSimulationCall !== null) this.removeSimulationCall.cancel();
+	}
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.modelId !== this.props.modelId) {
+			this.getListSimulationCall.cancel();
 			this.loadListSimulations(nextProps.project, nextProps.modelId);
 			return false;
 		}

@@ -2,9 +2,10 @@ import React from "react";
 
 import SideBar from "./SideBar";
 
-import {getAPIKey, getModel, setModel} from "../commons/sessionVariables";
+import {getModel, setModel} from "../commons/sessionVariables";
 import MenuPage from "../MenuPage";
 import {ProjectContext, ModelContext} from "../context";
+import APICalls from "../commons/apiCalls";
 
 
 class ModelPage extends React.Component {
@@ -17,20 +18,15 @@ class ModelPage extends React.Component {
 			modelName: null,
 		};
 		this.onModelChanged = this.onModelChanged.bind(this);
+		this.getNameCall = null;
 	}
 
 	getName(project_id, model_id) {
-		fetch(
-			"/api/logical_model/" + project_id + "/" + model_id + "/name",
-			{
-				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => {return response.json()})
-		.then(data => {this.setState({modelName: data['name']})});
+		if (this.getNameCall !== null) this.getNameCall.cancel();
+		this.setState({modelName: null});
+
+		this.getNameCall = APICalls.getName(project_id, model_id);
+		this.getNameCall.promise.then(data => {this.setState({modelName: data['name']})});
 	}
 
 	onModelChanged(project_id, model_id) {
@@ -38,6 +34,7 @@ class ModelPage extends React.Component {
 		this.setState({modelId: model_id});
 		this.getName(project_id, model_id);
 	}
+
 
 	render() {
 		return (

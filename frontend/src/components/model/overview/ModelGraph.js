@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import LoadingIcon from "../../commons/LoadingIcon";
-import {APICalls} from "../../commons/apiCalls";
+import APICalls from "../../commons/apiCalls";
 
 
 class ModelGraph extends Component {

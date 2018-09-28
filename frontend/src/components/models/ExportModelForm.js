@@ -1,8 +1,7 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import Dropdown from "../commons/Dropdown";
-import {getAPIKey} from "../commons/sessionVariables";
-import {saveAs} from "file-saver/FileSaver";
+import APICalls from "../commons/apiCalls";
 
 class ExportModelForm extends React.Component {
 
@@ -18,14 +17,6 @@ class ExportModelForm extends React.Component {
 			'sbml': "SBML qual"
 		}
 	}
-	downloadZGINML() {
-		fetch("/api/logical_models/" + this.props.project + "/" + this.props.id + "/file", {
-			method: "get",
-			headers: new Headers({'Authorization': "Token " + getAPIKey()}),
-		})
-		.then(response => response.blob())
-		.then(blob => saveAs(blob, this.props.filename));
-	}
 
 	changeFormat(format) {
 		this.setState({format: format});
@@ -36,7 +27,7 @@ class ExportModelForm extends React.Component {
 		this.props.hide();
 		switch(this.state.format) {
 			case 'zginml':
-				this.downloadZGINML();
+				APICalls.downloadModelAsZGINML(this.props.project, this.props.id);
 				break;
 
 			case 'sbml':

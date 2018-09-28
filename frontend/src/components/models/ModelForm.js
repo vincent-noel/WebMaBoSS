@@ -1,7 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import getCSRFToken from "../commons/getCSRFToken";
-import {getAPIKey, getProject} from "../commons/sessionVariables";
+import APICalls from "../commons/apiCalls";
 
 class ModelForm extends React.Component {
 
@@ -20,6 +19,8 @@ class ModelForm extends React.Component {
 		this.handleNameChange.bind(this);
 		this.handleFileChange.bind(this);
 		this.handleSubmit.bind(this);
+
+		this.importModelCall = null;
 	}
 
 	toggle() {
@@ -37,21 +38,8 @@ class ModelForm extends React.Component {
 	handleSubmit(e) {
 		e.preventDefault();
 
-		const formData = new FormData();
-		formData.append('file', this.state.file);
-		formData.append('name', this.state.name);
-
-		const conf = {
-			method: "post",
-			body: formData,
-			headers: new Headers({
-				'Authorization': "Token " + getAPIKey(),
-				'X-CSRFToken': getCSRFToken()
-			})
-		};
-
-		fetch("/api/logical_models/" + getProject() + "/", conf)
-		.then(response => {
+		this.importModelCall = APICalls.importModel(this.props.project, this.state.file, this.state.name);
+		this.importModelCall.promise.then(response => {
 
 			this.setState({
 				name: "",
@@ -75,19 +63,20 @@ class ModelForm extends React.Component {
 				this.setState({
 					id: nextProps.id.id,
 					name: nextProps.id.name,
-					// description: nextProps.id.description,
 				});
 			} else {
 				this.setState({
 					id: null,
 					name: "",
-					// description: "",
 				});
 			}
 		}
 		return true;
 	}
 
+	componentWillUnmount() {
+		if (this.importModelCall !== null) this.importModelCall.cancel();
+	}
 
 	render() {
 		return <React.Fragment>

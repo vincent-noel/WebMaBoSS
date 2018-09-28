@@ -1,9 +1,10 @@
 import React, {Component} from "react";
-import {getAPIKey} from "../../commons/sessionVariables";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import LoadingIcon from "../../commons/LoadingIcon";
 import Graph from "./Graph";
+import APICalls from "../../commons/apiCalls";
+
 
 class ModelSteadyStatesResult extends Component {
 
@@ -15,28 +16,16 @@ class ModelSteadyStatesResult extends Component {
 			loaded: false,
 			selectedSteadyState: null,
 		};
+
+		this.getSteadyStatesCall = null;
 	}
 
 	getSteadyStates(project_id, model_id) {
 
 		this.setState({loaded: false, data: {}, selectedSteadyState: null});
-		// Getting the graph via the API
-		fetch(
-			"/api/logical_model/" + project_id + "/" + model_id + "/steady_states", {
-				method: "get",
-				headers: new Headers({'Authorization': "Token " + getAPIKey()})
-			}
-		)
-		.then(response => {
-			if (response.status == 200) {
-				return response.json();
-			} else {
-				return {};
-			}
-		})
 
-		// Finally, setting state
-		.then(data => this.setState({data: data, loaded: true, selectedSteadyState: null}));
+		this.getSteadyStatesCall = APICalls.getSteadyStates(project_id, model_id);
+		this.getSteadyStatesCall.promise.then(data => this.setState({data: data, loaded: true, selectedSteadyState: null}));
 	}
 
 
@@ -52,9 +41,14 @@ class ModelSteadyStatesResult extends Component {
 		this.getSteadyStates(this.props.project, this.props.modelId);
 	}
 
+	componentWillUnmount() {
+		this.getSteadyStatesCall.cancel();
+	}
+
 	shouldComponentUpdate(nextProps, nextState) {
 
 		if (nextProps.modelId !== this.props.modelId) {
+			this.getSteadyStatesCall.cancel();
 			this.getSteadyStates(nextProps.project, nextProps.modelId);
 		}
 

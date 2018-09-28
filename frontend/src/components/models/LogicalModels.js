@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
-import {getAPIKey, getProject} from "../commons/sessionVariables";
+import LoadingIcon from "../commons/LoadingIcon";
+import APICalls from "../commons/apiCalls";
 
 class LogicalModels extends Component {
 	static propTypes = {
@@ -16,34 +17,26 @@ class LogicalModels extends Component {
 		this.state = {
 			data: [],
 			loaded: false,
-			placeholder: "Loading the list of models"
 		};
+		this.getModelsCall = null;
 	}
 
 	updateParent() {
-		this.getData();
+		this.getModelsCall.cancel();
+		this.getData(this.props.project);
 	}
 
-	getData(){
-		fetch(
-			this.props.endpoint + getProject() + "/",
-			{
-				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				}),
-			}
-		)
-		.then(response => {
-			if (response.status !== 200) {
-				return this.setState({ placeholder: "Unable to get the list of models" });
-			}
-			return response.json();
-		})
-		.then(data => this.setState({ data: data, loaded: true }));
+	getData(project_id){
+		this.setState({data: [], loaded: false});
+		this.getModelsCall = APICalls.getModels(project_id);
+		this.getModelsCall.promise.then(data => this.setState({ data: data, loaded: true }));
 	}
 	componentDidMount() {
-		this.getData();
+		this.getData(this.props.project);
+	}
+
+	componentWillUnmount() {
+		if (this.getModelsCall !== null) this.getModelsCall.cancel();
 	}
 
 
@@ -52,7 +45,7 @@ class LogicalModels extends Component {
 			return this.props.render(this.state.data, this.updateParent, this.props.project);
 
 		} else {
-			return <p>{this.state.placeholder}</p>
+			return <LoadingIcon width="3rem"/>
 		}
 	}
 }

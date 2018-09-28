@@ -1,8 +1,7 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import {getModelsFromAPI} from "../commons/apiCalls";
+import APICalls from "../commons/apiCalls";
 import LoadingIcon from "../commons/LoadingIcon";
-import {getModel} from "../commons/sessionVariables";
 
 
 class ModelDropdown extends React.Component {
@@ -13,12 +12,14 @@ class ModelDropdown extends React.Component {
 			loaded: false,
 			models: [],
 		};
+
+		this.getModelsCall = null;
 	}
 
 	getModels(project_id) {
 		this.setState({models: [], loaded: false});
-		getModelsFromAPI(project_id)
-		.then(models => {
+		this.getModelsCall = APICalls.getModels(project_id)
+		this.getModelsCall.promise.then(models => {
 			this.setState({ models: models, loaded: true });
 		});
 	}
@@ -27,8 +28,13 @@ class ModelDropdown extends React.Component {
 		this.getModels(this.props.project);
 	}
 
+	componentWillUnmount(){
+		this.getModelsCall.cancel();
+	}
+
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.project !== this.props.project) {
+			this.getModelsCall.cancel();
 			this.getModels(nextProps.project);
 			return false;
 		}

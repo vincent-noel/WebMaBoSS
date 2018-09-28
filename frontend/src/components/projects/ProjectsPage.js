@@ -6,9 +6,6 @@ import Projects from "./Projects";
 import TableProjects from "./TableProjects";
 import ProjectForm from "./ProjectForm";
 
-import {isConnected} from "../commons/sessionVariables";
-
-
 class ProjectsPage extends React.Component {
 
 	constructor(props) {

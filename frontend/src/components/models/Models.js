@@ -4,7 +4,6 @@ import FullPage from "../FullPage";
 import LogicalModels from "./LogicalModels";
 import TableModels from "./TableModels";
 import ModelForm from "./ModelForm";
-import {getProject} from "../commons/sessionVariables";
 import ExportModelForm from "./ExportModelForm";
 import {ProjectContext} from "../context";
 
@@ -62,10 +61,12 @@ class Models extends React.Component {
 		return (
 			<FullPage path={this.props.match.path}>
 				<h2>Models</h2>
-				<LogicalModels endpoint="/api/logical_models/"
-					render={(data, updateParent) => {
-						return <ProjectContext>
-							{(projectContext => <React.Fragment>
+				<ProjectContext>
+					{(projectContext => <LogicalModels
+						endpoint="/api/logical_models/"
+						project={projectContext.project}
+						render={(data, updateParent) => {
+							return <React.Fragment>
 								<TableModels
 									data={data}
 									updateParent={updateParent}
@@ -77,6 +78,7 @@ class Models extends React.Component {
 								<Button type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
 
 								<ModelForm
+									project={projectContext.project}
 									updateParent={updateParent}
 									status={this.state.showModelForm}
 									id={this.state.idModelForm}
@@ -91,11 +93,12 @@ class Models extends React.Component {
 									show={this.showExportModelForm}
 									hide={this.hideExportModelForm}
 								/>
-							</React.Fragment>)}
-						</ProjectContext>
+							</React.Fragment>
 						}
 					}
 				/>
+					)}
+				</ProjectContext>
 			</FullPage>
 		)
 	}

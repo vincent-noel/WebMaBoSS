@@ -2,6 +2,7 @@ import React from "react";
 import ReactDOMServer from "react-dom/server";
 import {Line} from "react-chartjs-2";
 import LoadingIcon from "../../commons/LoadingIcon";
+import APICalls from "../../commons/apiCalls";
 
 class MaBossStatesProbTraj extends React.Component {
 
@@ -10,10 +11,11 @@ class MaBossStatesProbTraj extends React.Component {
 
 		this.state = {
 			statesProbTrajLoaded: false,
-			statesProbTraj: undefined,
+			statesProbTraj: null,
 		};
 
-		this.statesProbTrajChecker = undefined;
+		this.statesProbTrajChecker = null;
+		this.getStateProbtrajCall = null;
 		this.chartRef = this.chartRef.bind(this);
 		this.legendRef = this.legendRef.bind(this);
 		this.legend = undefined;
@@ -32,9 +34,9 @@ class MaBossStatesProbTraj extends React.Component {
 	}
 
 	getStateProbtraj(simulationId) {
-		fetch("/api/maboss/" + simulationId + "/states_trajs/")
-		.then(response => {	return response.json(); })
-		.then(data => {
+		this.setState({statesProbTrajLoaded: false, statesProbTraj: null});
+		this.getStateProbtrajCall = APICalls.getStatesProbTraj(simulationId);
+		this.getStateProbtrajCall.promise.then(data => {
 			if (data['states_probtraj'] !== null) {
 				clearInterval(this.statesProbTrajChecker);
 				this.setState({statesProbTrajLoaded: true, statesProbTraj: data['states_probtraj']})
@@ -46,13 +48,14 @@ class MaBossStatesProbTraj extends React.Component {
 	shouldComponentUpdate(nextProps, nextState) {
 
 		if (this.props.modelId !== nextProps.modelId) {
-			this.setState({statesProbTrajLoaded: false, statesProbTraj: undefined});
+			this.setState({statesProbTrajLoaded: false, statesProbTraj: null});
 			return false;
 		}
 
 		if (this.props.simulationId !== nextProps.simulationId) {
+			this.getStateProbtrajCall.cancel();
 			this.statesProbTrajChecker = setInterval(() => this.getStateProbtraj(nextProps.simulationId), 1000);
-			return true;
+			return false;
 		}
 		return true;
 
@@ -63,6 +66,7 @@ class MaBossStatesProbTraj extends React.Component {
 	}
 
 	componentWillUnmount() {
+		this.getStateProbtrajCall.cancel();
 		clearInterval(this.statesProbTrajChecker);
 	}
 
@@ -111,7 +115,7 @@ class MaBossStatesProbTraj extends React.Component {
 					<div ref={this.legendRef}></div>
 				</React.Fragment>
 			);
-		} else if (this.props.simulationId !== undefined) {
+		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
 		} else {
 			return <div/>

@@ -1,6 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
-import {getAPIKey} from "../commons/sessionVariables";
+import LoadingIcon from "../commons/LoadingIcon";
+import APICalls from "../commons/apiCalls";
 
 
 class Projects extends React.Component {
@@ -17,38 +18,31 @@ class Projects extends React.Component {
 		this.state = {
 			data: [],
 			loaded: false,
-			placeholder: "Loading...",
-
 		};
+
+		this.getProjectsCall = null;
 	}
 
 	updateProjects(){
-		fetch(
-			this.props.endpoint,
-			{
-				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => {
-			if (response.status !== 200) {
-				return this.setState({ placeholder: "Something went wrong" });
-			}
-			return response.json();
-		})
-		.then(data => this.setState({ data: data, loaded: true }));
+		if (this.getProjectsCall !== null) this.getProjectsCall.cancel();
+
+		this.setState({data: [], loaded: false});
+		this.getProjectsCall = APICalls.getProjects();
+		this.getProjectsCall.promise.then(data => this.setState({ data: data, loaded: true }));
 	}
 	componentDidMount() {
 		this.updateProjects();
+	}
+
+	componentWillUnmount() {
+		if (this.getProjectsCall !== null) this.getProjectsCall.cancel();
 	}
 	render() {
 		if (this.state.loaded) {
 			return this.props.render(this.state.data, this.updateProjects)
 
 		} else {
-			return <p>{this.state.placeholder}</p>
+			return <LoadingIcon width="3rem"/>
 		}
 	}
 }

@@ -1,6 +1,7 @@
 import React from "react";
 import {Line} from "react-chartjs-2";
 import LoadingIcon from "../../commons/LoadingIcon";
+import APICalls from "../../commons/apiCalls";
 
 
 class MaBossNodesProbTraj extends React.Component {
@@ -10,16 +11,19 @@ class MaBossNodesProbTraj extends React.Component {
 
 		this.state = {
 			nodesProbTrajLoaded: false,
-			nodesProbTraj: undefined,
+			nodesProbTraj: null,
 		};
 
-		this.nodesProbTrajChecker = undefined;
+		this.nodesProbTrajChecker = null;
+		this.getNodesProbtrajCall = null;
 	}
 
 	getNodesProbtraj(simulationId) {
-		fetch("/api/maboss/" + simulationId + "/nodes_trajs/")
-		.then(response => {	return response.json(); })
-		.then(data => {
+
+		this.setState({nodesProbTrajLoaded: false, nodesProbTraj: null});
+		this.getNodesProbtrajCall = APICalls.getNodesProbTraj(simulationId)
+
+		this.getNodesProbtrajCall.promise.then(data => {
 			if (data['nodes_probtraj'] !== null) {
 				clearInterval(this.nodesProbTrajChecker);
 				this.setState({nodesProbTrajLoaded: true, nodesProbTraj: data['nodes_probtraj']})
@@ -32,6 +36,7 @@ class MaBossNodesProbTraj extends React.Component {
 	}
 
 	componentWillUnmount() {
+		this.getNodesProbtrajCall.cancel();
 		clearInterval(this.nodesProbTrajChecker);
 	}
 
@@ -39,13 +44,14 @@ class MaBossNodesProbTraj extends React.Component {
 	shouldComponentUpdate(nextProps, nextState) {
 
 		if (this.props.modelId !== nextProps.modelId) {
-			this.setState({nodesProbTrajLoaded: false, nodesProbTraj: undefined});
+			this.setState({nodesProbTrajLoaded: false, nodesProbTraj: null});
 			return false;
 		}
 
 		if (this.props.simulationId !== nextProps.simulationId) {
+			this.getNodesProbtrajCall.cancel();
 			this.nodesProbTrajChecker = setInterval(() => this.getNodesProbtraj(nextProps.simulationId), 1000);
-			return true;
+			return false;
 		}
 		return true;
 
@@ -81,7 +87,7 @@ class MaBossNodesProbTraj extends React.Component {
 			return (
 				<Line data={data} options={options}/>
 			);
-		} else if (this.props.simulationId !== undefined) {
+		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
 		} else {
 			return <div/>

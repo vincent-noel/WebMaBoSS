@@ -1,8 +1,8 @@
 import React from "react";
 import {Nav, NavItem, NavLink, TabPane, TabContent, Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import classnames from 'classnames';
-import {getAPIKey} from "../../commons/sessionVariables";
 import TableSwitches from "../../commons/TableSwitches";
+import APICalls from "../../commons/apiCalls";
 
 
 class NewSimForm extends React.Component {
@@ -30,19 +30,21 @@ class NewSimForm extends React.Component {
 
 		this.updateInitialState = this.updateInitialState.bind(this);
 		this.updateInternalVariables = this.updateInternalVariables.bind(this);
+
+		this.getSettingsCall = null;
 	}
 
 	getSettings(project_id, model_id) {
-		const conf = {
-		  method: "get",
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-		  })
-		};
 
-		fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss/settings/", conf)
-		.then(response => response.json())
-		.then(response => {
+
+		this.setState({
+			listNodes: [],
+			initialStates: {},
+			internalVariables: {},
+		});
+
+		this.getSettingsCall = APICalls.getMaBoSSSimulationSettings(project_id, model_id)
+		this.getSettingsCall.promise.then(response => {
 
 			const initial_states = Object.keys(response['initial_states']).reduce(
 				(acc, key) => {
@@ -115,12 +117,17 @@ class NewSimForm extends React.Component {
 		this.getSettings(this.props.project, this.props.modelId);
 	}
 
+	componentWillUnmount() {
+		if (this.getSettingsCall !== null) this.getSettingsCall.cancel();
+	}
+
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.project !== this.props.project) {
 			return false;
 		}
 
 		if (nextProps.modelId !== this.props.modelId) {
+			this.getSettingsCall.cancel();
 			this.getSettings(nextProps.project, nextProps.modelId);
 			return false;
 		}

@@ -5,8 +5,8 @@ import ModelName from "../ModelName";
 import MaBossResult from "./MaBossResult";
 import MaBossActions from "./MaBossActions";
 
-import {getAPIKey} from "../../commons/sessionVariables";
 import {ProjectContext, ModelContext} from "../../context";
+import APICalls from "../../commons/apiCalls";
 
 
 class MaBoss extends React.Component {
@@ -16,51 +16,20 @@ class MaBoss extends React.Component {
 
 		this.state = {
 			simulationId: null,
-			// listOfSimulations: []
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onSubmitOldSim = this.onSubmitOldSim.bind(this);
-		// this.removeOldSim = this.removeOldSim.bind(this);
-		// this.loadListSimulations = this.loadListSimulations.bind(this);
-		// this.onModelChanged = this.onModelChanged.bind(this);
-	}
 
-	//
-	// loadListSimulations(project_id, model_id) {
-	// 	const conf = {
-	// 	  method: "get",
-	// 	  headers: new Headers({
-	// 		'Authorization': "Token " + getAPIKey(),
-	// 	  })
-	// 	};
-	//
-	// 	fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss", conf)
-	// 	.then(response => {	return response.json(); })
-	// 	.then(data => { this.setState({listOfSimulations: data}); });
-	// }
-	//
+		this.createMaBossSimulationCall = null;
+	}
 
 	onSubmit(project_id, model_id, data) {
 		this.setState({simulationId: null});
-		const formData = new FormData();
-		formData.append('sampleCount', data.sampleCount);
-		formData.append('maxTime', data.maxTime);
-		formData.append('timeTick', data.timeTick);
-		formData.append('initialStates', JSON.stringify(data.initialStates));
-		formData.append('internalVariables', JSON.stringify(data.internalVariables));
-
-		const conf = {
-		  method: "post",
-		  body: formData,
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-		  })
-		};
-
-		fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss", conf)
-		.then(response => response.json())
-		.then(data => { this.setState({showNewSimForm: false, simulationId: data['simulation_id']})});
+		this.createMaBossSimulationCall = APICalls.createMaBoSSSimulation(project_id, model_id, data);
+		this.createMaBossSimulationCall.promise.then(data => {
+			this.setState({showNewSimForm: false, simulationId: data['simulation_id']})
+		});
 
 	}
 
@@ -68,27 +37,9 @@ class MaBoss extends React.Component {
 		this.setState({showOldSimForm: false, simulationId: data});
 	}
 
-	// removeOldSim(simulation_id) {
-	//
-	// 	const conf = {
-	// 	  method: "delete",
-	// 	  headers: new Headers({
-	// 		'Authorization': "Token " + getAPIKey(),
-	// 	  })
-	// 	};
-	//
-	// 	fetch("/api/maboss/" + simulation_id + "/", conf)
-	// 	.then(response => {	this.loadListSimulations(getProject(), getModel()); })
-	//
-	// }
-
-	// onModelChanged() {
-	// 	this.loadListSimulations(getProject(), getModel());
-	// }
-	//
-	// componentDidMount() {
-	// 	this.loadListSimulations(getProject(), getModel());
-	// }
+	componentWillUnmount() {
+		if (this.createMaBossSimulationCall !== null) this.createMaBossSimulationCall.cancel();
+	}
 
 	render() {
 

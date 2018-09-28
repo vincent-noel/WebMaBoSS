@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonGroup, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import {getAPIKey} from "../commons/sessionVariables";
+import APICalls from "../commons/apiCalls";
 
 class ProjectForm extends React.Component {
 
@@ -11,12 +11,13 @@ class ProjectForm extends React.Component {
 			id: null,
 			name: "",
 			description: "",
-			// modal: false
 
 		};
 		this.handleNameChange.bind(this);
 		this.handleDescriptionChange.bind(this);
 		this.handleSubmit.bind(this);
+
+		this.projectCall = null;
 	}
 
 	handleNameChange(e) {
@@ -30,20 +31,14 @@ class ProjectForm extends React.Component {
 	handleSubmit(e) {
 		e.preventDefault();
 
-		const formData = new FormData();
-		formData.append('name', this.state.name);
-		formData.append('description', this.state.description);
+		if (this.state.id === null)	{
+			this.projectCall = APICalls.createProject(this.state.name, this.state.description);
 
-		const conf = {
-			method: this.state.id === null ? "post" : "put",
-			body: formData,
-			headers: new Headers({
-				'Authorization': "Token " + getAPIKey(),
-			})
-		};
+		} else {
+			this.projectCall = APICalls.updateProject(this.state.name, this.state.description, this.state.id);
+		}
 
-		fetch("/api/projects/" + (this.state.id !== null ? this.state.id : ""), conf)
-			.then(response => {
+		this.projectCall.promise.then(response => {
 
 				this.props.hide();
 				this.setState({
@@ -57,7 +52,7 @@ class ProjectForm extends React.Component {
 
 	shouldComponentUpdate(nextProps, nextState) {
 
-		if (nextProps.id != this.props.id ){
+		if (nextProps.id !== this.props.id ){
 
 			if (nextProps.id !== null) {
 
@@ -75,6 +70,10 @@ class ProjectForm extends React.Component {
 			}
 		}
 		return true;
+	}
+
+	componentWillUnmount() {
+		if (this.projectCall !== null) this.projectCall.cancel();
 	}
 
 	render() {

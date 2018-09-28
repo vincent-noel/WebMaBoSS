@@ -1,7 +1,6 @@
 import React, {Component} from "react";
-import {getAPIKey} from "../../commons/sessionVariables";
 import LoadingIcon from "../../commons/LoadingIcon";
-
+import APICalls from "../../commons/apiCalls";
 
 class Graph extends Component {
 
@@ -11,50 +10,30 @@ class Graph extends Component {
 		this.state = {
 			graph: null,
 		};
+
+		this.getGraphCall = null;
 	}
 
-	getGraph(steady_state) {
+	getGraph(project_id, model_id, steady_state) {
 
 		this.setState({graph: null});
 
-		const body = new FormData();
-		body.append('steady_state', JSON.stringify(steady_state));
-
-		fetch(
-			"/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/graph",
-			{
-				method: "post",
-				body: body,
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => {	return response.blob(); })
-
-		// toBase64
-		.then(
-			blob => new Promise((resolve, reject) => {
-				const reader = new FileReader;
-				reader.onerror = reject;
-				reader.onload = () => {
-					resolve(reader.result);
-				};
-				reader.readAsDataURL(blob);
-			})
-		)
-
-		// Finally, setting state
-		.then(data => {	this.setState({graph: data, loaded: true})});
+		this.getGraphCall = APICalls.getSteadyStatesGraph(project_id, model_id, steady_state);
+		this.getGraphCall.promise.then(data => this.setState({graph: data, loaded: true}));
 	}
 
 	componentDidMount() {
-		this.getGraph(this.props.steadyState);
+		this.getGraph(this.props.project, this.props.modelId, this.props.steadyState);
+	}
+
+	componentWillUnmount() {
+		this.getGraphCall.cancel();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.steadyState !== this.props.steadyState) {
-			this.getGraph(nextProps.steadyState);
+			this.getGraphCall.cancel();
+			this.getGraph(nextProps.project, nextProps.modelId, nextProps.steadyState);
 			return false;
 		}
 		return true;

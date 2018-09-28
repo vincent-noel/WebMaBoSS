@@ -1,7 +1,7 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import {setProject, getProject, getAPIKey} from "../commons/sessionVariables";
-import {getProjects} from "../commons/apiCalls";
+import {setProject, getProject} from "../commons/sessionVariables";
+import APICalls from "../commons/apiCalls";
 import LoadingIcon from "../commons/LoadingIcon";
 
 class ProjectDropdown extends React.Component {
@@ -15,15 +15,17 @@ class ProjectDropdown extends React.Component {
 		};
 
 		this.onProjectChanged = this.onProjectChanged.bind(this);
-		this.getProjects = this.getProjects.bind(this);
+
+		this.getProjectCall = null;
 	}
 
 	getProjects() {
-		getProjects((projects) => {
+		this.getProjectCall = APICalls.getProjects();
+		this.getProjectCall.promise.then((projects) => {
 			this.setState({ projects: projects, loaded: true });
 			if (getProject() !== null) {
 				for (const project in projects) {
-					if (projects[project].id === parseInt(getProject())) {
+					if (projects[project].id === getProject()) {
 						this.setState({projectName: projects[project].name});
 						break;
 					}
@@ -40,7 +42,10 @@ class ProjectDropdown extends React.Component {
 
 	componentDidMount(){
 		this.getProjects();
+	}
 
+	componentWillUnmount(){
+		this.getProjectCall.cancel();
 	}
 
 	onProjectChanged(project_id, name) {
