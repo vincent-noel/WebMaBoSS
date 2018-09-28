@@ -1,5 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import {getAPIKey} from "../../commons/sessionVariables";
 
 
 class OldSimForm extends React.Component {
@@ -8,9 +9,43 @@ class OldSimForm extends React.Component {
 		super(props);
 
 		this.state = {
+			listOfSimulations: [],
 			selectedSimulation: "Please select a simulation",
 			selectedSimulationId: null,
 		};
+
+	}
+
+	loadListSimulations(project_id, model_id) {
+		this.setState({
+			listOfSimulations: [],
+			selectedSimulation: "Please select a simulation",
+			selectedSimulationId: null
+		});
+
+		const conf = {
+		  method: "get",
+		  headers: new Headers({
+			'Authorization': "Token " + getAPIKey(),
+		  })
+		};
+
+		fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss", conf)
+		.then(response => {	return response.json(); })
+		.then(data => { this.setState({listOfSimulations: data}); this.props.showOldSimButton(data.length > 0); });
+	}
+
+	removeOldSim(simulation_id) {
+
+		const conf = {
+		  method: "delete",
+		  headers: new Headers({
+			'Authorization': "Token " + getAPIKey(),
+		  })
+		};
+
+		fetch("/api/maboss/" + simulation_id + "/", conf)
+		.then(response => {	this.loadListSimulations(this.props.project, this.props.modelId); })
 
 	}
 
@@ -26,16 +61,17 @@ class OldSimForm extends React.Component {
 		})
 	}
 
+	componentDidMount() {
+		this.loadListSimulations(this.props.project, this.props.modelId);
+	}
 	shouldComponentUpdate(nextProps, nextState) {
-		if (nextProps.listOfSimulations !== this.props.listOfSimulations) {
-			this.setState({
-				selectedSimulation: "Please select a simulation",
-				selectedSimulationId: null
-			})
+		if (nextProps.modelId !== this.props.modelId) {
+			this.loadListSimulations(nextProps.project, nextProps.modelId);
+			return false;
 		}
+
 		return true;
 	}
-
 
 	render() {
 		return <React.Fragment>
@@ -51,7 +87,7 @@ class OldSimForm extends React.Component {
 									{this.state.selectedSimulation}
 								</button>
 								<div className="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{width: '100%'}}>
-									{this.props.listOfSimulations.map((simulation, id) => {
+									{this.state.listOfSimulations.map((simulation, id) => {
 										return <a
 											className="dropdown-item" key={simulation.id}
 											onClick={(e) => this.onSimulationChanged(simulation.id)}
@@ -65,7 +101,7 @@ class OldSimForm extends React.Component {
 						<CardFooter>
 							<ButtonToolbar className="d-flex">
 								<Button color="danger" className="mr-auto" onClick={() => {this.props.toggle();}}>Close</Button>
-								<Button color="danger" className="ml-auto mr-auto" onClick={() => {this.props.remove(this.state.selectedSimulationId);}}>Remove</Button>
+								<Button color="danger" className="ml-auto mr-auto" onClick={() => {this.removeOldSim(this.state.selectedSimulationId);}}>Remove</Button>
 								<Button type="submit" color="default" className="ml-auto">Submit</Button>
 							</ButtonToolbar>
 						</CardFooter>

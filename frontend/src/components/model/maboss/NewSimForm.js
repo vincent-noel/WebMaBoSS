@@ -99,13 +99,16 @@ class NewSimForm extends React.Component {
 	onSubmit(e) {
 		e.preventDefault();
 
-		this.props.onSubmit({
-			sampleCount: this.state.sampleCount,
-			maxTime: this.state.maxTime,
-			timeTick: this.state.timeTick,
-			initialStates: this.state.initialStates,
-			internalVariables: this.state.internalVariables,
-		});
+		this.props.onSubmit(
+			this.props.project, this.props.modelId,
+			{
+				sampleCount: this.state.sampleCount,
+				maxTime: this.state.maxTime,
+				timeTick: this.state.timeTick,
+				initialStates: this.state.initialStates,
+				internalVariables: this.state.internalVariables,
+			}
+		);
 	}
 
 	componentDidMount() {

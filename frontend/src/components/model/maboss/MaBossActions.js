@@ -12,6 +12,8 @@ class MaBossActions extends React.Component {
 		this.state = {
 			showNewSimForm: false,
 			showOldSimForm: false,
+
+			showOldSimButton: false,
 		};
 
 		this.toggleNewSimForm = this.toggleNewSimForm.bind(this);
@@ -19,6 +21,7 @@ class MaBossActions extends React.Component {
 
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onSubmitOldSim = this.onSubmitOldSim.bind(this);
+		this.showOldSimButton = this.showOldSimButton.bind(this);
 	}
 
 	toggleNewSimForm() {
@@ -33,14 +36,18 @@ class MaBossActions extends React.Component {
 		}))
 	}
 
-	onSubmit(data) {
+	onSubmit(project_id, model_id, data) {
 		this.setState({showNewSimForm: false});
-		this.props.onSubmit(data);
+		this.props.onSubmit(project_id, model_id, data);
 	}
 
 	onSubmitOldSim(data) {
 		this.setState({showOldSimForm: false});
 		this.props.onSubmitOldSim(data);
+	}
+
+	showOldSimButton(value) {
+		this.setState({showOldSimButton: value});
 	}
 
 	render() {
@@ -50,7 +57,7 @@ class MaBossActions extends React.Component {
 				<ButtonToolbar className="justify-content-start">
 					<Button className="mr-1" onClick={() => {this.toggleNewSimForm();}}>New simulation</Button>
 					{
-						this.props.listOfSimulations.length > 0
+						this.state.showOldSimButton
 						? 	<Button className="mr-1" onClick={() => {this.toggleOldSimForm();}}>
 								Load old simulation
 							</Button>
@@ -66,12 +73,12 @@ class MaBossActions extends React.Component {
 					toggle={this.toggleNewSimForm}
 				/>
 				<OldSimForm
+					project={this.props.project}
 					modelId={this.props.modelId}
 					onSubmit={this.onSubmitOldSim}
 					status={this.state.showOldSimForm}
 					toggle={this.toggleOldSimForm}
-					remove={this.props.remove}
-					listOfSimulations={this.props.listOfSimulations}
+					showOldSimButton={this.showOldSimButton}
 				/>
 			</React.Fragment>
 		);

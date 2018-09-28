@@ -5,7 +5,8 @@ import ModelName from "../ModelName";
 import MaBossResult from "./MaBossResult";
 import MaBossActions from "./MaBossActions";
 
-import {getAPIKey, getModel, getProject} from "../../commons/sessionVariables";
+import {getAPIKey} from "../../commons/sessionVariables";
+import {ProjectContext, ModelContext} from "../../context";
 
 
 class MaBoss extends React.Component {
@@ -15,33 +16,32 @@ class MaBoss extends React.Component {
 
 		this.state = {
 			simulationId: null,
-			listOfSimulations: []
+			// listOfSimulations: []
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onSubmitOldSim = this.onSubmitOldSim.bind(this);
-		this.removeOldSim = this.removeOldSim.bind(this);
-		this.loadListSimulations = this.loadListSimulations.bind(this);
-		this.onModelChanged = this.onModelChanged.bind(this);
-		// this.onProjectChanged = this.onProjectChanged.bind(this);
+		// this.removeOldSim = this.removeOldSim.bind(this);
+		// this.loadListSimulations = this.loadListSimulations.bind(this);
+		// this.onModelChanged = this.onModelChanged.bind(this);
 	}
 
+	//
+	// loadListSimulations(project_id, model_id) {
+	// 	const conf = {
+	// 	  method: "get",
+	// 	  headers: new Headers({
+	// 		'Authorization': "Token " + getAPIKey(),
+	// 	  })
+	// 	};
+	//
+	// 	fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss", conf)
+	// 	.then(response => {	return response.json(); })
+	// 	.then(data => { this.setState({listOfSimulations: data}); });
+	// }
+	//
 
-	loadListSimulations(project_id, model_id) {
-		const conf = {
-		  method: "get",
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-		  })
-		};
-
-		fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss", conf)
-		.then(response => {	return response.json(); })
-		.then(data => { this.setState({listOfSimulations: data}); });
-	}
-
-
-	onSubmit(data) {
+	onSubmit(project_id, model_id, data) {
 		this.setState({simulationId: null});
 		const formData = new FormData();
 		formData.append('sampleCount', data.sampleCount);
@@ -58,7 +58,7 @@ class MaBoss extends React.Component {
 		  })
 		};
 
-		fetch("/api/logical_model/" + getProject() + "/" + getModel() + "/maboss", conf)
+		fetch("/api/logical_model/" + project_id + "/" + model_id + "/maboss", conf)
 		.then(response => response.json())
 		.then(data => { this.setState({showNewSimForm: false, simulationId: data['simulation_id']})});
 
@@ -68,33 +68,27 @@ class MaBoss extends React.Component {
 		this.setState({showOldSimForm: false, simulationId: data});
 	}
 
-	removeOldSim(simulation_id) {
+	// removeOldSim(simulation_id) {
+	//
+	// 	const conf = {
+	// 	  method: "delete",
+	// 	  headers: new Headers({
+	// 		'Authorization': "Token " + getAPIKey(),
+	// 	  })
+	// 	};
+	//
+	// 	fetch("/api/maboss/" + simulation_id + "/", conf)
+	// 	.then(response => {	this.loadListSimulations(getProject(), getModel()); })
+	//
+	// }
 
-		const conf = {
-		  method: "delete",
-		  headers: new Headers({
-			'Authorization': "Token " + getAPIKey(),
-		  })
-		};
-
-		fetch("/api/maboss/" + simulation_id + "/", conf)
-		.then(response => {	this.loadListSimulations(getProject(), getModel()); })
-
-	}
-
-	onModelChanged() {
-		this.loadListSimulations(getProject(), getModel());
-	}
-
-	componentDidMount() {
-		this.loadListSimulations(getProject(), getModel());
-	}
-
-	shouldComponentUpdate(nextProps) {
-		console.log("Maboss new props : ");
-		console.log(nextProps);
-		return true;
-	}
+	// onModelChanged() {
+	// 	this.loadListSimulations(getProject(), getModel());
+	// }
+	//
+	// componentDidMount() {
+	// 	this.loadListSimulations(getProject(), getModel());
+	// }
 
 	render() {
 
@@ -103,14 +97,26 @@ class MaBoss extends React.Component {
 				path={this.props.match.path}
 				onModelChanged={this.onModelChanged}
 			>
-				<ModelName />
-				<MaBossActions
-					onSubmit={this.onSubmit}
-					onSubmitOldSim={this.onSubmitOldSim}
-					listOfSimulations={this.state.listOfSimulations}
-					remove={this.removeOldSim}
-				/>
-				<MaBossResult simulationId={this.state.simulationId}/>
+				<ProjectContext.Consumer>
+					{(projectContext => <ModelContext.Consumer>
+						{(modelContext => <React.Fragment>
+								<ModelName
+									modelName={modelContext.modelName}
+								/>
+								<MaBossActions
+									project={projectContext.project}
+									modelId={modelContext.modelId}
+									onSubmit={this.onSubmit}
+									onSubmitOldSim={this.onSubmitOldSim}
+									// listOfSimulations={this.state.listOfSimulations}
+									remove={this.removeOldSim}
+								/>
+								<MaBossResult simulationId={this.state.simulationId}/>
+							</React.Fragment>
+						)}
+						</ModelContext.Consumer>
+					)}
+				</ProjectContext.Consumer>
 			</ModelPage>
 		);
 	}

@@ -2,7 +2,7 @@ import React from "react";
 
 import SideBar from "./SideBar";
 
-import {getAPIKey, getModel, getProject} from "../commons/sessionVariables";
+import {getAPIKey, getModel, setModel} from "../commons/sessionVariables";
 import MenuPage from "../MenuPage";
 import {ProjectContext, ModelContext} from "../context";
 
@@ -14,10 +14,8 @@ class ModelPage extends React.Component {
 
 		this.state = {
 			modelId: getModel(),
-			modelName: undefined,
+			modelName: null,
 		};
-
-		this.getName(getModel());
 		this.onModelChanged = this.onModelChanged.bind(this);
 	}
 
@@ -36,12 +34,12 @@ class ModelPage extends React.Component {
 	}
 
 	onModelChanged(project_id, model_id) {
+		setModel(model_id);
 		this.setState({modelId: model_id});
 		this.getName(project_id, model_id);
 	}
 
 	render() {
-		console.log("Rendering model page");
 		return (
 			<ModelContext.Provider value={{
 				modelId: this.state.modelId,
@@ -53,7 +51,8 @@ class ModelPage extends React.Component {
 					sidebar={<ProjectContext.Consumer>
 							{(projectContext => <SideBar
 								project={projectContext.project}
-								modelId={this.state.modelId} modelName={this.state.modelName}
+								modelId={this.state.modelId}
+								modelName={this.state.modelName}
 								onModelChanged={this.onModelChanged}
 								path={this.props.path}
 							/>)}

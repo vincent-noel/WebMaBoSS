@@ -1,7 +1,5 @@
 import React, {Component} from "react";
-import {getAPIKey, getProject} from "../../commons/sessionVariables";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import { faEye } from '@fortawesome/free-solid-svg-icons';
+import {getAPIKey} from "../../commons/sessionVariables";
 import LoadingIcon from "../../commons/LoadingIcon";
 
 
@@ -66,10 +64,7 @@ class Graph extends Component {
 		if (this.state.graph !== null) {
 			return <img
 				src={this.state.graph}
-				style={{
-					'maxWidth': '100%',
-					'maxHeight': '100%'
-				}}
+				className="fullsize"
 			/>;
 		} else return <LoadingIcon width="3rem"/>;
 	}

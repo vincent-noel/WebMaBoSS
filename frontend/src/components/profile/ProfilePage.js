@@ -3,8 +3,6 @@ import React from "react";
 import SideBar from "./SideBar";
 import MenuPage from "../MenuPage";
 import PropTypes from "prop-types";
-import recursiveCloneChildren from "../commons/recursiveCloneChildren";
-
 
 class ProfilePage extends React.Component {
 

@@ -10,6 +10,7 @@ class SideBar extends React.Component {
 			<div id="sidebar-wrapper">
 				<ModelDropdown
 					project={this.props.project}
+					modelId={this.props.modelId}
 					modelName={this.props.modelName}
 					onModelChanged={this.props.onModelChanged}
 					path={this.props.path}

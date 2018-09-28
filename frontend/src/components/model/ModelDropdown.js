@@ -1,8 +1,8 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import {setModel, getModel, clearModel, getAPIKey} from "../commons/sessionVariables";
 import {getModelsFromAPI} from "../commons/apiCalls";
 import LoadingIcon from "../commons/LoadingIcon";
+import {getModel} from "../commons/sessionVariables";
 
 
 class ModelDropdown extends React.Component {
@@ -16,6 +16,7 @@ class ModelDropdown extends React.Component {
 	}
 
 	getModels(project_id) {
+		this.setState({models: [], loaded: false});
 		getModelsFromAPI(project_id)
 		.then(models => {
 			this.setState({ models: models, loaded: true });
@@ -33,7 +34,23 @@ class ModelDropdown extends React.Component {
 		}
 
 		if (nextState.models !== this.state.models) {
-			this.props.onModelChanged(nextProps.project, nextState.models[0].id);
+
+			if (nextState.models.length === 0) {
+				return false;
+			}
+
+			const modelIds = Object.keys(nextState.models).reduce((acc, key) => {
+				acc.push(nextState.models[key]['id']);
+				return acc;
+			}, []);
+
+			if (nextProps.modelId !== null && modelIds.includes(nextProps.modelId))
+			{
+				this.props.onModelChanged(nextProps.project, nextProps.modelId);
+			}
+			else {
+				this.props.onModelChanged(nextProps.project, nextState.models[0].id);
+			}
 		}
 
 		return true;
@@ -53,7 +70,7 @@ class ModelDropdown extends React.Component {
 					<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
 							data-toggle="dropdown"
 							aria-haspopup="true" aria-expanded="false" style={style}>
-						{this.props.modelName}
+						{this.props.modelName !== null ? this.props.modelName : <LoadingIcon width="1rem"/>}
 					</button>
 					<div className="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton" style={style}>
 						{this.state.models.map((model, id) => {

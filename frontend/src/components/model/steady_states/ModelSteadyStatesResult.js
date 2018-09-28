@@ -11,22 +11,29 @@ class ModelSteadyStatesResult extends Component {
 		super(props);
 
 		this.state = {
-			data: null,
+			data: {},
 			loaded: false,
 			selectedSteadyState: null,
 		};
 	}
 
-	getSteadyStates(model_id) {
+	getSteadyStates(project_id, model_id) {
 
+		this.setState({loaded: false, data: {}, selectedSteadyState: null});
 		// Getting the graph via the API
 		fetch(
-			"/api/logical_model/" + this.props.project + "/" + model_id + "/steady_states", {
+			"/api/logical_model/" + project_id + "/" + model_id + "/steady_states", {
 				method: "get",
 				headers: new Headers({'Authorization': "Token " + getAPIKey()})
 			}
 		)
-		.then(response => response.json())
+		.then(response => {
+			if (response.status == 200) {
+				return response.json();
+			} else {
+				return {};
+			}
+		})
 
 		// Finally, setting state
 		.then(data => this.setState({data: data, loaded: true, selectedSteadyState: null}));
@@ -42,20 +49,22 @@ class ModelSteadyStatesResult extends Component {
 	}
 
 	componentDidMount() {
-		this.getSteadyStates(this.props.modelId);
+		this.getSteadyStates(this.props.project, this.props.modelId);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 
 		if (nextProps.modelId !== this.props.modelId) {
-			this.getSteadyStates(nextProps.modelId);
-			return false;
+			this.getSteadyStates(nextProps.project, nextProps.modelId);
 		}
-		return true;
+
+		return (nextState.loaded !== this.state.loaded && nextState.loaded);
+
 	}
 
 	render() {
-		if (this.state.loaded) {
+
+		if (this.state.loaded && Object.keys(this.state.data).length > 0) {
 
 			return (
 				<React.Fragment>
