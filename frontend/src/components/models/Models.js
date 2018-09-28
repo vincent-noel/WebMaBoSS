@@ -6,6 +6,8 @@ import TableModels from "./TableModels";
 import ModelForm from "./ModelForm";
 import {getProject} from "../commons/sessionVariables";
 import ExportModelForm from "./ExportModelForm";
+import {ProjectContext} from "../context";
+
 
 class Models extends React.Component {
 
@@ -16,7 +18,6 @@ class Models extends React.Component {
 		this.hideModelForm = this.hideModelForm.bind(this);
 		this.showExportModelForm = this.showExportModelForm.bind(this);
 		this.hideExportModelForm = this.hideExportModelForm.bind(this);
-		this.updateProject = this.updateProject.bind(this);
 
 		this.state = {
 			showModelForm: false,
@@ -24,7 +25,6 @@ class Models extends React.Component {
 			showExportModelForm: false,
 			idExportModelForm: null,
 			filenameExportModelForm: null,
-			project: getProject()
 		}
 	}
 
@@ -57,43 +57,42 @@ class Models extends React.Component {
 		})
 	}
 
-	updateProject(project) {
-		this.setState({project: project});
-	}
 
 	render () {
 		return (
-			<FullPage path={this.props.match.path} updateProject={this.updateProject}>
+			<FullPage path={this.props.match.path}>
 				<h2>Models</h2>
 				<LogicalModels endpoint="/api/logical_models/"
 					render={(data, updateParent) => {
-						return <React.Fragment>
-							<TableModels
-								data={data}
-								updateParent={updateParent}
-								edit={this.showModelForm}
-								project={this.state.project}
-								download={this.showExportModelForm}
-							/>
+						return <ProjectContext>
+							{(projectContext => <React.Fragment>
+								<TableModels
+									data={data}
+									updateParent={updateParent}
+									edit={this.showModelForm}
+									project={projectContext.project}
+									download={this.showExportModelForm}
+								/>
 
-							<Button type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
+								<Button type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
 
-							<ModelForm
-								updateParent={updateParent}
-								status={this.state.showModelForm}
-								id={this.state.idModelForm}
-								show={this.showModelForm}
-								hide={this.hideModelForm}
-							/>
-							<ExportModelForm
-								project={this.state.project}
-								id={this.state.idExportModelForm}
-								filename={this.state.filenameExportModelForm}
-								status={this.state.showExportModelForm}
-								show={this.showExportModelForm}
-								hide={this.hideExportModelForm}
-							/>
-						</React.Fragment>
+								<ModelForm
+									updateParent={updateParent}
+									status={this.state.showModelForm}
+									id={this.state.idModelForm}
+									show={this.showModelForm}
+									hide={this.hideModelForm}
+								/>
+								<ExportModelForm
+									project={projectContext.project}
+									id={this.state.idExportModelForm}
+									filename={this.state.filenameExportModelForm}
+									status={this.state.showExportModelForm}
+									show={this.showExportModelForm}
+									hide={this.hideExportModelForm}
+								/>
+							</React.Fragment>)}
+						</ProjectContext>
 						}
 					}
 				/>
