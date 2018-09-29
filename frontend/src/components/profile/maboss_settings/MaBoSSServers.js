@@ -1,6 +1,6 @@
 import React from "react";
-import {getAPIKey} from "../../commons/sessionVariables";
 import LoadingIcon from "../../commons/LoadingIcon";
+import APICalls from "../../commons/apiCalls";
 
 
 class MaBoSSServers extends React.Component {
@@ -14,29 +14,22 @@ class MaBoSSServers extends React.Component {
 		};
 
 		this.updateServers = this.updateServers.bind(this);
+		this.updateServersCall = null;
 	}
 
 	updateServers(){
-		fetch(
-			this.props.endpoint,
-			{
-				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => {
-			if (response.status !== 200) {
-				return this.setState({ placeholder: "Something went wrong" });
-			}
-			return response.json();
-		})
-		.then(data => this.setState({ data: data, loaded: true }));
+		if (this.updateServersCall !== null) this.updateServersCall.cancel();
+
+		this.updateServersCall = APICalls.getMaBoSSServers();
+		this.updateServersCall.promise.then(data => this.setState({ data: data, loaded: true }));
 	}
 
 	componentDidMount() {
 		this.updateServers();
+	}
+
+	componentWillUnmount() {
+		if (this.updateServersCall !== null) this.updateServersCall.cancel();
 	}
 
 	render() {

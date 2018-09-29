@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from "prop-types";
-import {getAPIKey} from "../sessionVariables";
+import APICalls from "../apiCalls";
 
 class EditButton extends Component {
 
@@ -16,17 +16,16 @@ class EditButton extends Component {
 	constructor(props) {
 		super(props);
 		this.edit = this.edit.bind(this);
+		this.editCall = null;
 	}
 
 	edit() {
-		fetch(this.props.endpoint + this.props.id, {
-			method: "get",
-		  	headers: new Headers({'Authorization': "Token " + getAPIKey() })
-		})
-		.then(response => response.json())
-		.then(json_response => {
-			this.props.edit(json_response);
-		});
+		this.editCall = APICalls.editById(this.props.endpoint, this.props.id);
+		this.editCall.promise.then(json_response => this.props.edit(json_response));
+	}
+
+	componentWillUnmount(){
+		if (this.editCall !== null) this.editCall.cancel();
 	}
 
   	render() {

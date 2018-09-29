@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonGroup, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import {getAPIKey} from "../../commons/sessionVariables";
+import APICalls from "../../commons/apiCalls";
 
 class MaBoSSServerForm extends React.Component {
 
@@ -16,6 +16,8 @@ class MaBoSSServerForm extends React.Component {
 		this.handleHostChange.bind(this);
 		this.handlePortChange.bind(this);
 		this.handleSubmit.bind(this);
+
+		this.apiCall = null;
 	}
 
 	handleHostChange(e) {
@@ -28,21 +30,14 @@ class MaBoSSServerForm extends React.Component {
 
 	handleSubmit(e) {
 		e.preventDefault();
+		if (this.apiCall !== null) this.apiCall.cancel();
 
-		const formData = new FormData();
-		formData.append('host', this.state.host);
-		formData.append('port', this.state.port);
+		if (this.state.id === null)
+			this.apiCall = APICalls.createMaBoSSServer(this.state.host, this.state.port);
+		else
+			this.apiCall = APICalls.updateMaBoSSServer(this.state.host, this.state.port, this.state.id);
 
-		const conf = {
-			method: this.state.id === null ? "post" : "put",
-			body: formData,
-			headers: new Headers({
-				'Authorization': "Token " + getAPIKey(),
-			})
-		};
-
-		fetch(this.props.endpoint + (this.state.id !== null ? this.state.id : ""), conf)
-			.then(response => {
+		this.apiCall.promise.then(response => {
 
 				this.props.hide();
 				this.setState({
@@ -74,6 +69,10 @@ class MaBoSSServerForm extends React.Component {
 			}
 		}
 		return true;
+	}
+
+	componentWillUnmount() {
+		if (this.apiCall !== null) this.apiCall.cancel();
 	}
 
 	render() {
