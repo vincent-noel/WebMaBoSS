@@ -5,7 +5,7 @@ USER root
 WORKDIR /
 
 RUN apt-get -qq update \
-    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https
+    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https libpng-dev
 
 RUN \
     # Yarn sources
