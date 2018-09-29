@@ -8,7 +8,7 @@ from django.conf import settings
 from api.models import LogicalModel, Project
 from api.serializers import LogicalModelNameSerializer
 
-from os.path import join
+from os.path import join, basename
 from rest_framework.exceptions import PermissionDenied
 
 import ginsim

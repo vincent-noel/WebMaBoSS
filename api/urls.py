@@ -2,15 +2,15 @@ from django.urls import path, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from api.views.LogicalModel import LogicalModelFile, LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw
-from api.views.LogicalModels import LogicalModels
+from api.views.logical_model.LogicalModel import LogicalModelFile, LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw
+from api.views.logical_model.LogicalModels import LogicalModels
 from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
-from api.views.MaBoSSSimulation import (
-	LogicalModelSimulation, MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj,
-	MaBoSSSimulationRemove, MaBossSettings
-)
+
 from api.views.maboss.MaBossServerView import MaBoSSServerView
+from api.views.maboss.MaBoSSSimulationView import MaBoSSSimulationView, MaBoSSSimulationRemove, MaBossSettings
+from api.views.maboss.MaBoSSResultsView import MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj
+
 from api.views.AuthView import TestAuthView, LogoutViewEx
 from rest_auth.views import LoginView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
@@ -40,7 +40,7 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph', LogicalModelGraph.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph_raw', LogicalModelGraphRaw.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
-	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', LogicalModelSimulation.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', MaBoSSSimulationView.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss/settings/', MaBossSettings.as_view()),
 
 	path('api/maboss/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),

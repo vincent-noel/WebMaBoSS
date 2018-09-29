@@ -62,6 +62,8 @@ class MaBoSSServerView(APIView):
 			server.port = int(request.data['port'])
 			server.save()
 
+			return Response(status=status.HTTP_200_OK)
+
 		except MaBoSSServer.DoesNotExist:
 			raise Http404
 
