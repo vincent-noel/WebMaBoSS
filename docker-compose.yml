@@ -5,9 +5,20 @@ services:
   app-curie:
     build:
       context: ./
-      dockerfile: docker/dev/Dockerfile
+      dockerfile: docker/prod/Dockerfile
 
     image: app-curie
+    container_name: app-curie
+    ports:
+      - "8000:80"
+    user: www-data
+
+  app-curie-dev:
+    build:
+      context: ./
+      dockerfile: docker/dev/Dockerfile
+
+    image: app-curie-dev
     container_name: app-curie
     ports:
       - "8000:8000"
