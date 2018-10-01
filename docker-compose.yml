@@ -10,7 +10,7 @@ services:
     image: app-curie
     container_name: app-curie
     ports:
-      - "8000:80"
+      - "8000:8000"
     user: www-data
 
   app-curie-dev:

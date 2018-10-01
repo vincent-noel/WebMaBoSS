@@ -2,10 +2,10 @@ FROM colomoto/colomoto-docker:2018-08-17
 MAINTAINER Vincent Noel <contact@vincent-noel.fr>
 
 USER root
-WORKDIR /
+WORKDIR /appCurie
 
 RUN apt-get -qq update \
-    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https libpng-dev
+    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https
 
 RUN \
     # Yarn sources

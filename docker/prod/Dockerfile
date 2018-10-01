@@ -2,10 +2,11 @@ FROM colomoto/colomoto-docker:2018-08-17
 MAINTAINER Vincent Noel <contact@vincent-noel.fr>
 
 USER root
-WORKDIR /
+WORKDIR /appCurie
 
 RUN apt-get -qq update \
-    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https libpng-dev apache2 apache2-dev
+    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https \
+                          apache2 apache2-dev
 
 RUN \
     # Yarn sources
@@ -33,30 +34,39 @@ RUN \
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install --upgrade django djangorestframework django-rest-auth[with_social] selenium coreapi mod_wsgi git+https://github.com/vincent-noel/GINsim-python.git
+    && pip install --upgrade django djangorestframework django-rest-auth[with_social] \
+                             selenium coreapi mod_wsgi \
+                             git+https://github.com/vincent-noel/GINsim-python.git \
+                             git+https://github.com/vincent-noel/pyMaBoSS.git
 
-ADD . /appCurie
+ADD . .
 
-RUN rm -f /appCurie/db.sqlite3
-RUN cd /appCurie; python manage.py makemigrations && \
-                  python manage.py migrate && \
+# Removing old db and medias, creating a new one, with default user admin:admin
+RUN rm -fr db.sqlite3 media/*; python manage.py makemigrations --noinput && \
+                  python manage.py migrate --noinput && \
+                  python manage.py collectstatic --noinput > /dev/null && \
                   python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
 
-RUN cd /appCurie; python manage.py runmodwsgi --setup-only \
-                                --host 0.0.0.0 --port 80 \
+# Removing old server, and creating it from scratch
+RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
+                                --host 0.0.0.0 --port 8000 \
                                 --user www-data --group www-data \
                                 --server-root=server/ \
                                 --settings=AppCurie.prod_settings \
                                 --url-alias /static static/ \
                                 --url-alias /media media/ \
-                                --reload-on-changes && \
-                  yarn && \
+                                --reload-on-changes
+
+# Removing node modules, downloading them from scratch, and transpiling the JSX
+RUN rm -fr node_modules/* yarn.lock; yarn && \
                   npm run dev && \
                   chown -R www-data:www-data .
 
-
 # Exposing port 8000 for server access
-EXPOSE 80
+EXPOSE 8000
 
+# Switching to apache user
 USER www-data
+
+# Running server
 ENTRYPOINT /appCurie/server/apachectl -D FOREGROUND
