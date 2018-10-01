@@ -188,7 +188,7 @@ class APICalls {
 		formData.append('maxTime', data.maxTime);
 		formData.append('timeTick', data.timeTick);
 		formData.append('initialStates', JSON.stringify(data.initialStates));
-		formData.append('internalVariables', JSON.stringify(data.internalVariables));
+		formData.append('outputVariables', JSON.stringify(data.outputVariables));
 
 		return makeCancelable(
 			fetch(

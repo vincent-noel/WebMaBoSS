@@ -19,7 +19,7 @@ class NewSimForm extends React.Component {
 
 			listNodes: [],
 			initialStates: {},
-			internalVariables: {},
+			outputVariables: {},
 		};
 
 		this.handleSampleCountChange.bind(this);
@@ -29,7 +29,7 @@ class NewSimForm extends React.Component {
 		this.toggleTab.bind(this);
 
 		this.updateInitialState = this.updateInitialState.bind(this);
-		this.updateInternalVariables = this.updateInternalVariables.bind(this);
+		this.updateOutputVariables = this.updateOutputVariables.bind(this);
 
 		this.getSettingsCall = null;
 	}
@@ -40,7 +40,7 @@ class NewSimForm extends React.Component {
 		this.setState({
 			listNodes: [],
 			initialStates: {},
-			internalVariables: {},
+			outputVariables: {},
 		});
 
 		this.getSettingsCall = APICalls.getMaBoSSSimulationSettings(project_id, model_id)
@@ -53,15 +53,16 @@ class NewSimForm extends React.Component {
 				}, {}
 			);
 
-			const internal_variables = Object.keys(response['internal_variables']).reduce(
+			const output_variables = Object.keys(response['output_variables']).reduce(
 				(acc, key) => {
-					acc[key] = response['internal_variables'][key] === 1;
+					acc[key] = response['output_variables'][key] === 1;
 					return acc;
 				}, {}
 			);
+
 			this.setState(
 			{
-				internalVariables: internal_variables,
+				outputVariables: output_variables,
 				initialStates: initial_states,
 				listNodes: Object.keys(response['initial_states'])
 			}
@@ -74,10 +75,10 @@ class NewSimForm extends React.Component {
 		this.setState({initialStates: initial_states});
 	}
 
-	updateInternalVariables(node) {
-		let internal_variables = this.state.internalVariables;
-		internal_variables[node] = !internal_variables[node];
-		this.setState({internalVariables: internal_variables});
+	updateOutputVariables(node) {
+		let output_variables = this.state.outputVariables;
+		output_variables[node] = !output_variables[node];
+		this.setState({outputVariables: output_variables});
 	}
 
 	handleSampleCountChange(e) {
@@ -108,7 +109,7 @@ class NewSimForm extends React.Component {
 				maxTime: this.state.maxTime,
 				timeTick: this.state.timeTick,
 				initialStates: this.state.initialStates,
-				internalVariables: this.state.internalVariables,
+				outputVariables: this.state.outputVariables,
 			}
 		);
 	}
@@ -158,9 +159,9 @@ class NewSimForm extends React.Component {
 								</NavItem>
 								<NavItem>
 									<NavLink
-									  	className={classnames({ active: this.state.activeTab === 'internal_variables' })}
-              							onClick={() => { this.toggleTab('internal_variables'); }}
-									>Internal variables</NavLink>
+									  	className={classnames({ active: this.state.activeTab === 'output_variables' })}
+              							onClick={() => { this.toggleTab('output_variables'); }}
+									>Output variables</NavLink>
 								</NavItem>
 							</Nav>
 							<TabContent activeTab={this.state.activeTab}>
@@ -199,12 +200,12 @@ class NewSimForm extends React.Component {
 										updateCallback={this.updateInitialState}
 									/>
 								</TabPane>
-								<TabPane tabId="internal_variables">
+								<TabPane tabId="output_variables">
 									<TableSwitches
 										id={"in"}
 										type='switch'
-										dict={this.state.internalVariables}
-										updateCallback={this.updateInternalVariables}
+										dict={this.state.outputVariables}
+										updateCallback={this.updateOutputVariables}
 									/>
 								</TabPane>
 							</TabContent>

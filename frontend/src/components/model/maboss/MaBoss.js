@@ -20,6 +20,7 @@ class MaBoss extends React.Component {
 
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onSubmitOldSim = this.onSubmitOldSim.bind(this);
+		this.updateSim = this.updateSim.bind(this);
 
 		this.createMaBossSimulationCall = null;
 	}
@@ -37,16 +38,20 @@ class MaBoss extends React.Component {
 		this.setState({showOldSimForm: false, simulationId: data});
 	}
 
+	updateSim(simulation_id) {
+		this.setState({simulationId: simulation_id})
+	}
+
 	componentWillUnmount() {
 		if (this.createMaBossSimulationCall !== null) this.createMaBossSimulationCall.cancel();
 	}
+
 
 	render() {
 
 		return (
 			<ModelPage
 				path={this.props.match.path}
-				onModelChanged={this.onModelChanged}
 			>
 				<ProjectContext.Consumer>
 					{(projectContext => <ModelContext.Consumer>
@@ -59,7 +64,7 @@ class MaBoss extends React.Component {
 									modelId={modelContext.modelId}
 									onSubmit={this.onSubmit}
 									onSubmitOldSim={this.onSubmitOldSim}
-									// listOfSimulations={this.state.listOfSimulations}
+									updateSim={this.updateSim}
 									remove={this.removeOldSim}
 								/>
 								<MaBossResult simulationId={this.state.simulationId}/>

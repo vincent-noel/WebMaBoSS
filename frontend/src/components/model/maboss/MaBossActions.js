@@ -50,6 +50,15 @@ class MaBossActions extends React.Component {
 		this.setState({showOldSimButton: value});
 	}
 
+	shouldComponentUpdate(nextProps) {
+		if (nextProps.modelId !== this.props.modelId) {
+			this.props.updateSim(null);
+			return false;
+		}
+
+		return true;
+	}
+
 	render() {
 
 		return (

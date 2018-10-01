@@ -73,13 +73,12 @@ class MaBoSSSimulationView(APIView):
 				time_tick=float(request.POST['timeTick'])
 			)
 
-			for var, internal in loads(request.POST['internalVariables']).items():
-				maboss_model.network[var].is_internal = internal
-
+			maboss_model.network.set_output(
+				[key for key, value in loads(request.POST['outputVariables']).items() if value]
+			)
 
 			for var, istate in loads(request.POST['initialStates']).items():
 				maboss_model.network.set_istate(var, [1.0-float(istate), float(istate)])
-
 
 			thread = Thread(target=run_simulation, args=(maboss_model, maboss_simulation.id))
 			thread.start()
@@ -174,7 +173,7 @@ class MaBossSettings(APIView):
 			ginsim_model = ginsim.load(path)
 			maboss_model = ginsim.to_maboss(ginsim_model)
 
-			internal_variables = {var: value.is_internal for var, value in maboss_model.network.items()}
+			output_variables = {var: not value.is_internal for var, value in maboss_model.network.items()}
 			initial_states = maboss_model.network.get_istate()
 
 			# Here the problem is the variables with more than two states, who appear in the initial states as :
@@ -205,7 +204,7 @@ class MaBossSettings(APIView):
 					fixed_initial_states.update({var: value})
 
 			return Response({
-				'internal_variables': internal_variables,
+				'output_variables': output_variables,
 				'initial_states': fixed_initial_states
 			})
 
