@@ -3,19 +3,17 @@ from django.conf import settings
 from rest_framework.test import APIClient
 from rest_framework import status
 from json import loads
-from os.path import join, dirname, exists
+from os.path import exists
 from os import makedirs
 from shutil import rmtree
 
-class TestModels(TestCase):
+class TestProjects(TestCase):
 
-	fixtures = ['project.json']
+	fixtures = ['user.json']
 
 	def __init__(self, *args, **kwargs):
 		TestCase.__init__(self, *args, **kwargs)
 		self.client = None
-		self.project_id = 1
-		self.project_path = "zS2NSxM9A4I0"
 
 	def setUp(self):
 
@@ -23,36 +21,37 @@ class TestModels(TestCase):
 		if exists(settings.MEDIA_ROOT):
 			rmtree(settings.MEDIA_ROOT)
 
-		makedirs(join(settings.MEDIA_ROOT, self.project_path), exist_ok=True)
+		makedirs(settings.MEDIA_ROOT, exist_ok=True)
 
 		self.client = APIClient()
 
-	def testWithoutAuthorization(self):
+	def testForbiddenAccess(self):
 
-		# Checking if the list starts empty
-		request = self.client.get('/api/logical_models/%d/' % self.project_id)
+		# Checking without login
+		request = self.client.get('/api/projects/')
 
 		self.assertEqual(request.status_code, status.HTTP_403_FORBIDDEN)
 		self.assertEqual(loads(request.content), {'detail': 'You do not have permission to perform this action.'})
 
-		model_name = 'Flobak2015_full_journal.pcbi.1004426.s003.ZGINML'
-		# Checking if we can add a model
+		# Checking if we can add a project
 		request_add = self.client.post(
-			'/api/logical_models/%d/' % self.project_id,
+			'/api/projects/',
 			{
-				'name': 'Flobak full',
-				'file': open(join(dirname(__file__), 'files', model_name), 'rb'),
+				'user': 'anonymous',
+				'name': 'metastasis',
+				'description': 'some unknown project',
 			},
 		)
 
 		self.assertEqual(request_add.status_code, status.HTTP_403_FORBIDDEN)
 
 		# Checking if we can remove it with a bad id
-		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, 0))
+		request_del = self.client.delete('/api/projects/%d' % 0)
 		self.assertEqual(request_del.status_code, status.HTTP_403_FORBIDDEN)
 
-	def testWithAuthorization(self):
-		# Checking if the list starts empty
+	def testAuthorizedAccess(self):
+
+		# Logging in
 		request = self.client.post('/api/auth/login', {
 			'username': 'admin', 'password': 'test_password'
 		})
@@ -65,44 +64,53 @@ class TestModels(TestCase):
 		self.client.credentials(HTTP_AUTHORIZATION='Token ' + api_key)
 
 		# Checking if the list starts empty
-		request = self.client.get('/api/logical_models/%d/' % self.project_id)
+		request = self.client.get('/api/projects/')
 
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
-		self.assertEqual(loads(request.content), [])
+		data_projects = loads(request.content)
 
-		model_name = 'Flobak2015_full_journal.pcbi.1004426.s003.ZGINML'
-		# Checking if we can add a model
+		self.assertEqual(len(data_projects), 1)
+		self.assertEqual(data_projects[0]['id'], 1)
+		self.assertEqual(data_projects[0]['user'], 1)
+		self.assertEqual(data_projects[0]['name'], "My Project")
+		self.assertEqual(data_projects[0]['description'], "")
+
+		# Checking if we can add a project
 		request_add = self.client.post(
-			'/api/logical_models/%d/' % self.project_id,
+			'/api/projects/',
 			{
-				'name': 'Flobak full',
-				'file': open(join(dirname(__file__), 'files', model_name), 'rb'),
+				'name': 'metastasis',
+				'description': 'A project about metastasis',
 			},
 		)
 
 		self.assertEqual(request_add.status_code, status.HTTP_200_OK)
 
-		request = self.client.get('/api/logical_models/%d/' % self.project_id)
+		request = self.client.get('/api/projects/')
 
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
+		data_projects = loads(request.content)
 
-		model_id = 1
-		self.assertEqual(loads(request.content), [{
-			"id": model_id, "name": "Flobak full",
-			"file": "/media/%s/logical_models/%s" % (self.project_path, model_name),
-			"project": self.project_id
-		}])
+		self.assertEqual(len(data_projects), 2)
+		self.assertEqual(data_projects[1]['id'], 2)
+		self.assertEqual(data_projects[1]['user'], 1)
+		self.assertEqual(data_projects[1]['name'], "metastasis")
+		self.assertEqual(data_projects[1]['description'], "A project about metastasis")
 
 		# Checking if we can remove it with a bad id
-		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, 0))
+		request_del = self.client.delete('/api/projects/0')
 		self.assertEqual(request_del.status_code, status.HTTP_404_NOT_FOUND)
 
 		# Now with the good id
-		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, model_id))
+		request_del = self.client.delete('/api/projects/2')
+		self.assertEqual(request_del.status_code, status.HTTP_200_OK)
+
+		# Also removing the default project
+		request_del = self.client.delete('/api/projects/1')
 		self.assertEqual(request_del.status_code, status.HTTP_200_OK)
 
 		# Checking if the list ends up empty
-		request = self.client.get('/api/logical_models/%d/' % self.project_id)
+		request = self.client.get('/api/projects/', {})
 
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
 		self.assertEqual(loads(request.content), [])

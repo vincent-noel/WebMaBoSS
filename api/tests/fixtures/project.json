@@ -26,15 +26,5 @@
       "description": "",
       "path": "zS2NSxM9A4I0"
     }
-  },
-  {
-    "model": "api.logicalmodel",
-    "pk": 1,
-    "fields": {
-      "project": 1,
-      "user": 1,
-      "name": "Metastasis",
-      "file": "admin/logical_models/Metastasis_Master_Model.zginml"
-    }
   }
 ]
