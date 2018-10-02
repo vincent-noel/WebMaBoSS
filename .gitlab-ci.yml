@@ -15,6 +15,7 @@ build-test:
   script:
     - docker login -u vnoel -p $DOCKERHUB_PASSWORD
     - docker-compose build app-curie-test
+    - docker tag app-curie-test:latest vnoel/app-curie-test:latest
     - docker push vnoel/app-curie-test:latest
 
 build-prod:
@@ -22,6 +23,7 @@ build-prod:
   script:
     - docker login -u vnoel -p $DOCKERHUB_PASSWORD
     - docker-compose build app-curie
+    - docker tag app-curie:latest vnoel/app-curie:latest
     - docker push vnoel/app-curie:latest
 
 build-dev:
@@ -29,6 +31,7 @@ build-dev:
   script:
     - docker login -u vnoel -p $DOCKERHUB_PASSWORD
     - docker-compose build app-curie-dev
+    - docker tag app-curie-dev:latest vnoel/app-curie-dev:latest
     - docker push vnoel/app-curie-dev:latest
 
 

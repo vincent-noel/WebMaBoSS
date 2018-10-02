@@ -37,7 +37,7 @@ services:
       context: ./
       dockerfile: docker/tests/Dockerfile
 
-    image: vnoel/app-curie:latest
+    image: app-curie-test:latest
     container_name: app-curie
     ports:
       - "8000:8000"
