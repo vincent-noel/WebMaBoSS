@@ -44,7 +44,6 @@ ADD . .
 # Removing old db and medias, creating a new one, with default user admin:admin
 RUN rm -fr db.sqlite3 media/*; python manage.py makemigrations --noinput && \
                   python manage.py migrate --noinput && \
-                  python manage.py collectstatic --noinput > /dev/null && \
                   python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
 
 # Removing old server, and creating it from scratch
@@ -61,6 +60,8 @@ RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
 RUN rm -fr node_modules/* yarn.lock; yarn && \
                   npm run dev && \
                   chown -R www-data:www-data .
+
+RUN python manage.py collectstatic --noinput > /dev/null && \
 
 # Exposing port 8000 for server access
 EXPOSE 8000
