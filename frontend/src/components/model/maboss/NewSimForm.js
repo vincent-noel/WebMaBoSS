@@ -48,7 +48,7 @@ class NewSimForm extends React.Component {
 
 			const initial_states = Object.keys(response['initial_states']).reduce(
 				(acc, key) => {
-					acc[key] = response['initial_states'][key]['1'];
+					acc[key] = response['initial_states'][key]['1']*100;
 					return acc;
 				}, {}
 			);
@@ -102,13 +102,20 @@ class NewSimForm extends React.Component {
 	onSubmit(e) {
 		e.preventDefault();
 
+		const initial_states = Object.keys(this.state.initialStates).reduce(
+				(acc, key) => {
+					acc[key] = this.state.initialStates[key]/100;
+					return acc;
+				}, {}
+			);
+
 		this.props.onSubmit(
 			this.props.project, this.props.modelId,
 			{
 				sampleCount: this.state.sampleCount,
 				maxTime: this.state.maxTime,
 				timeTick: this.state.timeTick,
-				initialStates: this.state.initialStates,
+				initialStates: initial_states,
 				outputVariables: this.state.outputVariables,
 			}
 		);
@@ -123,6 +130,7 @@ class NewSimForm extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
+
 		if (nextProps.project !== this.props.project) {
 			return false;
 		}

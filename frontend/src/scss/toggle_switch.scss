@@ -174,7 +174,7 @@ $switch3_button_color: white;
 
 }
 
-$range-width: 4.5rem;
+$range-width: 6rem;
 $range-height: 1.5rem;
 $range-thumb-radius: 50%;
 $range-background-color: #d3d3d3;
@@ -231,4 +231,8 @@ $range-button-border: 0.2rem;
       background: $range-button-color;
       cursor: pointer; /* Cursor on hover */
   }
+}
+.range-indicator {
+  width: 2rem;
+  text-align: right;
 }

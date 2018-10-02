@@ -18,7 +18,7 @@ class Range extends Component {
 	}
 
 	changeValue(value) {
-		this.setState({value: value/100});
+		this.setState({value: parseInt(value)});
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -30,13 +30,20 @@ class Range extends Component {
 	}
 
   	render() {
-  		return <label className="range">
-			<input type="range" className="slider"
-				   id={this.props.id + "slider"}
-				   onChange={(e) => {this.changeValue(e.target.value)}}
-				   defaultValue={this.props.value*100}
-			/>
-		</label>;
+  		return <React.Fragment>
+			<label className="range" data-toggle="tooltip"
+					data-placement="top"
+					title={this.props.value + " %"}
+			>
+				<input type="range" className="slider"
+					   min="0" max="100" step="1"
+					   id={this.props.id + "slider"}
+					   onChange={(e) => {this.changeValue(e.target.value)}}
+					   defaultValue={this.props.value}
+				/>
+			</label>
+			<span className="range-indicator">{this.props.value + "%"}</span>
+		</React.Fragment>;
   	}
 }
 export default Range;
