@@ -1,6 +1,21 @@
-import {getAPIKey} from "./sessionVariables";
+import {getAPIKey, clearAPIKey} from "./sessionVariables";
 import makeCancelable from "./makeCancelable";
 import FileSaver from "file-saver";
+
+
+function checkAuthorization(response) {
+	if (response.status === 401) {
+		clearAPIKey();
+	}
+
+	return response;
+}
+
+function extractFilename(content_disposition) {
+	let filename = content_disposition.substr(content_disposition.lastIndexOf("filename"), content_disposition.length);
+	if (filename.indexOf(";") >= 0) filename = filename.substr(0, filename.indexOf(";"));
+	return filename.split("=")[1].replace(/"/g, '');
+}
 
 class APICalls {
 
@@ -11,7 +26,8 @@ class APICalls {
 					method: "get",
 					headers: new Headers({'Authorization': "Token " + getAPIKey()})
 				}
-			).then(response => response.json())
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
@@ -22,7 +38,8 @@ class APICalls {
 					method: "get",
 					headers: new Headers({'Authorization': "Token " + getAPIKey()})
 				}
-			).then(response => response.json())
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
@@ -42,7 +59,7 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			)
+			).then(response => checkAuthorization(response))
 		);
 	}
 
@@ -62,7 +79,7 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			)
+			).then(response => checkAuthorization(response))
 		);
 	}
 
@@ -82,7 +99,7 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			)
+			).then(response => checkAuthorization(response))
 		);
 
 	}
@@ -97,16 +114,46 @@ class APICalls {
 					'Authorization': "Token " + getAPIKey()
 				})
 			}
-		).then(response => {return response.json()}));
+		).then(response => checkAuthorization(response))
+		.then(response => {return response.json()}));
 	}
 
-	static downloadModelAsZGINML(project_id, model_id, filename) {
-		fetch("/api/logical_model/" + project_id + "/" + model_id + "/file", {
+	static downloadModelAsZGINML(project_id, model_id, tag) {
+
+		let endpoint = null;
+		if (tag === undefined)
+			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/file";
+		else
+			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/tags/" + tag + "/file";
+
+		fetch(endpoint, {
 			method: "get",
 			headers: new Headers({'Authorization': "Token " + getAPIKey()}),
-		})
-		.then(response => response.blob())
-		.then(blob => FileSaver.saveAs(blob, filename));
+		}).then(response => checkAuthorization(response))
+		.then(response => Promise.all([
+			extractFilename(response.headers.get('content-disposition')),
+			response.blob()])
+		)
+		.then(([filename, blob]) => FileSaver.saveAs(blob, filename));
+	}
+
+	static downloadModelAsSBML(project_id, model_id, tag) {
+
+		let endpoint = null;
+		if (tag === undefined)
+			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/sbmlfile";
+		else
+			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/tags/" + tag + "/sbmlfile";
+
+		fetch(endpoint, {
+			method: "get",
+			headers: new Headers({'Authorization': "Token " + getAPIKey()}),
+		}).then(response => checkAuthorization(response))
+		.then(response => Promise.all([
+			extractFilename(response.headers.get('content-disposition')),
+			response.blob()])
+		)
+		.then(([filename, blob]) => FileSaver.saveAs(blob, filename));
 
 	}
 
@@ -120,8 +167,9 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey()
 					})
 				}
-			).then(response => response.blob()
-			).then(
+			).then(response => checkAuthorization(response))
+			.then(response => response.blob())
+			.then(
 				blob => new Promise((resolve, reject) => {
 					const reader = new FileReader;
 					reader.onerror = reject;
@@ -142,7 +190,8 @@ class APICalls {
 					method: "get",
 					headers: new Headers({'Authorization': "Token " + getAPIKey()})
 				}
-			).then(response => {
+			).then(response => checkAuthorization(response))
+			.then(response => {
 				if (response.status == 200) {
 					return response.json();
 				} else {
@@ -167,7 +216,8 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey()
 					})
 				}
-			).then(response => response.blob()
+			).then(response => checkAuthorization(response))
+			.then(response => response.blob()
 			).then(
 				blob => new Promise((resolve, reject) => {
 					const reader = new FileReader;
@@ -200,7 +250,8 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			).then(response => response.json())
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
@@ -214,7 +265,8 @@ class APICalls {
 					'Authorization': "Token " + getAPIKey(),
 				  })
 				}
-			).then(response => response.json())
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
@@ -229,7 +281,8 @@ class APICalls {
 					'Authorization': "Token " + getAPIKey(),
 				  })
 				}
-			).then(response => response.json())
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
@@ -243,7 +296,7 @@ class APICalls {
 					'Authorization': "Token " + getAPIKey(),
 				  })
 				}
-			)
+			).then(response => checkAuthorization(response))
 		);
 	}
 
@@ -271,7 +324,8 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			).then(response => response.json())
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
@@ -285,16 +339,18 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			).then(response => response.json())
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
 	static deleteById(endpoint, id) {
+		console.log(endpoint + id);
 		return makeCancelable(
 			fetch(endpoint + id, {
 				method: "delete",
 				headers: new Headers({'Authorization': "Token " + getAPIKey()})
-			})
+			}).then(response => checkAuthorization(response))
 		);
 	}
 
@@ -303,7 +359,8 @@ class APICalls {
 			fetch(endpoint + id, {
 				method: "get",
 				headers: new Headers({'Authorization': "Token " + getAPIKey()})
-			}).then(response => response.json())
+			}).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
@@ -317,7 +374,8 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			).then(response => response.json())
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
 		);
 	}
 
@@ -337,7 +395,7 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			)
+			).then(response => checkAuthorization(response))
 		);
 	}
 
@@ -356,7 +414,7 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			)
+			).then(response => checkAuthorization(response))
 		);
 	}
 
@@ -370,8 +428,55 @@ class APICalls {
 						'Authorization': "Token " + getAPIKey(),
 					})
 				}
-			)
+			).then(response => checkAuthorization(response))
 		);
+	}
+
+	static listModelTags(project_id, model_id) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_models/" + project_id + "/" + model_id + "/tags/",
+				{
+					method: "get",
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey(),
+					})
+				}
+			).then(response => checkAuthorization(response)
+			).then(response => response.json())
+		)
+	}
+
+	static createModelTag(project_id, model_id, tag) {
+		const formData = new FormData();
+		formData.append('tag', tag);
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_models/" + project_id + "/" + model_id + "/tags/",
+				{
+					method: "post",
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey(),
+					}),
+					body: formData
+				}
+			).then(response => checkAuthorization(response))
+		)
+	}
+
+	static deleteModelTag(project_id, model_id, tag) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_models/" + project_id + "/" + model_id + "/tags/" + tag,
+				{
+					method: "delete",
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey(),
+					}),
+				}
+			).then(response => checkAuthorization(response))
+		)
 	}
 
 }

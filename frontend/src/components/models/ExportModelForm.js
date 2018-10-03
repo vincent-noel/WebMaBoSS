@@ -27,10 +27,11 @@ class ExportModelForm extends React.Component {
 		this.props.hide();
 		switch(this.state.format) {
 			case 'zginml':
-				APICalls.downloadModelAsZGINML(this.props.project, this.props.id, this.props.filename);
+				APICalls.downloadModelAsZGINML(this.props.project, this.props.id, this.props.tag);
 				break;
 
 			case 'sbml':
+				APICalls.downloadModelAsSBML(this.props.project, this.props.id, this.props.tag);
 				break;
 
 			default:

@@ -8,7 +8,7 @@ from django.conf import settings
 from api.models import LogicalModel, Project
 from api.serializers import LogicalModelNameSerializer
 
-from os.path import join, basename
+from os.path import join, basename, splitext
 from rest_framework.exceptions import PermissionDenied
 
 import ginsim
@@ -40,6 +40,41 @@ class LogicalModelFile(APIView):
 
 		except LogicalModel.DoesNotExist:
 			raise Http404
+
+
+class LogicalModelSBMLFile(APIView):
+
+	def get(self, request, project_id, model_id):
+
+		if request.user.is_anonymous:
+			raise PermissionDenied
+
+		try:
+			project = Project.objects.get(id=project_id)
+
+			if project.user != request.user:
+				raise PermissionDenied
+
+			model = LogicalModel.objects.get(project=project, id=model_id)
+
+			import ginsim
+			ginsim_model = ginsim.load(join(settings.MEDIA_ROOT, model.file.path))
+
+			sbml_filename = join(settings.TMP_ROOT, splitext(basename(model.file.path))[0] + ".sbml")
+			print(sbml_filename)
+			ginsim.to_sbmlqual(ginsim_model, sbml_filename)
+
+			return FileResponse(
+				open(sbml_filename, 'rb'),
+				as_attachment=True, filename=basename(sbml_filename)
+			)
+
+		except Project.DoesNotExist:
+			raise Http404
+
+		except LogicalModel.DoesNotExist:
+			raise Http404
+
 
 class LogicalModelName(APIView):
 
