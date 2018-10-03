@@ -5,6 +5,7 @@ import DownloadButton from "../commons/buttons/DownloadButton";
 import DeleteButton from "../commons/buttons/DeleteButton";
 import EditButton from "../commons/buttons/EditButton";
 import {setModel} from "../commons/sessionVariables";
+import TagButton from "../commons/buttons/TagButton";
 
 class LogicalModelEntry extends Component {
 
@@ -22,8 +23,9 @@ class LogicalModelEntry extends Component {
                     edit={this.props.edit}
                     update={this.props.updateParent}
                 />
+                <TagButton project={this.props.project} id={this.props.entry.id} tag={this.props.tag}/>
                 <DownloadButton
-                    onClick={() => this.props.download(this.props.entry.id, this.props.entry.file.split("/").pop())}
+                    onClick={() => this.props.download(this.props.entry.id)}
                 />
                 <DeleteButton
                     endpoint={"/api/logical_models/" + this.props.project + "/"}

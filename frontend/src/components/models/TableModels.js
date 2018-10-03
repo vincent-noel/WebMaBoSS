@@ -42,6 +42,7 @@ class TableModels extends Component {
 							updateParent={this.props.updateParent}
 							edit={this.props.edit}
 							download={this.props.download}
+							tag={this.props.tag}
 						/>
 					  ))}
 					</tbody>
