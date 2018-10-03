@@ -2,8 +2,11 @@ from django.urls import path, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 
-from api.views.logical_model.LogicalModel import LogicalModelFile, LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw
+from api.views.logical_model.LogicalModel import (
+	LogicalModelFile, LogicalModelSBMLFile, LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw
+)
 from api.views.logical_model.LogicalModels import LogicalModels
+from api.views.logical_model.LogicalModelsTags import LogicalModelsTags, TaggedLogicalModelFile, TaggedLogicalModelSBMLFile
 from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
 
@@ -33,8 +36,14 @@ urlpatterns = [
 	# path('api/logical_models/', LogicalModels.as_view()),
 	path('api/logical_models/<int:project_id>/', LogicalModels.as_view()),
 	path('api/logical_models/<int:project_id>/<int:model_id>', LogicalModels.as_view()),
+	path('api/logical_models/<int:project_id>/<int:model_id>/tags/', LogicalModelsTags.as_view()),
+	path('api/logical_models/<int:project_id>/<int:model_id>/tags/<str:tag>', LogicalModelsTags.as_view()),
 
-	path('api/logical_model/<int:project_id>/<int:model_id>/file', LogicalModelFile.as_view()),
+	path('api/logical_models/<int:project_id>/<int:model_id>/tags/<str:tag>/file', TaggedLogicalModelFile.as_view()),
+	path('api/logical_models/<int:project_id>/<int:model_id>/tags/<str:tag>/sbmlfile', TaggedLogicalModelSBMLFile.as_view()),
+
+	path('api/logical_models/<int:project_id>/<int:model_id>/file', LogicalModelFile.as_view()),
+	path('api/logical_models/<int:project_id>/<int:model_id>/sbmlfile', LogicalModelSBMLFile.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/name', LogicalModelName.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/nodes', LogicalModelNodes.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph', LogicalModelGraph.as_view()),
@@ -49,5 +58,4 @@ urlpatterns = [
 	path('api/maboss/<int:simulation_id>/nodes_trajs/', MaBoSSResultsNodesProbTraj.as_view()),
 	path('api/maboss/servers/', MaBoSSServerView.as_view()),
 	path('api/maboss/servers/<int:server_id>', MaBoSSServerView.as_view())
-
 ]
