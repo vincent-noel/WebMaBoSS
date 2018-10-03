@@ -55,7 +55,9 @@ class ModelDropdown extends React.Component {
 				this.props.onModelChanged(nextProps.project, nextProps.modelId);
 			}
 			else {
-				this.props.onModelChanged(nextProps.project, nextState.models[0].id);
+				if (nextState.models.length > 0){
+					this.props.onModelChanged(nextProps.project, nextState.models[0].id);
+				}
 			}
 		}
 
