@@ -30,8 +30,10 @@ class EditButton extends Component {
 
   	render() {
   		return (
-				<button type="submit" className="btn btn-primary ml-1" onClick={this.edit}>
-					<FontAwesomeIcon icon={faEdit} size="sm"/>
+				<button type="submit"
+						className={"btn btn-primary ml-1" + (this.props.size !== undefined ? " btn-" + this.props.size : "")}
+						onClick={this.edit}>
+					<FontAwesomeIcon icon={faEdit} size={this.props.size !== undefined ? this.props.size : null}/>
 				</button>
 		);
   	}

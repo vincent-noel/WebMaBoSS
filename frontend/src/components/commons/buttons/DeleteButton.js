@@ -8,7 +8,7 @@ class DeleteButton extends Component {
 
 	static propTypes = {
 		endpoint: PropTypes.string.isRequired,
-		id: PropTypes.number.isRequired,
+		id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
 		update: PropTypes.func.isRequired
 	};
 
@@ -30,8 +30,12 @@ class DeleteButton extends Component {
   	render() {
 
 		return (
-				<button type="submit" className="btn btn-danger ml-1" onClick={this.delete}>
-					<FontAwesomeIcon icon={faTrash} size="sm" />
+				<button type="submit"
+						className={"btn btn-danger ml-1" + (this.props.size !== undefined ? " btn-" + this.props.size : "")}
+						onClick={this.delete}>
+					<FontAwesomeIcon
+						icon={faTrash}
+						size={this.props.size !== undefined ? this.props.size : null} />
 				</button>
 		);
 	}
