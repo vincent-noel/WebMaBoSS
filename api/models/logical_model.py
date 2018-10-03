@@ -21,7 +21,6 @@ def path_logical_model(instance, filename):
 
 def remove_logical_model(sender, instance, **kwargs):
 	if exists(join(settings.MEDIA_ROOT, instance.file.path)):
-		# remove(join(settings.MEDIA_ROOT, instance.file.path))
 		rmtree(dirname(join(settings.MEDIA_ROOT, instance.file.path)))
 
 

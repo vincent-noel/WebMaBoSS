@@ -87,11 +87,11 @@ class TestModels(TestCase):
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
 
 		model_id = 1
-		self.assertEqual(loads(request.content), [{
-			"id": model_id, "name": "Flobak full",
-			"file": "/media/%s/logical_models/%s" % (self.project_path, model_name),
-			"project": self.project_id
-		}])
+		json_content = loads(request.content)
+		self.assertEqual(len(json_content), 1)
+		self.assertEqual(json_content[0]['id'], model_id)
+		self.assertEqual(json_content[0]['name'], "Flobak full")
+		self.assertEqual(json_content[0]['project'], self.project_id)
 
 		# Checking if we can remove it with a bad id
 		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, 0))

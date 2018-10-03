@@ -61,7 +61,6 @@ class LogicalModelSBMLFile(APIView):
 			ginsim_model = ginsim.load(join(settings.MEDIA_ROOT, model.file.path))
 
 			sbml_filename = join(settings.TMP_ROOT, splitext(basename(model.file.path))[0] + ".sbml")
-			print(sbml_filename)
 			ginsim.to_sbmlqual(ginsim_model, sbml_filename)
 
 			return FileResponse(

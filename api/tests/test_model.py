@@ -137,3 +137,90 @@ class TestModel(TestCase):
 			['p73', 'NICD', 0], ['p73', 'miR200', 1], ['p73', 'miR34', 1], ['p73', 'p21', 1],
 			['p73', 'p53', 0]
 		])
+
+		request = self.client.get('/api/logical_model/%d/%d/nodes' % (self.project_id, self.model_id))
+
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+		self.assertEqual(loads(request.content), [
+			"ECMicroenv", "DNAdamage", "Metastasis", "Migration", "Invasion", "EMT", "Apoptosis", "CellCycleArrest",
+			"GF", "TGFbeta", "p21", "CDH1", "CDH2", "VIM", "TWIST1", "SNAI1", "SNAI2", "ZEB1", "ZEB2", "AKT1", "DKK1",
+			"CTNNB1", "NICD", "p63", "p53", "p73", "miR200", "miR203", "miR34", "AKT2", "ERK", "SMAD"
+		])
+
+		request = self.client.get('/api/logical_model/%d/%d/steady_states' % (self.project_id, self.model_id))
+
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+		self.assertEqual(loads(request.content), [
+			{
+				"ECMicroenv": 0, "DNAdamage": 0, "Metastasis": 0, "Migration": 0, "Invasion": 0, "EMT": 0,
+				"Apoptosis": 0, "CellCycleArrest": 0, "GF": 0, "TGFbeta": 0, "p21": 0, "CDH1": 1, "CDH2": 0, "VIM": 0,
+				"TWIST1": 0, "SNAI1": 0, "SNAI2": 0, "ZEB1": 0, "ZEB2": 0, "AKT1": 0, "DKK1": 0, "CTNNB1": 0, "NICD": 0,
+				"p63": 0, "p53": 0, "p73": 0, "miR200": 0, "miR203": 0, "miR34": 0, "AKT2": 0, "ERK": 0, "SMAD": 0
+			}, {
+				"ECMicroenv": 0, "DNAdamage": 0, "Metastasis": 0, "Migration": 0, "Invasion": 0, "EMT": 1,
+				"Apoptosis": 0, "CellCycleArrest": 1, "GF": 1, "TGFbeta": 0, "p21": 0, "CDH1": 0, "CDH2": 1, "VIM": 1,
+				"TWIST1": 1, "SNAI1": 1, "SNAI2": 1, "ZEB1": 1, "ZEB2": 1, "AKT1": 0, "DKK1": 0, "CTNNB1": 0, "NICD": 0,
+				"p63": 0, "p53": 0, "p73": 0, "miR200": 0, "miR203": 0, "miR34": 0, "AKT2": 1, "ERK": 1, "SMAD": 0
+			}, {
+				"ECMicroenv": 0, "DNAdamage": 1, "Metastasis": 0, "Migration": 0, "Invasion": 0, "EMT": 0,
+				"Apoptosis": 1, "CellCycleArrest": 1, "GF": 0, "TGFbeta": 0, "p21": 1, "CDH1": 1, "CDH2": 0, "VIM": 0,
+				"TWIST1": 0, "SNAI1": 0, "SNAI2": 0, "ZEB1": 0, "ZEB2": 0, "AKT1": 0, "DKK1": 0, "CTNNB1": 0, "NICD": 0,
+				"p63": 0, "p53": 1, "p73": 0, "miR200": 1, "miR203": 1, "miR34": 0, "AKT2": 0, "ERK": 0, "SMAD": 0
+			}, {
+				"ECMicroenv": 0, "DNAdamage": 1, "Metastasis": 0, "Migration": 0, "Invasion": 0, "EMT": 0,
+				"Apoptosis": 1, "CellCycleArrest": 1, "GF": 0, "TGFbeta": 0, "p21": 1, "CDH1": 1, "CDH2": 0, "VIM": 0,
+				"TWIST1": 0, "SNAI1": 0, "SNAI2": 0, "ZEB1": 0, "ZEB2": 0, "AKT1": 0, "DKK1": 0, "CTNNB1": 0, "NICD": 0,
+				"p63": 1, "p53": 0, "p73": 1, "miR200": 1, "miR203": 0, "miR34": 0, "AKT2": 0, "ERK": 0, "SMAD": 0
+			}, {
+				"ECMicroenv": 0, "DNAdamage": 1, "Metastasis": 0, "Migration": 0, "Invasion": 0, "EMT": 1,
+				"Apoptosis": 0, "CellCycleArrest": 1, "GF": 1, "TGFbeta": 0, "p21": 0, "CDH1": 0, "CDH2": 1, "VIM": 1,
+				"TWIST1": 1, "SNAI1": 1, "SNAI2": 1, "ZEB1": 1, "ZEB2": 1, "AKT1": 0, "DKK1": 0, "CTNNB1": 0, "NICD": 0,
+				"p63": 0, "p53": 0, "p73": 0, "miR200": 0, "miR203": 0, "miR34": 0, "AKT2": 1, "ERK": 1, "SMAD": 0
+			}, {
+				"ECMicroenv": 1, "DNAdamage": 0, "Metastasis": 1, "Migration": 1, "Invasion": 1, "EMT": 1,
+				"Apoptosis": 0, "CellCycleArrest": 1, "GF": 1, "TGFbeta": 1, "p21": 0, "CDH1": 0, "CDH2": 1, "VIM": 1,
+				"TWIST1": 1, "SNAI1": 1, "SNAI2": 1, "ZEB1": 1, "ZEB2": 1, "AKT1": 0, "DKK1": 1, "CTNNB1": 0, "NICD": 1,
+				"p63": 0, "p53": 0, "p73": 0, "miR200": 0, "miR203": 0, "miR34": 0, "AKT2": 1, "ERK": 1, "SMAD": 1
+			},
+			{
+				"ECMicroenv": 1, "DNAdamage": 1, "Metastasis": 0, "Migration": 0, "Invasion": 0, "EMT": 0,
+				"Apoptosis": 1, "CellCycleArrest": 1, "GF": 0, "TGFbeta": 1, "p21": 1, "CDH1": 1, "CDH2": 0, "VIM": 0,
+				"TWIST1": 0, "SNAI1": 0, "SNAI2": 0, "ZEB1": 0, "ZEB2": 0, "AKT1": 0, "DKK1": 0, "CTNNB1": 0, "NICD": 0,
+				"p63": 0, "p53": 1, "p73": 0, "miR200": 1, "miR203": 1, "miR34": 0, "AKT2": 0, "ERK": 0, "SMAD": 0
+			}, {
+				"ECMicroenv": 1, "DNAdamage": 1, "Metastasis": 0, "Migration": 0, "Invasion": 0, "EMT": 0,
+				"Apoptosis": 1, "CellCycleArrest": 1, "GF": 0, "TGFbeta": 1, "p21": 1, "CDH1": 1, "CDH2": 0, "VIM": 0,
+				"TWIST1": 0, "SNAI1": 0, "SNAI2": 0, "ZEB1": 0, "ZEB2": 0, "AKT1": 0, "DKK1": 0, "CTNNB1": 0, "NICD": 0,
+				"p63": 1, "p53": 0, "p73": 1, "miR200": 1, "miR203": 0, "miR34": 0, "AKT2": 0, "ERK": 0, "SMAD": 0
+			}, {
+				"ECMicroenv": 1, "DNAdamage": 1, "Metastasis": 1, "Migration": 1, "Invasion": 1, "EMT": 1,
+				"Apoptosis": 0, "CellCycleArrest": 1, "GF": 1, "TGFbeta": 1, "p21": 0, "CDH1": 0, "CDH2": 1, "VIM": 1,
+				"TWIST1": 1, "SNAI1": 1, "SNAI2": 1, "ZEB1": 1, "ZEB2": 1, "AKT1": 0, "DKK1": 1, "CTNNB1": 0, "NICD": 1,
+				"p63": 0, "p53": 0, "p73": 0, "miR200": 0, "miR203": 0, "miR34": 0, "AKT2": 1, "ERK": 1, "SMAD": 1
+			}
+		])
+
+		request = self.client.get('/api/logical_models/%d/%d/file' % (self.project_id, self.model_id))
+
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+		with open(join(settings.MEDIA_ROOT, "model.zginml"), 'wb') as file:
+			file.write(b''.join(request.streaming_content))
+
+		self.assertTrue(cmp(
+			join(settings.MEDIA_ROOT, "model.zginml"),
+			join(dirname(__file__), 'files', 'Metastasis_Master_Model.zginml'))
+		)
+
+
+		request = self.client.get('/api/logical_models/%d/%d/sbmlfile' % (self.project_id, self.model_id))
+
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+		with open(join(settings.MEDIA_ROOT, "model.sbml"), 'wb') as file:
+			file.write(b''.join(request.streaming_content))
+
+		self.assertTrue(cmp(
+			join(settings.MEDIA_ROOT, "model.sbml"),
+			join(dirname(__file__), 'files', 'Metastasis_Master_Model.sbml'))
+		)
