@@ -30,7 +30,13 @@ class MaBoSSResultsFixedPoints(APIView):
 				raise PermissionDenied
 
 			if simulation.fixpoints is not None:
-				fixed_points = loads(simulation.fixpoints)
+
+				fixed_points = {}
+				for key, values in loads(simulation.states_probtraj).items():
+					last_time = list(values.keys())[len(values.keys())-1]
+					if values[last_time] > 0:
+						fixed_points.update({key: values[last_time]})
+
 			else:
 				fixed_points = None
 
@@ -42,7 +48,7 @@ class MaBoSSResultsFixedPoints(APIView):
 					status=status.HTTP_200_OK
 				)
 
-		except:
+		except MaBoSSSimulation.DoesNotExist:
 			raise Http404
 
 class MaBoSSResultsStatesProbTraj(APIView):

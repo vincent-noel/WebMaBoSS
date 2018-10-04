@@ -61,10 +61,10 @@ class MaBossFixedPoints extends React.Component {
 		if (this.state.fptableLoaded) {
 
 			const data = {
-				labels: Object.values(this.state.fptable['State']),
+				labels: Object.keys(this.state.fptable),
 				datasets: [{
-					data: Object.values(this.state.fptable['Proba']),
-					backgroundColor: Object.values(this.state.fptable['State']).map((value, index) => { return this.props.colormap[index]})
+					data: Object.values(this.state.fptable),
+					backgroundColor: Object.values(this.state.fptable).map((value, index) => { return this.props.colormap[index]})
 				}]
 			};
 
