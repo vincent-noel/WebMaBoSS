@@ -55,13 +55,13 @@ div.form-inline-sm {
   min-width: 100%;
 
   th {
-    height: 3rem;
+    height: 5rem;
     white-space: nowrap;
 
     > div {
       transform:
           /* Magic Numbers */
-          translate(2rem, 0px)
+          translate(-1rem, 1rem)
 
           /* 45 is really 360 - 45 */
           rotate(315deg);

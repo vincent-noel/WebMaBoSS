@@ -27,12 +27,12 @@ class Graph extends Component {
 	}
 
 	componentWillUnmount() {
-		this.getGraphCall.cancel();
+		if (this.getGraphCall !== null)	this.getGraphCall.cancel();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.steadyState !== this.props.steadyState) {
-			this.getGraphCall.cancel();
+			if (this.getGraphCall !== null) this.getGraphCall.cancel();
 			this.getGraph(nextProps.project, nextProps.modelId, nextProps.steadyState);
 			return false;
 		}

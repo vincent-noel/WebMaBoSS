@@ -46,13 +46,12 @@ class ModelSteadyStatesResult extends Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
-
 		if (nextProps.modelId !== this.props.modelId) {
 			this.getSteadyStatesCall.cancel();
 			this.getSteadyStates(nextProps.project, nextProps.modelId);
 		}
 
-		return (nextState.loaded !== this.state.loaded && nextState.loaded);
+		return ((nextState.loaded !== this.state.loaded && nextState.loaded) || nextState.selectedSteadyState !== this.state.selectedSteadyState);
 
 	}
 
@@ -62,7 +61,8 @@ class ModelSteadyStatesResult extends Component {
 
 			return (
 				<React.Fragment>
-				<table className="table-steadystates">
+				<div className="container" style={{overflow: 'auto'}}>
+					<table className="table-steadystates">
 					<thead><tr>
 					{Object.keys(this.state.data[0]).map((key, index) => {
 						return <th key={key}
@@ -102,7 +102,6 @@ class ModelSteadyStatesResult extends Component {
 							>
 								<button
 									className="btn btn-primary"
-
 									onClick={() => {this.toggleGraph(steady_state);}}
 								>
 									<FontAwesomeIcon icon={faEye} size="sm" />
@@ -113,7 +112,7 @@ class ModelSteadyStatesResult extends Component {
 					}
 					</tbody>
 				</table>
-
+				</div>
 				{
 					this.state.selectedSteadyState !== null ?
 						<React.Fragment>

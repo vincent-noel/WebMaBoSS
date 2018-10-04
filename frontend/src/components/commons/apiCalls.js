@@ -208,7 +208,7 @@ class APICalls {
 
 		return makeCancelable(
 			fetch(
-				"/api/logical_model/" + this.props.project + "/" + this.props.modelId + "/graph",
+				"/api/logical_model/" + project_id + "/" + model_id + "/graph",
 				{
 					method: "post",
 					body: body,
