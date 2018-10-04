@@ -103,15 +103,31 @@ div.form-inline-sm {
     list-style:none;
 
     li {
+    float: left;
 
-      font-size: 0.75rem;
+      font-size: 0.8rem;
+      color: #666;
 
-      span {
+      span.legend-color {
 
-        width:30px;
-        height:10px;
+        width:45px;
+        height:15px;
         display:inline-block;
         margin-right:5px;
       }
+      span.legend-label {
+
+        text-decoration: none;
+        margin-right:10px;
+
+
+      }
+
+      &.disable-legend {
+        span.legend-label{
+          text-decoration: line-through;
+        }
+      }
+
     }
 }
