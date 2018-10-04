@@ -36,24 +36,24 @@ class Switch3Pos extends Component {
 				id={this.props.id + "-off"}
 				name={"state-d" + this.props.id}
 				type="radio"
-				{ ...(this.state.selected === 'off' ? {defaultChecked: true} : null) }
-				onClick={() => this.changeState('off')}
+				{ ...(this.state.selected === -1 ? {defaultChecked: true} : null) }
+				onClick={() => this.changeState(-1)}
 			/>
 			<label htmlFor={this.props.id + "-off"} className="switch-3-label-off"/>
 			<input
 				id={this.props.id + "-na"}
 				name={"state-d" + this.props.id}
 				type="radio"
-				{ ...(this.state.selected === 'na' || this.state.selected === null ? {defaultChecked: true} : null) }
-				onClick={() => this.changeState('na')}
+				{ ...(this.state.selected === 0 || this.state.selected === null ? {defaultChecked: true} : null) }
+				onClick={() => this.changeState(0)}
 			/>
 			<label htmlFor={this.props.id + "-na"} className="switch-3-label-na"/>
 			<input
 				id={this.props.id + "-on"}
 				name={"state-d" + this.props.id}
 				type="radio"
-				{ ...(this.state.selected === 'on' ? {defaultChecked: true} : null) }
-				onClick={() => this.changeState('on')}
+				{ ...(this.state.selected === 1 ? {defaultChecked: true} : null) }
+				onClick={() => this.changeState(1)}
 			/>
 			<label htmlFor={this.props.id + "-on"} className="switch-3-label-on"/>
 			<span className="slider-3 round" />
