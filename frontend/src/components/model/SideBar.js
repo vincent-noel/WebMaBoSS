@@ -25,19 +25,16 @@ class SideBar extends React.Component {
 					</li>
 					<li>
 						<NavLink to={"/model/maboss/simulation/"} className='nav-link'>MaBoSS</NavLink>
-						{this.props.path.startsWith("/model/maboss/") ?
-						<ul className={"sidebar-nav"}>
-							<li>
-								<NavLink to="/model/maboss/simulation/" className="nav-sublink">Simulation</NavLink>
-							</li>
-							<li>
-								<NavLink to="/model/maboss/mutations/" className="nav-link">Mutations</NavLink>
-							</li>
-							<li>
-								<NavLink to="/model/maboss/sensitivity/" className="nav-link">Sensitivity Analysis</NavLink>
-							</li>
-						</ul>
-						: null}
+						{/*{this.props.path.startsWith("/model/maboss/") ?*/}
+						{/*<ul className={"sidebar-nav"}>*/}
+							{/*<li>*/}
+								{/*<NavLink to="/model/maboss/simulation/" className="nav-link">Simulation</NavLink>*/}
+							{/*</li>*/}
+							{/*<li>*/}
+								{/*<NavLink to="/model/maboss/sensitivity/" className="nav-link">Sensitivity Analysis</NavLink>*/}
+							{/*</li>*/}
+						{/*</ul>*/}
+						{/*: null}*/}
 					</li>
 				</ul>
 			</div>
