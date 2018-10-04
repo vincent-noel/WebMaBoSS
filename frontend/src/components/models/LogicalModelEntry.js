@@ -13,7 +13,7 @@ class LogicalModelEntry extends Component {
 
     return <tr>
         <td>
-            <NavLink to={"/model/"} onClick={() => {setModel(this.props.entry.id)}}>{this.props.entry.name}</NavLink>
+            <NavLink to={"/model/overview/"} onClick={() => {setModel(this.props.entry.id)}}>{this.props.entry.name}</NavLink>
         </td>
         <td>
             <ButtonToolbar className="justify-content-end">

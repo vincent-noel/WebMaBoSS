@@ -1,9 +1,7 @@
 import $ from 'jquery';
 import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.min';
-
 import '../scss/custom.scss';
-import '../scss/toggle_switch.scss';
 
 import React, {Component} from "react";
 import {Router, Route} from "react-router-dom";
@@ -39,9 +37,11 @@ class App extends Component {
 					<Route exact path="/models/" component={Models} />
 					<Route exact path="/data/" component={Data} />
 
-					<Route exact path="/model/" component={Overview} />
-					<Route path="/model/steady_states/" component={ModelSteadyStates} />
-					<Route path="/model/maboss/" component={MaBoss} />
+					<Route exact path="/model/overview/" component={Overview} />
+					<Route exact path="/model/steady_states/" component={ModelSteadyStates} />
+					<Route exact path="/model/maboss/simulation/" component={MaBoss} />
+					<Route exact path="/model/maboss/mutations/" component={MaBoss} />
+					<Route exact path="/model/maboss/sensitivity/" component={MaBoss} />
 
 					<Route exact path="/profile/" component={Profile} />
 					<Route exact path="/profile/maboss/" component={MaBoSSSettings} />

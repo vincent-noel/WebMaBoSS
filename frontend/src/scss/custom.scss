@@ -1,5 +1,5 @@
-@import "node_modules/bootstrap/scss/functions";
-@import "node_modules/bootstrap/scss/variables";
+//@import "../../../node_modules/bootstrap/scss/functions";
+//@import "../../../node_modules/bootstrap/scss/variables";
 
 //$grid-breakpoints: (
 //  // Extra small screen / phone
@@ -15,8 +15,8 @@
 //);
 
 
-@import "node_modules/bootstrap/scss/bootstrap";
-@import "sidebar";
+@import "../../../node_modules/bootstrap/scss/bootstrap";
+//@import "sidebar";
 
 div.page {
   padding-top: 3.5rem;
@@ -30,6 +30,25 @@ img.fullsize {
   max-width: 100%;
   max-height: 100%;
 }
+
+div.form-inline-sm {
+
+  @extend .form-inline;
+
+  label {
+    font-size: 0.875rem;
+  }
+
+  input {
+    font-size: 0.875rem;
+    width: calc(1.75rem + 2px);
+  }
+
+  button {
+    button { @extend .btn-sm; }
+  }
+}
+
 .table-steadystates {
 
   max-width: 100%;

@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
+import '../../../scss/toggle_switch.scss';
 
 class Range extends Component {
 
