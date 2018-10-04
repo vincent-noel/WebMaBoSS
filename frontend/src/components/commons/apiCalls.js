@@ -479,5 +479,19 @@ class APICalls {
 		)
 	}
 
+	static loadModelTag(project_id, model_id, tag) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_models/" + project_id + "/" + model_id + "/tags/" + tag,
+				{
+					method: "get",
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey(),
+					}),
+				}
+			).then(response => checkAuthorization(response))
+		)
+	}
+
 }
 export default APICalls;

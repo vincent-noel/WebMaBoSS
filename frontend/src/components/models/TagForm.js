@@ -4,6 +4,7 @@ import DeleteButton from "../commons/buttons/DeleteButton";
 import APICalls from "../commons/apiCalls";
 import LoadButton from "../commons/buttons/LoadButton";
 import DownloadButton from "../commons/buttons/DownloadButton";
+import ConfirmationModal from "../commons/ConfirmationModal";
 
 
 class TagForm extends React.Component {
@@ -13,24 +14,27 @@ class TagForm extends React.Component {
 
 		this.state = {
 			listOfTags: [],
-			modal: false,
+			// modal: false,
 			tag: "",
-
+			showConfirmLoad: false,
+			tagToLoad: null,
 		};
-		this.toggle = this.toggle.bind(this);
+		// this.toggle = this.toggle.bind(this);
 
 		this.getTags = this.getTags.bind(this);
 		this.updateListOfTags = this.updateListOfTags.bind(this);
 		this.tag = this.tag.bind(this);
+		this.yesLoad = this.yesLoad.bind(this);
+		this.noLoad = this.noLoad.bind(this);
 
 		this.getTagsCall = null;
 		this.addTagCall = null;
-		this.deleteTagCall = null;
+		this.loadTagCall = null;
 	}
 
-	toggle() {
-		this.setState({modal: !this.state.modal});
-	}
+	// toggle() {
+	// 	this.setState({modal: !this.state.modal});
+	// }
 
 	getTags(project_id, model_id) {
 		this.setState({listOfTags: []});
@@ -41,6 +45,20 @@ class TagForm extends React.Component {
 	tag() {
 		this.addTagCall = APICalls.createModelTag(this.props.project, this.props.id, this.state.tag);
 		this.addTagCall.promise.then(response => this.updateListOfTags());
+	}
+
+	askConfirmLoad(tag) {
+		this.setState({showConfirmLoad: true, tagToLoad: tag})
+	}
+
+	noLoad() {
+		this.setState({showConfirmLoad: false, tagToLoad: null})
+	}
+
+	yesLoad() {
+		this.setState({showConfirmLoad: false});
+		this.loadTagCall = APICalls.loadModelTag(this.props.project, this.props.id, this.state.tagToLoad);
+		this.loadTagCall.promise.then(() => {this.setState({tagToLoad: null}); this.props.hide();});
 	}
 
 	updateListOfTags() {
@@ -72,6 +90,7 @@ class TagForm extends React.Component {
 	componentWillUnmount() {
 		if (this.getTagsCall !== null) this.getTagsCall.cancel();
 		if (this.addTagCall !== null) this.addTagCall.cancel();
+		if (this.loadTagCall !== null) this.loadTagCall.cancel();
 	}
 
 	render() {
@@ -84,16 +103,16 @@ class TagForm extends React.Component {
 						<table className="table table-striped">
 							<thead>
 							  <tr className="d-flex">
-									<th>Tagged versions</th>
+									<th className="flex-fill">Tagged versions</th>
 									<th className="ml-auto"></th>
 							  </tr>
 							</thead>
 							<tbody>
 							  {this.state.listOfTags.map((tag, index) => (
 								<tr key={index} className="d-flex">
-									<td>{tag}</td>
+									<td className="flex-fill">{tag}</td>
 									<td className="ml-auto">
-										<LoadButton id={this.props.id} load={() => {}} size="sm"/>
+										<LoadButton id={this.props.id} load={() => this.askConfirmLoad(tag)} size="sm"/>
 										<DownloadButton onClick={() => {this.props.showExport(this.props.id, tag);}} size="sm"/>
 									   <DeleteButton
 										endpoint={"/api/logical_models/" + this.props.project + "/" + this.props.id + "/tags/"}
@@ -107,8 +126,8 @@ class TagForm extends React.Component {
 						  </table>}
 						<br/><br/>
 						<hr/>
-						<div className="form-inline">
-							<label htmlFor="modelTag" className="mr-2">Tag</label>
+						<div className="form-inline form-sm">
+							{/*<label htmlFor="modelTag" className="mr-2">Tag</label>*/}
 							<input
 								id="modelTag"
 								className="form-control"
@@ -117,8 +136,9 @@ class TagForm extends React.Component {
 								onChange={(e) => this.handleTagChange(e)}
 								value={this.state.tag}
 								required
+
 							/>
-							<Button color="primary" className="ml-auto" onClick={this.tag}>Save</Button>
+							<Button color="primary" className="ml-auto" onClick={this.tag}>Create new tag</Button>
 						</div>
 					</CardBody>
 					<CardFooter>
@@ -128,6 +148,9 @@ class TagForm extends React.Component {
 					</CardFooter>
 				</Card>
 			</Modal>
+			<ConfirmationModal status={this.state.showConfirmLoad} yes={this.yesLoad} no={this.noLoad}
+							   message={"Are you sure you want to overwrite your working version"}
+			/>
 		</React.Fragment>;
 	}
 }

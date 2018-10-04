@@ -9,11 +9,12 @@ from django.core.files import File
 
 from api.models import LogicalModel, Project, TaggedLogicalModel
 from os.path import join, basename, splitext
+from shutil import copyfile
 
 
 class LogicalModelsTags(APIView):
 
-	def get(self, request, project_id, model_id):
+	def get(self, request, project_id, model_id, tag=None):
 
 		if request.user.is_anonymous:
 			raise PermissionDenied
@@ -25,10 +26,22 @@ class LogicalModelsTags(APIView):
 				raise PermissionDenied
 
 			model = LogicalModel.objects.get(project=project, id=model_id)
-			tagged_models = TaggedLogicalModel.objects.filter(model=model)
-			tags = [tagged_model.tag for tagged_model in tagged_models]
 
-			return Response(tags)
+			if tag is None:
+				tagged_models = TaggedLogicalModel.objects.filter(model=model)
+				tags = [tagged_model.tag for tagged_model in tagged_models]
+
+				return Response(tags)
+
+			else:
+				# Restoring model from tag
+				tagged_model = TaggedLogicalModel.objects.get(model=model, tag=tag)
+				copyfile(
+					join(settings.MEDIA_ROOT, tagged_model.file.path),
+					join(settings.MEDIA_ROOT, model.file.path)
+				)
+
+				return Response(status=status.HTTP_200_OK)
 
 		except Project.DoesNotExist:
 			raise Http404
