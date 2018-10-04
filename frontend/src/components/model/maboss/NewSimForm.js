@@ -20,6 +20,7 @@ class NewSimForm extends React.Component {
 			listNodes: [],
 			initialStates: {},
 			outputVariables: {},
+			mutatedVariables: {}
 		};
 
 		this.handleSampleCountChange.bind(this);
@@ -30,6 +31,7 @@ class NewSimForm extends React.Component {
 
 		this.updateInitialState = this.updateInitialState.bind(this);
 		this.updateOutputVariables = this.updateOutputVariables.bind(this);
+		this.updateMutatedVariables = this.updateMutatedVariables.bind(this);
 
 		this.getSettingsCall = null;
 	}
@@ -60,11 +62,28 @@ class NewSimForm extends React.Component {
 				}, {}
 			);
 
+			const mutated_variables = Object.keys(response['initial_states']).reduce(
+				(acc, key) => {
+
+					if (Object.keys(response['initial_states']).includes(key)) {
+						if (response['initial_states'][key] === 'OFF') acc[key] = -1;
+						else if (response['initial_states'][key] === 'ON') acc[key] = 1;
+						else acc[key] = 0;
+
+					} else {
+						acc[key] = 0
+
+					}
+					return acc;
+				}, {}
+			);
+
 			this.setState(
 			{
 				outputVariables: output_variables,
 				initialStates: initial_states,
-				listNodes: Object.keys(response['initial_states'])
+				listNodes: Object.keys(response['initial_states']),
+				mutatedVariables: mutated_variables
 			}
 		)})
 	}
@@ -79,6 +98,12 @@ class NewSimForm extends React.Component {
 		let output_variables = this.state.outputVariables;
 		output_variables[node] = !output_variables[node];
 		this.setState({outputVariables: output_variables});
+	}
+
+	updateMutatedVariables(node, value) {
+		let mutated_variables = this.state.mutatedVariables;
+		mutated_variables[node] = value;
+		this.setState({mutatedVariables: mutated_variables});
 	}
 
 	handleSampleCountChange(e) {
@@ -109,6 +134,18 @@ class NewSimForm extends React.Component {
 				}, {}
 			);
 
+		const mutations = Object.keys(this.state.mutatedVariables).reduce(
+			(acc, key) => {
+				if (this.state.mutatedVariables[key] === -1) {
+					acc[key] = "OFF";
+				} else if (this.state.mutatedVariables[key] === 1) {
+					acc[key] = "ON";
+				}
+				return acc;
+			}, {}
+
+		);
+
 		this.props.onSubmit(
 			this.props.project, this.props.modelId,
 			{
@@ -117,6 +154,7 @@ class NewSimForm extends React.Component {
 				timeTick: this.state.timeTick,
 				initialStates: initial_states,
 				outputVariables: this.state.outputVariables,
+				mutations: mutations,
 			}
 		);
 	}
@@ -169,7 +207,13 @@ class NewSimForm extends React.Component {
 									<NavLink
 									  	className={classnames({ active: this.state.activeTab === 'output_variables' })}
               							onClick={() => { this.toggleTab('output_variables'); }}
-									>Output variables</NavLink>
+									>Output</NavLink>
+								</NavItem>
+								<NavItem>
+									<NavLink
+									  	className={classnames({ active: this.state.activeTab === 'mutated_variables' })}
+              							onClick={() => { this.toggleTab('mutated_variables'); }}
+									>Mutations</NavLink>
 								</NavItem>
 							</Nav>
 							<TabContent activeTab={this.state.activeTab}>
@@ -214,6 +258,14 @@ class NewSimForm extends React.Component {
 										type='switch'
 										dict={this.state.outputVariables}
 										updateCallback={this.updateOutputVariables}
+									/>
+								</TabPane>
+								<TabPane tabId="mutated_variables">
+									<TableSwitches
+										id={"mv"}
+										type='3pos'
+										dict={this.state.mutatedVariables}
+										updateCallback={this.updateMutatedVariables}
 									/>
 								</TabPane>
 							</TabContent>

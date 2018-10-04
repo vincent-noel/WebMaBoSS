@@ -74,6 +74,10 @@ class MaBoSSSimulationView(APIView):
 				time_tick=float(request.POST['timeTick'])
 			)
 
+			mutations = loads(request.POST['mutations'])
+			for var, mutation in mutations.items():
+				maboss_model.mutate(var, mutation)
+
 			maboss_model.network.set_output(
 				[key for key, value in loads(request.POST['outputVariables']).items() if value]
 			)
@@ -176,7 +180,7 @@ class MaBossSettings(APIView):
 
 			output_variables = {var: not value.is_internal for var, value in maboss_model.network.items()}
 			initial_states = maboss_model.network.get_istate()
-
+			mutations = maboss_model.get_mutations()
 			# Here the problem is the variables with more than two states, who appear in the initial states as :
 			# (Var_1, Var_2, Var_3) : {(0, 0, 0): 1, (1, 0, 0): 0, (1, 1, 0): 0, (1, 1, 1): 0}
 			# The nice thing is that it shows the constraint that the state (0, 1, 1) is impossible. But I'm not sure
@@ -206,7 +210,8 @@ class MaBossSettings(APIView):
 
 			return Response({
 				'output_variables': output_variables,
-				'initial_states': fixed_initial_states
+				'initial_states': fixed_initial_states,
+				'mutations': mutations
 			})
 
 		except Project.DoesNotExist:
