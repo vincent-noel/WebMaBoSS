@@ -9,6 +9,8 @@ services:
 
     image: app-curie
     container_name: app-curie
+    volumes:
+      - app-curie-data:/appCurie/data
     ports:
       - "8000:8000"
     user: www-data
@@ -46,3 +48,6 @@ services:
       - ${PWD}:/appCurie
 
     restart: unless-stopped
+
+volumes:
+  app-curie-data:

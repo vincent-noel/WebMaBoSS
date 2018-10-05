@@ -5,8 +5,7 @@ frontend/static/
 node_modules/
 
 # Database / Files
-db.sqlite3
-media/
+data/
 
 # PyCharm conf
 .idea/
