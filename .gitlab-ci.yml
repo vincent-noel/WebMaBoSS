@@ -42,4 +42,4 @@ test:
     - docker pull vnoel/app-curie-test:latest
     - docker tag vnoel/app-curie-test:latest app-curie-test:latest
     - docker-compose up -d app-curie-test
-    - docker exec -t app-curie python manage.py test api -v 2 --settings=AppCurie.test_settings
+    - docker exec -t app-curie python manage.py test api -v 2 --settings=settings.test_settings

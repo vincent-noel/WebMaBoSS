@@ -56,7 +56,7 @@ RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
                                 --host 0.0.0.0 --port 8000 \
                                 --user www-data --group www-data \
                                 --server-root=server/ \
-                                --settings=AppCurie.prod_settings \
+                                --settings=settings.prod_settings \
                                 --url-alias /static static/ \
                                 --url-alias /media media/ \
                                 --reload-on-changes
