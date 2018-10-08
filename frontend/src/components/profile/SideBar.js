@@ -8,7 +8,7 @@ class SideBar extends Component {
 			<div id="sidebar-wrapper">
 				<ul className="sidebar-nav">
 					<li>
-						<NavLink to={ "/profile/"}>Profile</NavLink>
+						<NavLink to={ "/profile/account/"}>Profile</NavLink>
 					</li>
 					<li>
 						<NavLink to={"/profile/maboss/"}>MaBoSS</NavLink>

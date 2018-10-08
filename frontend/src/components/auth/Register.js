@@ -3,9 +3,9 @@ import {Card, CardHeader, CardBody} from "reactstrap";
 import history from '../history';
 
 import FullPage from "../FullPage";
-import getCSRFToken from "../commons/getCSRFToken";
 import ErrorAlert from "../commons/ErrorAlert";
 import {setAPIKey} from "../commons/sessionVariables";
+import APICalls from "../commons/apiCalls";
 
 
 class Register extends React.Component {
@@ -29,29 +29,18 @@ class Register extends React.Component {
 		this.handleEmailChange.bind(this);
 		this.handlePassword1Change.bind(this);
 		this.handlePassword2Change.bind(this);
+
+		this.registerCall = null;
 	}
 
 	handleSubmit(e) {
 
 		e.preventDefault();
 
-		const formData = new FormData();
-		formData.append('username', this.state.username);
-		formData.append('email', this.state.email);
-		formData.append('password1', this.state.password1);
-		formData.append('password2', this.state.password2);
-
-		const conf = {
-		  method: "post",
-		  body: formData,
-		  headers: new Headers({
-			  'X-CSRFToken': getCSRFToken()
-		  })
-		};
-
-		fetch("/api/auth/register", conf)
-		.then(response => response.json())
-		.then(json_response => {
+		this.registerCall = APICalls.register(
+			this.state.username, this.state.email, this.state.password1, this.state.password2
+		);
+		this.registerCall.promise.then(json_response => {
 
 			this.state = {
 				usernameHasError: false,
@@ -114,6 +103,10 @@ class Register extends React.Component {
 
 	handlePassword2Change(e) {
 		this.setState({password2: e.target.value});
+	}
+
+	componentWillUnmount(e) {
+		if (this.registerCall !== null) this.registerCall.cancel();
 	}
 
 	render(){

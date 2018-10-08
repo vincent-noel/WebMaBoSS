@@ -14,8 +14,8 @@ from api.views.maboss.MaBossServerView import MaBoSSServerView
 from api.views.maboss.MaBoSSSimulationView import MaBoSSSimulationView, MaBoSSSimulationRemove, MaBossSettings
 from api.views.maboss.MaBoSSResultsView import MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj
 
-from api.views.AuthView import TestAuthView, LogoutViewEx
-from rest_auth.views import LoginView
+from api.views.AuthView import TestAuthView, LogoutViewEx, UserEmailView
+from rest_auth.views import LoginView, PasswordChangeView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
 from rest_framework.documentation import include_docs_urls
 from django.conf.urls import include
@@ -27,6 +27,8 @@ urlpatterns = [
 	path('api/auth/logout', LogoutViewEx.as_view(), name='logout', ),
 	path('api/auth/login', LoginView.as_view(), name='login', ),
 	path('api/auth/register', RegisterView.as_view(), name='register'),
+	path('api/auth/email', UserEmailView.as_view(), name='user_email'),
+	path('api/auth/password/change/', PasswordChangeView.as_view(), name='password_change'),
 	path('api/auth/account-confirm-email', VerifyEmailView.as_view(), name='account_email_verification_sent'),
 	path('api/auth/account-confirm-email/<str:key>', VerifyEmailView.as_view(), name='account_confirm_email'),
 

@@ -5,6 +5,8 @@ import history from '../history';
 import FullPage from "../FullPage";
 import ErrorAlert from "../commons/ErrorAlert";
 import {isConnected, setAPIKey, setUser} from "../commons/sessionVariables";
+import APICalls from "../commons/apiCalls";
+
 
 class SignIn extends React.Component {
 
@@ -22,23 +24,15 @@ class SignIn extends React.Component {
 		this.handleSubmit.bind(this);
 		this.handleUsernameChange.bind(this);
 		this.handlePasswordChange.bind(this);
+		this.loginCall = null;
 	}
 
 	handleSubmit(e) {
 
 		e.preventDefault();
-		const formData = new FormData();
-		formData.append('username', this.state.username);
-		formData.append('password', this.state.password);
 
-		const conf = {
-		  method: "post",
-		  body: formData
-		};
-
-		fetch("/api/auth/login", conf)
-		.then(response => response.json())
-		.then(json_response => {
+		this.loginCall = APICalls.login(this.state.username, this.state.password);
+		this.loginCall.promise.then(json_response => {
 
 			this.setState({
 				usernameHasError: false,
@@ -91,6 +85,10 @@ class SignIn extends React.Component {
 		if (isConnected()) {
 			history.push("/");
 		}
+	}
+
+	componentWillUnmount() {
+		if (this.loginCall !== null) this.loginCall.cancel();
 	}
 
 	render(){

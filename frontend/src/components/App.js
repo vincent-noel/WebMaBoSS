@@ -43,7 +43,7 @@ class App extends Component {
 					<Route exact path="/model/maboss/mutations/" component={MaBoss} />
 					<Route exact path="/model/maboss/sensitivity/" component={MaBoss} />
 
-					<Route exact path="/profile/" component={Profile} />
+					<Route exact path="/profile/account/" component={Profile} />
 					<Route exact path="/profile/maboss/" component={MaBoSSSettings} />
 
 				</React.Fragment>
