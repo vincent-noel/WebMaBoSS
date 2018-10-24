@@ -12,6 +12,9 @@ class ModelForm extends React.Component {
 			name: "",
 			file: undefined,
 			fileName: "Select file... ",
+			showFile2: false,
+			file2: null,
+			file2Name: "Select file...",
 			modal: false
 
 		};
@@ -33,18 +36,32 @@ class ModelForm extends React.Component {
 
 	handleFileChange(e) {
 		this.setState({file: e.target.files[0], fileName: e.target.files[0].name});
+
+		if (e.target.files[0].name.split('.').pop() == "bnd") {
+			this.setState({showFile2: true});
+		} else {
+			this.setState({showFile2: false});
+		}
 	};
+
+	handleFile2Change(e) {
+		this.setState({file2: e.target.files[0], file2Name: e.target.files[0].name});
+	};
+
 
 	handleSubmit(e) {
 		e.preventDefault();
 
-		this.importModelCall = APICalls.importModel(this.props.project, this.state.file, this.state.name);
+		this.importModelCall = APICalls.importModel(this.props.project, this.state.file, this.state.name, this.state.file2);
 		this.importModelCall.promise.then(response => {
 
 			this.setState({
 				name: "",
 				file: undefined,
 				fileName: "Select file...",
+				file2: null,
+				file2Name: "Select file...",
+				showFile2: false,
 				modal: false
 			});
 			this.props.hide();
@@ -111,6 +128,21 @@ class ModelForm extends React.Component {
 										   htmlFor="modelFile">{this.state.fileName}</label>
 								</div>
 							</div>
+							{( this.state.showFile2 ?
+							<div className="form-group">
+								<label htmlFor="model2File">File</label>
+								<div className="custom-file" id="customFile2">
+									<input
+										id="model2File"
+										type="file"
+										className="custom-file-input"
+										name="file2"
+										onChange={(e) => this.handleFile2Change(e)}
+										aria-describedby="fileHelp" required/>
+									<label className="custom-file-label"
+										   htmlFor="model2File">{this.state.file2Name}</label>
+								</div>
+							</div> : null )}
 						</CardBody>
 						<CardFooter>
 							<ButtonToolbar className="d-flex">

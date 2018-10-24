@@ -9,30 +9,42 @@ class ExportModelForm extends React.Component {
 		super(props);
 
 		this.state = {
-			format: 'zginml'
+			format: 'zginml',
+			buttonLabel: "Download",
+			showSecondButton: false,
+			secondButtonLabel: ""
 		};
 
 		this.dictFormats = {
-			'zginml': "Z-GINML Format (Extended save)",
-			'sbml': "SBML qual"
+			'zginml': "Z-GINML (Extended save)",
+			'sbml': "SBML qual",
+			'maboss': "MaBoSS"
 		}
 	}
 
 	changeFormat(format) {
-		this.setState({format: format});
+		if (format == 'maboss') {
+			this.setState({format: format, buttonLabel: "Download model", showSecondButton: true, secondButtonLabel: "Download config"})
+		} else {
+			this.setState({format: format, buttonLabel: "Download", showSecondButton: false, secondButtonLabel: ""});
+		}
 	}
 
-	handleSubmit(e) {
-		e.preventDefault();
-		this.props.hide();
+	handleSubmit(file_id) {
+
 		switch(this.state.format) {
 			case 'zginml':
+				this.props.hide();
 				APICalls.downloadModelAsZGINML(this.props.project, this.props.id, this.props.tag);
 				break;
 
 			case 'sbml':
+				this.props.hide();
 				APICalls.downloadModelAsSBML(this.props.project, this.props.id, this.props.tag);
 				break;
+
+			case 'maboss':
+				APICalls.downloadModelAsMaBoSS(this.props.project, this.props.id, this.props.tag, file_id);
 
 			default:
 				break;
@@ -48,35 +60,43 @@ class ExportModelForm extends React.Component {
 					else { this.props.show(); }
 				}}
 			>
-				<form onSubmit={(e) => this.handleSubmit(e)}>
-					<Card>
-						<CardHeader>Export model</CardHeader>
-						<CardBody>
-							<Dropdown
-								width='25rem'
-								selectedItem={this.dictFormats[this.state.format]}
-							>
-								{
-									Object.keys(this.dictFormats).map((key, index) => {
-										return <a
-											key={index}
-											href=""
-											onClick={(e) => {
-												e.preventDefault(); this.changeFormat(key);
-											}}>{this.dictFormats[key]}
-										</a>
+				<Card>
+					<CardHeader>Export model</CardHeader>
+					<CardBody>
+						<Dropdown
+							width='25rem'
+							selectedItem={this.dictFormats[this.state.format]}
+						>
+							{
+								Object.keys(this.dictFormats).map((key, index) => {
+									return <a
+										key={index}
+										href=""
+										onClick={(e) => {
+											e.preventDefault(); this.changeFormat(key);
+										}}>{this.dictFormats[key]}
+									</a>
 
-								})}
-							</Dropdown>
-						</CardBody>
-						<CardFooter>
+							})}
+						</Dropdown>
+						<br/>
+						{ this.state.showSecondButton ?
 							<ButtonToolbar className="d-flex">
-								<Button color="danger" className="mr-auto" onClick={() => this.props.hide()}>Close</Button>
-								<Button type="submit" color="primary" className="ml-auto">Download</Button>
+								<Button type="button" color="primary" className="ml-auto mr-2" onClick={() => this.handleSubmit(0)}>{this.state.buttonLabel}</Button>
+								<Button type="button" color="primary" className="ml-2 mr-auto" onClick={() => this.handleSubmit(1)}>{this.state.secondButtonLabel}</Button>
 							</ButtonToolbar>
-						</CardFooter>
-					</Card>
-				</form>
+							:
+							<ButtonToolbar className="d-flex">
+								<Button type="button" color="primary" className="ml-auto mr-auto" onClick={() => this.handleSubmit()}>{this.state.buttonLabel}</Button>
+							</ButtonToolbar>
+						}
+					</CardBody>
+					<CardFooter>
+						<ButtonToolbar className="d-flex">
+							<Button color="danger" className="ml-auto" onClick={() => this.props.hide()}>Close</Button>
+						</ButtonToolbar>
+					</CardFooter>
+				</Card>
 			</Modal>
 		</React.Fragment>;
 	}

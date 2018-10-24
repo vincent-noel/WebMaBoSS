@@ -84,11 +84,14 @@ class APICalls {
 		);
 	}
 
-	static importModel(project_id, file, name) {
+	static importModel(project_id, file, name, file2) {
 
 		const formData = new FormData();
 		formData.append('file', file);
 		formData.append('name', name);
+		if (file2 !== undefined && file2 !== null) {
+			formData.append('file2', file2);
+		}
 
 		return makeCancelable(
 			fetch(
@@ -157,6 +160,34 @@ class APICalls {
 		.then(([filename, blob]) => FileSaver.saveAs(blob, filename));
 
 	}
+
+	static downloadModelAsMaBoSS(project_id, model_id, tag, file_id) {
+
+		let endpoint = null;
+		let filetype = null;
+		if (file_id === 0) {
+			filetype = "bndfile";
+		} else {
+			filetype = "cfgfile";
+		}
+
+		if (tag === undefined)
+			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/" + filetype;
+		else
+			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/tags/" + tag + "/" + filetype;
+
+		fetch(endpoint, {
+			method: "get",
+			headers: new Headers({'Authorization': "Token " + getAPIKey()}),
+		}).then(response => checkAuthorization(response))
+		.then(response => Promise.all([
+			extractFilename(response.headers.get('content-disposition')),
+			response.blob()])
+		)
+		.then(([filename, blob]) => FileSaver.saveAs(blob, filename));
+
+	}
+
 
 	static getGraph(project_id, model_id) {
 		return makeCancelable(

@@ -22,6 +22,10 @@ def path_logical_model(instance, filename):
 def remove_logical_model(sender, instance, **kwargs):
 	if exists(join(settings.MEDIA_ROOT, instance.file.path)):
 		rmtree(dirname(join(settings.MEDIA_ROOT, instance.file.path)))
+	if exists(join(settings.MEDIA_ROOT, instance.bnd_file.path)):
+		rmtree(dirname(join(settings.MEDIA_ROOT, instance.bnd_file.path)))
+	if exists(join(settings.MEDIA_ROOT, instance.cfg_file.path)):
+		rmtree(dirname(join(settings.MEDIA_ROOT, instance.cfg_file.path)))
 
 
 class LogicalModel(models.Model):
@@ -29,8 +33,10 @@ class LogicalModel(models.Model):
 	project = models.ForeignKey(Project, on_delete=models.CASCADE)
 	name = models.CharField(max_length=256)
 	path = models.CharField(max_length=12, default=new_model_path)
-	file = models.FileField(upload_to=path_logical_model)
+	file = models.FileField(upload_to=path_logical_model, blank=True)
 
+	bnd_file = models.FileField(upload_to=path_logical_model, blank=True)
+	cfg_file = models.FileField(upload_to=path_logical_model, blank=True)
 
 pre_delete.connect(remove_logical_model, sender=LogicalModel)
 
@@ -43,7 +49,9 @@ class TaggedLogicalModel(models.Model):
 
 	model = models.ForeignKey(LogicalModel, on_delete=models.CASCADE)
 	tag = models.CharField(max_length=256)
-	file = models.FileField(upload_to=path_tagged_logical_model)
 
+	file = models.FileField(upload_to=path_tagged_logical_model, blank=True)
+	bnd_file = models.FileField(upload_to=path_tagged_logical_model, blank=True)
+	cfg_file = models.FileField(upload_to=path_tagged_logical_model, blank=True)
 
 pre_delete.connect(remove_logical_model, sender=TaggedLogicalModel)
