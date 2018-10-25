@@ -20,11 +20,11 @@ def path_logical_model(instance, filename):
 
 
 def remove_logical_model(sender, instance, **kwargs):
-	if exists(join(settings.MEDIA_ROOT, instance.file.path)):
+	if instance.file is not None and exists(join(settings.MEDIA_ROOT, instance.file.path)):
 		rmtree(dirname(join(settings.MEDIA_ROOT, instance.file.path)))
-	if exists(join(settings.MEDIA_ROOT, instance.bnd_file.path)):
+	if instance.bnd_file is not None and exists(join(settings.MEDIA_ROOT, instance.bnd_file.path)):
 		rmtree(dirname(join(settings.MEDIA_ROOT, instance.bnd_file.path)))
-	if exists(join(settings.MEDIA_ROOT, instance.cfg_file.path)):
+	if instance.cfg_file is not None and exists(join(settings.MEDIA_ROOT, instance.cfg_file.path)):
 		rmtree(dirname(join(settings.MEDIA_ROOT, instance.cfg_file.path)))
 
 
