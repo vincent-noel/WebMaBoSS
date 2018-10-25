@@ -20,12 +20,13 @@ def path_logical_model(instance, filename):
 
 
 def remove_logical_model(sender, instance, **kwargs):
-	if instance.file is not None and exists(join(settings.MEDIA_ROOT, instance.file.path)):
+	if instance.format == LogicalModel.ZGINML and exists(join(settings.MEDIA_ROOT, instance.file.path)):
 		rmtree(dirname(join(settings.MEDIA_ROOT, instance.file.path)))
-	if instance.bnd_file is not None and exists(join(settings.MEDIA_ROOT, instance.bnd_file.path)):
-		rmtree(dirname(join(settings.MEDIA_ROOT, instance.bnd_file.path)))
-	if instance.cfg_file is not None and exists(join(settings.MEDIA_ROOT, instance.cfg_file.path)):
-		rmtree(dirname(join(settings.MEDIA_ROOT, instance.cfg_file.path)))
+	elif instance.format == LogicalModel.MABOSS:
+		if exists(join(settings.MEDIA_ROOT, instance.bnd_file.path)):
+			rmtree(dirname(join(settings.MEDIA_ROOT, instance.bnd_file.path)))
+		if exists(join(settings.MEDIA_ROOT, instance.cfg_file.path)):
+			rmtree(dirname(join(settings.MEDIA_ROOT, instance.cfg_file.path)))
 
 
 class LogicalModel(models.Model):
@@ -33,6 +34,19 @@ class LogicalModel(models.Model):
 	project = models.ForeignKey(Project, on_delete=models.CASCADE)
 	name = models.CharField(max_length=256)
 	path = models.CharField(max_length=12, default=new_model_path)
+
+	ZGINML = 'ZGinML'
+	MABOSS = 'MaBoSS'
+	SBML = 'SBML'
+
+	FORMATS = (
+		(ZGINML, 'ZGinML'),
+		(MABOSS, 'MaBoSS'),
+		(SBML, 'SBML')
+	)
+
+	format = models.CharField(max_length=10, choices=FORMATS, default=ZGINML)
+
 	file = models.FileField(upload_to=path_logical_model, blank=True)
 
 	bnd_file = models.FileField(upload_to=path_logical_model, blank=True)
