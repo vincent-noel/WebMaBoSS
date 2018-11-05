@@ -5,7 +5,8 @@ from rest_framework.exceptions import PermissionDenied
 from rest_framework.parsers import JSONParser
 
 from django.core.files import File
-from django.http import Http404
+from django.core.files.base import ContentFile
+from django.http import Http404, HttpResponse
 from django.conf import settings
 from django.db import transaction
 
@@ -13,7 +14,8 @@ from api.serializers import MaBoSSSimulationSerializer
 from api.models import LogicalModel, MaBoSSSimulation, Project
 
 from threading import Thread
-from os.path import join
+from os.path import join, exists, splitext, basename
+from os import remove
 from json import loads, dumps
 import ginsim
 import maboss
@@ -57,16 +59,49 @@ class MaBoSSSimulationView(APIView):
 				raise PermissionDenied
 
 			model = LogicalModel.objects.get(project=project, id=model_id)
-			path = join(settings.MEDIA_ROOT, model.file.path)
-			maboss_simulation = MaBoSSSimulation(
-				project=project,
-				model=model,
-				model_file=File(path)
-			)
-			maboss_simulation.save()
+			if model.format == LogicalModel.ZGINML:
+				path = join(settings.MEDIA_ROOT, model.file.path)
+				ginsim_model = ginsim.load(path)
+				maboss_model = ginsim.to_maboss(ginsim_model)
 
-			ginsim_model = ginsim.load(path)
-			maboss_model = ginsim.to_maboss(ginsim_model)
+				tmp_bnd_path = join(settings.TMP_ROOT, splitext(basename(model.file.path))[0] + ".bnd")
+				bnd_file = open(tmp_bnd_path, 'w')
+				maboss_model.print_bnd(out=bnd_file)
+				bnd_file.close()
+
+				tmp_cfg_path = join(settings.TMP_ROOT, splitext(basename(model.file.path))[0] + ".cfg")
+				cfg_file = open(tmp_cfg_path, 'w')
+				maboss_model.print_cfg(out=cfg_file)
+				cfg_file.close()
+
+				maboss_simulation = MaBoSSSimulation(
+					project=project,
+					model=model,
+					bnd_file=File(open(tmp_bnd_path, 'rb')),
+					cfg_file=File(open(tmp_cfg_path, 'rb'))
+				)
+				maboss_simulation.save()
+
+				remove(tmp_bnd_path)
+				remove(tmp_cfg_path)
+
+			elif model.format == LogicalModel.MABOSS:
+
+				bnd_path = join(settings.MEDIA_ROOT, model.bnd_file.path)
+				cfg_path = join(settings.MEDIA_ROOT, model.cfg_file.path)
+
+				maboss_simulation = MaBoSSSimulation(
+					project=project,
+					model=model,
+					bnd_file=File(open(bnd_path, 'rb')),
+					cfg_file=File(open(cfg_path, 'rb'))
+				)
+				maboss_simulation.save()
+
+				maboss_model = maboss.load(bnd_path, cfg_path)
+			else:
+				return HttpResponse(status=500)
+
 
 			maboss_model.update_parameters(
 				sample_count=int(request.POST['sampleCount']),
@@ -100,22 +135,22 @@ class MaBoSSSimulationView(APIView):
 
 def run_simulation(maboss_model, maboss_simulation_id):
 
-	try:
+	# try:
 		maboss_simulation = MaBoSSSimulation.objects.get(id=maboss_simulation_id)
 
 		with transaction.atomic():
 			maboss_simulation.status = MaBoSSSimulation.BUSY
 			maboss_simulation.save()
-
 		res = maboss_model.run()
 
 		fixed_points = res.get_fptable()
-		fixed_points_json = fixed_points.to_json()
+		if fixed_points is not None:
+			fixed_points_json = fixed_points.to_json()
 
-		with transaction.atomic():
-			maboss_simulation.fixpoints = fixed_points_json
-			maboss_simulation.status = MaBoSSSimulation.ENDED
-			maboss_simulation.save()
+			with transaction.atomic():
+				maboss_simulation.fixpoints = fixed_points_json
+				maboss_simulation.status = MaBoSSSimulation.ENDED
+				maboss_simulation.save()
 
 		states_probtraj = res.get_states_probtraj()
 		states_probtraj_json = states_probtraj.to_json()
@@ -131,8 +166,11 @@ def run_simulation(maboss_model, maboss_simulation_id):
 			maboss_simulation.nodes_probtraj = nodes_probtraj_json
 			maboss_simulation.save()
 
+		with transaction.atomic():
+			maboss_simulation.status = MaBoSSSimulation.ENDED
+			maboss_simulation.save()
 
-	except:
+	# except:
 		with transaction.atomic():
 			maboss_simulation.status = MaBoSSSimulation.ERROR
 			maboss_simulation.error = "Simulation failed"
@@ -174,9 +212,17 @@ class MaBossSettings(APIView):
 				raise PermissionDenied
 
 			model = LogicalModel.objects.get(project=project, id=model_id)
-			path = join(settings.MEDIA_ROOT, model.file.path)
-			ginsim_model = ginsim.load(path)
-			maboss_model = ginsim.to_maboss(ginsim_model)
+
+			if model.format == LogicalModel.ZGINML:
+				path = join(settings.MEDIA_ROOT, model.file.path)
+				ginsim_model = ginsim.load(path)
+				maboss_model = ginsim.to_maboss(ginsim_model)
+			elif model.format == LogicalModel.MABOSS:
+				bnd_path = join(settings.MEDIA_ROOT, model.bnd_file.path)
+				cfg_path = join(settings.MEDIA_ROOT, model.cfg_file.path)
+				maboss_model = maboss.load(bnd_path, cfg_path)
+			else:
+				return HttpResponse(status=500)
 
 			output_variables = {var: not value.is_internal for var, value in maboss_model.network.items()}
 			initial_states = maboss_model.network.get_istate()

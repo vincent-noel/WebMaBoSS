@@ -9,11 +9,11 @@ from api.models import LogicalModel, Project
 from api.serializers import LogicalModelNameSerializer
 
 from os.path import join, basename, splitext
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, MethodNotAllowed
 
-import ginsim
+import ginsim, maboss, biolqm
 from json import loads
-
+from api.views.commons.converter import maboss_to_ginsim
 
 class LogicalModelFile(APIView):
 
@@ -137,8 +137,14 @@ class LogicalModelGraph(APIView):
 				raise PermissionDenied
 
 			model = LogicalModel.objects.get(project=project, id=model_id)
-			path = join(settings.MEDIA_ROOT, model.file.path)
-			ginsim_model = ginsim.load(path)
+			if model.format == LogicalModel.ZGINML:
+				path = join(settings.MEDIA_ROOT, model.file.path)
+				ginsim_model = ginsim.load(path)
+			elif model.format == LogicalModel.MABOSS:
+				ginsim_model = maboss_to_ginsim(model)
+
+			else:
+				raise MethodNotAllowed
 			fig = ginsim.get_image(ginsim_model)
 
 			return HttpResponse(fig, content_type="image/png")
@@ -161,8 +167,16 @@ class LogicalModelGraph(APIView):
 
 			steady_state = loads(request.data['steady_state'])
 			model = LogicalModel.objects.get(project=project, id=model_id)
-			path = join(settings.MEDIA_ROOT, model.file.path)
-			ginsim_model = ginsim.load(path)
+
+			if model.format == LogicalModel.ZGINML:
+				path = join(settings.MEDIA_ROOT, model.file.path)
+				ginsim_model = ginsim.load(path)
+			elif model.format == LogicalModel.MABOSS:
+				ginsim_model = maboss_to_ginsim(model)
+
+			else:
+				raise MethodNotAllowed
+
 			fig = ginsim.get_image(ginsim_model, steady_state)
 
 			return HttpResponse(fig, content_type="image/png")
@@ -186,8 +200,17 @@ class LogicalModelGraphRaw(APIView):
 				raise PermissionDenied
 
 			model = LogicalModel.objects.get(project=project, id=model_id)
-			path = join(settings.MEDIA_ROOT, model.file.path)
-			ginsim_model = ginsim.load(path)
+
+			if model.format == LogicalModel.ZGINML:
+				path = join(settings.MEDIA_ROOT, model.file.path)
+				ginsim_model = ginsim.load(path)
+
+			elif model.format == LogicalModel.MABOSS:
+				from api.views.commons.converter import maboss_to_ginsim
+				ginsim_model = maboss_to_ginsim(model)
+
+			else:
+				raise MethodNotAllowed
 
 			# from ginsim.gateway import japi
 			# This won't work in parallel... but that's ok for now

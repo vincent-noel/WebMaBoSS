@@ -215,6 +215,22 @@ class APICalls {
 
 	}
 
+	static getGraphRaw(project_id, model_id) {
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/graph_raw",
+				{
+					method: "get",
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey()
+					})
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
+
 	static getSteadyStates(project_id, model_id) {
 		return makeCancelable(
 			fetch(
