@@ -37,7 +37,7 @@ RUN rm -fr node_modules/* yarn.lock; yarn && \
 RUN rm -fr data/ && \
     mkdir -p data/media && \
     mkdir -p data/db && \
-    rm -fr api/migrations/* && \
+    rm -fr api/migrations/*.py && \
     python manage.py makemigrations --noinput && \
     python manage.py migrate --noinput && \
     python manage.py collectstatic --noinput > /dev/null && \
