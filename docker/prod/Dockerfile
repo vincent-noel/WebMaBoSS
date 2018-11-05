@@ -22,7 +22,7 @@ RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
     && pip install --upgrade django djangorestframework django-rest-auth[with_social] \
-                             coreapi mod_wsgi \
+                             coreapi mod_wsgi python-libsbml \
                              git+https://github.com/vincent-noel/GINsim-python.git \
                              git+https://github.com/vincent-noel/pyMaBoSS.git
 
@@ -34,12 +34,14 @@ RUN rm -fr node_modules/* yarn.lock; yarn && \
                   rm -fr node_modules/ docker/
 
 # Removing old db and medias, creating a new one, with default user admin:admin
-RUN rm -fr data/; mkdir -p data/media; mkdir -p data/db; && \
-                  rm -fr api/migrations/*; && \
-                  python manage.py makemigrations --noinput && \
-                  python manage.py migrate --noinput && \
-                  python manage.py collectstatic --noinput > /dev/null && \
-                  python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
+RUN rm -fr data/ && \
+    mkdir -p data/media && \
+    mkdir -p data/db && \
+    rm -fr api/migrations/* && \
+    python manage.py makemigrations --noinput && \
+    python manage.py migrate --noinput && \
+    python manage.py collectstatic --noinput > /dev/null && \
+    python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
 
 # Removing old server, and creating it from scratch
 RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
