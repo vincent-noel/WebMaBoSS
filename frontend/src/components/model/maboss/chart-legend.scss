@@ -1,0 +1,34 @@
+.chart-legend {
+
+    list-style:none;
+    cursor: pointer;
+
+    li {
+    float: left;
+
+      font-size: 0.8rem;
+      color: #666;
+
+      span.legend-color {
+
+        width:45px;
+        height:15px;
+        display:inline-block;
+        margin-right:5px;
+      }
+      span.legend-label {
+
+        text-decoration: none;
+        margin-right:10px;
+
+
+      }
+
+      &.disable-legend {
+        span.legend-label{
+          text-decoration: line-through;
+        }
+      }
+
+    }
+}

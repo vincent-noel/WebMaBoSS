@@ -29,16 +29,12 @@ class MaBoSSResultsFixedPoints(APIView):
 			if simulation.project.user != request.user:
 				raise PermissionDenied
 
-			if simulation.fixpoints is not None:
+			fixed_points = {}
+			for key, values in loads(simulation.states_probtraj).items():
+				last_time = list(values.keys())[len(values.keys())-1]
+				if values[last_time] > 0:
+					fixed_points.update({key: values[last_time]})
 
-				fixed_points = {}
-				for key, values in loads(simulation.states_probtraj).items():
-					last_time = list(values.keys())[len(values.keys())-1]
-					if values[last_time] > 0:
-						fixed_points.update({key: values[last_time]})
-
-			else:
-				fixed_points = None
 
 			return Response(
 					{

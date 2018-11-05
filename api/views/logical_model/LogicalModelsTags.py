@@ -63,11 +63,20 @@ class LogicalModelsTags(APIView):
 
 			model = LogicalModel.objects.get(project=project, id=model_id)
 
-			TaggedLogicalModel(
-				model=model,
-				tag=str(request.POST['tag']),
-				file=File(open(join(settings.MEDIA_ROOT, model.file.path), 'rb'))
-			).save()
+			if model.file is not None:
+				TaggedLogicalModel(
+					model=model,
+					tag=str(request.POST['tag']),
+					file=File(open(join(settings.MEDIA_ROOT, model.file.path), 'rb')),
+				).save()
+
+			elif model.bnd_file is not None and model.cfg_file is not None:
+				TaggedLogicalModel(
+					model=model,
+					tag=str(request.POST['tag']),
+					bnd_file=File(open(join(settings.MEDIA_ROOT, model.bnd_file.path), 'rb')),
+					cfg_file=File(open(join(settings.MEDIA_ROOT, model.cfg_file.path), 'rb'))
+				).save()
 
 			return Response(status=status.HTTP_200_OK)
 

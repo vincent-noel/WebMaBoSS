@@ -1,7 +1,8 @@
 import React from "react";
 import {ReactCytoscape} from 'react-cytoscape';
-import {getAPIKey} from "../../commons/sessionVariables";
 import LoadingIcon from "../../commons/LoadingIcon";
+import APICalls from "../../commons/apiCalls";
+
 
 class ModelGraphRaw extends React.Component {
 
@@ -13,24 +14,16 @@ class ModelGraphRaw extends React.Component {
 			loaded: false,
 		};
 
-		this.mounted = false;
+		this.getGraphCall = false;
 
 	}
 
-	getGraph(modelId) {
+	getGraph(project_id, model_id) {
 		// Getting the graph via the API
+		this.setState({loaded: false, data: null});
+		this.getGraphCall = APICalls.getGraphRaw(project_id, model_id);
 
-		fetch(
-			"/api/logical_model/" + modelId + "/graph_raw/",
-			{
-				method: "get",
-				headers: new Headers({
-					'Authorization': "Token " + getAPIKey()
-				})
-			}
-		)
-		.then(response => {	return response.json(); })
-		.then(
+		this.getGraphCall.promise.then(
 			data => { this.setState({loaded: true, data: data})}
 		)
 
@@ -38,18 +31,20 @@ class ModelGraphRaw extends React.Component {
 
 
 	componentDidMount() {
-		this.mounted = true;
-		this.getGraph(this.props.modelId);
+		this.getGraph(this.props.project, this.props.modelId);
 	}
 
 	componentWillUnmount() {
-		this.mounted = false;
+		this.getGraphCall.cancel();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
+		if (nextProps.project !== this.props.project) {
+			return false;
+		}
+
 		if (nextProps.modelId !== this.props.modelId) {
-			this.setState({loaded: false});
-			this.getGraph(nextProps.modelId);
+			this.getGraph(nextProps.project, nextProps.modelId);
 			return false;
 
 		}
@@ -60,7 +55,6 @@ class ModelGraphRaw extends React.Component {
 
 		if (this.state.loaded) {
 
-			console.log(this.state.data);
 
 			const elements = {
 				nodes: Object.values(this.state.data['nodes']).map(
@@ -87,7 +81,6 @@ class ModelGraphRaw extends React.Component {
 				),
 
 			};
-			console.log(elements);
 
 			return (
 					<ReactCytoscape containerID="cy"

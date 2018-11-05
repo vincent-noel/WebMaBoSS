@@ -40,5 +40,7 @@ EXPOSE 8000
 # Exposing port 8888 for notebook access
 EXPOSE 8888
 
+WORKDIR /
+
 
 

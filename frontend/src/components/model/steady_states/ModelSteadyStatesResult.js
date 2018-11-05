@@ -4,6 +4,7 @@ import { faEye } from '@fortawesome/free-solid-svg-icons';
 import LoadingIcon from "../../commons/LoadingIcon";
 import Graph from "./Graph";
 import APICalls from "../../commons/apiCalls";
+import './table-steadystates.scss';
 
 
 class ModelSteadyStatesResult extends Component {
@@ -14,6 +15,7 @@ class ModelSteadyStatesResult extends Component {
 		this.state = {
 			data: {},
 			loaded: false,
+			indSelectedSteadyState: null,
 			selectedSteadyState: null,
 		};
 
@@ -29,11 +31,11 @@ class ModelSteadyStatesResult extends Component {
 	}
 
 
-	toggleGraph(steady_state) {
+	toggleGraph(ind, steady_state) {
 		if (this.state.selectedSteadyState !== steady_state){
-			this.setState({selectedSteadyState: steady_state});
+			this.setState({indSelectedSteadyState: ind, selectedSteadyState: steady_state});
 		} else {
-			this.setState({selectedSteadyState: null});
+			this.setState({indSelectedSteadyState: null,selectedSteadyState: null});
 		}
 	}
 
@@ -77,7 +79,7 @@ class ModelSteadyStatesResult extends Component {
 					<tbody>
 					{this.state.data.map((steady_state, index) => {
 						return (
-							<tr key={index}>
+							<tr key={index} className={this.state.indSelectedSteadyState === index ? "selected" : ""}>
 							{Object.keys(steady_state).map((key, subindex) => {
 								if (steady_state[key] > 0) {
 									return <td
@@ -102,7 +104,7 @@ class ModelSteadyStatesResult extends Component {
 							>
 								<button
 									className="btn btn-primary"
-									onClick={() => {this.toggleGraph(steady_state);}}
+									onClick={() => {this.toggleGraph(index, steady_state);}}
 								>
 									<FontAwesomeIcon icon={faEye} size="sm" />
 								</button>

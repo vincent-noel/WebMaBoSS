@@ -57,11 +57,22 @@ class LogicalModels(APIView):
 			if project.user != request.user:
 				raise PermissionDenied
 
-			LogicalModel(
-				project=project,
-				name=request.data['name'],
-				file=request.data['file']
-			).save()
+			if 'file2' in request.data.keys():
+				LogicalModel(
+					project=project,
+					name=request.data['name'],
+					bnd_file=request.data['file'],
+					cfg_file=request.data['file2'],
+					format=LogicalModel.MABOSS
+				).save()
+
+			else:
+				LogicalModel(
+					project=project,
+					name=request.data['name'],
+					file=request.data['file'],
+					format=LogicalModel.ZGINML
+				).save()
 
 			return Response(status=status.HTTP_200_OK)
 

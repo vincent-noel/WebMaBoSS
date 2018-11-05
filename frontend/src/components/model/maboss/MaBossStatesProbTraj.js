@@ -4,6 +4,8 @@ import {Line} from "react-chartjs-2";
 import LoadingIcon from "../../commons/LoadingIcon";
 import APICalls from "../../commons/apiCalls";
 import $ from 'jquery';
+import "./chart-legend.scss"
+
 
 class MaBossStatesProbTraj extends React.Component {
 
