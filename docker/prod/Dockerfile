@@ -38,7 +38,7 @@ RUN rm -fr data/ && \
     mkdir -p data/media && \
     mkdir -p data/db && \
     rm -fr api/migrations/*.py && \
-    python manage.py makemigrations --noinput && \
+    python manage.py makemigrations api --noinput && \
     python manage.py migrate --noinput && \
     python manage.py collectstatic --noinput > /dev/null && \
     python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
