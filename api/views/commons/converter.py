@@ -13,16 +13,16 @@ def maboss_to_biolqm(model):
 
 	maboss_sim.print_logical_rules(open(tmp_bnet, 'w'))
 
-	f = open(join(settings.TMP_ROOT, "model.bnet"), "r")
+	f = open(tmp_bnet, "r")
 	string = f.readlines()
 	new_string = [line.replace(" : ", ", ") for line in string]
 	f.close()
 
-	f = open(join(settings.TMP_ROOT, "model.bnet"), "w")
+	f = open(tmp_bnet, "w")
 	f.write("targets, factors\n")
 	f.writelines(new_string)
 	f.close()
-	blqm_model = biolqm.load(join(settings.TMP_ROOT, "model.bnet"))
+	blqm_model = biolqm.load(tmp_bnet)
 	return blqm_model
 
 def maboss_to_ginsim(model):
