@@ -34,7 +34,9 @@ RUN rm -fr node_modules/* yarn.lock; yarn && \
                   rm -fr node_modules/ docker/
 
 # Removing old db and medias, creating a new one, with default user admin:admin
-RUN rm -fr data/; mkdir -p data/media; mkdir -p data/db; python manage.py makemigrations --noinput && \
+RUN rm -fr data/; mkdir -p data/media; mkdir -p data/db; && \
+                  rm -fr api/migrations/*; && \
+                  python manage.py makemigrations --noinput && \
                   python manage.py migrate --noinput && \
                   python manage.py collectstatic --noinput > /dev/null && \
                   python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
