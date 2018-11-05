@@ -9,9 +9,10 @@ def maboss_to_biolqm(model):
 							 join(settings.MEDIA_ROOT, model.cfg_file.path))
 
 	path = tempfile.mkdtemp()
-	tmp_bnet = tempfile.mkstemp(dir=path, suffix='.cfg')[1]
+	tmp_bnet = tempfile.mkstemp(dir=path, suffix='.bnet')[1]
 
-	maboss_sim.print_logical_rules(open(tmp_bnet, 'w'))
+	with open(tmp_bnet, "w") as bnet_file:
+		maboss_sim.print_logical_rules(bnet_file)
 
 	f = open(tmp_bnet, "r")
 	string = f.readlines()
@@ -23,11 +24,13 @@ def maboss_to_biolqm(model):
 	f.writelines(new_string)
 	f.close()
 	blqm_model = biolqm.load(tmp_bnet)
+
 	return blqm_model
 
 def maboss_to_ginsim(model):
 
 	blqm_model = maboss_to_biolqm(model)
+
 	ginsim_model = biolqm.to_ginsim(blqm_model)
 	ginsim.layout(ginsim_model, 2)
 
