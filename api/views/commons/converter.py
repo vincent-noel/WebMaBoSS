@@ -5,7 +5,8 @@ from os.path import join
 def maboss_to_biolqm(model):
 	maboss_sim = maboss.load(join(settings.MEDIA_ROOT, model.bnd_file.path),
 							 join(settings.MEDIA_ROOT, model.cfg_file.path))
-	maboss_sim.print_logical_rules(join(settings.TMP_ROOT, "model.bnet"))
+
+	maboss_sim.print_logical_rules(open(join(settings.TMP_ROOT, "model.bnet")), 'w')
 	f = open(join(settings.TMP_ROOT, "model.bnet"), "r")
 	string = f.readlines()
 	new_string = [line.replace(" : ", ", ") for line in string]
