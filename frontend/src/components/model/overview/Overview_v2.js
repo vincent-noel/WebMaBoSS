@@ -9,7 +9,7 @@ import ModelGraphRaw from "./ModelGraphRaw";
 
 import {ProjectContext, ModelContext} from "../../context";
 
-class Overview extends React.Component {
+class Overview_v2 extends React.Component {
 
 	render() {
 		return <ModelPage path={this.props.match.path}>
@@ -23,7 +23,7 @@ class Overview extends React.Component {
 							modelId={modelContext.modelId}
 							modelName={modelContext.modelName}
 						/>
-						<ModelGraph
+						<ModelGraphRaw
 							project={projectContext.project}
 							modelId={modelContext.modelId}
 						/>
@@ -36,4 +36,4 @@ class Overview extends React.Component {
 	}
 }
 
-export default Overview;
+export default Overview_v2;

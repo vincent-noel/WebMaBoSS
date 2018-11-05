@@ -24,6 +24,7 @@ services:
     container_name: app-curie
     ports:
       - "8000:8000"
+      - "8889:8888"
     user: user
     volumes:
       - /home/labestiol/Work/code/AppCurie:/appCurie

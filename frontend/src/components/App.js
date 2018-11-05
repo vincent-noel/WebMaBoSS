@@ -18,6 +18,7 @@ import ProjectsPage from "./projects/ProjectsPage";
 import Models from "./models/Models";
 import Data from "./Data";
 import Overview from "./model/overview/Overview";
+import Overview_v2 from "./model/overview/Overview_v2";
 import ModelSteadyStates from "./model/steady_states/ModelSteadyStates";
 import MaBoss from "./model/maboss/MaBoss";
 import MaBoSSSettings from "./profile/maboss_settings/MaBoSSSettings";
@@ -38,7 +39,8 @@ class App extends Component {
 					<Route exact path="/data/" component={Data} />
 
 					<Route exact path="/model/overview/" component={Overview} />
-					<Route exact path="/model/steady_states/" component={ModelSteadyStates} />
+					<Route exact path="/model/overview_v2/" component={Overview_v2} />
+					<Route exact path="/model/fixed_points/" component={ModelSteadyStates} />
 					<Route exact path="/model/maboss/simulation/" component={MaBoss} />
 					<Route exact path="/model/maboss/mutations/" component={MaBoss} />
 					<Route exact path="/model/maboss/sensitivity/" component={MaBoss} />
