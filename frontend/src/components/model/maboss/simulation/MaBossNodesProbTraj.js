@@ -1,7 +1,7 @@
 import React from "react";
 import {Line} from "react-chartjs-2";
-import LoadingIcon from "../../commons/LoadingIcon";
-import APICalls from "../../commons/apiCalls";
+import LoadingIcon from "../../../commons/LoadingIcon";
+import APICalls from "../../../commons/apiCalls";
 
 
 class MaBossNodesProbTraj extends React.Component {

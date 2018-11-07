@@ -1,12 +1,12 @@
 import React from "react";
-import ModelPage from "../ModelPage";
-import ModelName from "../ModelName";
+import ModelPage from "../../ModelPage";
+import ModelName from "../../ModelName";
 
 import MaBossResult from "./MaBossResult";
 import MaBossActions from "./MaBossActions";
 
-import {ProjectContext, ModelContext} from "../../context";
-import APICalls from "../../commons/apiCalls";
+import {ProjectContext, ModelContext} from "../../../context";
+import APICalls from "../../../commons/apiCalls";
 
 
 class MaBoss extends React.Component {

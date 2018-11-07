@@ -1,8 +1,8 @@
 import React from "react";
 import {Nav, NavItem, NavLink, TabPane, TabContent, Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import classnames from 'classnames';
-import TableSwitches from "../../commons/TableSwitches";
-import APICalls from "../../commons/apiCalls";
+import TableSwitches from "../../../commons/TableSwitches";
+import APICalls from "../../../commons/apiCalls";
 
 
 class NewSimForm extends React.Component {
