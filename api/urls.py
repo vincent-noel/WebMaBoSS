@@ -13,7 +13,7 @@ from api.views.BioLQMSimulation import LogicalModelSteadyStates
 from api.views.maboss.MaBossServerView import MaBoSSServerView
 from api.views.maboss.MaBoSSSimulationView import MaBoSSSimulationView, MaBoSSSimulationRemove, MaBossSettings
 from api.views.maboss.MaBoSSResultsView import MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj
-
+from api.views.maboss.MaBoSSModel import MaBoSSSpeciesFormulas, MaBoSSCheckFormula
 from api.views.AuthView import TestAuthView, LogoutViewEx, UserEmailView
 from rest_auth.views import LoginView, PasswordChangeView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
@@ -53,6 +53,8 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', MaBoSSSimulationView.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss/settings/', MaBossSettings.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/<str:node_id>/formulas', MaBoSSSpeciesFormulas.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/check_formula', MaBoSSCheckFormula.as_view()),
 
 	path('api/maboss/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),
 	path('api/maboss/<int:simulation_id>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),

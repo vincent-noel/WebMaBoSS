@@ -35,3 +35,7 @@ def maboss_to_ginsim(model):
 	ginsim.layout(ginsim_model, 2)
 
 	return ginsim_model
+
+def ginsim_to_maboss(model):
+	ginsim_model = ginsim.load(model.file.path)
+	return ginsim.to_maboss(ginsim_model)

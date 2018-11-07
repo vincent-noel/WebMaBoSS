@@ -113,9 +113,21 @@ class LogicalModelNodes(APIView):
 				raise PermissionDenied
 
 			model = LogicalModel.objects.get(project=project, id=model_id)
-			path = join(settings.MEDIA_ROOT, model.file.path)
-			ginsim_model = ginsim.load(path)
-			maboss_model = ginsim.to_maboss(ginsim_model)
+
+			if model.format == LogicalModel.ZGINML:
+				path = join(settings.MEDIA_ROOT, model.file.path)
+				ginsim_model = ginsim.load(path)
+				maboss_model = ginsim.to_maboss(ginsim_model)
+
+			elif model.format == LogicalModel.MABOSS:
+				maboss_model = maboss.load(
+					join(settings.MEDIA_ROOT, model.bnd_file.path),
+					join(settings.MEDIA_ROOT, model.cfg_file.path)
+				)
+
+			else:
+				raise MethodNotAllowed
+
 			return Response(list(maboss_model.network.keys()))
 
 		except Project.DoesNotExist:
