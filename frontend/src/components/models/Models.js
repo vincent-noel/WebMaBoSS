@@ -72,7 +72,7 @@ class Models extends React.Component {
 		return (
 			<FullPage path={this.props.match.path}>
 				<h2>Models</h2>
-				<ProjectContext>
+				<ProjectContext.Consumer>
 					{(projectContext => <LogicalModels
 						endpoint="/api/logical_models/"
 						project={projectContext.project}
@@ -118,7 +118,7 @@ class Models extends React.Component {
 					}
 				/>
 					)}
-				</ProjectContext>
+				</ProjectContext.Consumer>
 			</FullPage>
 		)
 	}
