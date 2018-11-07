@@ -25,6 +25,17 @@ class SideBar extends React.Component {
 					</li>
 					<li>
 						<NavLink to={"/model/maboss/simulation/"} className='nav-link'>MaBoSS</NavLink>
+						{
+							this.props.path.startsWith("/model/maboss/") ?
+							<ul className={"sidebar-nav"}>
+								<li>
+									<NavLink to="/model/maboss/editing/" className="nav-link">Editing</NavLink>
+								</li>
+								<li>
+									<NavLink to="/model/maboss/simulation/" className="nav-link">Simulation</NavLink>
+								</li>
+							</ul>
+							: null}
 					</li>
 				</ul>
 			</div>

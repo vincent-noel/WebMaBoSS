@@ -1,7 +1,6 @@
 import {getAPIKey, clearAPIKey} from "./sessionVariables";
 import makeCancelable from "./makeCancelable";
 import FileSaver from "file-saver";
-import getCSRFToken from "./getCSRFToken";
 
 
 function checkAuthorization(response) {
@@ -231,6 +230,58 @@ class APICalls {
 		);
 	}
 
+	static getNodes(project_id, model_id) {
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/nodes",
+				{
+					method: "get",
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey()
+					})
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
+
+	static getNodesFormulas(project_id, model_id, node_id) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/" + node_id + "/formulas",
+				{
+					method: "get",
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey()
+					})
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+			.then(response => JSON.parse(response))
+		);
+	}
+
+	static checkFormula(project_id, model_id, formula) {
+
+		const body = new FormData();
+		body.append('formula', formula);
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/check_formula",
+				{
+					method: "post",
+					body: body,
+					headers: new Headers({
+						'Authorization': "Token " + getAPIKey()
+					})
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
+
 	static getSteadyStates(project_id, model_id) {
 		return makeCancelable(
 			fetch(
@@ -394,7 +445,6 @@ class APICalls {
 	}
 
 	static deleteById(endpoint, id) {
-		console.log(endpoint + id);
 		return makeCancelable(
 			fetch(endpoint + id, {
 				method: "delete",
