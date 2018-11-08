@@ -53,7 +53,7 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', MaBoSSSimulationView.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss/settings/', MaBossSettings.as_view()),
-	path('api/logical_model/<int:project_id>/<int:model_id>/<str:node_id>/formulas', MaBoSSSpeciesFormulas.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/formulas', MaBoSSSpeciesFormulas.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/check_formula', MaBoSSCheckFormula.as_view()),
 
 	path('api/maboss/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),

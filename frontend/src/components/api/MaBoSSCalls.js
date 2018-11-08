@@ -17,10 +17,10 @@ class MaBoSSCalls {
 		);
 	}
 
-	static getMaBoSSNodesFormulas(project_id, model_id, node_id) {
+	static getMaBoSSNodesFormulas(project_id, model_id) {
 		return makeCancelable(
 			fetch(
-				"/api/logical_model/" + project_id + "/" + model_id + "/" + node_id + "/formulas",
+				"/api/logical_model/" + project_id + "/" + model_id + "/formulas",
 				{
 					method: "get",
 					headers: getDefaultHeaders()

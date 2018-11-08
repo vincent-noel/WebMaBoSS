@@ -1,11 +1,11 @@
 import React from "react";
 import APICalls from "../../../api/apiCalls";
-import MaBoSSNodeFormulas from "./MaBoSSNodeFormulas";
 import LoadingIcon from "../../../commons/LoadingIcon";
 import UpDownButton from "../../../commons/buttons/UpDownButton";
 import MaBoSSFormulaForm from "./MaBoSSFormulaForm";
 
 import "./table-nodes.scss";
+import SimpleEditButton from "../../../commons/buttons/SimpleEditButton";
 
 class MaBoSSNodes extends React.Component {
 
@@ -14,6 +14,7 @@ class MaBoSSNodes extends React.Component {
 
 		this.state = {
 			nodes: [],
+			nodesFormulas: {},
 			showNodesDetails: [],
 
 			showFormulaForm: false,
@@ -24,6 +25,7 @@ class MaBoSSNodes extends React.Component {
 		};
 
 		this.getNodesCall = null;
+		this.getNodesFormulaCall = null;
 		this.checkFormulaCall = null;
 
 		this.toggleFormulaForm = this.toggleFormulaForm.bind(this);
@@ -51,8 +53,9 @@ class MaBoSSNodes extends React.Component {
 	}
 
 	saveFormula(node, field, formula) {
-		console.log("Saving formula");
-		this.setState({showFormulaForm: false});
+		let formulas = this.state.nodesFormulas;
+		formulas[node][field] = formula;
+		this.setState({showFormulaForm: false, nodesFormulas: formulas});
 	}
 
 	toggleFormulaForm() {
@@ -63,9 +66,13 @@ class MaBoSSNodes extends React.Component {
 
 	loadNodes(project_id, model_id) {
 		this.getNodesCall = APICalls.MaBoSSCalls.getMaBoSSNodes(project_id, model_id);
-		this.getNodesCall.promise.then(data => this.setState({
-			nodes: data, showNodesDetails: new Array(data.length).fill(false)
-		}));
+		this.getNodesCall.promise.then(data => {
+			this.setState({
+				nodes: data,
+				showNodesDetails: new Array(data.length).fill(false)
+			});
+			this.loadNodesFormulas(project_id, model_id);
+		});
 
 	}
 
@@ -74,6 +81,16 @@ class MaBoSSNodes extends React.Component {
 		array[index] = !array[index];
 		this.setState({showNodesDetails: array});
 	}
+
+	loadNodesFormulas(project_id, model_id) {
+
+		this.getNodesFormulaCall = APICalls.MaBoSSCalls.getMaBoSSNodesFormulas(project_id, model_id);
+		this.getNodesFormulaCall.promise.then((data) => {
+			this.setState({nodesFormulas: data})
+		});
+
+	}
+
 	componentDidMount() {
 		this.loadNodes(this.props.project, this.props.modelId)
 	}
@@ -86,6 +103,10 @@ class MaBoSSNodes extends React.Component {
 
 		if (this.checkFormulaCall !== null) {
 			this.checkFormulaCall.cancel();
+		}
+
+		if (this.getNodesFormulaCall !== null) {
+			this.getNodesFormulaCall.cancel();
 		}
 	}
 
@@ -112,11 +133,35 @@ class MaBoSSNodes extends React.Component {
 										</th>
 									</tr>
 									</thead>
-									<MaBoSSNodeFormulas
-										show={this.state.showNodesDetails[index]} name={name}
-										project={this.props.project} modelId={this.props.modelId}
-										edit={this.editFormula}
-									/>
+
+									<tbody className={this.state.showNodesDetails[index] ? "collapse.show" : "collapse"}>
+										{
+											Object.keys(this.state.nodesFormulas).length > 0 && Object.keys(this.state.nodesFormulas[name]).length > 0 ?
+											Object.keys(this.state.nodesFormulas[name]).map((field, f_index) => (
+												<tr className="d-flex" key={f_index}>
+												<td className="d-flex align-items-center">{field}</td>
+												<td className="flex-fill d-flex justify-content-center">
+													{
+														name in this.state.nodesFormulas ?
+															this.state.nodesFormulas[name][field]
+														:
+															<LoadingIcon width="1rem"/>
+													}
+												</td>
+												<td className="ml-1">
+													<SimpleEditButton
+														onClick={() => this.editFormula(
+															name, field,
+															this.state.nodesFormulas[name][field])
+														}
+														size={"xs"}
+													/>
+												</td>
+											</tr>
+											)):<tr><td><LoadingIcon width={"3rem"}/></td></tr>
+										}
+									</tbody>
+
 								</table>
 							</li>
 						);

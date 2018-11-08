@@ -1,7 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import PropTypes from "prop-types";
-import APICalls from "../../../api/apiCalls";
 import ErrorAlert from "../../../commons/ErrorAlert";
 
 class MaBoSSFormulaForm extends React.Component {
@@ -37,13 +36,14 @@ class MaBoSSFormulaForm extends React.Component {
 			this.inputFormulaRef.current.focus();
 		} else {
 			this.setState({showErrors: false, error: this.props.error});
-			this.props.submit(this.props.name, this.props.field, this.state.formula);
+			this.props.submit(this.props.node, this.props.field, this.state.formula);
 		}
 
 	}
 
 	componentDidMount() {
 		this.setState({formula: this.props.formula});
+		this.props.check(this.props.name, this.props.field, this.props.formula);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {

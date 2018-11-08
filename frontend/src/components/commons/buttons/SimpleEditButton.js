@@ -17,7 +17,9 @@ class SimpleEditButton extends Component {
   		return (
 				<button type="submit"
 						className={"btn btn-primary ml-1" + (this.props.size !== undefined ? " btn-" + this.props.size : "")}
-						onClick={this.props.onClick}>
+						onClick={this.props.onClick}
+						disabled={this.props.disabled !== null ? this.props.disabled : false }
+				>
 					<FontAwesomeIcon icon={faEdit} size={this.props.size !== undefined ? this.props.size : null}/>
 				</button>
 		);
