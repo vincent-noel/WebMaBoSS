@@ -2,7 +2,7 @@ import $ from 'jquery';
 import Popper from 'popper.js';
 import 'bootstrap/dist/js/bootstrap.min';
 import '../scss/custom.scss';
-
+import '../images/favicon.ico';
 import React, {Component} from "react";
 import {Router, Route} from "react-router-dom";
 

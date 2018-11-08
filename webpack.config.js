@@ -24,12 +24,12 @@ module.exports = {
 			"sass-loader" // compiles Sass to CSS, using Node Sass by default
 		]
 	  }, {
-		test: /\.(gif|png|jpe?g|svg)$/i,
+		test: /\.(gif|png|jpe?g|svg|ico)$/i,
   		use: [{
 			loader: 'file-loader',
 			options: {
 				name: '[name].[ext]',
-				outputPath: '/images/',
+				outputPath: '../images/',
 			},
 		}]
 	  }
