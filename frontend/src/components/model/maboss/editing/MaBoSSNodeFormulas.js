@@ -1,10 +1,6 @@
 import React from "react";
 import APICalls from "../../../api/apiCalls";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEye} from "@fortawesome/free-solid-svg-icons/index";
-import ViewButton from "../../../commons/buttons/ViewButton";
-import "./table-nodes.scss";
-import EditableFormula from "../../../commons/EditableFormula";
+import SimpleEditButton from "../../../commons/buttons/SimpleEditButton";
 
 
 class MaBoSSNodeFormulas extends React.Component {
@@ -13,21 +9,21 @@ class MaBoSSNodeFormulas extends React.Component {
 		super(props);
 
 		this.state = {
-			logExp: null,
-			logExpError: "",
+			logExp: "",
+			// logExpError: "",
 
-			rateUp: null,
-			rateUpError: "",
+			rateUp: "",
+			// rateUpError: "",
 
-			rateDown: null,
-			rateDownError: "",
+			rateDown: "",
+			// rateDownError: "",
 		};
 
 		this.getNodeFormulasCall = null;
-		this.checkFormulaCall = null;
+		// this.checkFormulaCall = null;
 
 		this.updateFormula = this.updateFormula.bind(this);
-		this.checkFormula = this.checkFormula.bind(this);
+		// this.checkFormula = this.checkFormula.bind(this);
 	}
 
 	getNodeFormulas(project_id, model_id, node_id) {
@@ -43,13 +39,13 @@ class MaBoSSNodeFormulas extends React.Component {
 		this.setState({[field]: formula})
 	}
 
-	checkFormula(field, formula) {
-
-		this.checkFormulaCall = APICalls.MaBoSSCalls.checkFormula(this.props.project, this.props.modelId, formula);
-		this.checkFormulaCall.promise.then((data) => {
-			this.setState({[field + "Error"]: data.error});
-		});
-	}
+	// checkFormula(field, formula) {
+	//
+	// 	this.checkFormulaCall = APICalls.MaBoSSCalls.checkFormula(this.props.project, this.props.modelId, formula);
+	// 	this.checkFormulaCall.promise.then((data) => {
+	// 		this.setState({[field + "Error"]: data.error});
+	// 	});
+	// }
 
 	componentDidMount() {
 		this.getNodeFormulas(this.props.project, this.props.modelId, this.props.name)
@@ -66,21 +62,27 @@ class MaBoSSNodeFormulas extends React.Component {
 		return (
 
 			<tbody className={this.props.show ? "collapse.show" : "collapse"}>
-				<EditableFormula
-					name="logExp" formula={this.state.logExp}
-					check={(formula) => this.checkFormula("logExp", formula)}
-					error={this.state.logExpError}
-					onSubmit={(formula) => this.updateFormula("logExp", formula)}/>
-				<EditableFormula
-					name="rateUp" formula={this.state.rateUp}
-					check={(formula) => this.checkFormula("rateUp", formula)}
-					error={this.state.rateUpError}
-					onSubmit={(formula) => this.updateFormula("rateUp", formula)} />
-				<EditableFormula
-					name="rateDown" formula={this.state.rateDown}
-					check={(formula) => this.checkFormula("rateDown", formula)}
-					error={this.state.rateDownError}
-					onSubmit={(formula) => this.updateFormula("rateDown", formula)}/>
+			<tr className="d-flex">
+				<td className="d-flex align-items-center">logExp</td>
+				<td className="flex-fill d-flex justify-content-center">{this.state.logExp}</td>
+				<td className="ml-1">
+					<SimpleEditButton onClick={() => this.props.edit(this.props.name, "logExp", this.state.logExp)} size={"xs"}/>
+				</td>
+			</tr>
+			<tr className="d-flex">
+				<td className="d-flex align-items-center">rateUp</td>
+				<td className="flex-fill d-flex justify-content-center">{this.state.rateUp}</td>
+				<td className="ml-1">
+					<SimpleEditButton onClick={() => this.props.edit(this.props.name, "rateUp", this.state.rateUp)} size={"xs"}/>
+				</td>
+			</tr>
+			<tr className="d-flex">
+				<td className="d-flex align-items-center">rateDown</td>
+				<td className="flex-fill d-flex justify-content-center">{this.state.rateDown}</td>
+				<td className="ml-1">
+					<SimpleEditButton onClick={() => this.props.edit(this.props.name, "logExp", this.state.rateDown)} size={"xs"}/>
+				</td>
+			</tr>
 			</tbody>
 
 		);
