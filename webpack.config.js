@@ -49,5 +49,6 @@ module.exports = {
     new CompressionPlugin({
 		test: /\.js/
 	})
-  ]
+  ],
+  devtool: 'source-map'
 };

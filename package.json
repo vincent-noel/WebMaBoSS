@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "webpack --mode development ./frontend/src/index.js --output ./frontend/static/js/index.js",
-    "build": "webpack --mode production ./frontend/src/index.js --output ./frontend/static/js/index.js"
+    "build": "webpack --mode production ./frontend/src/index.js --output ./frontend/static/js/index.js",
+    "explorer": "source-map-explorer --html ./frontend/static/js/index.js > tree.html"
   },
   "keywords": [],
   "author": "",
@@ -48,5 +49,8 @@
     "weak-key": "^1.0.0",
     "webpack": "^4.17.1",
     "webpack-cli": "^3.1.0"
+  },
+  "devDependencies": {
+    "source-map-explorer": "^1.6.0"
   }
 }
