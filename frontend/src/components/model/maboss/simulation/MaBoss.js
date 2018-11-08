@@ -6,7 +6,7 @@ import MaBossResult from "./MaBossResult";
 import MaBossActions from "./MaBossActions";
 
 import {ProjectContext, ModelContext} from "../../../context";
-import APICalls from "../../../commons/apiCalls";
+import APICalls from "../../../api/apiCalls";
 
 
 class MaBoss extends React.Component {
@@ -27,7 +27,7 @@ class MaBoss extends React.Component {
 
 	onSubmit(project_id, model_id, data) {
 		this.setState({simulationId: null});
-		this.createMaBossSimulationCall = APICalls.createMaBoSSSimulation(project_id, model_id, data);
+		this.createMaBossSimulationCall = APICalls.MaBoSSCalls.createMaBoSSSimulation(project_id, model_id, data);
 		this.createMaBossSimulationCall.promise.then(data => {
 			this.setState({showNewSimForm: false, simulationId: data['simulation_id']})
 		});

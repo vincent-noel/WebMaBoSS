@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import LoadingIcon from "../../commons/LoadingIcon";
-import APICalls from "../../commons/apiCalls";
+import APICalls from "../../api/apiCalls";
 
 
 class ModelGraph extends Component {
@@ -19,7 +19,7 @@ class ModelGraph extends Component {
 	getGraph(project_id, model_id) {
 		this.setState({loaded: false, data: null});
 
-		this.getGraphCall = APICalls.getGraph(project_id, model_id);
+		this.getGraphCall = APICalls.ModelCalls.getGraph(project_id, model_id);
 		this.getGraphCall.promise.then(data => this.setState({data: data, loaded: true}));
 	}
 

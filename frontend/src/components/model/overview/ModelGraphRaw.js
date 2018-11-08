@@ -1,7 +1,7 @@
 import React from "react";
 import {ReactCytoscape} from 'react-cytoscape';
 import LoadingIcon from "../../commons/LoadingIcon";
-import APICalls from "../../commons/apiCalls";
+import APICalls from "../../api/apiCalls";
 
 
 class ModelGraphRaw extends React.Component {
@@ -21,7 +21,7 @@ class ModelGraphRaw extends React.Component {
 	getGraph(project_id, model_id) {
 		// Getting the graph via the API
 		this.setState({loaded: false, data: null});
-		this.getGraphCall = APICalls.getGraphRaw(project_id, model_id);
+		this.getGraphCall = APICalls.ModelCalls.getGraphRaw(project_id, model_id);
 
 		this.getGraphCall.promise.then(
 			data => { this.setState({loaded: true, data: data})}

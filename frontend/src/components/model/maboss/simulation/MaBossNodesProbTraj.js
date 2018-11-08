@@ -1,7 +1,7 @@
 import React from "react";
 import {Line} from "react-chartjs-2";
 import LoadingIcon from "../../../commons/LoadingIcon";
-import APICalls from "../../../commons/apiCalls";
+import APICalls from "../../../api/apiCalls";
 
 
 class MaBossNodesProbTraj extends React.Component {
@@ -21,7 +21,7 @@ class MaBossNodesProbTraj extends React.Component {
 	getNodesProbtraj(simulationId) {
 
 		this.setState({nodesProbTrajLoaded: false, nodesProbTraj: null});
-		this.getNodesProbtrajCall = APICalls.getNodesProbTraj(simulationId)
+		this.getNodesProbtrajCall = APICalls.MaBoSSCalls.getNodesProbTraj(simulationId)
 
 		this.getNodesProbtrajCall.promise.then(data => {
 			if (data['nodes_probtraj'] !== null) {

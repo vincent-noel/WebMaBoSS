@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import DeleteButton from "../commons/buttons/DeleteButton";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 import LoadButton from "../commons/buttons/LoadButton";
 import DownloadButton from "../commons/buttons/DownloadButton";
 import ConfirmationModal from "../commons/ConfirmationModal";
@@ -38,12 +38,12 @@ class TagForm extends React.Component {
 
 	getTags(project_id, model_id) {
 		this.setState({listOfTags: []});
-		this.getTagsCall = APICalls.listModelTags(project_id, model_id);
+		this.getTagsCall = APICalls.ModelTagsCalls.listModelTags(project_id, model_id);
 		this.getTagsCall.promise.then(tags => this.setState({listOfTags: tags}))
 	}
 
 	tag() {
-		this.addTagCall = APICalls.createModelTag(this.props.project, this.props.id, this.state.tag);
+		this.addTagCall = APICalls.ModelTagsCalls.createModelTag(this.props.project, this.props.id, this.state.tag);
 		this.addTagCall.promise.then(response => this.updateListOfTags());
 	}
 
@@ -57,7 +57,7 @@ class TagForm extends React.Component {
 
 	yesLoad() {
 		this.setState({showConfirmLoad: false});
-		this.loadTagCall = APICalls.loadModelTag(this.props.project, this.props.id, this.state.tagToLoad);
+		this.loadTagCall = APICalls.ModelTagsCalls.loadModelTag(this.props.project, this.props.id, this.state.tagToLoad);
 		this.loadTagCall.promise.then(() => {this.setState({tagToLoad: null}); this.props.hide();});
 	}
 

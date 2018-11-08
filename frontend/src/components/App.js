@@ -44,7 +44,7 @@ class App extends Component {
 					<Route exact path="/model/fixed_points/" component={ModelSteadyStates} />
 					<Route exact path="/model/maboss/simulation/" component={MaBoss} />
 					<Route exact path="/model/maboss/editing/" component={MaBossEditing} />
-					
+
 					<Route exact path="/profile/account/" component={Profile} />
 					<Route exact path="/profile/maboss/" component={MaBoSSSettings} />
 

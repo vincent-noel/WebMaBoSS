@@ -5,7 +5,7 @@ import SideBar from "./SideBar";
 import {getModel, setModel} from "../commons/sessionVariables";
 import MenuPage from "../MenuPage";
 import {ProjectContext, ModelContext} from "../context";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 
 class ModelPage extends React.Component {
@@ -25,7 +25,7 @@ class ModelPage extends React.Component {
 		if (this.getNameCall !== null) this.getNameCall.cancel();
 		this.setState({modelName: null});
 
-		this.getNameCall = APICalls.getName(project_id, model_id);
+		this.getNameCall = APICalls.ModelCalls.getName(project_id, model_id);
 		this.getNameCall.promise.then(data => {this.setState({modelName: data['name']})});
 	}
 

@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faFileUpload } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from "prop-types";
-import APICalls from "../apiCalls";
+
 
 class LoadButton extends Component {
 

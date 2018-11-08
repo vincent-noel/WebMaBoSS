@@ -1,6 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 import LoadingIcon from "../commons/LoadingIcon";
 
 
@@ -18,7 +18,7 @@ class ModelDropdown extends React.Component {
 
 	getModels(project_id) {
 		this.setState({models: [], loaded: false});
-		this.getModelsCall = APICalls.getModels(project_id)
+		this.getModelsCall = APICalls.ModelsCalls.getModels(project_id)
 		this.getModelsCall.promise.then(models => {
 			this.setState({ models: models, loaded: true });
 		});

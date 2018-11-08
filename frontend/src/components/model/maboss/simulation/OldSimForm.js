@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import APICalls from "../../../commons/apiCalls";
+import APICalls from "../../../api/apiCalls";
 
 
 class OldSimForm extends React.Component {
@@ -25,7 +25,7 @@ class OldSimForm extends React.Component {
 			selectedSimulationId: null
 		});
 
-		this.getListSimulationCall = APICalls.getListOfMaBoSSSimulations(project_id, model_id);
+		this.getListSimulationCall = APICalls.MaBoSSCalls.getListOfMaBoSSSimulations(project_id, model_id);
 		this.getListSimulationCall.promise.then(data => {
 			this.setState({listOfSimulations: data});
 			this.props.showOldSimButton(data.length > 0);
@@ -34,7 +34,7 @@ class OldSimForm extends React.Component {
 
 	removeOldSim(simulation_id) {
 
-		this.removeSimulationCall = APICalls.deleteMaBossSimulation(simulation_id);
+		this.removeSimulationCall = APICalls.MaBoSSCalls.deleteMaBossSimulation(simulation_id);
 		this.removeSimulationCall.promise.then(response => this.loadListSimulations(this.props.project, this.props.modelId))
 	}
 

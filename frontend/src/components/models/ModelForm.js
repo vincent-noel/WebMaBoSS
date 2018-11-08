@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 import MyDropdown from "../commons/buttons/MyDropdown";
 
 class ModelForm extends React.Component {
@@ -75,7 +75,7 @@ class ModelForm extends React.Component {
 	handleSubmit(e) {
 		e.preventDefault();
 
-		this.importModelCall = APICalls.importModel(this.props.project, this.state.file, this.state.name, this.state.file2);
+		this.importModelCall = APICalls.ModelsCalls.importModel(this.props.project, this.state.file, this.state.name, this.state.file2);
 		this.importModelCall.promise.then(response => {
 
 			this.setState({

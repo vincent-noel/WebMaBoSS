@@ -3,7 +3,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import LoadingIcon from "../../commons/LoadingIcon";
 import Graph from "./Graph";
-import APICalls from "../../commons/apiCalls";
+import APICalls from "../../api/apiCalls";
 import './table-steadystates.scss';
 
 
@@ -26,7 +26,7 @@ class ModelSteadyStatesResult extends Component {
 
 		this.setState({loaded: false, data: {}, selectedSteadyState: null});
 
-		this.getSteadyStatesCall = APICalls.getSteadyStates(project_id, model_id);
+		this.getSteadyStatesCall = APICalls.ModelCalls.getSteadyStates(project_id, model_id);
 		this.getSteadyStatesCall.promise.then(data => this.setState({data: data, loaded: true, selectedSteadyState: null}));
 	}
 

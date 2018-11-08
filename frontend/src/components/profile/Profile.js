@@ -1,9 +1,8 @@
 import React from "react";
-import {Button, ButtonGroup, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import {Button, ButtonToolbar, Card, CardBody, CardFooter} from "reactstrap";
 
 import ProfilePage from "./ProfilePage";
-import {getUsername} from "../commons/sessionVariables";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 
 class Profile extends React.Component {
@@ -40,7 +39,7 @@ class Profile extends React.Component {
 
 		if (this.state.password1 !== "" && this.state.password1 === this.state.password2) {
 
-			this.changePasswordCall = APICalls.changePassword(this.state.password1, this.state.password2);
+			this.changePasswordCall = APICalls.AuthCalls.changePassword(this.state.password1, this.state.password2);
 			this.changePasswordCall.promise.then(
 				response => {
 					console.log(response);
@@ -50,7 +49,7 @@ class Profile extends React.Component {
 		}
 
 		if (this.state.email !== this.state.originalEmail) {
-			this.changeEmailCall = APICalls.changeEmail(this.state.email);
+			this.changeEmailCall = APICalls.AuthCalls.changeEmail(this.state.email);
 			this.changeEmailCall.promise.then(
 				response => {
 					console.log(response);
@@ -61,7 +60,7 @@ class Profile extends React.Component {
 	}
 
 	getEmail() {
-		this.getEmailCall = APICalls.getEmail();
+		this.getEmailCall = APICalls.AuthCalls.getEmail();
 		this.getEmailCall.promise.then(
 			response => {
 				this.setState({email: response.email, originalEmail: response.email})

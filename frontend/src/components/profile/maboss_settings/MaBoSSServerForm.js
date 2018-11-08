@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonGroup, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import APICalls from "../../commons/apiCalls";
+import APICalls from "../../api/apiCalls";
 
 class MaBoSSServerForm extends React.Component {
 
@@ -33,9 +33,9 @@ class MaBoSSServerForm extends React.Component {
 		if (this.apiCall !== null) this.apiCall.cancel();
 
 		if (this.state.id === null)
-			this.apiCall = APICalls.createMaBoSSServer(this.state.host, this.state.port);
+			this.apiCall = APICalls.MaBoSSServerCalls.createMaBoSSServer(this.state.host, this.state.port);
 		else
-			this.apiCall = APICalls.updateMaBoSSServer(this.state.host, this.state.port, this.state.id);
+			this.apiCall = APICalls.MaBoSSServerCalls.updateMaBoSSServer(this.state.host, this.state.port, this.state.id);
 
 		this.apiCall.promise.then(response => {
 

@@ -2,7 +2,7 @@ import React from "react";
 import {Nav, NavItem, NavLink, TabPane, TabContent, Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import classnames from 'classnames';
 import TableSwitches from "../../../commons/TableSwitches";
-import APICalls from "../../../commons/apiCalls";
+import APICalls from "../../../api/apiCalls";
 
 
 class NewSimForm extends React.Component {
@@ -45,7 +45,7 @@ class NewSimForm extends React.Component {
 			outputVariables: {},
 		});
 
-		this.getSettingsCall = APICalls.getMaBoSSSimulationSettings(project_id, model_id)
+		this.getSettingsCall = APICalls.MaBoSSCalls.getMaBoSSSimulationSettings(project_id, model_id)
 		this.getSettingsCall.promise.then(response => {
 
 			const initial_states = Object.keys(response['initial_states']).reduce(

@@ -1,6 +1,6 @@
 import React, {Component} from "react";
 import LoadingIcon from "../../commons/LoadingIcon";
-import APICalls from "../../commons/apiCalls";
+import APICalls from "../../api/apiCalls";
 
 class Graph extends Component {
 
@@ -18,7 +18,7 @@ class Graph extends Component {
 
 		this.setState({graph: null});
 
-		this.getGraphCall = APICalls.getSteadyStatesGraph(project_id, model_id, steady_state);
+		this.getGraphCall = APICalls.ModelCalls.getSteadyStatesGraph(project_id, model_id, steady_state);
 		this.getGraphCall.promise.then(data => this.setState({graph: data, loaded: true}));
 	}
 

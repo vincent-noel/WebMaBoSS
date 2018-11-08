@@ -1,6 +1,6 @@
 import React from "react";
 import LoadingIcon from "../../commons/LoadingIcon";
-import APICalls from "../../commons/apiCalls";
+import APICalls from "../../api/apiCalls";
 
 
 class MaBoSSServers extends React.Component {
@@ -20,7 +20,7 @@ class MaBoSSServers extends React.Component {
 	updateServers(){
 		if (this.updateServersCall !== null) this.updateServersCall.cancel();
 
-		this.updateServersCall = APICalls.getMaBoSSServers();
+		this.updateServersCall = APICalls.MaBoSSServerCalls.getMaBoSSServers();
 		this.updateServersCall.promise.then(data => this.setState({ data: data, loaded: true }));
 	}
 

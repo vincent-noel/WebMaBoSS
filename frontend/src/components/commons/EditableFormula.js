@@ -1,13 +1,8 @@
 import React from "react";
-import APICalls from "./apiCalls";
-import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faEye} from "@fortawesome/free-solid-svg-icons/index";
-import ViewButton from "./buttons/ViewButton";
+
 import SimpleEditButton from "./buttons/SimpleEditButton";
 import ValidateButton from "./buttons/ValidateButton";
 import CancelButton from "./buttons/CancelButton";
-import LoadingIcon from "./LoadingIcon";
-// import "./editable-formula.scss";
 
 
 class EditableFormula extends React.Component {
@@ -19,7 +14,6 @@ class EditableFormula extends React.Component {
 			formula: "",
 			initialFormula: "",
 			isEditing: false
-
 		};
 
 		this.inputFormulaRef = React.createRef();
@@ -65,7 +59,6 @@ class EditableFormula extends React.Component {
 
 		return true;
 	}
-
 
 	render() {
 

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import LoadingIcon from "../commons/LoadingIcon";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 
 class Projects extends React.Component {
@@ -27,7 +27,7 @@ class Projects extends React.Component {
 		if (this.getProjectsCall !== null) this.getProjectsCall.cancel();
 
 		this.setState({data: [], loaded: false});
-		this.getProjectsCall = APICalls.getProjects();
+		this.getProjectsCall = APICalls.ProjectCalls.getProjects();
 		this.getProjectsCall.promise.then(data => this.setState({ data: data, loaded: true }));
 	}
 	componentDidMount() {

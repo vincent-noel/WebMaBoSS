@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faTag } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from "prop-types";
-import APICalls from "../apiCalls";
+
 
 class TagButton extends Component {
 

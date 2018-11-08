@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from "prop-types";
-import APICalls from "../apiCalls";
+import APICalls from "../../api/apiCalls";
 
 class DeleteButton extends Component {
 
@@ -19,7 +19,7 @@ class DeleteButton extends Component {
 	}
 
 	delete() {
-		this.deleteCall = APICalls.deleteById(this.props.endpoint, this.props.id);
+		this.deleteCall = APICalls.GenericCalls.deleteById(this.props.endpoint, this.props.id);
 		this.deleteCall.promise.then(response => { this.props.update();});
   	}
 

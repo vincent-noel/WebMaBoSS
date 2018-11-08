@@ -1,5 +1,5 @@
 import React from "react";
-import APICalls from "../../../commons/apiCalls";
+import APICalls from "../../../api/apiCalls";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faEye} from "@fortawesome/free-solid-svg-icons/index";
 import ViewButton from "../../../commons/buttons/ViewButton";
@@ -31,7 +31,7 @@ class MaBoSSNodeFormulas extends React.Component {
 	}
 
 	getNodeFormulas(project_id, model_id, node_id) {
-		this.getNodeFormulasCall = APICalls.getNodesFormulas(project_id, model_id, node_id);
+		this.getNodeFormulasCall = APICalls.MaBoSSCalls.getMaBoSSNodesFormulas(project_id, model_id, node_id);
 		this.getNodeFormulasCall.promise.then(data => this.setState({
 			logExp: data.log_exp,
 			rateUp: data.rate_up,
@@ -45,7 +45,7 @@ class MaBoSSNodeFormulas extends React.Component {
 
 	checkFormula(field, formula) {
 
-		this.checkFormulaCall = APICalls.checkFormula(this.props.project, this.props.modelId, formula);
+		this.checkFormulaCall = APICalls.MaBoSSCalls.checkFormula(this.props.project, this.props.modelId, formula);
 		this.checkFormulaCall.promise.then((data) => {
 			this.setState({[field + "Error"]: data.error});
 		});

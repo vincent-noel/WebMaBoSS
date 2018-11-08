@@ -1,7 +1,7 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import {setProject, getProject} from "../commons/sessionVariables";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 import LoadingIcon from "../commons/LoadingIcon";
 
 class ProjectDropdown extends React.Component {
@@ -20,7 +20,7 @@ class ProjectDropdown extends React.Component {
 	}
 
 	getProjects() {
-		this.getProjectCall = APICalls.getProjects();
+		this.getProjectCall = APICalls.ProjectCalls.getProjects();
 		this.getProjectCall.promise.then((projects) => {
 			this.setState({ projects: projects, loaded: true });
 			if (getProject() !== null) {

@@ -1,7 +1,7 @@
 import React from "react";
 import {Pie} from "react-chartjs-2";
 import LoadingIcon from "../../../commons/LoadingIcon";
-import APICalls from "../../../commons/apiCalls";
+import APICalls from "../../../api/apiCalls";
 
 class MaBossFixedPoints extends React.Component {
 
@@ -21,7 +21,7 @@ class MaBossFixedPoints extends React.Component {
 
 
 		this.setState({fptableLoaded: false, fptable: null});
-		this.getFixedPointsCall = APICalls.getFixedPoints(simulationId);
+		this.getFixedPointsCall = APICalls.MaBoSSCalls.getFixedPoints(simulationId);
 		this.getFixedPointsCall.promise.then(data => {
 			if (data['fixed_points'] !== null) {
 				clearInterval(this.fixedPointsChecker);

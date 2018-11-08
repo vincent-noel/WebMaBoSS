@@ -1,7 +1,7 @@
 import React from "react";
 import history from '../history';
 import {clearAPIKey, clearUser} from "../commons/sessionVariables";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 
 class SignOut extends React.Component {
@@ -17,7 +17,7 @@ class SignOut extends React.Component {
 
 	render(){
 
-		this.logoutCall = APICalls.logout();
+		this.logoutCall = APICalls.AuthCalls.logout();
 		this.logoutCall.promise.then(response => {
 			clearAPIKey();
 			clearUser();

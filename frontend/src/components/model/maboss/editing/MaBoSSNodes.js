@@ -1,6 +1,5 @@
 import React from "react";
-import APICalls from "../../../commons/apiCalls";
-import ViewButton from "../../../commons/buttons/ViewButton";
+import APICalls from "../../../api/apiCalls";
 import "./table-nodes.scss";
 import MaBoSSNodeFormulas from "./MaBoSSNodeFormulas";
 import LoadingIcon from "../../../commons/LoadingIcon";
@@ -21,7 +20,7 @@ class MaBoSSNodes extends React.Component {
 	}
 
 	loadNodes(project_id, model_id) {
-		this.getNodesCall = APICalls.getNodes(project_id, model_id);
+		this.getNodesCall = APICalls.MaBoSSCalls.getMaBoSSNodes(project_id, model_id);
 		this.getNodesCall.promise.then(data => this.setState({
 			nodes: data, showNodesDetails: new Array(data.length).fill(false)
 		}));

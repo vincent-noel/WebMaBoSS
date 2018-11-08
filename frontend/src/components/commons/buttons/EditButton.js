@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faEdit } from '@fortawesome/free-solid-svg-icons';
 import PropTypes from "prop-types";
-import APICalls from "../apiCalls";
+import APICalls from "../../api/apiCalls";
 
 class EditButton extends Component {
 
@@ -20,7 +20,7 @@ class EditButton extends Component {
 	}
 
 	edit() {
-		this.editCall = APICalls.editById(this.props.endpoint, this.props.id);
+		this.editCall = APICalls.GenericCalls.editById(this.props.endpoint, this.props.id);
 		this.editCall.promise.then(json_response => this.props.edit(json_response));
 	}
 

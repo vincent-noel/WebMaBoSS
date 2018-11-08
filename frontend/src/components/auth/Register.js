@@ -5,7 +5,7 @@ import history from '../history';
 import FullPage from "../FullPage";
 import ErrorAlert from "../commons/ErrorAlert";
 import {setAPIKey} from "../commons/sessionVariables";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 
 class Register extends React.Component {
@@ -37,7 +37,7 @@ class Register extends React.Component {
 
 		e.preventDefault();
 
-		this.registerCall = APICalls.register(
+		this.registerCall = APICalls.AuthCalls.register(
 			this.state.username, this.state.email, this.state.password1, this.state.password2
 		);
 		this.registerCall.promise.then(json_response => {

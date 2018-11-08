@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonGroup, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 class ProjectForm extends React.Component {
 
@@ -32,10 +32,10 @@ class ProjectForm extends React.Component {
 		e.preventDefault();
 
 		if (this.state.id === null)	{
-			this.projectCall = APICalls.createProject(this.state.name, this.state.description);
+			this.projectCall = APICalls.ProjectCalls.createProject(this.state.name, this.state.description);
 
 		} else {
-			this.projectCall = APICalls.updateProject(this.state.name, this.state.description, this.state.id);
+			this.projectCall = APICalls.ProjectCalls.updateProject(this.state.name, this.state.description, this.state.id);
 		}
 
 		this.projectCall.promise.then(response => {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import LoadingIcon from "../commons/LoadingIcon";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 class LogicalModels extends Component {
 	static propTypes = {
@@ -28,7 +28,7 @@ class LogicalModels extends Component {
 
 	getData(project_id){
 		this.setState({data: [], loaded: false});
-		this.getModelsCall = APICalls.getModels(project_id);
+		this.getModelsCall = APICalls.ModelsCalls.getModels(project_id);
 		this.getModelsCall.promise.then(data => this.setState({ data: data, loaded: true }));
 	}
 	componentDidMount() {

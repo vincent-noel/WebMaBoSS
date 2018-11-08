@@ -1,7 +1,7 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import Dropdown from "../commons/Dropdown";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 class ExportModelForm extends React.Component {
 
@@ -35,16 +35,16 @@ class ExportModelForm extends React.Component {
 		switch(this.state.format) {
 			case 'zginml':
 				this.props.hide();
-				APICalls.downloadModelAsZGINML(this.props.project, this.props.id, this.props.tag);
+				APICalls.ModelsCalls.downloadModelAsZGINML(this.props.project, this.props.id, this.props.tag);
 				break;
 
 			case 'sbml':
 				this.props.hide();
-				APICalls.downloadModelAsSBML(this.props.project, this.props.id, this.props.tag);
+				APICalls.ModelsCalls.downloadModelAsSBML(this.props.project, this.props.id, this.props.tag);
 				break;
 
 			case 'maboss':
-				APICalls.downloadModelAsMaBoSS(this.props.project, this.props.id, this.props.tag, file_id);
+				APICalls.ModelsCalls.downloadModelAsMaBoSS(this.props.project, this.props.id, this.props.tag, file_id);
 
 			default:
 				break;

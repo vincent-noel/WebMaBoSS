@@ -5,7 +5,7 @@ import history from '../history';
 import FullPage from "../FullPage";
 import ErrorAlert from "../commons/ErrorAlert";
 import {isConnected, setAPIKey, setUser} from "../commons/sessionVariables";
-import APICalls from "../commons/apiCalls";
+import APICalls from "../api/apiCalls";
 
 
 class SignIn extends React.Component {
@@ -31,7 +31,7 @@ class SignIn extends React.Component {
 
 		e.preventDefault();
 
-		this.loginCall = APICalls.login(this.state.username, this.state.password);
+		this.loginCall = APICalls.AuthCalls.login(this.state.username, this.state.password);
 		this.loginCall.promise.then(json_response => {
 
 			this.setState({
