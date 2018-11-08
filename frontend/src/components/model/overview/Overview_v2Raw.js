@@ -1,15 +1,13 @@
 import React from "react";
-
 import ModelPage from "../ModelPage";
 import ModelName from "../ModelName";
 
-import ModelGraph from "./ModelGraph";
+import ModelGraphRaw from "./ModelGraphRaw";
 
-import {NavLink} from "react-router-dom";
 
 import {ProjectContext, ModelContext} from "../../context";
 
-class Overview extends React.Component {
+class Overview_v2Raw extends React.Component {
 
 	render() {
 		return <ModelPage path={this.props.match.path}>
@@ -23,16 +21,17 @@ class Overview extends React.Component {
 							modelId={modelContext.modelId}
 							modelName={modelContext.modelName}
 						/>
-						<ModelGraph
+						<ModelGraphRaw
 							project={projectContext.project}
 							modelId={modelContext.modelId}
 						/>
 					</React.Fragment>)}
 				</ModelContext.Consumer>)}
 			</ProjectContext.Consumer>
-			<NavLink to="/model/overview_v2">v2</NavLink>
+			{/*<ModelGraphRaw />*/}
+			{/*<ModelGraphSBGN />*/}
 		</ModelPage>;
 	}
 }
 
-export default Overview;
+export default Overview_v2Raw;

@@ -50,5 +50,10 @@ module.exports = {
 		test: /\.js/
 	})
   ],
-  devtool: 'source-map'
+  devtool: 'source-map',
+  output: {
+	publicPath: "/static/js/",
+	filename: '[name].js',
+	chunkFilename: '[name].js'
+  }
 };
