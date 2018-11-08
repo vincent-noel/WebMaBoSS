@@ -40,7 +40,10 @@ module.exports = {
 	  new UglifyJsPlugin({
 		test: /\.js/
 	  })
-    ]
+    ],
+  	splitChunks: {
+      chunks: 'all',
+	},
   },
   plugins: [
     new CompressionPlugin({
