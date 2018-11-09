@@ -1,171 +1,116 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
-from rest_framework.exceptions import PermissionDenied
+from rest_framework.exceptions import PermissionDenied, NotFound, MethodNotAllowed
 
-from django.http import Http404, FileResponse
+from django.http import FileResponse
 from django.conf import settings
 from django.core.files import File
 
 from api.models import LogicalModel, Project, TaggedLogicalModel
+from api.views.HasModel import HasModel
+
 from os.path import join, basename, splitext
 from shutil import copyfile
 
+import ginsim
 
-class LogicalModelsTags(APIView):
+
+class LogicalModelsTags(HasModel):
 
 	def get(self, request, project_id, model_id, tag=None):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
 		try:
-			project = Project.objects.get(id=project_id)
-
-			if project.user != request.user:
-				raise PermissionDenied
-
-			model = LogicalModel.objects.get(project=project, id=model_id)
-
 			if tag is None:
-				tagged_models = TaggedLogicalModel.objects.filter(model=model)
+				tagged_models = TaggedLogicalModel.objects.filter(model=self.model)
 				tags = [tagged_model.tag for tagged_model in tagged_models]
 
 				return Response(tags)
 
 			else:
 				# Restoring model from tag
-				tagged_model = TaggedLogicalModel.objects.get(model=model, tag=tag)
+				tagged_model = TaggedLogicalModel.objects.get(model=self.model, tag=tag)
+
+				# TODO : Which format fo we want ? which format do we have
 				copyfile(
 					join(settings.MEDIA_ROOT, tagged_model.file.path),
-					join(settings.MEDIA_ROOT, model.file.path)
+					join(settings.MEDIA_ROOT, self.model.file.path)
 				)
 
 				return Response(status=status.HTTP_200_OK)
 
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
-
+		except TaggedLogicalModel.DoesNotExist:
+			raise NotFound
 
 	def post(self, request, project_id, model_id):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
-		try:
-			project = Project.objects.get(id=project_id)
+		if self.model.format == LogicalModel.ZGINML:
+			TaggedLogicalModel(
+				model=self.model,
+				tag=str(request.POST['tag']),
+				file=File(open(join(settings.MEDIA_ROOT, self.model.file.path), 'rb')),
+			).save()
 
-			if project.user != request.user:
-				raise PermissionDenied
+		elif self.model.format == LogicalModel.MABOSS:
+			TaggedLogicalModel(
+				model=self.model,
+				tag=str(request.POST['tag']),
+				bnd_file=File(open(join(settings.MEDIA_ROOT, self.model.bnd_file.path), 'rb')),
+				cfg_file=File(open(join(settings.MEDIA_ROOT, self.model.cfg_file.path), 'rb'))
+			).save()
 
-			model = LogicalModel.objects.get(project=project, id=model_id)
+		else:
+			raise MethodNotAllowed
 
-			if model.file is not None:
-				TaggedLogicalModel(
-					model=model,
-					tag=str(request.POST['tag']),
-					file=File(open(join(settings.MEDIA_ROOT, model.file.path), 'rb')),
-				).save()
-
-			elif model.bnd_file is not None and model.cfg_file is not None:
-				TaggedLogicalModel(
-					model=model,
-					tag=str(request.POST['tag']),
-					bnd_file=File(open(join(settings.MEDIA_ROOT, model.bnd_file.path), 'rb')),
-					cfg_file=File(open(join(settings.MEDIA_ROOT, model.cfg_file.path), 'rb'))
-				).save()
-
-			return Response(status=status.HTTP_200_OK)
-
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
+		return Response(status=status.HTTP_200_OK)
 
 
 	def delete(self, request, project_id, model_id, tag):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
 		try:
-			project = Project.objects.get(id=project_id)
-
-			if project.user != request.user:
-				raise PermissionDenied
-
-			model = LogicalModel.objects.get(
-				project=project,
-				id=model_id
-			)
-
-			tagged_model = TaggedLogicalModel.objects.get(model=model, tag=tag)
+			tagged_model = TaggedLogicalModel.objects.get(model=self.model, tag=tag)
 			tagged_model.delete()
 
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
-
 		except TaggedLogicalModel.DoesNotExist:
-			raise Http404
+			raise NotFound
 
 		return Response(status=status.HTTP_200_OK)
 
-class TaggedLogicalModelFile(APIView):
+
+class TaggedLogicalModelFile(HasModel):
 
 	def get(self, request, project_id, model_id, tag):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
 		try:
-			project = Project.objects.get(id=project_id)
-
-			if project.user != request.user:
-				raise PermissionDenied
-
-			model = LogicalModel.objects.get(project=project, id=model_id)
-			tagged_version = TaggedLogicalModel.objects.get(model=model, tag=tag)
+			tagged_version = TaggedLogicalModel.objects.get(model=self.model, tag=tag)
 
 			return FileResponse(
 				open(join(settings.MEDIA_ROOT, tagged_version.file.path), 'rb'),
 				as_attachment=True, filename=basename(tagged_version.file.path)
 			)
 
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
-
 		except TaggedLogicalModel.DoesNotExist:
-			raise Http404
+			raise NotFound
 
 
 
-class TaggedLogicalModelSBMLFile(APIView):
+class TaggedLogicalModelSBMLFile(HasModel):
 
 	def get(self, request, project_id, model_id, tag):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
 		try:
-			project = Project.objects.get(id=project_id)
+			tagged_version = TaggedLogicalModel.objects.get(model=self.model, tag=tag)
 
-			if project.user != request.user:
-				raise PermissionDenied
-
-			model = LogicalModel.objects.get(project=project, id=model_id)
-			tagged_version = TaggedLogicalModel.objects.get(model=model, tag=tag)
-
-			import ginsim
 			ginsim_model = ginsim.load(join(settings.MEDIA_ROOT, tagged_version.file.path))
 
 			sbml_filename = join(settings.TMP_ROOT, splitext(basename(tagged_version.file.path))[0] + ".sbml")
@@ -176,11 +121,5 @@ class TaggedLogicalModelSBMLFile(APIView):
 				as_attachment=True, filename=basename(sbml_filename)
 			)
 
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
-
 		except TaggedLogicalModel.DoesNotExist:
-			raise Http404
+			raise NotFound

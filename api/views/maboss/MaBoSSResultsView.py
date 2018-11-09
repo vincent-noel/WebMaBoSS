@@ -2,21 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.parsers import JSONParser
-
-from django.core.files import File
 from django.http import Http404
-from django.conf import settings
-from django.db import transaction
+from api.models import MaBoSSSimulation
 
-from api.serializers import MaBoSSSimulationSerializer
-from api.models import LogicalModel, MaBoSSSimulation, Project
+from json import loads
 
-from threading import Thread
-from os.path import join
-from json import loads, dumps
-import ginsim
-import maboss
 
 
 

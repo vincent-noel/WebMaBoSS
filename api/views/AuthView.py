@@ -1,9 +1,9 @@
 from rest_framework.views import APIView
 from rest_framework import authentication, permissions, status
 from rest_framework.response import Response
-from rest_framework.exceptions import PermissionDenied
 from rest_auth.views import LogoutView
-from rest_framework import status
+
+from api.views.HasUser import HasUser
 
 
 class TestAuthView(APIView):
@@ -16,21 +16,19 @@ class TestAuthView(APIView):
 class LogoutViewEx(LogoutView):
     authentication_classes = (authentication.TokenAuthentication,)
 
-class UserEmailView(APIView):
+class UserEmailView(HasUser):
 
     def get(self, request):
 
-        if request.user.is_anonymous:
-            raise PermissionDenied
+        HasUser.load(self, request)
 
-        return Response({'email': request.user.email})
+        return Response({'email': self.user.email})
 
     def put(self, request):
 
-        if request.user.is_anonymous:
-            raise PermissionDenied
+        HasUser.load(self, request)
 
-        request.user.email = request.data['email']
-        request.user.save()
+        self.user.email = request.data['email']
+        self.user.save()
 
         return Response(status=status.HTTP_200_OK)

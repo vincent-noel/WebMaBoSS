@@ -1,255 +1,119 @@
-from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from django.http import Http404, HttpResponse, FileResponse
+from django.http import HttpResponse, FileResponse
 from django.conf import settings
 
-from api.models import LogicalModel, Project
+from api.views.HasModel import HasModel
 from api.serializers import LogicalModelNameSerializer
 
-from os.path import join, basename, splitext
-from rest_framework.exceptions import PermissionDenied, MethodNotAllowed
+from os.path import join, basename
 
-import ginsim, maboss, biolqm
+import ginsim
 from json import loads
-from api.views.commons.converter import maboss_to_ginsim
-
-class LogicalModelFile(APIView):
-
-	def get(self, request, project_id, model_id):
-
-		if request.user.is_anonymous:
-			raise PermissionDenied
-
-		try:
-			project = Project.objects.get(id=project_id)
-
-			if project.user != request.user:
-				raise PermissionDenied
-
-			model = LogicalModel.objects.get(project=project, id=model_id)
-
-			return FileResponse(
-				open(join(settings.MEDIA_ROOT, model.file.path), 'rb'),
-				as_attachment=True, filename=basename(model.file.path)
-			)
-
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
+import tempfile
 
 
-class LogicalModelSBMLFile(APIView):
+class LogicalModelFile(HasModel):
 
 	def get(self, request, project_id, model_id):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
-		try:
-			project = Project.objects.get(id=project_id)
-
-			if project.user != request.user:
-				raise PermissionDenied
-
-			model = LogicalModel.objects.get(project=project, id=model_id)
-
-			import ginsim
-			ginsim_model = ginsim.load(join(settings.MEDIA_ROOT, model.file.path))
-
-			sbml_filename = join(settings.TMP_ROOT, splitext(basename(model.file.path))[0] + ".sbml")
-			ginsim.to_sbmlqual(ginsim_model, sbml_filename)
-
-			return FileResponse(
-				open(sbml_filename, 'rb'),
-				as_attachment=True, filename=basename(sbml_filename)
-			)
-
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
+		return FileResponse(
+			open(join(settings.MEDIA_ROOT, self.model.file.path), 'rb'),
+			as_attachment=True, filename=basename(self.model.file.path)
+		)
 
 
-class LogicalModelName(APIView):
+class LogicalModelSBMLFile(HasModel):
 
 	def get(self, request, project_id, model_id):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
-		try:
-			project = Project.objects.get(id=project_id)
-			if request.user != project.user:
-				raise PermissionDenied
+		sbml_filename = self.getSBMLModelFile()
 
-			model = LogicalModel.objects.get(project=project, id=model_id)
-			serializer = LogicalModelNameSerializer(model)
-
-			return Response(serializer.data)
-
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
+		return FileResponse(
+			open(sbml_filename, 'rb'),
+			as_attachment=True, filename=basename(sbml_filename)
+		)
 
 
-
-class LogicalModelNodes(APIView):
+class LogicalModelName(HasModel):
 
 	def get(self, request, project_id, model_id):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
-		try:
-			project = Project.objects.get(id=project_id)
-			if request.user != project.user:
-				raise PermissionDenied
+		serializer = LogicalModelNameSerializer(self.model)
 
-			model = LogicalModel.objects.get(project=project, id=model_id)
+		return Response(serializer.data)
 
-			if model.format == LogicalModel.ZGINML:
-				path = join(settings.MEDIA_ROOT, model.file.path)
-				ginsim_model = ginsim.load(path)
-				maboss_model = ginsim.to_maboss(ginsim_model)
 
-			elif model.format == LogicalModel.MABOSS:
-				maboss_model = maboss.load(
-					join(settings.MEDIA_ROOT, model.bnd_file.path),
-					join(settings.MEDIA_ROOT, model.cfg_file.path)
-				)
-
-			else:
-				raise MethodNotAllowed
-
-			return Response(list(maboss_model.network.keys()))
-
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
-
-class LogicalModelGraph(APIView):
+class LogicalModelNodes(HasModel):
 
 	def get(self, request, project_id, model_id):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
+		maboss_model = self.getMaBoSSModel()
 
-		try:
-			project = Project.objects.get(id=project_id)
-			if request.user != project.user:
-				raise PermissionDenied
+		return Response(list(maboss_model.network.keys()))
 
-			model = LogicalModel.objects.get(project=project, id=model_id)
-			if model.format == LogicalModel.ZGINML:
-				path = join(settings.MEDIA_ROOT, model.file.path)
-				ginsim_model = ginsim.load(path)
-			elif model.format == LogicalModel.MABOSS:
-				ginsim_model = maboss_to_ginsim(model)
 
-			else:
-				raise MethodNotAllowed
-			fig = ginsim.get_image(ginsim_model)
+class LogicalModelGraph(HasModel):
 
-			return HttpResponse(fig, content_type="image/png")
+	def get(self, request, project_id, model_id):
 
-		except Project.DoesNotExist:
-			raise Http404
+		HasModel.load(self, request, project_id, model_id)
 
-		except LogicalModel.DoesNotExist:
-			raise Http404
+		ginsim_model = self.getGINSimModel()
+		fig = ginsim.get_image(ginsim_model)
+
+		return HttpResponse(fig, content_type="image/png")
+
 
 	def post(self, request, project_id, model_id):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
 
-		try:
-			project = Project.objects.get(id=project_id)
-			if request.user != project.user:
-				raise PermissionDenied
+		steady_state = loads(request.data['steady_state'])
+		ginsim_model = self.getGINSimModel()
+		fig = ginsim.get_image(ginsim_model, steady_state)
 
-			steady_state = loads(request.data['steady_state'])
-			model = LogicalModel.objects.get(project=project, id=model_id)
+		return HttpResponse(fig, content_type="image/png")
 
-			if model.format == LogicalModel.ZGINML:
-				path = join(settings.MEDIA_ROOT, model.file.path)
-				ginsim_model = ginsim.load(path)
-			elif model.format == LogicalModel.MABOSS:
-				ginsim_model = maboss_to_ginsim(model)
 
-			else:
-				raise MethodNotAllowed
-
-			fig = ginsim.get_image(ginsim_model, steady_state)
-
-			return HttpResponse(fig, content_type="image/png")
-
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
-
-class LogicalModelGraphRaw(APIView):
+class LogicalModelGraphRaw(HasModel):
 
 	def get(self, request, project_id, model_id):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasModel.load(self, request, project_id, model_id)
+		ginsim_model = self.getGINSimModel()
 
-		try:
-			project = Project.objects.get(id=project_id)
-			if request.user != project.user:
-				raise PermissionDenied
+		# from ginsim.gateway import japi
+		# This won't work in parallel... but that's ok for now
 
-			model = LogicalModel.objects.get(project=project, id=model_id)
+		path = tempfile.mkdtemp()
+		tmp_reggraph = tempfile.mkstemp(dir=path, suffix='.reg')[1]
 
-			if model.format == LogicalModel.ZGINML:
-				path = join(settings.MEDIA_ROOT, model.file.path)
-				ginsim_model = ginsim.load(path)
+		ginsim.gateway.japi.gs.service("reggraph").export(ginsim_model, tmp_reggraph)
 
-			elif model.format == LogicalModel.MABOSS:
-				from api.views.commons.converter import maboss_to_ginsim
-				ginsim_model = maboss_to_ginsim(model)
+		edges = []
+		nodes = []
+		with open(tmp_reggraph, 'r') as reggraph:
+			for line in reggraph.readlines():
+				(a, sign, b) = line.strip().split()
+				nodes.append(a)
+				nodes.append(b)
+				edges.append((a, b, (1 if sign == "->" else 0)))
 
-			else:
-				raise MethodNotAllowed
+		nodes = list(set(nodes))
 
-			# from ginsim.gateway import japi
-			# This won't work in parallel... but that's ok for now
-			filename = join(settings.TMP_ROOT, "reggraph")
-			ginsim.gateway.japi.gs.service("reggraph").export(ginsim_model, filename)
-
-			edges = []
-			nodes = []
-			with open(filename, 'r') as reggraph:
-				for line in reggraph.readlines():
-					(a, sign, b) = line.strip().split()
-					nodes.append(a)
-					nodes.append(b)
-					edges.append((a, b, (1 if sign == "->" else 0)))
-
-			nodes = list(set(nodes))
-
-			return Response(
-				{
-					'nodes': nodes,
-					'edges': edges
-				},
-				status=status.HTTP_200_OK
-			)
-
-		except Project.DoesNotExist:
-			raise Http404
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
+		return Response(
+			{
+				'nodes': nodes,
+				'edges': edges
+			},
+			status=status.HTTP_200_OK
+		)
