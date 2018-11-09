@@ -32,9 +32,9 @@ class OldSimForm extends React.Component {
 		});
 	}
 
-	removeOldSim(simulation_id) {
+	removeOldSim(project_id, simulation_id) {
 
-		this.removeSimulationCall = APICalls.MaBoSSCalls.deleteMaBossSimulation(simulation_id);
+		this.removeSimulationCall = APICalls.MaBoSSCalls.deleteMaBossSimulation(project_id, simulation_id);
 		this.removeSimulationCall.promise.then(response => this.loadListSimulations(this.props.project, this.props.modelId))
 	}
 
@@ -96,7 +96,7 @@ class OldSimForm extends React.Component {
 						<CardFooter>
 							<ButtonToolbar className="d-flex">
 								<Button color="danger" className="mr-auto" onClick={() => {this.props.toggle();}}>Close</Button>
-								<Button color="danger" className="ml-auto mr-auto" onClick={() => {this.removeOldSim(this.state.selectedSimulationId);}}>Remove</Button>
+								<Button color="danger" className="ml-auto mr-auto" onClick={() => {this.removeOldSim(this.props.project, this.state.selectedSimulationId);}}>Remove</Button>
 								<Button type="submit" color="default" className="ml-auto">Submit</Button>
 							</ButtonToolbar>
 						</CardFooter>

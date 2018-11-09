@@ -17,11 +17,11 @@ class MaBossFixedPoints extends React.Component {
 		this.getFixedPointsCall = null;
 	}
 
-	getFixedPoints(simulationId) {
+	getFixedPoints(project_id, simulation_id) {
 
 
 		this.setState({fptableLoaded: false, fptable: null});
-		this.getFixedPointsCall = APICalls.MaBoSSCalls.getFixedPoints(simulationId);
+		this.getFixedPointsCall = APICalls.MaBoSSCalls.getFixedPoints(project_id, simulation_id);
 		this.getFixedPointsCall.promise.then(data => {
 			if (data['fixed_points'] !== null) {
 				clearInterval(this.fixedPointsChecker);
@@ -31,7 +31,7 @@ class MaBossFixedPoints extends React.Component {
 	}
 
 	componentDidMount() {
-		this.fixedPointsChecker = setInterval(() => this.getFixedPoints(this.props.simulationId), 1000);
+		this.fixedPointsChecker = setInterval(() => this.getFixedPoints(this.props.project, this.props.simulationId), 1000);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -43,7 +43,7 @@ class MaBossFixedPoints extends React.Component {
 
 		if (this.props.simulationId !== nextProps.simulationId && nextProps.simulationId !== null) {
 			this.getFixedPointsCall.cancel();
-			this.fixedPointsChecker = setInterval(() => this.getFixedPoints(nextProps.simulationId), 1000);
+			this.fixedPointsChecker = setInterval(() => this.getFixedPoints(nextProps.project, nextProps.simulationId), 1000);
 			return false;
 		}
 		return true;

@@ -100,10 +100,10 @@ class MaBoSSCalls {
 		);
 	}
 
-	static deleteMaBossSimulation(simulation_id) {
+	static deleteMaBossSimulation(project_id, simulation_id) {
 		return makeCancelable(
 			fetch(
-				"/api/maboss/" + simulation_id + "/",
+				"/api/maboss/" + project_id + "/" + simulation_id + "/",
 				{
 				  method: "delete",
 				  headers: getDefaultHeaders()
@@ -112,10 +112,10 @@ class MaBoSSCalls {
 		);
 	}
 
-	static getFixedPoints(simulation_id) {
+	static getFixedPoints(project_id, simulation_id) {
 		return makeCancelable(
 			fetch(
-				"/api/maboss/" + simulation_id + "/fixed_points/",
+				"/api/maboss/" + project_id + "/" + simulation_id + "/fixed_points/",
 				{
 					method: "get",
 					headers: getDefaultHeaders()
@@ -124,10 +124,10 @@ class MaBoSSCalls {
 		);
 	}
 
-	static getNodesProbTraj(simulation_id) {
+	static getNodesProbTraj(project_id, simulation_id) {
 		return makeCancelable(
 			fetch(
-				"/api/maboss/" + simulation_id + "/nodes_trajs/",
+				"/api/maboss/" + project_id + "/" + simulation_id + "/nodes_trajs/",
 				{
 					method: "get",
 					headers: getDefaultHeaders()
@@ -137,10 +137,10 @@ class MaBoSSCalls {
 		);
 	}
 
-	static getStatesProbTraj(simulation_id) {
+	static getStatesProbTraj(project_id, simulation_id) {
 		return makeCancelable(
 			fetch(
-				"/api/maboss/" + simulation_id + "/states_trajs/",
+				"/api/maboss/" + project_id + "/" + simulation_id + "/states_trajs/",
 				{
 					method: "get",
 					headers: getDefaultHeaders()

@@ -19,8 +19,10 @@ class MaBossStatesProbTraj extends React.Component {
 
 		this.statesProbTrajChecker = null;
 		this.getStateProbtrajCall = null;
+
 		this.chartRef = this.chartRef.bind(this);
 		this.legendRef = this.legendRef.bind(this);
+
 		this.chartInstance = undefined;
 	}
 
@@ -45,9 +47,9 @@ class MaBossStatesProbTraj extends React.Component {
 	   this.chartInstance.update();
 	}
 
-	getStateProbtraj(simulationId) {
+	getStateProbtraj(project_id, simulation_id) {
 		this.setState({statesProbTrajLoaded: false, statesProbTraj: null});
-		this.getStateProbtrajCall = APICalls.MaBoSSCalls.getStatesProbTraj(simulationId);
+		this.getStateProbtrajCall = APICalls.MaBoSSCalls.getStatesProbTraj(project_id, simulation_id);
 		this.getStateProbtrajCall.promise.then(data => {
 			if (data['states_probtraj'] !== null) {
 				clearInterval(this.statesProbTrajChecker);
@@ -66,7 +68,9 @@ class MaBossStatesProbTraj extends React.Component {
 
 		if (this.props.simulationId !== nextProps.simulationId) {
 			this.getStateProbtrajCall.cancel();
-			this.statesProbTrajChecker = setInterval(() => this.getStateProbtraj(nextProps.simulationId), 1000);
+			this.statesProbTrajChecker = setInterval(
+				() => this.getStateProbtraj(nextProps.project, nextProps.simulationId), 1000
+			);
 			return false;
 		}
 		return true;
@@ -74,7 +78,9 @@ class MaBossStatesProbTraj extends React.Component {
 	}
 
 	componentDidMount() {
-		this.statesProbTrajChecker = setInterval(() => this.getStateProbtraj(this.props.simulationId), 1000);
+		this.statesProbTrajChecker = setInterval(
+			() => this.getStateProbtraj(this.props.project, this.props.simulationId), 1000
+		);
 	}
 
 	componentWillUnmount() {

@@ -18,10 +18,10 @@ class MaBossNodesProbTraj extends React.Component {
 		this.getNodesProbtrajCall = null;
 	}
 
-	getNodesProbtraj(simulationId) {
+	getNodesProbtraj(project_id, simulation_id) {
 
 		this.setState({nodesProbTrajLoaded: false, nodesProbTraj: null});
-		this.getNodesProbtrajCall = APICalls.MaBoSSCalls.getNodesProbTraj(simulationId)
+		this.getNodesProbtrajCall = APICalls.MaBoSSCalls.getNodesProbTraj(project_id, simulation_id);
 
 		this.getNodesProbtrajCall.promise.then(data => {
 			if (data['nodes_probtraj'] !== null) {
@@ -32,14 +32,15 @@ class MaBossNodesProbTraj extends React.Component {
 	}
 
 	componentDidMount() {
-		this.nodesProbTrajChecker = setInterval(() => this.getNodesProbtraj(this.props.simulationId), 1000);
+		this.nodesProbTrajChecker = setInterval(
+			() => this.getNodesProbtraj(this.props.project, this.props.simulationId), 1000
+		);
 	}
 
 	componentWillUnmount() {
 		this.getNodesProbtrajCall.cancel();
 		clearInterval(this.nodesProbTrajChecker);
 	}
-
 
 	shouldComponentUpdate(nextProps, nextState) {
 
@@ -50,13 +51,14 @@ class MaBossNodesProbTraj extends React.Component {
 
 		if (this.props.simulationId !== nextProps.simulationId) {
 			this.getNodesProbtrajCall.cancel();
-			this.nodesProbTrajChecker = setInterval(() => this.getNodesProbtraj(nextProps.simulationId), 1000);
+			this.nodesProbTrajChecker = setInterval(
+				() => this.getNodesProbtraj(nextProps.project, nextProps.simulationId), 1000
+			);
 			return false;
 		}
 		return true;
 
 	}
-
 
 	render() {
 

@@ -56,10 +56,11 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/formulas', MaBoSSSpeciesFormulas.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/check_formula', MaBoSSCheckFormula.as_view()),
 
-	path('api/maboss/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),
-	path('api/maboss/<int:simulation_id>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
-	path('api/maboss/<int:simulation_id>/states_trajs/', MaBoSSResultsStatesProbTraj.as_view()),
-	path('api/maboss/<int:simulation_id>/nodes_trajs/', MaBoSSResultsNodesProbTraj.as_view()),
+	path('api/maboss/<int:project_id>/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),
+	path('api/maboss/<int:project_id>/<int:simulation_id>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
+	path('api/maboss/<int:project_id>/<int:simulation_id>/states_trajs/', MaBoSSResultsStatesProbTraj.as_view()),
+	path('api/maboss/<int:project_id>/<int:simulation_id>/nodes_trajs/', MaBoSSResultsNodesProbTraj.as_view()),
+
 	path('api/maboss/servers/', MaBoSSServerView.as_view()),
 	path('api/maboss/servers/<int:server_id>', MaBoSSServerView.as_view())
 ]

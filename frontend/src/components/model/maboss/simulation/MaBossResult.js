@@ -56,6 +56,7 @@ class MaBossResult extends React.Component {
 					<TabContent activeTab={this.state.activeTab}>
 						<TabPane tabId="fp">
 							<MaBossFixedPoints
+								project={this.props.project}
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								colormap={MaBossResult.colormap}
@@ -63,6 +64,7 @@ class MaBossResult extends React.Component {
 						</TabPane>
 						<TabPane tabId="npt">
 							<MaBossNodesProbTraj
+								project={this.props.project}
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								colormap={MaBossResult.colormap}
@@ -70,6 +72,7 @@ class MaBossResult extends React.Component {
 						</TabPane>
 						<TabPane tabId="spt">
 							<MaBossStatesProbTraj
+								project={this.props.project}
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								colormap={MaBossResult.colormap}

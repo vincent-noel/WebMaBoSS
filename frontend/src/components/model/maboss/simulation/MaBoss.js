@@ -67,7 +67,10 @@ class MaBoss extends React.Component {
 									updateSim={this.updateSim}
 									remove={this.removeOldSim}
 								/>
-								<MaBossResult simulationId={this.state.simulationId}/>
+								<MaBossResult
+									project={projectContext.project}
+									simulationId={this.state.simulationId}
+								/>
 							</React.Fragment>
 						)}
 						</ModelContext.Consumer>
