@@ -2,10 +2,7 @@ import React from "react";
 
 import ModelPage from "../ModelPage";
 import ModelName from "../ModelName";
-
 import ModelGraph from "./ModelGraph";
-
-import {NavLink} from "react-router-dom";
 
 import {ProjectContext, ModelContext} from "../../context";
 
@@ -30,7 +27,6 @@ class Overview extends React.Component {
 					</React.Fragment>)}
 				</ModelContext.Consumer>)}
 			</ProjectContext.Consumer>
-			<NavLink to="/model/overview_v2">v2</NavLink>
 		</ModelPage>;
 	}
 }

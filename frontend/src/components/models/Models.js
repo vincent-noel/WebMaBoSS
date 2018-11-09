@@ -71,7 +71,7 @@ class Models extends React.Component {
 	render () {
 		return (
 			<FullPage path={this.props.match.path}>
-				<h2>Models</h2>
+				<h2>Models</h2><br/>
 				<ProjectContext.Consumer>
 					{(projectContext => <LogicalModels
 						endpoint="/api/logical_models/"

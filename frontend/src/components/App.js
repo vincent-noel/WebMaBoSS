@@ -17,10 +17,9 @@ import Register from "./auth/Register";
 import ProjectsPage from "./projects/ProjectsPage";
 import Models from "./models/Models";
 import Data from "./Data";
-import Overview from "./model/overview/Overview";
-import Overview_v2 from "./model/overview/Overview_v2";
-import ModelSteadyStates from "./model/steady_states/ModelSteadyStates";
-import MaBoss from "./model/maboss/simulation/MaBoss";
+import {OverviewWrapper, Overview_v2Wrapper} from "./model/overview/OverviewWrapper";
+import {SteadyStatesWrapper} from "./model/steady_states/SteadyStatesWrapper";
+import {MaBoSSSimulationWrapper} from "./model/maboss/simulation/MaBoSSSimulationWrapper";
 import MaBossEditing from "./model/maboss/editing/Editing";
 import MaBoSSSettings from "./profile/maboss_settings/MaBoSSSettings";
 
@@ -39,10 +38,10 @@ class App extends Component {
 					<Route exact path="/models/" component={Models} />
 					<Route exact path="/data/" component={Data} />
 
-					<Route exact path="/model/overview/" component={Overview} />
-					<Route exact path="/model/overview_v2/" component={Overview_v2} />
-					<Route exact path="/model/fixed_points/" component={ModelSteadyStates} />
-					<Route exact path="/model/maboss/simulation/" component={MaBoss} />
+					<Route exact path="/model/overview/" component={OverviewWrapper} />
+					<Route exact path="/model/overview_v2/" component={Overview_v2Wrapper} />
+					<Route exact path="/model/fixed_points/" component={SteadyStatesWrapper} />
+					<Route exact path="/model/maboss/simulation/" component={MaBoSSSimulationWrapper} />
 					<Route exact path="/model/maboss/editing/" component={MaBossEditing} />
 
 					<Route exact path="/profile/account/" component={Profile} />
