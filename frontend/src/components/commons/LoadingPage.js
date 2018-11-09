@@ -9,10 +9,8 @@ class LoadingPage extends React.Component {
 	render() {
 
 		const src = this.props.dark !== undefined ? "/static/images/loading_dark.svg" : "/static/images/loading.svg";
-		return <div class="loading-page">
-			<img
-				src={src}
-			/>
+		return <div className="loading-page">
+			<img src={src} />
 		</div>;
 	}
 }
