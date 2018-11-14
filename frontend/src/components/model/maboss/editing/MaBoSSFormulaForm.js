@@ -26,7 +26,7 @@ class MaBoSSFormulaForm extends React.Component {
 
 	onChange(formula) {
 		this.setState({formula: formula});
-		this.props.check(this.props.name, this.props.field, formula);
+		this.props.check(this.props.node, this.props.field, formula);
 	}
 
 	onSubmit(e) {
@@ -43,7 +43,7 @@ class MaBoSSFormulaForm extends React.Component {
 
 	componentDidMount() {
 		this.setState({formula: this.props.formula});
-		this.props.check(this.props.name, this.props.field, this.props.formula);
+		this.props.check(this.props.node, this.props.field, this.props.formula);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -54,7 +54,7 @@ class MaBoSSFormulaForm extends React.Component {
 
 		if (nextProps.formula !== this.props.formula) {
 			this.setState({formula: nextProps.formula});
-			this.props.check(this.props.name, this.props.field, nextProps.formula);
+			this.props.check(nextProps.node, nextProps.field, nextProps.formula);
 		}
 
 		return true;

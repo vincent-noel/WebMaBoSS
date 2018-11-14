@@ -46,6 +46,12 @@ class HasModel(HasProject):
 		else:
 			raise MethodNotAllowed
 
+	def saveMaBoSSModel(self, maboss_sim):
+
+		if self.model.format == LogicalModel.MABOSS:
+			maboss_sim.print_bnd(out=open(join(settings.MEDIA_ROOT, self.model.bnd_file.path), 'w'))
+			maboss_sim.print_cfg(out=open(join(settings.MEDIA_ROOT, self.model.cfg_file.path), 'w'))
+
 	def getBioLQMModel(self):
 
 		if self.model.format == LogicalModel.MABOSS:

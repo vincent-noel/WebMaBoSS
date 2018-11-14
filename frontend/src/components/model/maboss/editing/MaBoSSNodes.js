@@ -27,6 +27,7 @@ class MaBoSSNodes extends React.Component {
 		this.getNodesCall = null;
 		this.getNodesFormulaCall = null;
 		this.checkFormulaCall = null;
+		this.saveFormulaCall = null;
 
 		this.toggleFormulaForm = this.toggleFormulaForm.bind(this);
 		this.checkFormula = this.checkFormula.bind(this);
@@ -46,16 +47,27 @@ class MaBoSSNodes extends React.Component {
 
 	checkFormula(node, field, formula) {
 
-		this.checkFormulaCall = APICalls.MaBoSSCalls.checkFormula(this.props.project, this.props.modelId, formula);
-		this.checkFormulaCall.promise.then((data) => {
-			this.setState({errorFormulaForm: data.error});
-		});
+		if (node !== null){
+			this.checkFormulaCall = APICalls.MaBoSSCalls.checkFormula(
+				this.props.project, this.props.modelId, node, field, formula
+			);
+			this.checkFormulaCall.promise.then((data) => {
+				this.setState({errorFormulaForm: data.error});
+			});
+		}
 	}
 
 	saveFormula(node, field, formula) {
 		let formulas = this.state.nodesFormulas;
 		formulas[node][field] = formula;
-		this.setState({showFormulaForm: false, nodesFormulas: formulas});
+
+		this.saveFormulaCall = APICalls.MaBoSSCalls.saveMaBoSSNodesFormula(
+			this.props.project, this.props.modelId, node, field, formula
+		);
+
+		this.saveFormulaCall.promise.then(() => {
+			this.setState({showFormulaForm: false, nodesFormulas: formulas});
+		});
 	}
 
 	toggleFormulaForm() {
@@ -108,6 +120,17 @@ class MaBoSSNodes extends React.Component {
 		if (this.getNodesFormulaCall !== null) {
 			this.getNodesFormulaCall.cancel();
 		}
+
+		if (this.saveFormulaCall !== null) {
+			this.saveFormulaCall.cancel();
+		}
+	}
+
+	shouldComponentUpdate(nextProps, nextState) {
+		if (nextState.showFormulaForm === false && nextState.showFormulaForm !== this.state.showFormulaForm) {
+			console.log("Hiding the form")
+		}
+		return true;
 	}
 
 	render() {

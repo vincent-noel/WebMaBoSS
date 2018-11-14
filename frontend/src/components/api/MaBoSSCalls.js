@@ -31,9 +31,31 @@ class MaBoSSCalls {
 		);
 	}
 
-	static checkFormula(project_id, model_id, formula) {
+	static saveMaBoSSNodesFormula(project_id, model_id, node, field, formula) {
 
 		const body = new FormData();
+		body.append('node', node);
+		body.append('field', field);
+		body.append('formula', formula);
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/formulas",
+				{
+					method: "post",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		);
+	}
+
+
+	static checkFormula(project_id, model_id, node, field, formula) {
+
+		const body = new FormData();
+		body.append('node', node);
+		body.append('field', field);
 		body.append('formula', formula);
 
 		return makeCancelable(
