@@ -19,12 +19,12 @@ def path_logical_model(instance, filename):
 	return join(instance.project.path, 'logical_models', instance.path, filename)
 
 def remove_logical_model(sender, instance, **kwargs):
-	if instance.format == LogicalModel.ZGINML and exists(join(settings.MEDIA_ROOT, instance.file.path)):
+	if instance.format == LogicalModel.ZGINML and instance.file and exists(join(settings.MEDIA_ROOT, instance.file.path)):
 		rmtree(dirname(join(settings.MEDIA_ROOT, instance.file.path)))
 	elif instance.format == LogicalModel.MABOSS:
-		if exists(join(settings.MEDIA_ROOT, instance.bnd_file.path)):
+		if instance.bnd_file and exists(join(settings.MEDIA_ROOT, instance.bnd_file.path)):
 			rmtree(dirname(join(settings.MEDIA_ROOT, instance.bnd_file.path)))
-		if exists(join(settings.MEDIA_ROOT, instance.cfg_file.path)):
+		if instance.cfg_file and exists(join(settings.MEDIA_ROOT, instance.cfg_file.path)):
 			rmtree(dirname(join(settings.MEDIA_ROOT, instance.cfg_file.path)))
 
 class LogicalModel(models.Model):
