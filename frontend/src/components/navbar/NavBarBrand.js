@@ -7,7 +7,7 @@ class NavBarBrand extends React.Component {
 	render(){
 		return (
 			<React.Fragment>
-				<NavLink exact to="/" className='navbar-brand' activeClassName="active">App-Curie</NavLink>
+				<NavLink exact to="/" className='navbar-brand' activeClassName="active">InFlame</NavLink>
 				<button className="navbar-toggler" type="button" data-toggle="collapse"
 					data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false"
 					aria-label="Toggle navigation">

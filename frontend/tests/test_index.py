@@ -7,7 +7,7 @@ class TestIndexChrome (TestChrome):
 	def testTitle(self):
 
 		response = self.get("/")
-		self.assertEqual(response.title, "App Curie")
+		self.assertEqual(response.title, "InFlame")
 
 
 class TestIndexFirefox(TestFirefox):
@@ -15,4 +15,4 @@ class TestIndexFirefox(TestFirefox):
 	def testFirefox(self):
 
 		response = self.get("/")
-		self.assertEqual(response.title, "App Curie")
+		self.assertEqual(response.title, "InFlame")
