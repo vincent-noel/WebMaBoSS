@@ -44,6 +44,42 @@ class MaBoSSSpeciesFormulas(HasModel):
 
 		return Response(status=HTTP_200_OK)
 
+class MaBoSSParameters(HasModel):
+
+	def get(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+
+		data = {}
+
+		for parameter, value in maboss_sim.param.items():
+			if parameter.startswith("$"):
+				data.update({parameter: value})
+
+		return Response(data=json.dumps(data))
+
+	def post(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+		maboss_sim.param[request.POST['name']] = request.POST['value']
+		self.saveMaBoSSModel(maboss_sim)
+
+		return Response(status=HTTP_200_OK)
+
+	def delete(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+		del maboss_sim.param[request.POST['name']]
+		self.saveMaBoSSModel(maboss_sim)
+
+		return Response(status=HTTP_200_OK)
+
 
 class MaBoSSCheckFormula(HasModel):
 
@@ -75,5 +111,24 @@ class MaBoSSCheckFormula(HasModel):
 
 				else:
 					data.update({'error': res[1]})
+
+		return Response(data=data)
+
+
+class MaBoSSCheckDeleteParameter(HasModel):
+
+	def post(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+		del maboss_sim.param[request.POST['name']]
+
+		res = maboss_sim.check_model()
+
+		data = {'error': ''}
+
+		if res is not None and res == ("symbol %s is not defined" % request.POST['name']):
+			data.update({'error': 'The parameter %s is used in the model' % request.POST['name']})
 
 		return Response(data=data)

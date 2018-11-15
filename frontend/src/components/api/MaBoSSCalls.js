@@ -50,6 +50,73 @@ class MaBoSSCalls {
 		);
 	}
 
+	static getMaBoSSParameters(project_id, model_id) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/parameters",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+			.then(response => JSON.parse(response))
+		);
+	}
+
+	static saveMaBoSSParameters(project_id, model_id, name, value) {
+
+		const body = new FormData();
+		body.append('name', name);
+		body.append('value', value);
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/parameters",
+				{
+					method: "post",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		);
+	}
+
+	static checkDeleteMaBoSSParameters(project_id, model_id, name) {
+
+		const body = new FormData();
+		body.append('name', name);
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/check_delete_parameter",
+				{
+					method: "post",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+
+		);
+	}
+
+	static deleteMaBoSSParameters(project_id, model_id, name) {
+
+		const body = new FormData();
+		body.append('name', name);
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/parameters",
+				{
+					method: "delete",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		);
+	}
 
 	static checkFormula(project_id, model_id, node, field, formula) {
 

@@ -126,13 +126,6 @@ class MaBoSSNodes extends React.Component {
 		}
 	}
 
-	shouldComponentUpdate(nextProps, nextState) {
-		if (nextState.showFormulaForm === false && nextState.showFormulaForm !== this.state.showFormulaForm) {
-			console.log("Hiding the form")
-		}
-		return true;
-	}
-
 	render() {
 
 		return (
