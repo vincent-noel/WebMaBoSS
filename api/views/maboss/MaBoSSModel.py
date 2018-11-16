@@ -113,7 +113,6 @@ class MaBoSSCheckFormula(HasModel):
 
 		data = {'error': ''}
 
-		print(res)
 		if any([message.startswith("BND syntax error at line") for message in res]):
 			data.update({'error': 'syntax error'})
 
@@ -121,6 +120,9 @@ class MaBoSSCheckFormula(HasModel):
 			for message in res:
 				if message.startswith("node") and message.endswith("used but not defined"):
 					data.update({'error': message})
+
+		elif len(res) > 0:
+			data.update({'error': res[0]})
 
 		return Response(data=data)
 
@@ -141,9 +143,12 @@ class MaBoSSCheckFormula(HasModel):
 
 		res = maboss_sim.check_model()
 		data = {'error': ''}
-		print(res)
+
 		if any([message == ("invalid use of alias attribute @%s in node %s" % (field, node)) for message in res]):
 			data.update({'error': 'The formula %s is used in the model' % node})
+
+		elif len(res) > 0:
+			data.update({'error': res[0]})
 
 		return Response(data=data)
 
@@ -212,11 +217,14 @@ class MaBoSSCheckParameter(HasModel):
 		maboss_sim.param[name] = request.POST['value']
 
 		res = maboss_sim.check_model()
-		print(res)
+
 		data = {'error': ''}
 
 		if any([message.startswith("configuration syntax error") for message in res]):
 			data.update({'error': 'Syntax error'})
+
+		elif len(res) > 0:
+			data.update({'error': res[0]})
 
 		return Response(data=data)
 
@@ -233,6 +241,9 @@ class MaBoSSCheckParameter(HasModel):
 
 		if any([message == ("symbol %s is not defined" % name) for message in res]):
 			data.update({'error': 'The parameter %s is used in the model' % name})
+
+		elif len(res) > 0:
+			data.update({'error': res[0]})
 
 		return Response(data=data)
 

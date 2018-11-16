@@ -3,6 +3,7 @@ import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} fr
 import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
 import APICalls from "../../../api/apiCalls";
+import LoadingInlineIcon from "../../../commons/loaders/LoadingInlineIcon";
 
 class MaBoSSFormulaForm extends React.Component {
 
@@ -123,13 +124,22 @@ class MaBoSSFormulaForm extends React.Component {
 
 	render() {
 
+		const errors = [];
+		if (this.state.nameError !== "") {
+			errors.push(this.state.nameError);
+		}
+
+		if (this.state.formulaError !== "") {
+			errors.push(this.state.formulaError);
+		}
+
 		return (
 			<Modal isOpen={this.props.status} toggle={() => this.props.toggle()}>
 				<form>
 				<Card>
 					<CardHeader>{this.props.field !== null ? "Editing" : "Creating"} formula</CardHeader>
 					<CardBody>
-						{ this.state.showErrors ? <ErrorAlert errorMessages={ this.state.error !== "" ? [this.state.error] : []}/> : null}
+						{ this.state.showErrors ? <ErrorAlert errorMessages={errors}/> : null}
 						<div className="form-group">
 							<label htmlFor="name">Name</label>
 							<input
@@ -153,7 +163,10 @@ class MaBoSSFormulaForm extends React.Component {
 					<CardFooter>
 						<ButtonToolbar className="d-flex">
 							<Button color="danger" className="mr-auto" onClick={() => this.props.toggle()}>Close</Button>
-							<Button type="submit" color="default" className="ml-auto" onClick={(e) => this.onSubmit(e)} disabled={this.state.waitSubmit}>Submit</Button>
+							<Button
+								type="submit" color="default" className="ml-auto"
+								onClick={(e) => this.onSubmit(e)} disabled={this.state.waitSubmit}
+							>Submit {this.state.waitSubmit ? <LoadingInlineIcon width="1rem"/> : null}</Button>
 						</ButtonToolbar>
 					</CardFooter>
 				</Card>

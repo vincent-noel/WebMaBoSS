@@ -3,6 +3,7 @@ import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} fr
 import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
 import APICalls from "../../../api/apiCalls";
+import LoadingInlineIcon from "../../../commons/loaders/LoadingInlineIcon";
 
 class MaBoSSParameterForm extends React.Component {
 
@@ -162,7 +163,7 @@ class MaBoSSParameterForm extends React.Component {
 				<Card>
 					<CardHeader>{this.props.name !== null ? "Editing" : "Creating"} parameter value</CardHeader>
 					<CardBody>
-						{ this.state.showErrors ? <ErrorAlert errorMessages={ this.state.nameError !== "" || this.state.valueError !== "" ? errors : []}/> : null}
+						{ this.state.showErrors ? <ErrorAlert errorMessages={errors}/> : null}
 						<div className="form-group">
 							<label htmlFor="name">Name</label>
 							<input
@@ -186,7 +187,10 @@ class MaBoSSParameterForm extends React.Component {
 					<CardFooter>
 						<ButtonToolbar className="d-flex">
 							<Button color="danger" className="mr-auto" onClick={() => this.props.toggle()}>Close</Button>
-							<Button type="submit" color="default" className="ml-auto" onClick={(e) => this.onSubmit(e)} disabled={this.state.waitSubmit}>Submit</Button>
+							<Button
+								type="submit" color="default" className="ml-auto"
+								onClick={(e) => this.onSubmit(e)} disabled={this.state.waitSubmit}
+							>SubmitSubmit {this.state.waitSubmit ? <LoadingInlineIcon width="1rem"/> : null}</Button>
 						</ButtonToolbar>
 					</CardFooter>
 				</Card>
