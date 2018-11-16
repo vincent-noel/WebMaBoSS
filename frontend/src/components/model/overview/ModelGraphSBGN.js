@@ -1,6 +1,6 @@
 import React from "react";
 import {getAPIKey} from "../../commons/sessionVariables";
-import LoadingIcon from "../../commons/LoadingIcon";
+import LoadingIcon from "../../commons/loaders/LoadingIcon";
 // import "sbgnviz";
 
 class ModelGraphSBGN extends React.Component {

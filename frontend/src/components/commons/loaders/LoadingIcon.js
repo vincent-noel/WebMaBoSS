@@ -1,7 +1,7 @@
 import React from "react";
 
-import '../../images/loading.svg';
-import '../../images/loading_dark.svg';
+import '../../../images/loading.svg';
+import '../../../images/loading_dark.svg';
 
 class LoadingIcon extends React.Component {
 

@@ -1,7 +1,7 @@
 import React, {Component} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faEye } from '@fortawesome/free-solid-svg-icons';
-import LoadingIcon from "../../commons/LoadingIcon";
+import LoadingIcon from "../../commons/loaders/LoadingIcon";
 import Graph from "./Graph";
 import APICalls from "../../api/apiCalls";
 import './table-steadystates.scss';

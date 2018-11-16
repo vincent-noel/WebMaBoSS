@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOMServer from "react-dom/server";
 import {Line} from "react-chartjs-2";
-import LoadingIcon from "../../../commons/LoadingIcon";
+import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import APICalls from "../../../api/apiCalls";
 import $ from 'jquery';
 import "./chart-legend.scss"

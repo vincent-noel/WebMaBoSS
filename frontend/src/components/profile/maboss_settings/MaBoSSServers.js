@@ -1,5 +1,5 @@
 import React from "react";
-import LoadingIcon from "../../commons/LoadingIcon";
+import LoadingIcon from "../../commons/loaders/LoadingIcon";
 import APICalls from "../../api/apiCalls";
 
 

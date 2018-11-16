@@ -1,5 +1,5 @@
 import React from "react";
-import LoadingIcon from "./LoadingIcon";
+import LoadingIcon from "./loaders/LoadingIcon";
 import Switch from "./buttons/Switch";
 import Switch3Pos from "./buttons/Switch3Pos";
 import Range from "./buttons/Range";

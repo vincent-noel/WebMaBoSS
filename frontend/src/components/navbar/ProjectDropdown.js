@@ -2,7 +2,7 @@ import React from "react";
 import {NavLink} from "react-router-dom";
 import {setProject, getProject} from "../commons/sessionVariables";
 import APICalls from "../api/apiCalls";
-import LoadingIcon from "../commons/LoadingIcon";
+import LoadingIcon from "../commons/loaders/LoadingIcon";
 
 class ProjectDropdown extends React.Component {
 

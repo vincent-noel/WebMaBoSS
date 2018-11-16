@@ -2,7 +2,7 @@ import React from "react";
 import {Button} from "reactstrap";
 
 import APICalls from "../../../api/apiCalls";
-import LoadingIcon from "../../../commons/LoadingIcon";
+import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 
 import "./table-parameters.scss";
 import SimpleEditButton from "../../../commons/buttons/SimpleEditButton";
@@ -87,10 +87,8 @@ class MaBoSSParameters extends React.Component {
 						this.setState({parameters: t_parameters});
 					}
 				});
-
 			}
 		});
-
 	}
 
 	toggleValueForm() {

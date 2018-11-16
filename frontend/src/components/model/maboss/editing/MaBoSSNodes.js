@@ -4,7 +4,7 @@ import APICalls from "../../../api/apiCalls";
 import SimpleEditButton from "../../../commons/buttons/SimpleEditButton";
 import SimpleAddButton from "../../../commons/buttons/SimpleAddButton";
 import SimpleDeleteButton from "../../../commons/buttons/SimpleDeleteButton";
-import LoadingIcon from "../../../commons/LoadingIcon";
+import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import UpDownButton from "../../../commons/buttons/UpDownButton";
 import MaBoSSFormulaForm from "./MaBoSSFormulaForm";
 

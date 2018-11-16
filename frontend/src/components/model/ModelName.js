@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import LoadingIcon from "../commons/LoadingIcon";
+import LoadingIcon from "../commons/loaders/LoadingIcon";
 
 class ModelName extends Component {
 

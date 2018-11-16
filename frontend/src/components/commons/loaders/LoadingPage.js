@@ -1,8 +1,8 @@
 import React from "react";
 
 import './loading-page.scss';
-import '../../images/loading.svg';
-import '../../images/loading_dark.svg';
+import '../../../images/loading.svg';
+import '../../../images/loading_dark.svg';
 
 class LoadingPage extends React.Component {
 

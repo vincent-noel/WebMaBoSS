@@ -1,6 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import LoadingIcon from "../LoadingIcon";
+import LoadingIcon from "../loaders/LoadingIcon";
 
 
 class MyDropdown extends React.Component {

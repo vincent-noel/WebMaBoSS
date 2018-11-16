@@ -1,6 +1,6 @@
 import React from "react";
 import {Line} from "react-chartjs-2";
-import LoadingIcon from "../../../commons/LoadingIcon";
+import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import APICalls from "../../../api/apiCalls";
 
 

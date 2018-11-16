@@ -1,7 +1,7 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
 import APICalls from "../api/apiCalls";
-import LoadingIcon from "../commons/LoadingIcon";
+import LoadingIcon from "../commons/loaders/LoadingIcon";
 
 
 class ModelDropdown extends React.Component {
