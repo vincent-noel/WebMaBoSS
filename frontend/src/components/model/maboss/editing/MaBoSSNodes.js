@@ -1,11 +1,14 @@
 import React from "react";
 import APICalls from "../../../api/apiCalls";
+
+import SimpleEditButton from "../../../commons/buttons/SimpleEditButton";
+import SimpleAddButton from "../../../commons/buttons/SimpleAddButton";
+import SimpleDeleteButton from "../../../commons/buttons/SimpleDeleteButton";
 import LoadingIcon from "../../../commons/LoadingIcon";
 import UpDownButton from "../../../commons/buttons/UpDownButton";
 import MaBoSSFormulaForm from "./MaBoSSFormulaForm";
 
 import "./table-nodes.scss";
-import SimpleEditButton from "../../../commons/buttons/SimpleEditButton";
 
 class MaBoSSNodes extends React.Component {
 
@@ -20,19 +23,29 @@ class MaBoSSNodes extends React.Component {
 			showFormulaForm: false,
 			nodeFormulaForm: null,
 			fieldFormulaForm: null,
-			formulaFormulaForm: "",
-			errorFormulaForm: "",
+			formulaFormulaForm: null,
 		};
 
 		this.getNodesCall = null;
 		this.getNodesFormulaCall = null;
-		this.checkFormulaCall = null;
 		this.saveFormulaCall = null;
+		this.checkDeleteFormulaCall = null;
+		this.deleteFormulaCall = null;
 
 		this.toggleFormulaForm = this.toggleFormulaForm.bind(this);
-		this.checkFormula = this.checkFormula.bind(this);
 		this.editFormula = this.editFormula.bind(this);
 		this.saveFormula = this.saveFormula.bind(this);
+		this.createFormula = this.createFormula.bind(this);
+	}
+
+
+	createFormula(node) {
+		this.setState({
+			showFormulaForm: true,
+			nodeFormulaForm: node,
+			fieldFormulaForm: null,
+			formulaFormulaForm: "",
+		});
 	}
 
 	editFormula(node, field, formula) {
@@ -41,32 +54,45 @@ class MaBoSSNodes extends React.Component {
 			nodeFormulaForm: node,
 			fieldFormulaForm: field,
 			formulaFormulaForm: formula,
-			errorFormulaForm: ""
 		})
 	}
 
-	checkFormula(node, field, formula) {
+	deleteFormula(node, field) {
+		this.checkDeleteFormulaCall = APICalls.MaBoSSCalls.checkDeleteMaBoSSFormula(
+			this.props.project, this.props.modelId, node, field
+		);
 
-		if (node !== null){
-			this.checkFormulaCall = APICalls.MaBoSSCalls.checkFormula(
-				this.props.project, this.props.modelId, node, field, formula
-			);
-			this.checkFormulaCall.promise.then((data) => {
-				this.setState({errorFormulaForm: data.error});
-			});
-		}
+		this.checkDeleteFormulaCall.promise.then((data) => {
+			if (data.error === "") {
+				this.deleteFormulaCall = APICalls.MaBoSSCalls.deleteMaBoSSFormula(
+					this.props.project, this.props.modelId, node, field
+				);
+
+				this.deleteFormulaCall.promise.then((response) => {
+					if (response.status == 200) {
+						const t_formulas = this.state.nodesFormulas;
+						delete t_formulas[node][field];
+						this.setState({nodesFormulas: t_formulas});
+					}
+				});
+			} else {
+				this.props.showErrorMessages([data.error]);
+			}
+		});
 	}
 
 	saveFormula(node, field, formula) {
-		let formulas = this.state.nodesFormulas;
-		formulas[node][field] = formula;
 
 		this.saveFormulaCall = APICalls.MaBoSSCalls.saveMaBoSSNodesFormula(
 			this.props.project, this.props.modelId, node, field, formula
 		);
 
-		this.saveFormulaCall.promise.then(() => {
-			this.setState({showFormulaForm: false, nodesFormulas: formulas});
+		this.saveFormulaCall.promise.then((response) => {
+			if (response.status == 200) {
+				let formulas = this.state.nodesFormulas;
+				formulas[node][field] = formula;
+				this.setState({showFormulaForm: false, nodesFormulas: formulas});
+			}
 		});
 	}
 
@@ -88,12 +114,6 @@ class MaBoSSNodes extends React.Component {
 
 	}
 
-	toggleNodeDetails(index) {
-		let array = this.state.showNodesDetails;
-		array[index] = !array[index];
-		this.setState({showNodesDetails: array});
-	}
-
 	loadNodesFormulas(project_id, model_id) {
 
 		this.getNodesFormulaCall = APICalls.MaBoSSCalls.getMaBoSSNodesFormulas(project_id, model_id);
@@ -102,6 +122,13 @@ class MaBoSSNodes extends React.Component {
 		});
 
 	}
+
+	toggleNodeDetails(index) {
+		let array = this.state.showNodesDetails;
+		array[index] = !array[index];
+		this.setState({showNodesDetails: array});
+	}
+
 
 	componentDidMount() {
 		this.loadNodes(this.props.project, this.props.modelId)
@@ -113,16 +140,20 @@ class MaBoSSNodes extends React.Component {
 			this.getNodesCall.cancel();
 		}
 
-		if (this.checkFormulaCall !== null) {
-			this.checkFormulaCall.cancel();
-		}
-
 		if (this.getNodesFormulaCall !== null) {
 			this.getNodesFormulaCall.cancel();
 		}
 
 		if (this.saveFormulaCall !== null) {
 			this.saveFormulaCall.cancel();
+		}
+
+		if (this.checkDeleteFormulaCall !== null) {
+			this.checkDeleteFormulaCall.cancel();
+		}
+
+		if (this.deleteFormulaCall !== null) {
+			this.deleteFormulaCall.cancel();
 		}
 	}
 
@@ -141,6 +172,7 @@ class MaBoSSNodes extends React.Component {
 									<tr className={"d-flex"}>
 										<th className={"flex-fill name align-items-center"} colSpan="2">{name}</th>
 										<th className={"ml-1 actions d-flex align-items-center"}>
+											{ this.state.showNodesDetails[index] ? <SimpleAddButton onClick={() => this.createFormula(name)} size="sm"/>: null}
 											<UpDownButton
 												id={index}
 												onClick={() => this.toggleNodeDetails(index)}
@@ -172,6 +204,10 @@ class MaBoSSNodes extends React.Component {
 														}
 														size={"xs"}
 													/>
+													<SimpleDeleteButton
+														onClick={() => this.deleteFormula(name, field)}
+														size={"xs"}
+													/>
 												</td>
 											</tr>
 											)):<tr><td><LoadingIcon width={"3rem"}/></td></tr>
@@ -188,9 +224,9 @@ class MaBoSSNodes extends React.Component {
 			</ul>
 			<MaBoSSFormulaForm
 				status={this.state.showFormulaForm} toggle={this.toggleFormulaForm}
-				node={this.state.nodeFormulaForm} field={this.state.fieldFormulaForm}
-				formula={this.state.formulaFormulaForm} check={this.checkFormula}
-				error={this.state.errorFormulaForm} submit={this.saveFormula}
+				node={this.state.nodeFormulaForm} submit={this.saveFormula}
+				field={this.state.fieldFormulaForm} formula={this.state.formulaFormulaForm}
+				{... this.props}
 			/>
 			</React.Fragment>
 		);

@@ -8,8 +8,7 @@ import "./table-parameters.scss";
 import SimpleEditButton from "../../../commons/buttons/SimpleEditButton";
 import SimpleDeleteButton from "../../../commons/buttons/SimpleDeleteButton";
 
-import MaBoSSValueForm from "./MaBoSSValueForm";
-import MaBoSSNewParameterForm from "./MaBoSSNewParameterForm";
+import MaBoSSParameterForm from "./MaBoSSParameterForm";
 
 
 class MaBoSSParameters extends React.Component {
@@ -21,11 +20,8 @@ class MaBoSSParameters extends React.Component {
 			parameters: null,
 
 			showValueForm: false,
-			parameterValueForm: "<node>",
+			parameterValueForm: "",
 			valueValueForm: "",
-			errorValueForm: "",
-
-			showNewParameterForm: false,
 
 		};
 
@@ -34,44 +30,18 @@ class MaBoSSParameters extends React.Component {
 		this.checkDeleteParameterCall = null;
 		this.deleteParameterCall = null;
 
-		// this.editParameter = this.editParameter.bind(this);
 		this.toggleValueForm = this.toggleValueForm.bind(this);
-		this.deleteParameter = this.deleteParameter.bind(this);
-		this.checkParameterValue = this.checkParameterValue.bind(this);
 		this.saveParameter = this.saveParameter.bind(this);
-
-		this.toggleNewParameterForm = this.toggleNewParameterForm.bind(this);
-		this.showNewParameterForm = this.showNewParameterForm.bind(this);
+		this.deleteParameter = this.deleteParameter.bind(this);
+		this.createParameter = this.createParameter.bind(this);
 	}
 
-	createNewParameter(name, value) {
-		const t_parameters = this.state.parameters;
-		t_parameters[name] = value;
-
-		this.saveParameterCall = APICalls.MaBoSSCalls.saveMaBoSSParameters(this.props.project, this.props.modelId, name, value)
-		this.saveParameterCall.promise.then(() => {
-			this.setState({
-				parameters: t_parameters,
-				showNewParameterForm: false,
-			});
+	createParameter() {
+		this.setState({
+			showValueForm: true,
+			parameterValueForm: null,
+			valueValueForm: ""
 		});
-
-	}
-
-	toggleNewParameterForm() {
-		this.setState({showNewParameterForm: !this.state.showNewParameterForm});
-	}
-
-	showNewParameterForm() {
-		this.setState({showNewParameterForm: true});
-	}
-
-	loadParameters(project_id, model_id) {
-
-		this.getParametersCall = APICalls.MaBoSSCalls.getMaBoSSParameters(project_id, model_id);
-		this.getParametersCall.promise.then((data) => {
-			this.setState({parameters: data});
-		})
 	}
 
 	editParameter(name) {
@@ -83,17 +53,20 @@ class MaBoSSParameters extends React.Component {
 	}
 
 	saveParameter(name, value) {
-		const t_parameters = this.state.parameters;
-		t_parameters[name] = value;
 
-		this.saveParameterCall = APICalls.MaBoSSCalls.saveMaBoSSParameters(this.props.project, this.props.modelId, name, value)
-		this.saveParameterCall.promise.then(() => {
-			this.setState({
-				parameters: t_parameters,
-				showValueForm: false,
-				parameterValueForm: null,
-				valueValueForm: ""
-			});
+		this.saveParameterCall = APICalls.MaBoSSCalls.saveMaBoSSParameter(this.props.project, this.props.modelId, name, value)
+		this.saveParameterCall.promise.then((response) => {
+			if (response.status == 200){
+				const t_parameters = this.state.parameters;
+				t_parameters[name] = value;
+
+				this.setState({
+					parameters: t_parameters,
+					showValueForm: false,
+					parameterValueForm: null,
+					valueValueForm: ""
+				});
+			}
 		});
 	}
 
@@ -108,10 +81,11 @@ class MaBoSSParameters extends React.Component {
 			else {
 				this.deleteParameterCall = APICalls.MaBoSSCalls.deleteMaBoSSParameters(this.props.project, this.props.modelId, name);
 				this.deleteParameterCall.promise.then((response) => {
-					console.log(response);
-					const t_parameters = this.state.parameters;
-					delete t_parameters[name];
-					this.setState({parameters: t_parameters});
+					if (response.status == 200){
+						const t_parameters = this.state.parameters;
+						delete t_parameters[name];
+						this.setState({parameters: t_parameters});
+					}
 				});
 
 			}
@@ -119,19 +93,17 @@ class MaBoSSParameters extends React.Component {
 
 	}
 
-	checkParameterValue(name, value) {
-		if (value === "") {
-			this.setState({errorValueForm: "Please provide a value"});
-		} else if (isNaN(value)) {
-			this.setState({errorValueForm: "Not a number"});
-		} else {
-			this.setState({errorValueForm: ""});
-		}
-	}
-
 	toggleValueForm() {
 		this.setState({
 			showValueForm: !this.state.showValueForm
+		})
+	}
+
+	loadParameters(project_id, model_id) {
+
+		this.getParametersCall = APICalls.MaBoSSCalls.getMaBoSSParameters(project_id, model_id);
+		this.getParametersCall.promise.then((data) => {
+			this.setState({parameters: data});
 		})
 	}
 
@@ -174,20 +146,14 @@ class MaBoSSParameters extends React.Component {
 					<LoadingIcon width="3rem"/>
 				}
 			</ul>
-			<MaBoSSValueForm
+
+			<MaBoSSParameterForm
 				status={this.state.showValueForm} toggle={this.toggleValueForm}
-				value={this.state.valueValueForm} error={this.state.errorValueForm}
-				check={this.checkParameterValue} name={this.state.parameterValueForm}
-				submit={this.saveParameter}
-			/>
-			<MaBoSSNewParameterForm
-				status={this.state.showNewParameterForm}
-				toggle={this.toggleNewParameterForm}
-				parameters={this.state.parameters}
-				submit={this.createNewParameter}
+				parameters={this.state.parameters} submit={this.saveParameter}
+				name={this.state.parameterValueForm} value={this.state.valueValueForm}
 				{...this.props}
 			/>
-			<Button color="primary" onClick={this.showNewParameterForm}>New parameter</Button>
+			<Button color="primary" onClick={this.createParameter}>New parameter</Button>
 
 			</React.Fragment>
 		);

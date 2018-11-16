@@ -69,6 +69,7 @@ class Editing extends React.Component {
 											project={projectContext.project}
 											modelId={modelContext.modelId}
 											onModelChanged={modelContext.onModelChanged}
+											showErrorMessages={this.showErrorMessages}
 										/>
 									</TabPane>
 									<TabPane tabId="parameters">

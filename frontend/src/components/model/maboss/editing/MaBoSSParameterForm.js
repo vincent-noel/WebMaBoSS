@@ -2,8 +2,9 @@ import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
+import APICalls from "../../../api/apiCalls";
 
-class MaBoSSNewParameterForm extends React.Component {
+class MaBoSSParameterForm extends React.Component {
 
 	static propTypes = {
 		status: PropTypes.bool.isRequired,
@@ -21,7 +22,10 @@ class MaBoSSNewParameterForm extends React.Component {
 			valueError: "Please provide a value",
 
 			showErrors: false,
+			waitSubmit: false,
 		};
+
+		this.checkParameterCall = null;
 
 		this.inputNameRef = React.createRef();
 		this.inputValueRef = React.createRef();
@@ -51,22 +55,45 @@ class MaBoSSNewParameterForm extends React.Component {
 
 		} else {
 			this.setState({showErrors: false});
-			this.props.submit(this.state.name, this.state.value);
+			this.props.submit(
+				this.props.name !== null ? this.props.name : this.state.name,
+				this.state.value
+			);
 		}
 
 	}
 
 	checkParameterValue(value) {
+		if (this.checkParameterCall !== null) { this.checkParameterCall.cancel();}
+
 		if (value === "") {
 			this.setState({valueError: "Please provide a value"});
 		} else if (isNaN(value)) {
 			this.setState({valueError: "Not a number"});
 		} else {
-			this.setState({valueError: ""});
+
+			this.setState({waitSubmit: true});
+			this.checkParameterCall = APICalls.MaBoSSCalls.checkMaBoSSParameter(
+				this.props.project, this.props.modelId,
+				"whatever_the_name_as_long_as_its_unique",
+				value
+			);
+
+			this.checkParameterCall.promise.then((data) => {
+				if (data.error !== "") {
+					this.setState({valueError: data.error, waitSubmit: false})
+				} else {
+					this.setState({valueError: "", waitSubmit: false});
+				}
+			});
+
+
 		}
 	}
 
 	checkParameterName(name) {
+		if (this.checkParameterCall !== null) { this.checkParameterCall.cancel();}
+
 		if (value === "") {
 			this.setState({nameError: "Please provide a name"});
 		} else if (Object.keys(this.props.parameters).includes(name)) {
@@ -74,7 +101,19 @@ class MaBoSSNewParameterForm extends React.Component {
 		} else if (!name.startsWith("$")) {
 			this.setState({nameError: "Parameter name must start with a '$'"});
 		} else  {
-			this.setState({nameError: ""});
+			this.setState({waitSubmit: true});
+			this.checkParameterCall = APICalls.MaBoSSCalls.checkMaBoSSParameter(
+				this.props.project, this.props.modelId,
+				name, 1
+			);
+
+			this.checkParameterCall.promise.then((data) => {
+				if (data.error !== "") {
+					this.setState({nameError: data.error, waitSubmit: false})
+				} else {
+					this.setState({nameError: "", waitSubmit: false});
+				}
+			});
 
 		}
 
@@ -87,11 +126,11 @@ class MaBoSSNewParameterForm extends React.Component {
 		this.checkParameterValue(this.state.value);
 	}
 
-	// componentWillUnmount() {
-	// 	if (this.checkFormulaCall !== null) {
-	// 		this.checkFormulaCall.cancel();
-	// 	}
-	// }
+	componentWillUnmount() {
+		if (this.checkParameterCall !== null) {
+			this.checkParameterCall.cancel();
+		}
+	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 
@@ -147,7 +186,7 @@ class MaBoSSNewParameterForm extends React.Component {
 					<CardFooter>
 						<ButtonToolbar className="d-flex">
 							<Button color="danger" className="mr-auto" onClick={() => this.props.toggle()}>Close</Button>
-							<Button type="submit" color="default" className="ml-auto" onClick={(e) => this.onSubmit(e)}>Submit</Button>
+							<Button type="submit" color="default" className="ml-auto" onClick={(e) => this.onSubmit(e)} disabled={this.state.waitSubmit}>Submit</Button>
 						</ButtonToolbar>
 					</CardFooter>
 				</Card>
@@ -157,4 +196,4 @@ class MaBoSSNewParameterForm extends React.Component {
 	}
 }
 
-export default MaBoSSNewParameterForm;
+export default MaBoSSParameterForm;
