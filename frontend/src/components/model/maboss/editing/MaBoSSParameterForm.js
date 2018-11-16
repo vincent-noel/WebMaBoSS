@@ -80,6 +80,32 @@ class MaBoSSNewParameterForm extends React.Component {
 
 	}
 
+	componentDidMount() {
+		if (this.props.name === null){
+			this.checkParameterName(this.state.name);
+		}
+		this.checkParameterValue(this.state.value);
+	}
+
+	// componentWillUnmount() {
+	// 	if (this.checkFormulaCall !== null) {
+	// 		this.checkFormulaCall.cancel();
+	// 	}
+	// }
+
+	shouldComponentUpdate(nextProps, nextState) {
+
+		if (nextProps.status !== this.props.status) {
+			this.setState({name: "", nameError: "", valueError: "", showErrors: false});
+		}
+
+		if (nextProps.value !== this.props.value && nextProps.value !== this.state.value) {
+			this.setState({value: nextProps.value})
+		}
+
+		return true;
+	}
+
 	render() {
 
 		const errors = [];
@@ -95,16 +121,17 @@ class MaBoSSNewParameterForm extends React.Component {
 			<Modal isOpen={this.props.status} toggle={() => this.props.toggle()}>
 				<form>
 				<Card>
-					<CardHeader>Editing parameter value</CardHeader>
+					<CardHeader>{this.props.name !== null ? "Editing" : "Creating"} parameter value</CardHeader>
 					<CardBody>
 						{ this.state.showErrors ? <ErrorAlert errorMessages={ this.state.nameError !== "" || this.state.valueError !== "" ? errors : []}/> : null}
 						<div className="form-group">
 							<label htmlFor="name">Name</label>
 							<input
 								id="name" name="name" ref={this.inputNameRef}
-								type="text" value={this.state.name}
+								type="text" value={this.props.name !== null ? this.props.name : this.state.name}
 								className={"form-control" + (this.state.nameError !== "" ?" is-invalid":"")}
 								onChange={(e) => this.onNameChange(e.target.value)}
+								disabled={this.props.name !== null}
 							/>
 						</div>
 						<div className="form-group">

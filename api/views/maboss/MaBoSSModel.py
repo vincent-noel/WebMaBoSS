@@ -1,6 +1,7 @@
 from api.views.HasModel import HasModel
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
+from rest_framework.exceptions import NotFound
 
 import json
 
@@ -17,21 +18,90 @@ class MaBoSSSpeciesFormulas(HasModel):
 		for name, node in maboss_sim.network.items():
 
 			node_data = {}
-			node_data.update({'logic': node.logExp})
 			node_data.update({'rateUp': node.rt_up})
 			node_data.update({'rateDown': node.rt_down})
+
+			if node.logExp is not None:
+				node_data.update({'logic': node.logExp})
+
 			node_data.update(node.internal_var)
 
 			data.update({name: node_data})
 
 		return Response(data=json.dumps(data))
 
-	def post(self, request, project_id, model_id):
+
+class MaBoSSSpeciesFormula(HasModel):
+
+	def get(self, request, project_id, model_id, node, field):
 
 		HasModel.load(self, request, project_id, model_id)
 
 		maboss_sim = self.getMaBoSSModel()
-		field = request.POST['field']
+
+		node = maboss_sim.network[node]
+
+		node_data = {}
+		node_data.update({'rateUp': maboss_sim.network[node].rt_up})
+		node_data.update({'rateDown': maboss_sim.network[node].rt_down})
+
+		if node.logExp is not None:
+			node_data.update({'logic': node.logExp})
+
+		node_data.update(node.internal_var)
+
+		return Response(data=json.dumps(node_data))
+
+
+	def post(self, request, project_id, model_id, node, field):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+
+		if field == "rateUp":
+			maboss_sim.network[node].rt_up = request.POST['formula']
+
+		elif field == "rateDown":
+			maboss_sim.network[node].rt_down = request.POST['formula']
+
+		elif field == "logic":
+			maboss_sim.network[node].logExp = request.POST['formula']
+
+		else:
+			maboss_sim.network[node].internal_var.update({field: request.POST['formula']})
+
+		self.saveMaBoSSModel(maboss_sim)
+		return Response(status=HTTP_200_OK)
+
+
+	def delete(self, request, project_id, model_id, node, field):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+
+		if field in ["rateUp", "rateDown"]:
+			return Response(data={'error': 'Cannot remove %s' % request.POST['field']})
+
+		if field == "logic":
+			maboss_sim.network[node].logExp = None
+
+		else:
+			del maboss_sim.network[node].internal_var[field]
+
+		self.saveMaBoSSModel(maboss_sim)
+		return Response(status=HTTP_200_OK)
+
+
+class MaBoSSCheckFormula(HasModel):
+
+	def post(self, request, project_id, model_id, node, field):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+
 		if field == "logic":
 			field = "logExp"
 		elif field == "rateUp":
@@ -39,10 +109,44 @@ class MaBoSSSpeciesFormulas(HasModel):
 		elif field == "rateDown":
 			field = "rt_down"
 
-		maboss_sim.save_formula(request.POST['node'], field, request.POST['formula'])
-		self.saveMaBoSSModel(maboss_sim)
+		res = maboss_sim.check_formula(node, field, request.POST['formula'])
 
-		return Response(status=HTTP_200_OK)
+		data = {'error': ''}
+
+		print(res)
+		if any([message.startswith("BND syntax error at line") for message in res]):
+			data.update({'error': 'syntax error'})
+
+		elif any([message.startswith("node") and message.endswith("used but not defined") for message in res]):
+			for message in res:
+				if message.startswith("node") and message.endswith("used but not defined"):
+					data.update({'error': message})
+
+		return Response(data=data)
+
+	def delete(self, request, project_id, model_id, node, field):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+
+		if field in ["rateUp", "rateDown"]:
+			return Response(data={'error': 'Cannot remove %s' % field})
+
+		if field == "logic":
+			maboss_sim.network[node].logExp = None
+
+		else:
+			del maboss_sim.network[node].internal_var[field]
+
+		res = maboss_sim.check_model()
+		data = {'error': ''}
+		print(res)
+		if any([message == ("invalid use of alias attribute @%s in node %s" % (field, node)) for message in res]):
+			data.update({'error': 'The formula %s is used in the model' % node})
+
+		return Response(data=data)
+
 
 class MaBoSSParameters(HasModel):
 
@@ -60,75 +164,75 @@ class MaBoSSParameters(HasModel):
 
 		return Response(data=json.dumps(data))
 
-	def post(self, request, project_id, model_id):
+
+class MaBoSSParameter(HasModel):
+
+	def get(self, request, project_id, model_id, name):
 
 		HasModel.load(self, request, project_id, model_id)
 
 		maboss_sim = self.getMaBoSSModel()
-		maboss_sim.param[request.POST['name']] = request.POST['value']
+
+		if name in maboss_sim.param.keys():
+			return Response(data=maboss_sim.param[name])
+
+		else:
+			raise NotFound
+
+	def post(self, request, project_id, model_id, name):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_sim = self.getMaBoSSModel()
+		maboss_sim.param[name] = request.POST['value']
 		self.saveMaBoSSModel(maboss_sim)
 
 		return Response(status=HTTP_200_OK)
 
-	def delete(self, request, project_id, model_id):
+	def delete(self, request, project_id, model_id, name):
 
 		HasModel.load(self, request, project_id, model_id)
 
 		maboss_sim = self.getMaBoSSModel()
-		del maboss_sim.param[request.POST['name']]
+		del maboss_sim.param[name]
 		self.saveMaBoSSModel(maboss_sim)
 
 		return Response(status=HTTP_200_OK)
 
 
-class MaBoSSCheckFormula(HasModel):
 
-	def post(self, request, project_id, model_id):
+
+class MaBoSSCheckParameter(HasModel):
+
+	def post(self, request, project_id, model_id, name):
 
 		HasModel.load(self, request, project_id, model_id)
 
 		maboss_sim = self.getMaBoSSModel()
-		field = request.POST['field']
-		if field == "logic":
-			field = "logExp"
-		elif field == "rateUp":
-			field = "rt_up"
-		elif field == "rateDown":
-			field = "rt_down"
+		maboss_sim.param[name] = request.POST['value']
 
-		res = maboss_sim.check_formula(request.POST['node'], field, request.POST['formula'])
-
+		res = maboss_sim.check_model()
+		print(res)
 		data = {'error': ''}
 
-		if res is not None:
-
-			if not (res[0] == "BooleanNetwork exception"):
-				data.update({'error': res.join(':')})
-			else:
-
-				if res[1].startswith("BND syntax error at line"):
-					data.update({'error': 'syntax error'})
-
-				else:
-					data.update({'error': res[1]})
+		if any([message.startswith("configuration syntax error") for message in res]):
+			data.update({'error': 'Syntax error'})
 
 		return Response(data=data)
 
-
-class MaBoSSCheckDeleteParameter(HasModel):
-
-	def post(self, request, project_id, model_id):
+	def delete(self, request, project_id, model_id, name):
 
 		HasModel.load(self, request, project_id, model_id)
 
 		maboss_sim = self.getMaBoSSModel()
-		del maboss_sim.param[request.POST['name']]
+		del maboss_sim.param[name]
 
 		res = maboss_sim.check_model()
 
 		data = {'error': ''}
 
-		if res is not None and res == ("symbol %s is not defined" % request.POST['name']):
-			data.update({'error': 'The parameter %s is used in the model' % request.POST['name']})
+		if any([message == ("symbol %s is not defined" % name) for message in res]):
+			data.update({'error': 'The parameter %s is used in the model' % name})
 
 		return Response(data=data)
+

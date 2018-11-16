@@ -13,7 +13,10 @@ from api.views.BioLQMSimulation import LogicalModelSteadyStates
 from api.views.maboss.MaBossServerView import MaBoSSServerView
 from api.views.maboss.MaBoSSSimulationView import MaBoSSSimulationView, MaBoSSSimulationRemove, MaBossSettings
 from api.views.maboss.MaBoSSResultsView import MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj
-from api.views.maboss.MaBoSSModel import MaBoSSSpeciesFormulas, MaBoSSCheckFormula, MaBoSSParameters, MaBoSSCheckDeleteParameter
+from api.views.maboss.MaBoSSModel import (
+	MaBoSSSpeciesFormulas, MaBoSSSpeciesFormula, MaBoSSCheckFormula,
+	MaBoSSParameters, MaBoSSParameter, MaBoSSCheckParameter,
+)
 from api.views.AuthView import TestAuthView, LogoutViewEx, UserEmailView
 from rest_auth.views import LoginView, PasswordChangeView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
@@ -53,10 +56,14 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', MaBoSSSimulationView.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss/settings/', MaBossSettings.as_view()),
+
 	path('api/logical_model/<int:project_id>/<int:model_id>/formulas', MaBoSSSpeciesFormulas.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/formula/<str:node>/<str:field>', MaBoSSSpeciesFormula.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/check_formula/<str:node>/<str:field>', MaBoSSCheckFormula.as_view()),
+
 	path('api/logical_model/<int:project_id>/<int:model_id>/parameters', MaBoSSParameters.as_view()),
-	path('api/logical_model/<int:project_id>/<int:model_id>/check_formula', MaBoSSCheckFormula.as_view()),
-	path('api/logical_model/<int:project_id>/<int:model_id>/check_delete_parameter', MaBoSSCheckDeleteParameter.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/parameter/<str:name>', MaBoSSParameter.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/check_parameter/<str:name>', MaBoSSCheckParameter.as_view()),
 
 	path('api/maboss/<int:project_id>/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),
 	path('api/maboss/<int:project_id>/<int:simulation_id>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
