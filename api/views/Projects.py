@@ -58,6 +58,8 @@ class Projects(HasUser):
 			project.description = request.data['description']
 			project.save()
 
+			return Response(status=status.HTTP_200_OK)
+
 		except Project.DoesNotExist:
 			raise NotFound
 
