@@ -107,5 +107,55 @@ class HasModel(HasProject):
 			tmp_sbml = tempfile.mkstemp(dir=path, suffix='.sbml')[1]
 
 			ginsim.to_sbmlqual(ginsim_model, tmp_sbml)
-
 			return tmp_sbml
+
+		elif self.model.format == LogicalModel.MABOSS:
+			ginsim_model = self.getGINSimModel()
+
+			path = tempfile.mkdtemp()
+			tmp_sbml = tempfile.mkstemp(dir=path, suffix='.sbml')[1]
+
+			ginsim.to_sbmlqual(ginsim_model, tmp_sbml)
+			return tmp_sbml
+
+	def getZGINMLModelFile(self):
+
+		if self.model.format == LogicalModel.ZGINML:
+			return join(settings.MEDIA_ROOT, self.model.file.path)
+
+		elif self.model.format == LogicalModel.MABOSS:
+			ginsim_model = self.getGINSimModel()
+
+			path = tempfile.mkdtemp()
+			tmp_zginml = tempfile.mkstemp(dir=path, suffix='.zginml')[1]
+			biolqm.save(ginsim_model)
+
+	def getMaBoSSBNDFile(self):
+
+		if self.model.format == LogicalModel.MABOSS:
+			return join(settings.MEDIA_ROOT, self.model.bnd_file.path)
+
+		elif self.model.format == LogicalModel.ZGINML:
+			path = tempfile.mkdtemp()
+			tmp_bnd = tempfile.mkstemp(dir=path, suffix='.bnd')[1]
+			maboss_model = self.getMaBoSSModel()
+
+			with open(tmp_bnd, 'w') as file:
+				maboss_model.print_bnd(out=file)
+
+			return tmp_bnd
+
+	def getMaBoSSCFGFile(self):
+
+		if self.model.format == LogicalModel.MABOSS:
+			return join(settings.MEDIA_ROOT, self.model.cfg_file.path)
+
+		elif self.model.format == LogicalModel.ZGINML:
+			path = tempfile.mkdtemp()
+			tmp_cfg = tempfile.mkstemp(dir=path, suffix='.cfg')[1]
+			maboss_model = self.getMaBoSSModel()
+
+			with open(tmp_cfg, 'w') as file:
+				maboss_model.print_cfg(out=file)
+
+			return tmp_cfg

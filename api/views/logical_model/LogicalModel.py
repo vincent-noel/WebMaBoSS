@@ -20,6 +20,11 @@ class LogicalModelFile(HasModel):
 
 		HasModel.load(self, request, project_id, model_id)
 
+		model_file = self.getZGINMLModelFile()
+
+		if model_file is None:
+			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
 		return FileResponse(
 			open(join(settings.MEDIA_ROOT, self.model.file.path), 'rb'),
 			as_attachment=True, filename=basename(self.model.file.path)
@@ -34,10 +39,48 @@ class LogicalModelSBMLFile(HasModel):
 
 		sbml_filename = self.getSBMLModelFile()
 
+		if sbml_filename is None:
+			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
 		return FileResponse(
 			open(sbml_filename, 'rb'),
 			as_attachment=True, filename=basename(sbml_filename)
 		)
+
+class LogicalModelMaBoSSBNDFile(HasModel):
+
+	def get(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		bnd_filename = self.getMaBoSSBNDFile()
+
+		if bnd_filename is None:
+			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+		return FileResponse(
+			open(bnd_filename, 'rb'),
+			as_attachment=True, filename=basename(bnd_filename)
+		)
+
+
+
+class LogicalModelMaBoSSCFGFile(HasModel):
+
+	def get(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		cfg_filename = self.getMaBoSSCFGFile()
+
+		if cfg_filename is None:
+			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+		
+		return FileResponse(
+			open(cfg_filename, 'rb'),
+			as_attachment=True, filename=basename(cfg_filename)
+		)
+
 
 
 class LogicalModelName(HasModel):
