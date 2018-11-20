@@ -3,6 +3,7 @@ import {Nav, NavItem, NavLink, TabPane, TabContent, Button, ButtonToolbar, Modal
 import classnames from 'classnames';
 import TableSwitches from "../../../commons/TableSwitches";
 import APICalls from "../../../api/apiCalls";
+import ErrorAlert from "../../../commons/ErrorAlert";
 
 
 class NewSimForm extends React.Component {
@@ -20,8 +21,14 @@ class NewSimForm extends React.Component {
 			listNodes: [],
 			initialStates: {},
 			outputVariables: {},
-			mutatedVariables: {}
+			mutatedVariables: {},
+
+			errors: [],
 		};
+
+		this.sampleCountRef = React.createRef();
+		this.maxTimeRef = React.createRef();
+		this.timeTickRef = React.createRef();
 
 		this.handleSampleCountChange.bind(this);
 		this.handleMaxTimeChange.bind(this);
@@ -126,37 +133,77 @@ class NewSimForm extends React.Component {
 
 	onSubmit(e) {
 		e.preventDefault();
+		const errors = [];
 
-		const initial_states = Object.keys(this.state.initialStates).reduce(
+		if (!Object.values(this.state.outputVariables).some(x => x === true)) {
+			errors.push("Please select at least one output variable");
+		}
+
+		if (!this.state.sampleCount) {
+			errors.push("Please provide a value for the sample count");
+			this.sampleCountRef.current.focus();
+
+		} else if (isNaN(this.state.sampleCount)) {
+			errors.push("Please provide a valid value for the sample count");
+			this.sampleCountRef.current.focus();
+		}
+
+		if (!this.state.maxTime) {
+			errors.push("Please provide a value for the maximum time");
+			this.maxTimeRef.current.focus();
+
+		} else if (isNaN(this.state.maxTime)) {
+			errors.push("Please provide a valid value for the maximum time");
+			this.maxTimeRef.current.focus();
+
+		}
+
+		if (!this.state.timeTick) {
+			errors.push("Please provide a value for the time tick");
+			this.timeTickRef.current.focus();
+
+		} else if (isNaN(this.state.timeTick)) {
+			errors.push("Please provide a valid value for the time tick");
+			this.timeTickRef.current.focus();
+
+		}
+
+
+		this.setState({errors: errors});
+
+		if (errors.length === 0) {
+
+			const initial_states = Object.keys(this.state.initialStates).reduce(
+					(acc, key) => {
+						acc[key] = this.state.initialStates[key]/100;
+						return acc;
+					}, {}
+				);
+
+			const mutations = Object.keys(this.state.mutatedVariables).reduce(
 				(acc, key) => {
-					acc[key] = this.state.initialStates[key]/100;
+					if (this.state.mutatedVariables[key] === -1) {
+						acc[key] = "OFF";
+					} else if (this.state.mutatedVariables[key] === 1) {
+						acc[key] = "ON";
+					}
 					return acc;
 				}, {}
+
 			);
 
-		const mutations = Object.keys(this.state.mutatedVariables).reduce(
-			(acc, key) => {
-				if (this.state.mutatedVariables[key] === -1) {
-					acc[key] = "OFF";
-				} else if (this.state.mutatedVariables[key] === 1) {
-					acc[key] = "ON";
+			this.props.onSubmit(
+				this.props.project, this.props.modelId,
+				{
+					sampleCount: this.state.sampleCount,
+					maxTime: this.state.maxTime,
+					timeTick: this.state.timeTick,
+					initialStates: initial_states,
+					outputVariables: this.state.outputVariables,
+					mutations: mutations,
 				}
-				return acc;
-			}, {}
-
-		);
-
-		this.props.onSubmit(
-			this.props.project, this.props.modelId,
-			{
-				sampleCount: this.state.sampleCount,
-				maxTime: this.state.maxTime,
-				timeTick: this.state.timeTick,
-				initialStates: initial_states,
-				outputVariables: this.state.outputVariables,
-				mutations: mutations,
-			}
-		);
+			);
+		}
 	}
 
 	componentDidMount() {
@@ -190,6 +237,7 @@ class NewSimForm extends React.Component {
 					<Card>
 						<CardHeader>Create new simulation</CardHeader>
 						<CardBody>
+							<ErrorAlert errorMessages={this.state.errors}/>
 							<Nav tabs>
 								<NavItem>
 									<NavLink
@@ -223,7 +271,9 @@ class NewSimForm extends React.Component {
 										<label htmlFor="sampleCount" className="col-sm-2 col-form-label">Sample count</label>
 										<div className="col-sm-10">
 											<input type="numbers" className="form-control" id="sampleCount" placeholder="1000"
-												   value={this.state.sampleCount} onChange={(e) => this.handleSampleCountChange(e)}
+												   value={this.state.sampleCount} ref={this.sampleCountRef}
+												   onChange={(e) => this.handleSampleCountChange(e)}
+
 											/>
 										</div>
 									</div>
@@ -231,7 +281,8 @@ class NewSimForm extends React.Component {
 										<label htmlFor="maxTime" className="col-sm-2 col-form-label">Max time</label>
 										<div className="col-sm-10">
 											<input type="number" className="form-control" id="maxTime" placeholder="100"
-												   value={this.state.maxTime} onChange={(e) => this.handleMaxTimeChange(e)}
+												   value={this.state.maxTime} ref={this.maxTimeRef}
+												   onChange={(e) => this.handleMaxTimeChange(e)}
 											/>
 										</div>
 									</div>
@@ -239,7 +290,8 @@ class NewSimForm extends React.Component {
 										<label htmlFor="timeTick" className="col-sm-2 col-form-label">Time tick</label>
 										<div className="col-sm-10">
 											<input type="number" className="form-control" id="timeTick" placeholder="1"
-												   value={this.state.timeTick} onChange={(e) => this.handleTimeTickChange(e)}
+												   value={this.state.timeTick} ref={this.timeTickRef}
+												   onChange={(e) => this.handleTimeTickChange(e)}
 											/>
 										</div>
 									</div>
