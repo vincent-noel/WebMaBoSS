@@ -23,7 +23,7 @@ class MaBossFixedPoints extends React.Component {
 		this.setState({fptableLoaded: false, fptable: null});
 		this.getFixedPointsCall = APICalls.MaBoSSCalls.getFixedPoints(project_id, simulation_id);
 		this.getFixedPointsCall.promise.then(data => {
-			if (data['fixed_points'] !== null) {
+			if (data['status'] === "Finished") {
 				clearInterval(this.fixedPointsChecker);
 				this.setState({fptableLoaded: true, fptable: data['fixed_points']})
 			}

@@ -105,7 +105,7 @@ class MaBoSSSimulationView(HasModel):
 
 def run_simulation(maboss_model, maboss_simulation_id):
 
-	# try:
+	try:
 		maboss_simulation = MaBoSSSimulation.objects.get(id=maboss_simulation_id)
 
 		with transaction.atomic():
@@ -119,7 +119,6 @@ def run_simulation(maboss_model, maboss_simulation_id):
 
 			with transaction.atomic():
 				maboss_simulation.fixpoints = fixed_points_json
-				maboss_simulation.status = MaBoSSSimulation.ENDED
 				maboss_simulation.save()
 
 		states_probtraj = res.get_states_probtraj()
@@ -140,7 +139,7 @@ def run_simulation(maboss_model, maboss_simulation_id):
 			maboss_simulation.status = MaBoSSSimulation.ENDED
 			maboss_simulation.save()
 
-	# except:
+	except:
 		with transaction.atomic():
 			maboss_simulation.status = MaBoSSSimulation.ERROR
 			maboss_simulation.error = "Simulation failed"

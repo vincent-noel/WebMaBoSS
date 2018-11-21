@@ -51,7 +51,7 @@ class MaBossStatesProbTraj extends React.Component {
 		this.setState({statesProbTrajLoaded: false, statesProbTraj: null});
 		this.getStateProbtrajCall = APICalls.MaBoSSCalls.getStatesProbTraj(project_id, simulation_id);
 		this.getStateProbtrajCall.promise.then(data => {
-			if (data['states_probtraj'] !== null) {
+			if (data['status'] === "Finished") {
 				clearInterval(this.statesProbTrajChecker);
 				this.setState({statesProbTrajLoaded: true, statesProbTraj: data['states_probtraj']})
 			}

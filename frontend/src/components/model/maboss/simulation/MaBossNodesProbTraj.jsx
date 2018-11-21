@@ -24,7 +24,7 @@ class MaBossNodesProbTraj extends React.Component {
 		this.getNodesProbtrajCall = APICalls.MaBoSSCalls.getNodesProbTraj(project_id, simulation_id);
 
 		this.getNodesProbtrajCall.promise.then(data => {
-			if (data['nodes_probtraj'] !== null) {
+			if (data['status'] === "Finished") {
 				clearInterval(this.nodesProbTrajChecker);
 				this.setState({nodesProbTrajLoaded: true, nodesProbTraj: data['nodes_probtraj']})
 			}

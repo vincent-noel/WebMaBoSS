@@ -11,11 +11,14 @@ class MaBoSSResultsFixedPoints(HasMaBoSSSimulation):
 
 		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
 
-		fixed_points = {}
-		for key, values in loads(self.simulation.states_probtraj).items():
-			last_time = list(values.keys())[len(values.keys())-1]
-			if values[last_time] > 0:
-				fixed_points.update({key: values[last_time]})
+		fixed_points = None
+
+		if self.simulation.states_probtraj is not None:
+			fixed_points = {}
+			for key, values in loads(self.simulation.states_probtraj).items():
+				last_time = list(values.keys())[len(values.keys())-1]
+				if values[last_time] > 0:
+					fixed_points.update({key: values[last_time]})
 
 		return Response(
 			{
