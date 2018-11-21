@@ -190,7 +190,7 @@ class MaBoSSParameterForm extends React.Component {
 							<Button
 								type="submit" color="default" className="ml-auto"
 								onClick={(e) => this.onSubmit(e)} disabled={this.state.waitSubmit}
-							>SubmitSubmit {this.state.waitSubmit ? <LoadingInlineIcon width="1rem"/> : null}</Button>
+							>Submit {this.state.waitSubmit ? <LoadingInlineIcon width="1rem"/> : null}</Button>
 						</ButtonToolbar>
 					</CardFooter>
 				</Card>
