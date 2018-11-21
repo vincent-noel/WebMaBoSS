@@ -9,6 +9,8 @@ import MaBoSSParameters from "./MaBoSSParameters";
 
 import {ProjectContext, ModelContext} from "../../../context";
 import ErrorAlert from "../../../commons/ErrorAlert";
+import MaBoSSSettings from "./MaBoSSSettings";
+import MaBoSSInitialStates from "./MaBoSSInitialStates";
 
 
 class Editing extends React.Component {
@@ -57,15 +59,35 @@ class Editing extends React.Component {
 									</NavItem>
 									<NavItem>
 										<NavLink
+											className={classnames({ active: this.state.activeTab === 'initial_values' })}
+											onClick={() => { this.toggleTab('initial_values'); }}
+										>Initial values</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
 											className={classnames({ active: this.state.activeTab === 'parameters' })}
 											onClick={() => { this.toggleTab('parameters'); }}
 										>Parameters</NavLink>
+									</NavItem>
+									<NavItem>
+										<NavLink
+											className={classnames({ active: this.state.activeTab === 'settings' })}
+											onClick={() => { this.toggleTab('settings'); }}
+										>Settings</NavLink>
 									</NavItem>
 								</Nav>
 								<br/>
 								<TabContent activeTab={this.state.activeTab}>
 									<TabPane tabId="formulas">
 										<MaBoSSNodes
+											project={projectContext.project}
+											modelId={modelContext.modelId}
+											onModelChanged={modelContext.onModelChanged}
+											showErrorMessages={this.showErrorMessages}
+										/>
+									</TabPane>
+									<TabPane tabId="initial_values">
+										<MaBoSSInitialStates
 											project={projectContext.project}
 											modelId={modelContext.modelId}
 											onModelChanged={modelContext.onModelChanged}
@@ -79,7 +101,14 @@ class Editing extends React.Component {
 											onModelChanged={modelContext.onModelChanged}
 											showErrorMessages={this.showErrorMessages}
 										/>
-
+									</TabPane>
+									<TabPane tabId="settings">
+										<MaBoSSSettings
+											project={projectContext.project}
+											modelId={modelContext.modelId}
+											onModelChanged={modelContext.onModelChanged}
+											showErrorMessages={this.showErrorMessages}
+										/>
 									</TabPane>
 								</TabContent>
 							</React.Fragment>

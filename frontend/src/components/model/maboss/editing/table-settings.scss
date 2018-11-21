@@ -1,0 +1,49 @@
+ul.list-settings {
+
+  list-style-type: none;
+  padding-left: 0;
+
+}
+
+.table-settings {
+
+  max-width: 100%;
+  min-width: 100%;
+
+  th {
+
+    &.name {
+      background-color: #ccc;
+      border-bottom-left-radius: 0.25rem;
+      border-top-left-radius: 0.25rem;
+      line-height: 1.75rem;
+      padding-left: 1rem;
+      margin-top: 0.125rem;
+      margin-bottom: 0.125rem;
+      margin-left: 0.125rem;
+    }
+
+    &.value {
+      background-color: #ccc;
+      border-bottom-right-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      line-height: 1.75rem;
+      padding-right: 1rem;
+      margin-top: 0.125rem;
+      margin-bottom: 0.125rem;
+      right: 0.125rem;
+    }
+
+    &.actions {
+
+    }
+
+  }
+}
+.btn-xs {
+  padding: 0.2rem 0.4rem;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  border-radius: 0.16rem;
+}
+

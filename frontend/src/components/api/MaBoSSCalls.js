@@ -200,6 +200,65 @@ class MaBoSSCalls {
 		);
 	}
 
+	static getMaBoSSInitialStates(project_id, model_id) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/initial_states",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
+
+	static saveMaBoSSInitialStates(project_id, model_id, initial_states) {
+
+		const body = new FormData();
+		body.append('initialStates', JSON.stringify(initial_states));
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/initial_states",
+				{
+					method: "put",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		);
+	}
+
+	static getMaBoSSModelSettings(project_id, model_id) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/settings",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
+
+	static updateMaBoSSModelSettings(project_id, model_id, settings) {
+
+		const body = new FormData();
+		body.append('settings', JSON.stringify(settings));
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/settings",
+				{
+					method: "put",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		);
+	}
 
 	static createMaBoSSSimulation(project_id, model_id, data) {
 
