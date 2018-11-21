@@ -35,6 +35,11 @@ class ModelPage extends React.Component {
 		this.getName(project_id, model_id);
 	}
 
+	componentWillUnmount() {
+		if (this.getNameCall !== null) {
+			this.getNameCall.cancel();
+		}
+	}
 
 	render() {
 		return (
