@@ -1,4 +1,6 @@
 import React from "react";
+import {Button} from "reactstrap";
+
 import APICalls from "../../../api/apiCalls";
 
 import SimpleEditButton from "../../../commons/buttons/SimpleEditButton";
@@ -9,6 +11,7 @@ import UpDownButton from "../../../commons/buttons/UpDownButton";
 import MaBoSSFormulaForm from "./MaBoSSFormulaForm";
 
 import "./table-nodes.scss";
+import MaBoSSNodeForm from "./MaBoSSNodeForm";
 
 class MaBoSSNodes extends React.Component {
 
@@ -24,6 +27,10 @@ class MaBoSSNodes extends React.Component {
 			nodeFormulaForm: null,
 			fieldFormulaForm: null,
 			formulaFormulaForm: null,
+
+			showNodeForm: false,
+			nodeNodeForm: false,
+
 		};
 
 		this.getNodesCall = null;
@@ -36,8 +43,43 @@ class MaBoSSNodes extends React.Component {
 		this.editFormula = this.editFormula.bind(this);
 		this.saveFormula = this.saveFormula.bind(this);
 		this.createFormula = this.createFormula.bind(this);
+
+		this.toggleNodeForm = this.toggleNodeForm.bind(this);
+		this.saveNewNode = this.saveNewNode.bind(this);
 	}
 
+	createNode() {
+		this.setState({
+			showNodeForm: true,
+			nodeNodeForm: "",
+		});
+	}
+
+	toggleNodeForm() {
+		this.setState({showNodeForm: !this.state.showNodeForm});
+	}
+
+	saveNewNode(name) {
+		this.createNodeCall = APICalls.MaBoSSCalls.addMaBoSSNode(this.props.project, this.props.modelId, name);
+
+		this.createNodeCall.promise.then((response) => {
+			if (response.status === 200) {
+				this.setState({showNodeForm: false});
+				this.loadNodes(this.props.project, this.props.modelId);
+			}
+		});
+	}
+
+	deleteNode(name) {
+		this.deleteNodeCall = APICalls.MaBoSSCalls.deleteMaBoSSNode(this.props.project, this.props.modelId, name);
+		this.deleteNodeCall.promise.then((response) => {
+			if (response.error === "") {
+				this.loadNodes(this.props.project, this.props.modelId);
+			} else {
+				this.props.showErrorMessages([response.error]);
+			}
+		});
+	}
 
 	createFormula(node) {
 		this.setState({
@@ -54,7 +96,7 @@ class MaBoSSNodes extends React.Component {
 			nodeFormulaForm: node,
 			fieldFormulaForm: field,
 			formulaFormulaForm: formula,
-		})
+		});
 	}
 
 	deleteFormula(node, field) {
@@ -104,11 +146,14 @@ class MaBoSSNodes extends React.Component {
 
 	loadNodes(project_id, model_id) {
 		this.getNodesCall = APICalls.MaBoSSCalls.getMaBoSSNodes(project_id, model_id);
-		this.getNodesCall.promise.then(data => {
+		this.getNodesCall.promise.then((data) => {
+
 			this.setState({
 				nodes: data,
-				showNodesDetails: new Array(data.length).fill(false)
+				showNodesDetails: new Array(data.length).fill(false),
+				nodesFormulas: [],
 			});
+
 			this.loadNodesFormulas(project_id, model_id);
 		});
 
@@ -118,7 +163,9 @@ class MaBoSSNodes extends React.Component {
 
 		this.getNodesFormulaCall = APICalls.MaBoSSCalls.getMaBoSSNodesFormulas(project_id, model_id);
 		this.getNodesFormulaCall.promise.then((data) => {
-			this.setState({nodesFormulas: data})
+			console.log(data);
+			this.setState({nodesFormulas: data});
+
 		});
 
 	}
@@ -178,6 +225,8 @@ class MaBoSSNodes extends React.Component {
 												onClick={() => this.toggleNodeDetails(index)}
 												status={this.state.showNodesDetails[index]}
 												size={"sm"}/>
+											<SimpleDeleteButton onClick={() => this.deleteNode(name) } size={"sm"}/>
+
 										</th>
 									</tr>
 									</thead>
@@ -228,6 +277,12 @@ class MaBoSSNodes extends React.Component {
 				field={this.state.fieldFormulaForm} formula={this.state.formulaFormulaForm}
 				{... this.props}
 			/>
+			<Button color="primary" onClick={() => this.createNode()}>New node</Button>
+			<MaBoSSNodeForm
+					status={this.state.showNodeForm} toggle={this.toggleNodeForm}
+					submit={this.saveNewNode} value={this.state.nodeNodeForm}
+					{...this.props}
+				/>
 			</React.Fragment>
 		);
 	}

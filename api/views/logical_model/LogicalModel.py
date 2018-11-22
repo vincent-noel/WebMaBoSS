@@ -5,6 +5,7 @@ from django.http import HttpResponse, FileResponse
 from django.conf import settings
 
 from api.views.HasModel import HasModel
+from api.models.logical_model import LogicalModel
 from api.serializers import LogicalModelNameSerializer
 
 from os.path import join, basename
@@ -94,6 +95,7 @@ class LogicalModelName(HasModel):
 		return Response(serializer.data)
 
 
+
 class LogicalModelNodes(HasModel):
 
 	def get(self, request, project_id, model_id):
@@ -102,6 +104,47 @@ class LogicalModelNodes(HasModel):
 		maboss_model = self.getMaBoSSModel()
 
 		return Response(list(maboss_model.network.keys()))
+
+	def post(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		if self.model.format == LogicalModel.MABOSS:
+			maboss_model = self.getMaBoSSModel()
+			if request.POST['name'] not in maboss_model.network.keys():
+				maboss_model.network.add_node(request.POST['name'])
+
+				self.saveMaBoSSModel(maboss_model)
+				return Response(status=status.HTTP_200_OK)
+			else:
+				return Response(status=status.HTTP_409_CONFLICT)
+		else:
+			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+	def delete(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_model = self.getMaBoSSModel()
+		maboss_model.network.remove_node(request.POST['name'])
+		res = maboss_model.check_model()
+
+		data = {'error': ''}
+		if len(res) > 0:
+			if any([message.startswith("node") and message.endswith("used but not defined") for message in res]):
+				for message in res:
+					if message.startswith("node") and message.endswith("used but not defined"):
+						data.update({'error': message})
+			elif any([message == "Some logic rule had unkown variables" for message in res]):
+				data.update({'error': "The node %s is used in the model" % request.POST['name']})
+
+			elif len(res) > 0:
+				data.update({'error': res[0]})
+
+		else:
+			self.saveMaBoSSModel(maboss_model)
+
+		return Response(data=data, status=status.HTTP_200_OK)
 
 
 class LogicalModelGraph(HasModel):

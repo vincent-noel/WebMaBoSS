@@ -17,6 +17,42 @@ class MaBoSSCalls {
 		);
 	}
 
+	static addMaBoSSNode(project_id, model_id, node) {
+
+		const body = new FormData();
+		body.append('name', node);
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/nodes",
+				{
+					method: "post",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		);
+	}
+
+	static deleteMaBoSSNode(project_id, model_id, node) {
+
+		const body = new FormData();
+		body.append('name', node);
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/nodes",
+				{
+					method: "delete",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+
+		);
+	}
+
 	static getMaBoSSNodesFormulas(project_id, model_id) {
 		return makeCancelable(
 			fetch(
