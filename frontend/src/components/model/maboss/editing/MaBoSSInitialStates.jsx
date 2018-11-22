@@ -2,8 +2,9 @@ import React from "react";
 
 import APICalls from "../../../api/apiCalls";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
-import Range from "../../../commons/buttons/Range";
+
 import "./table-initial-states.scss";
+import BufferedRange from "../../../commons/buttons/BufferedRange";
 
 
 class MaBoSSInitialStates extends React.Component {
@@ -34,6 +35,11 @@ class MaBoSSInitialStates extends React.Component {
 	}
 
 	updateInitialState(name, value) {
+
+		if (this.saveInitialStatesCall !== null) {
+			this.saveInitialStatesCall.cancel();
+		}
+
 		const initial_states = this.state.initialStates;
 		initial_states[name] = value;
 
@@ -83,7 +89,11 @@ class MaBoSSInitialStates extends React.Component {
 									<tr className={"d-flex"}>
 										<th className={"flex-fill name align-items-center"}>{name}</th>
 										<th className={"actions d-flex align-items-center"}>
-											<Range value={this.state.initialStates[name]} updateCallback={(value) => this.updateInitialState(name, value)} id={"initial_state_" + index}/>
+											<BufferedRange
+												value={this.state.initialStates[name]} id={"initial_state_" + index}
+											   	updateCallback={(value) => this.updateInitialState(name, value)}
+												buffer={100}
+										   	/>
 										</th>
 									</tr>
 									</thead>
