@@ -1,5 +1,5 @@
 import React from "react";
-import {Button} from "reactstrap";
+import {Button, Collapse} from "reactstrap";
 
 import APICalls from "../../../api/apiCalls";
 
@@ -219,7 +219,9 @@ class MaBoSSNodes extends React.Component {
 									<tr className={"d-flex"}>
 										<th className={"flex-fill name align-items-center"} colSpan="2">{name}</th>
 										<th className={"ml-1 actions d-flex align-items-center"}>
-											{ this.state.showNodesDetails[index] ? <SimpleAddButton onClick={() => this.createFormula(name)} size="sm"/>: null}
+											<Collapse isOpen={this.state.showNodesDetails[index]}>
+												<SimpleAddButton onClick={() => this.createFormula(name)} size="sm"/>
+											</Collapse>
 											<UpDownButton
 												id={index}
 												onClick={() => this.toggleNodeDetails(index)}
@@ -230,8 +232,8 @@ class MaBoSSNodes extends React.Component {
 										</th>
 									</tr>
 									</thead>
-
-									<tbody className={this.state.showNodesDetails[index] ? "collapse.show" : "collapse"}>
+									<tbody>
+										<Collapse isOpen={this.state.showNodesDetails[index]}>
 										{
 											Object.keys(this.state.nodesFormulas).length > 0 && Object.keys(this.state.nodesFormulas[name]).length > 0 ?
 											Object.keys(this.state.nodesFormulas[name]).map((field, f_index) => (
@@ -261,8 +263,8 @@ class MaBoSSNodes extends React.Component {
 											</tr>
 											)):<tr><td><LoadingIcon width={"3rem"}/></td></tr>
 										}
+										</Collapse>
 									</tbody>
-
 								</table>
 							</li>
 						);

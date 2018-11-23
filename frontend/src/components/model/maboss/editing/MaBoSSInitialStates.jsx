@@ -92,7 +92,7 @@ class MaBoSSInitialStates extends React.Component {
 											<BufferedRange
 												value={this.state.initialStates[name]} id={"initial_state_" + index}
 											   	updateCallback={(value) => this.updateInitialState(name, value)}
-												buffer={100}
+												buffer={50}
 										   	/>
 										</th>
 									</tr>

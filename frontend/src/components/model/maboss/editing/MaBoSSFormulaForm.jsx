@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
 import APICalls from "../../../api/apiCalls";
 import LoadingInlineIcon from "../../../commons/loaders/LoadingInlineIcon";
+import BufferedTextField from "../../../commons/buttons/BufferedTextField";
 
 class MaBoSSFormulaForm extends React.Component {
 
@@ -30,6 +31,9 @@ class MaBoSSFormulaForm extends React.Component {
 
 		this.inputNameRef = React.createRef();
 		this.inputFormulaRef = React.createRef();
+
+		this.onFormulaChange = this.onFormulaChange.bind(this);
+		this.onNameChange = this.onNameChange.bind(this);
 	}
 
 
@@ -142,22 +146,35 @@ class MaBoSSFormulaForm extends React.Component {
 						{ this.state.showErrors ? <ErrorAlert errorMessages={errors}/> : null}
 						<div className="form-group">
 							<label htmlFor="name">Name</label>
-							<input
-								id="name" name="name" ref={this.inputNameRef}
-								type="text" value={this.props.field !== null ? this.props.field : this.state.name}
-								className={"form-control" + (this.state.nameError !== "" ?" is-invalid":"")}
-								onChange={(e) => this.onNameChange(e.target.value)}
-								disabled={this.props.field !== null}
+							<BufferedTextField
+								name={"name"} inputRef={this.inputNameRef}
+								value={this.props.field !== null ? this.props.field : this.state.name}
+								error={this.state.nameError} disabled={this.props.field !== null}
+								onValueChange={this.onNameChange} buffer={100}
+
 							/>
+							{/*<input*/}
+								{/*id="name" name="name" ref={this.inputNameRef}*/}
+								{/*type="text" value={this.props.field !== null ? this.props.field : this.state.name}*/}
+								{/*className={"form-control" + (this.state.nameError !== "" ?" is-invalid":"")}*/}
+								{/*onChange={(e) => this.onNameChange(e.target.value)}*/}
+								{/*disabled={this.props.field !== null}*/}
+							{/*/>*/}
 						</div>
 						<div className="form-group">
 							<label htmlFor="formula">Formula</label>
-							<input
-								id="formula" name="formula" ref={this.inputFormulaRef}
-								type="text" value={this.state.formula}
-								className={"form-control" + (this.state.formulaError !== "" ?" is-invalid":"")}
-								onChange={(e) => this.onFormulaChange(e.target.value)}
+							<BufferedTextField
+								name={"formula"} inputRef={this.inputFormulaRef}
+								value={this.state.formula}
+								error={this.state.formulaError} disabled={false}
+								onValueChange={this.onFormulaChange} buffer={100}
 							/>
+							{/*<input*/}
+								{/*id="formula" name="formula" ref={this.inputFormulaRef}*/}
+								{/*type="text" value={this.state.formula}*/}
+								{/*className={"form-control" + (this.state.formulaError !== "" ?" is-invalid":"")}*/}
+								{/*onChange={(e) => this.onFormulaChange(e.target.value)}*/}
+							{/*/>*/}
 						</div>
 					</CardBody>
 					<CardFooter>
