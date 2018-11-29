@@ -395,5 +395,22 @@ class MaBoSSCalls {
 		);
 	}
 
+	static createSensitivityAnalysis(project_id, model_id, settings) {
+		const formData = new FormData();
+		formData.append('settings', JSON.stringify(settings));
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/maboss_sensitivity",
+				{
+					method: "post",
+					body: formData,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response)
+			)
+		);
+	}
+
 }
 export default MaBoSSCalls;

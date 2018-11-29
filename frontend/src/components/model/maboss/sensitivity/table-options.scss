@@ -1,0 +1,31 @@
+ul.list-options {
+
+  list-style-type: none;
+  padding-left: 0;
+
+
+  li.option, li.sub-option {
+    display: flex !important;
+    align-items: center;
+    padding: 0.5rem;
+
+    span.name {
+      flex: 1 1 auto !important;
+    }
+    span.value {
+      display: flex !important;
+      align-items: center;
+    }
+  }
+  li.sub-option {
+    padding-left: 1rem;
+  }
+}
+
+.btn-xs {
+  padding: 0.2rem 0.4rem;
+  font-size: 0.7rem;
+  line-height: 1.2;
+  border-radius: 0.16rem;
+}
+

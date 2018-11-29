@@ -22,6 +22,7 @@ import {SteadyStatesWrapper} from "./model/steady_states/SteadyStatesWrapper";
 import {MaBoSSSimulationWrapper} from "./model/maboss/simulation/MaBoSSSimulationWrapper";
 import MaBossEditing from "./model/maboss/editing/Editing";
 import MaBoSSSettings from "./profile/maboss_settings/MaBoSSSettings";
+import Sensitivity from "./model/maboss/sensitivity/Sensitivity";
 
 class App extends Component {
 
@@ -43,6 +44,7 @@ class App extends Component {
 					<Route exact path="/model/fixed_points/" component={SteadyStatesWrapper} />
 					<Route exact path="/model/maboss/simulation/" component={MaBoSSSimulationWrapper} />
 					<Route exact path="/model/maboss/editing/" component={MaBossEditing} />
+					<Route exact path="/model/maboss/sensitivity/" component={Sensitivity} />
 
 					<Route exact path="/profile/account/" component={Profile} />
 					<Route exact path="/profile/maboss/" component={MaBoSSSettings} />

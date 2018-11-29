@@ -34,6 +34,9 @@ class SideBar extends React.Component {
 								<li>
 									<NavLink to="/model/maboss/simulation/" className="nav-link">Simulation</NavLink>
 								</li>
+								<li>
+									<NavLink to="/model/maboss/sensitivity/" className="nav-link">Sensitivity</NavLink>
+								</li>
 							</ul>
 							: null}
 					</li>
