@@ -109,7 +109,8 @@ class MaBoSSCheckFormula(HasModel):
 		elif field == "rateDown":
 			field = "rt_down"
 
-		res = maboss_sim.check_formula(node, field, request.POST['formula'])
+		maboss_sim.save_formula(node, field, request.POST['formula'])
+		res = maboss_sim.check_model()
 
 		data = {'error': ''}
 
@@ -120,6 +121,10 @@ class MaBoSSCheckFormula(HasModel):
 			for message in res:
 				if message.startswith("node") and message.endswith("used but not defined"):
 					data.update({'error': message})
+
+		elif any([message.startswith("invalid use of alias attribute @logic in node") for message in res]) and field == "logExp":
+			data.update({'error': "Syntax error"})
+
 
 		elif len(res) > 0:
 			data.update({'error': res[0]})
@@ -145,7 +150,10 @@ class MaBoSSCheckFormula(HasModel):
 		data = {'error': ''}
 
 		if any([message == ("invalid use of alias attribute @%s in node %s" % (field, node)) for message in res]):
-			data.update({'error': 'The formula %s is used in the model' % node})
+			if field == "logic":
+				data.update({'error': 'The logical formula is used elsewhere in the model'})
+			else:
+				data.update({'error': 'The formula %s is used in the model' % field})
 
 		elif len(res) > 0:
 			data.update({'error': res[0]})
