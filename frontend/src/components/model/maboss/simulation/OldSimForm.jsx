@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import APICalls from "../../../api/apiCalls";
+import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 
 
 class OldSimForm extends React.Component {
@@ -19,6 +20,11 @@ class OldSimForm extends React.Component {
 	}
 
 	loadListSimulations(project_id, model_id) {
+
+		if (this.getListSimulationCall !== null) {
+			this.getListSimulationCall.cancel();
+        }
+
 		this.setState({
 			listOfSimulations: [],
 			selectedSimulation: "Please select a simulation",
@@ -43,10 +49,10 @@ class OldSimForm extends React.Component {
 		this.props.onSubmit(this.state.selectedSimulationId);
 	}
 
-	onSimulationChanged(simulation) {
+	onSimulationChanged(simulation_id, name) {
 		this.setState({
-			selectedSimulation: "Simulation " + simulation,
-			selectedSimulationId: simulation
+			selectedSimulation: name,
+			selectedSimulationId: simulation_id
 		})
 	}
 
@@ -60,9 +66,12 @@ class OldSimForm extends React.Component {
 	}
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.modelId !== this.props.modelId) {
-			this.getListSimulationCall.cancel();
 			this.loadListSimulations(nextProps.project, nextProps.modelId);
 			return false;
+		}
+
+		if (nextProps.status && nextProps.status !== this.props.status) {
+			this.loadListSimulations(nextProps.project, nextProps.modelId);
 		}
 
 		return true;
@@ -75,23 +84,29 @@ class OldSimForm extends React.Component {
 					<Card>
 						<CardHeader>Load existing simulation</CardHeader>
 						<CardBody>
-							<div className="dropdown container-fluid">
-								<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-										data-toggle="dropdown"
-										aria-haspopup="true" aria-expanded="false" style={{width: '100%'}}>
-									{this.state.selectedSimulation}
-								</button>
-								<div className="dropdown-menu" aria-labelledby="dropdownMenuButton" style={{width: '100%'}}>
-									{this.state.listOfSimulations.map((simulation, id) => {
-										return <a
-											className="dropdown-item" key={simulation.id}
-											onClick={(e) => this.onSimulationChanged(simulation.id)}
-										>Simulation {simulation.id}
-										</a>
+                            {
+                            	this.state.listOfSimulations.length > 0 ?
+									<div className="dropdown container-fluid">
+										<button className="btn btn-secondary dropdown-toggle" type="button"
+												id="dropdownMenuButton"
+												data-toggle="dropdown"
+												aria-haspopup="true" aria-expanded="false" style={{width: '100%'}}>
+											{this.state.selectedSimulation}
+										</button>
+										<div className="dropdown-menu" aria-labelledby="dropdownMenuButton"
+											 style={{width: '100%'}}>
+											{this.state.listOfSimulations.map((simulation, id) => {
+												return <a
+													className="dropdown-item" key={simulation.id}
+													onClick={(e) => this.onSimulationChanged(simulation.id, simulation.name)}
+												>{simulation.name}</a>
 
-									})}
-								</div>
-							</div>
+											})}
+										</div>
+									</div>
+                                :
+                                	<LoadingIcon width="3rem"/>
+                            }
 						</CardBody>
 						<CardFooter>
 							<ButtonToolbar className="d-flex">

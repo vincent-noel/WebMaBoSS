@@ -5,6 +5,8 @@ import TableSwitches from "../../../commons/TableSwitches";
 import APICalls from "../../../api/apiCalls";
 import ErrorAlert from "../../../commons/ErrorAlert";
 
+import "./new-sim-form.scss";
+import Switch from "../../../commons/buttons/Switch";
 
 class NewSimForm extends React.Component {
 
@@ -12,9 +14,21 @@ class NewSimForm extends React.Component {
 		super(props);
 
 		this.state = {
-			sampleCount: 1000,
-			maxTime: 50,
-			timeTick: 1,
+
+			settings: {
+				sample_count: 50000,
+				max_time: 1000,
+				time_tick: .2,
+				discrete_time: false,
+				use_physrandgen: true,
+				seed_pseudorandom: 100,
+				statdist_traj_count: 1000,
+				statdist_cluster_threshold: 0.98,
+				thread_count: 4,
+
+			},
+
+			name: "",
 
 			activeTab: 'general',
 
@@ -29,10 +43,13 @@ class NewSimForm extends React.Component {
 		this.sampleCountRef = React.createRef();
 		this.maxTimeRef = React.createRef();
 		this.timeTickRef = React.createRef();
+		this.threadCountRef = React.createRef();
+		this.pseudoRandomSeedRef = React.createRef();
+		this.statdistTrajCountRef = React.createRef();
+		this.statdistClusterThresholdRef = React.createRef();
 
-		this.handleSampleCountChange.bind(this);
-		this.handleMaxTimeChange.bind(this);
-		this.handleTimeTickChange.bind(this);
+        this.handleDiscreteTimeChange = this.handleDiscreteTimeChange.bind(this);
+		this.handlePhysicalRandGen = this.handlePhysicalRandGen.bind(this);
 
 		this.toggleTab.bind(this);
 
@@ -90,7 +107,8 @@ class NewSimForm extends React.Component {
 				outputVariables: output_variables,
 				initialStates: initial_states,
 				listNodes: Object.keys(response['initial_states']),
-				mutatedVariables: mutated_variables
+				mutatedVariables: mutated_variables,
+				settings: response['settings']
 			}
 		)})
 	}
@@ -113,16 +131,52 @@ class NewSimForm extends React.Component {
 		this.setState({mutatedVariables: mutated_variables});
 	}
 
+	handleNameChange(e) {
+		const value = e.target.value;
+		this.setState(prevState => ({name: value}));
+	}
+
 	handleSampleCountChange(e) {
-		this.setState({sampleCount: e.target.value});
+		const value = e.target.value;
+		this.setState(prevState => ({settings: {...prevState.settings, sample_count: value}}));
+	}
+
+	handleThreadCountChange(e) {
+		const value = e.target.value;
+		this.setState(prevState => ({settings: {...prevState.settings, thread_count: value}}));
+	}
+
+	handleDiscreteTimeChange(value) {
+		this.setState(prevState => ({settings: {...prevState.settings, discrete_time: value}}))
 	}
 
 	handleMaxTimeChange(e) {
-		this.setState({maxTime: e.target.value});
+		const value = e.target.value;
+		this.setState(prevState => ({settings: {...prevState.settings, max_time: value}}));
 	}
 
 	handleTimeTickChange(e) {
-		this.setState({timeTick: e.target.value});
+		const value = e.target.value;
+		this.setState(prevState => ({settings: {...prevState.settings, time_tick: value}}));
+	}
+
+	handlePhysicalRandGen(value) {
+		this.setState(prevState => ({settings: {...prevState.settings, use_physrandgen: value}}));
+	}
+
+	handlePseudoRandomSeed(e) {
+		const value = e.target.value;
+		this.setState(prevState => ({settings: {...prevState.settings, seed_pseudorandom: value}}));
+	}
+
+	handleStatdistTrajCount(e) {
+		const value = e.target.value;
+		this.setState(prevState => ({settings: {...prevState.settings, statdist_traj_count: value}}));
+	}
+
+	handleStatdistClusterThreshold(e) {
+		const value = e.target.value;
+		this.setState(prevState => ({settings: {...prevState.settings, statdist_cluster_threshold: value}}));
 	}
 
 	toggleTab(tab) {
@@ -139,30 +193,30 @@ class NewSimForm extends React.Component {
 			errors.push("Please select at least one output variable");
 		}
 
-		if (!this.state.sampleCount) {
+		if (!this.state.settings.sample_count) {
 			errors.push("Please provide a value for the sample count");
 			this.sampleCountRef.current.focus();
 
-		} else if (isNaN(this.state.sampleCount)) {
+		} else if (isNaN(this.state.settings.sample_count)) {
 			errors.push("Please provide a valid value for the sample count");
 			this.sampleCountRef.current.focus();
 		}
 
-		if (!this.state.maxTime) {
+		if (!this.state.settings.max_time) {
 			errors.push("Please provide a value for the maximum time");
 			this.maxTimeRef.current.focus();
 
-		} else if (isNaN(this.state.maxTime)) {
+		} else if (isNaN(this.state.settings.max_time)) {
 			errors.push("Please provide a valid value for the maximum time");
 			this.maxTimeRef.current.focus();
 
 		}
 
-		if (!this.state.timeTick) {
+		if (!this.state.settings.time_tick) {
 			errors.push("Please provide a value for the time tick");
 			this.timeTickRef.current.focus();
 
-		} else if (isNaN(this.state.timeTick)) {
+		} else if (isNaN(this.state.settings.time_tick)) {
 			errors.push("Please provide a valid value for the time tick");
 			this.timeTickRef.current.focus();
 
@@ -195,9 +249,8 @@ class NewSimForm extends React.Component {
 			this.props.onSubmit(
 				this.props.project, this.props.modelId,
 				{
-					sampleCount: this.state.sampleCount,
-					maxTime: this.state.maxTime,
-					timeTick: this.state.timeTick,
+					name: this.state.name,
+					settings: this.state.settings,
 					initialStates: initial_states,
 					outputVariables: this.state.outputVariables,
 					mutations: mutations,
@@ -266,34 +319,70 @@ class NewSimForm extends React.Component {
 							</Nav>
 							<TabContent activeTab={this.state.activeTab}>
 								<br/>
-								<TabPane tabId="general">
-									<div className="form-group row">
-										<label htmlFor="sampleCount" className="col-sm-2 col-form-label">Sample count</label>
-										<div className="col-sm-10">
-											<input type="numbers" className="form-control" id="sampleCount" placeholder="1000"
-												   value={this.state.sampleCount} ref={this.sampleCountRef}
-												   onChange={(e) => this.handleSampleCountChange(e)}
-
-											/>
-										</div>
+								<TabPane tabId="general" className="tab-general">
+									<div className="form-group general">
+										<label htmlFor="name" className="name">Name</label>
+										<input type="text" className="form-control large" id="name" placeholder="Name of the simulation"
+											   value={this.state.name} ref={this.nameRef}
+											   onChange={(e) => this.handleNameChange(e)}
+										/>
 									</div>
-									<div className="form-group row">
-										<label htmlFor="maxTime" className="col-sm-2 col-form-label">Max time</label>
-										<div className="col-sm-10">
-											<input type="number" className="form-control" id="maxTime" placeholder="100"
-												   value={this.state.maxTime} ref={this.maxTimeRef}
-												   onChange={(e) => this.handleMaxTimeChange(e)}
-											/>
-										</div>
+									<div className="form-group general">
+										<label htmlFor="maxTime" className="name">Max time</label>
+										<input type="number" className="form-control" id="maxTime" placeholder="100"
+											   value={this.state.settings.max_time} ref={this.maxTimeRef}
+											   onChange={(e) => this.handleMaxTimeChange(e)}
+										/>
 									</div>
-									<div className="form-group row">
-										<label htmlFor="timeTick" className="col-sm-2 col-form-label">Time tick</label>
-										<div className="col-sm-10">
-											<input type="number" className="form-control" id="timeTick" placeholder="1"
-												   value={this.state.timeTick} ref={this.timeTickRef}
-												   onChange={(e) => this.handleTimeTickChange(e)}
-											/>
-										</div>
+									<div className="form-group general">
+										<label htmlFor="timeTick" className="name">Time tick</label>
+										<input type="number" className="form-control" id="timeTick" placeholder="1"
+											   value={this.state.settings.time_tick} ref={this.timeTickRef}
+											   onChange={(e) => this.handleTimeTickChange(e)}
+										/>
+									</div>
+										<div className="form-group general">
+										<label htmlFor="sampleCount" className="name">Sample count</label>
+										<input type="number" className="form-control" id="sampleCount" placeholder="1000"
+										   value={this.state.settings.sample_count} ref={this.sampleCountRef}
+										   onChange={(e) => this.handleSampleCountChange(e)}
+										/>
+									</div>
+									<div className="form-group general">
+										<label htmlFor="threadCount" className="name">Thread count</label>
+										<input type="number" className="form-control" id="threadCount" placeholder="4"
+										   value={this.state.settings.thread_count} ref={this.threadCountRef}
+										   onChange={(e) => this.handleThreadCountChange(e)}
+										/>
+									</div>
+									<div className="form-group general">
+										<label htmlFor="discreteTime" className="name">Discrete time</label>
+										<Switch checked={this.state.settings.discrete_time} updateCallback={this.handleDiscreteTimeChange} id={"discreteTime"}/>
+									</div>
+									<div className="form-group general">
+										<label htmlFor="physicalRandGen" className="name">Use physical random generator</label>
+										<Switch checked={this.state.settings.use_physrandgen} updateCallback={this.handlePhysicalRandGen} id={"physicalRandGen"}/>
+									</div>
+									<div className="form-group general">
+										<label htmlFor="pseudoRandomSeed" className="name">Pseudorandom seed</label>
+										<input type="number" className="form-control" id="pseudoRandomSeed" placeholder="100"
+										   value={this.state.settings.seed_pseudorandom} ref={this.pseudoRandomSeedRef}
+										   onChange={(e) => this.handlePseudoRandomSeed(e)}
+										/>
+									</div>
+									<div className="form-group general">
+										<label htmlFor="statdistTrajCount" className="name">Statdist Traj Count</label>
+										<input type="number" className="form-control" id="statdistTrajCount" placeholder="1000"
+										   value={this.state.settings.statdist_traj_count} ref={this.statdistTrajCountRef}
+										   onChange={(e) => this.handleStatdistTrajCount(e)}
+										/>
+									</div>
+									<div className="form-group general">
+										<label htmlFor="statdistClusterThreshold" className="name">Statdist Cluster Threshold</label>
+										<input type="number" className="form-control" id="statdistClusterThreshold" placeholder="0.98"
+										   value={this.state.settings.statdist_cluster_threshold} ref={this.statdistClusterThresholdRef}
+										   onChange={(e) => this.handleStatdistClusterThreshold(e)}
+										/>
 									</div>
 								</TabPane>
 								<TabPane tabId="initial_states">

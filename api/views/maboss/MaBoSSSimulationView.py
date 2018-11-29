@@ -10,6 +10,7 @@ from django.http import Http404, HttpResponse
 from django.conf import settings
 from django.db import transaction
 from api.views.HasModel import HasModel
+from api.views.HasMaBoSSSimulation import HasMaBoSSSimulation
 from api.serializers import MaBoSSSimulationSerializer
 from api.models import LogicalModel, MaBoSSSimulation, Project
 
@@ -19,7 +20,6 @@ from os import remove
 from json import loads, dumps
 import ginsim
 import maboss
-
 
 class MaBoSSSimulationView(HasModel):
 
@@ -53,6 +53,7 @@ class MaBoSSSimulationView(HasModel):
 			maboss_simulation = MaBoSSSimulation(
 				project=self.project,
 				model=self.model,
+				name=request.POST['name'],
 				bnd_file=File(open(tmp_bnd_path, 'rb')),
 				cfg_file=File(open(tmp_cfg_path, 'rb'))
 			)
@@ -69,6 +70,7 @@ class MaBoSSSimulationView(HasModel):
 			maboss_simulation = MaBoSSSimulation(
 				project=self.project,
 				model=self.model,
+				name=request.POST['name'],
 				bnd_file=File(open(bnd_path, 'rb')),
 				cfg_file=File(open(cfg_path, 'rb'))
 			)
@@ -79,11 +81,8 @@ class MaBoSSSimulationView(HasModel):
 			return HttpResponse(status=500)
 
 
-		maboss_model.update_parameters(
-			sample_count=int(request.POST['sampleCount']),
-			max_time=float(request.POST['maxTime']),
-			time_tick=float(request.POST['timeTick'])
-		)
+		cfg_settings = loads(request.POST['settings'])
+		maboss_model.param.update(cfg_settings)
 
 		mutations = loads(request.POST['mutations'])
 		for var, mutation in mutations.items():
@@ -145,28 +144,15 @@ def run_simulation(maboss_model, maboss_simulation_id):
 			maboss_simulation.error = "Simulation failed"
 
 
-class MaBoSSSimulationRemove(APIView):
+class MaBoSSSimulationRemove(HasMaBoSSSimulation):
 
-	def delete(self, request, simulation_id):
+	def delete(self, request, project_id, simulation_id):
 
-		if request.user.is_anonymous:
-			raise PermissionDenied
+		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
 
-		try:
-			simulation = MaBoSSSimulation.objects.get(id=simulation_id)
+		self.simulation.delete()
+		return Response(status=status.HTTP_200_OK)
 
-			if simulation.project.user != request.user:
-				raise PermissionDenied
-
-			simulation.delete()
-
-			return Response(status=status.HTTP_200_OK)
-
-		except LogicalModel.DoesNotExist:
-			raise Http404
-
-		except Project.DoesNotExist:
-			raise Http404
 
 class MaBossSettings(HasModel):
 
@@ -179,6 +165,13 @@ class MaBossSettings(HasModel):
 		output_variables = {var: not value.is_internal for var, value in maboss_model.network.items()}
 		initial_states = maboss_model.network.get_istate()
 		mutations = maboss_model.get_mutations()
+		settings = {key: value for key, value in maboss_model.param.items() if not key.startswith("$")}
+
+		if settings['use_physrandgen'] in [0, 1]:
+			settings.update({'use_physrandgen': bool(settings['use_physrandgen'])})
+
+		if settings['discrete_time'] in [0, 1]:
+			settings.update({'discrete_time': bool(settings['discrete_time'])})
 
 		# Here the problem is the variables with more than two states, who appear in the initial states as :
 		# (Var_1, Var_2, Var_3) : {(0, 0, 0): 1, (1, 0, 0): 0, (1, 1, 0): 0, (1, 1, 1): 0}
@@ -210,6 +203,7 @@ class MaBossSettings(HasModel):
 		return Response({
 			'output_variables': output_variables,
 			'initial_states': fixed_initial_states,
-			'mutations': mutations
+			'mutations': mutations,
+			'settings': settings
 		})
 

@@ -19,7 +19,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 class MaBoSSSimulationSerializer(serializers.ModelSerializer):
     class Meta:
         model = MaBoSSSimulation
-        fields = ['id']
+        fields = ['id', 'name']
 
 class MaBoSSServerSerializer(serializers.ModelSerializer):
     class Meta:

@@ -1,0 +1,56 @@
+div.tab-settings {
+
+  list-style-type: none;
+  padding: 0.5rem;
+  overflow: auto;
+  height: 20rem;
+
+  div.setting {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+
+    label.name {
+      flex-shrink: 0;
+      margin-bottom: 0;
+      flex: 1 1 auto !important;
+    }
+
+    input[type=text], input[type=number] {
+      width: 10rem;
+      margin-left: 3rem;
+      text-align: right;
+    }
+  }
+}
+
+div.tab-general {
+
+  list-style-type: none;
+  padding: 0.5rem;
+  overflow: auto;
+  height: 20rem;
+
+  div.general {
+    display: flex !important;
+    justify-content: center;
+    align-items: center;
+
+    label.name {
+      flex-shrink: 0;
+      margin-bottom: 0;
+      flex: 1 1 auto !important;
+    }
+
+    input[type=text], input[type=number] {
+      width: 10rem;
+      margin-left: 3rem;
+      text-align: right;
+    }
+     input[type=text].large {
+      width: 20rem;
+      margin-left: 3rem;
+      text-align: right;
+    }
+  }
+}

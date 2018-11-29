@@ -51,6 +51,7 @@ class MaBossNodesProbTraj extends React.Component {
 
 		if (this.props.simulationId !== nextProps.simulationId) {
 			this.getNodesProbtrajCall.cancel();
+			this.setState({nodesProbTrajLoaded: false, nodesProbTraj: null});
 			this.nodesProbTrajChecker = setInterval(
 				() => this.getNodesProbtraj(nextProps.project, nextProps.simulationId), 1000
 			);

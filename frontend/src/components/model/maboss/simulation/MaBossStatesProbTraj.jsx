@@ -68,6 +68,7 @@ class MaBossStatesProbTraj extends React.Component {
 
 		if (this.props.simulationId !== nextProps.simulationId) {
 			this.getStateProbtrajCall.cancel();
+			this.setState({statesProbTrajLoaded: false, statesProbTraj: null});
 			this.statesProbTrajChecker = setInterval(
 				() => this.getStateProbtraj(nextProps.project, nextProps.simulationId), 1000
 			);

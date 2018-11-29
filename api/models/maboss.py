@@ -34,6 +34,8 @@ class MaBoSSSimulation(models.Model):
 
 	project = models.ForeignKey(Project, on_delete=models.CASCADE)
 	model = models.ForeignKey(LogicalModel, on_delete=models.CASCADE)
+
+	name = models.CharField(max_length=256)
 	path = models.CharField(max_length=12)
 
 	bnd_file = models.FileField(upload_to=path_simulation_model)
@@ -65,6 +67,8 @@ class MaBoSSSimulation(models.Model):
 		if self.project:
 			self.path = new_simulation_path(self.project)
 			super(MaBoSSSimulation, self).save(*args, **kwargs)
+			if self.name == "":
+				self.name = "Simulation %d" % self.id
 
 pre_delete.connect(remove_simulation_model, sender=MaBoSSSimulation)
 pre_save.connect(create_path, sender=MaBoSSSimulation)

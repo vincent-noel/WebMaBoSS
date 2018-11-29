@@ -299,9 +299,8 @@ class MaBoSSCalls {
 	static createMaBoSSSimulation(project_id, model_id, data) {
 
 		const formData = new FormData();
-		formData.append('sampleCount', data.sampleCount);
-		formData.append('maxTime', data.maxTime);
-		formData.append('timeTick', data.timeTick);
+		formData.append('name', data.name);
+		formData.append('settings', JSON.stringify(data.settings));
 		formData.append('initialStates', JSON.stringify(data.initialStates));
 		formData.append('outputVariables', JSON.stringify(data.outputVariables));
 		formData.append('mutations', JSON.stringify(data.mutations));

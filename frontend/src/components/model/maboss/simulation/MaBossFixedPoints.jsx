@@ -43,6 +43,7 @@ class MaBossFixedPoints extends React.Component {
 
 		if (this.props.simulationId !== nextProps.simulationId && nextProps.simulationId !== null) {
 			this.getFixedPointsCall.cancel();
+			this.setState({fptableLoaded: false, fptable: null});
 			this.fixedPointsChecker = setInterval(() => this.getFixedPoints(nextProps.project, nextProps.simulationId), 1000);
 			return false;
 		}
