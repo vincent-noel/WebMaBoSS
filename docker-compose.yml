@@ -27,10 +27,11 @@ services:
       - "8889:8888"
     user: user
     volumes:
-      - /home/labestiol/Work/code/AppCurie:/appCurie
-      - /home/labestiol/Work/code/GINsim-python/ginsim:/opt/conda/lib/python3.6/site-packages/ginsim
-      - /home/labestiol/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
-      - /home/labestiol/Work/code/pyMaBoSS/maboss:/opt/conda/lib/python3.6/site-packages/maboss
+      - ~/Work/code/AppCurie:/appCurie
+      - ~/Work/code/GINsim-python/ginsim:/opt/conda/lib/python3.6/site-packages/ginsim
+      - ~/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
+      - ~/Work/code/pyMaBoSS/maboss:/opt/conda/lib/python3.6/site-packages/maboss
+      - ~/Work/code/Notebooks/colomoto/notebook:/notebook
 
     restart: unless-stopped
 
