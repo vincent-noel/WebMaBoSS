@@ -21,6 +21,7 @@ from json import loads, dumps
 import ginsim
 import maboss
 
+
 class MaBoSSSimulationView(HasModel):
 
 	def get(self, request, project_id, model_id):
@@ -29,7 +30,6 @@ class MaBoSSSimulationView(HasModel):
 		simulations = MaBoSSSimulation.objects.filter(model=self.model)
 		serializer = MaBoSSSimulationSerializer(simulations, many=True)
 		return Response(serializer.data)
-
 
 	def post(self, request, project_id, model_id):
 

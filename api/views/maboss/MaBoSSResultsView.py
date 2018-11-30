@@ -35,7 +35,6 @@ class MaBoSSResultsStatesProbTraj(HasMaBoSSSimulation):
 
 		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
 
-
 		if self.simulation.states_probtraj is not None:
 			states_probtraj = loads(self.simulation.states_probtraj)
 
@@ -70,4 +69,3 @@ class MaBoSSResultsNodesProbTraj(HasMaBoSSSimulation):
 			},
 			status=status.HTTP_200_OK
 		)
-

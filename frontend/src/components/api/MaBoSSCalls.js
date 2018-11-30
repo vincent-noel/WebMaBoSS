@@ -412,5 +412,30 @@ class MaBoSSCalls {
 		);
 	}
 
+	static getSensitivityAnalysis(project_id, model_id) {
+        return makeCancelable(
+            fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/maboss_sensitivity",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+            ).then(response => checkAuthorization(response)
+			).then(response => response.json())
+        )
+    }
+
+	static getSensitivityAnalysisSteadyStates(project_id, analysis_id) {
+        return makeCancelable(
+            fetch(
+				"/api/maboss_sensitivity/" + project_id + "/" + analysis_id + "/steady_states/",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+            ).then(response => checkAuthorization(response)
+			).then(response => response.json())
+        )
+    }
 }
 export default MaBoSSCalls;
