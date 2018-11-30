@@ -1,7 +1,7 @@
 import React from "react";
-import {Line} from "react-chartjs-2";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import APICalls from "../../../api/apiCalls";
+import LineChart from "../../../charts/LineChart";
 
 
 class MaBossNodesProbTraj extends React.Component {
@@ -64,34 +64,14 @@ class MaBossNodesProbTraj extends React.Component {
 	render() {
 
 		if (this.state.nodesProbTrajLoaded) {
+			return <LineChart
+				traj={this.state.nodesProbTraj}
+				colormap={this.props.colormap}
+			/>
 
-			const probtraj = this.state.nodesProbTraj;
-			const data = {
-				labels: Object.keys(Object.values(probtraj)[0]),
-				datasets : Object.keys(probtraj).map(
-					(key, index) => {
-						return {
-							label: key,
-							data: Object.values(probtraj[key]),
-							fill: false,
-            				backgroundColor: this.props.colormap[index%this.props.colormap.length],
-          					borderColor: this.props.colormap[index%this.props.colormap.length],
-						};
-					}
-				)
-			};
-
-			const options = {
-				legend: {
-					position: 'bottom',
-				}
-			};
-
-			return (
-				<Line data={data} options={options}/>
-			);
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
+
 		} else {
 			return <div/>
 		}

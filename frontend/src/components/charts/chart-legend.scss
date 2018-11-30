@@ -1,0 +1,32 @@
+div.chart-legend {
+    display: flex !important;
+    justify-content: center;
+    flex-wrap: wrap;
+    cursor: pointer;
+
+    div.legend-item {
+      display: flex !important;
+      align-items: center;
+      font-size: 0.8rem;
+      color: #666;
+
+      span.legend-color {
+        width:45px;
+        height:15px;
+        display:inline-block;
+        margin-right:5px;
+      }
+
+      span.legend-label {
+        text-decoration: none;
+        margin-right:10px;
+      }
+
+      &.disable-legend {
+        span.legend-label{
+          text-decoration: line-through;
+        }
+      }
+
+    }
+}
