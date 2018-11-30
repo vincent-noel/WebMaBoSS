@@ -3,8 +3,7 @@ import ReactDOMServer from "react-dom/server";
 import {Line} from "react-chartjs-2";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import APICalls from "../../../api/apiCalls";
-import $ from 'jquery';
-import "./chart-legend.scss"
+import LineChart from "../../../charts/LineChart";
 
 
 class MaBossStatesProbTraj extends React.Component {
@@ -20,31 +19,6 @@ class MaBossStatesProbTraj extends React.Component {
 		this.statesProbTrajChecker = null;
 		this.getStateProbtrajCall = null;
 
-		this.chartRef = this.chartRef.bind(this);
-		this.legendRef = this.legendRef.bind(this);
-
-		this.chartInstance = undefined;
-	}
-
-	chartRef(ref) {
-		if (ref !== null) {
-			this.chartInstance = ref.chartInstance;
-		}
-	}
-
-	legendRef(ref) {
-		if (ref !== null){
-			ref.innerHTML = this.chartInstance.generateLegend();
-		}
-
-		$(ref).find(".legend-item").on('click', (e) => this.onClickLegend(e));
-	}
-
-	onClickLegend(e) {
-	   let index = $(e.currentTarget).index();
-	   this.chartInstance.data.datasets[index].hidden = !this.chartInstance.data.datasets[index].hidden;
-	   $(e.currentTarget).toggleClass('disable-legend');
-	   this.chartInstance.update();
 	}
 
 	getStateProbtraj(project_id, simulation_id) {
@@ -57,7 +31,6 @@ class MaBossStatesProbTraj extends React.Component {
 			}
 		});
 	}
-
 
 	shouldComponentUpdate(nextProps, nextState) {
 
@@ -92,52 +65,51 @@ class MaBossStatesProbTraj extends React.Component {
 	render() {
 
 		if (this.state.statesProbTrajLoaded) {
-
-			const probtraj = this.state.statesProbTraj;
-			let data = {
-				labels: Object.keys(Object.values(probtraj)[0]),
-				datasets : Object.keys(probtraj).map(
-					(key, index) => {
-						return {
-							label: key,
-							data: Object.values(probtraj[key]),
-							fill: false,
-            				backgroundColor: this.props.colormap[index%this.props.colormap.length],
-          					borderColor: this.props.colormap[index%this.props.colormap.length],
-						};
-					}
-				)
-			};
-
-			let options = {
-				legend: {
-					display: false,
-
-				},
-				legendCallback: (chart) => {
-
-					return (ReactDOMServer.renderToStaticMarkup(<ul className="chart-legend">
-						{
-							chart.data.datasets.map((dataset, index) => {
-
-								return <li key={index} className={"legend-item d-flex"}>
-									<span className={"legend-color"}
-										style={{backgroundColor: dataset.backgroundColor}}
-									></span>
-									<span className={"legend-label align-items-start"}>{dataset.label}</span>
-								</li>;
-							})
-						}
-					</ul>));
-				}
-			};
-
-			return (
-				<React.Fragment>
-					<Line data={data} options={options} ref={this.chartRef}/>
-					<div ref={this.legendRef}></div>
-				</React.Fragment>
-			);
+			return <LineChart traj={this.state.statesProbTraj} colormap={this.props.colormap}/>
+			// const probtraj = this.state.statesProbTraj;
+			// let data = {
+			// 	labels: Object.keys(Object.values(probtraj)[0]),
+			// 	datasets : Object.keys(probtraj).map(
+			// 		(key, index) => {
+			// 			return {
+			// 				label: key,
+			// 				data: Object.values(probtraj[key]),
+			// 				fill: false,
+            // 				backgroundColor: this.props.colormap[index%this.props.colormap.length],
+          	// 				borderColor: this.props.colormap[index%this.props.colormap.length],
+			// 			};
+			// 		}
+			// 	)
+			// };
+			//
+			// let options = {
+			// 	legend: {
+			// 		display: false,
+			//
+			// 	},
+			// 	legendCallback: (chart) => {
+			//
+			// 		return (ReactDOMServer.renderToStaticMarkup(<ul className="chart-legend">
+			// 			{
+			// 				chart.data.datasets.map((dataset, index) => {
+			// 					return <li key={index} className={"legend-item d-flex"}>
+			// 						<span className={"legend-color"}
+			// 							style={{backgroundColor: dataset.backgroundColor}}
+			// 						></span>
+			// 						<span className={"legend-label align-items-start"}>{dataset.label}</span>
+			// 					</li>;
+			// 				})
+			// 			}
+			// 		</ul>));
+			// 	}
+			// };
+			//
+			// return (
+			// 	<React.Fragment>
+			// 		<Line data={data} options={options} ref={this.chartRef}/>
+			// 		<div ref={this.legendRef}></div>
+			// 	</React.Fragment>
+			// );
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
 		} else {
