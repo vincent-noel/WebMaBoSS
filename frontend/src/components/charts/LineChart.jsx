@@ -69,18 +69,17 @@ class LineChart extends React.Component {
 				legend: {
 					display: false,
 				},
-				legendCallback: (chart) => {
-					return (ReactDOMServer.renderToStaticMarkup(
-						chart.data.datasets.map((dataset, index) => {
-							return <div key={index} className={"legend-item"}>
-								<span className={"legend-color"}
-									style={{backgroundColor: dataset.backgroundColor}}
-								></span>
-								<span className={"legend-label"}>{dataset.label}</span>
-							</div>;
-						})
-					));
-				}
+
+				legendCallback: (chart) => ReactDOMServer.renderToStaticMarkup(
+					chart.data.datasets.map(
+						(dataset, index) => <div key={index} className={"legend-item"}>
+							<span className={"legend-color"}
+								style={{backgroundColor: dataset.backgroundColor}}
+							></span>
+							<span className={"legend-label"}>{dataset.label}</span>
+						</div>
+					)
+				),
 			};
 
 			return (
