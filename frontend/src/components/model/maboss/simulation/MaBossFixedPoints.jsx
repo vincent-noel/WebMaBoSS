@@ -1,7 +1,7 @@
 import React from "react";
-import {Pie} from "react-chartjs-2";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import APICalls from "../../../api/apiCalls";
+import PieChart from "../../../charts/PieChart";
 
 class MaBossFixedPoints extends React.Component {
 
@@ -51,39 +51,23 @@ class MaBossFixedPoints extends React.Component {
 
 	}
 
-
 	componentWillUnmount() {
 		this.getFixedPointsCall.cancel();
 		clearInterval(this.fixedPointsChecker);
 	}
 
-
 	render() {
+
 		if (this.state.fptableLoaded) {
+			return <PieChart table={this.state.fptable} colormap={this.props.colormap} title={"poil"}/>
 
-			const data = {
-				labels: Object.keys(this.state.fptable),
-				datasets: [{
-					data: Object.values(this.state.fptable),
-					backgroundColor: Object.values(this.state.fptable).map((value, index) => { return this.props.colormap[index]})
-				}]
-			};
-
-			const options = {
-				legend: {
-					position: 'bottom',
-				}
-			};
-
-			return (
-				<Pie data={data} options={options}/>
-			);
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
+
 		} else {
 			return <div/>
-		}
 
+		}
 	}
 }
 
