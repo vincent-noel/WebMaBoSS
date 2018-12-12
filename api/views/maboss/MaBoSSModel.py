@@ -103,13 +103,15 @@ class MaBoSSCheckFormula(HasModel):
 		maboss_sim = self.getMaBoSSModel()
 
 		if field == "logic":
-			field = "logExp"
-		elif field == "rateUp":
-			field = "rt_up"
-		elif field == "rateDown":
-			field = "rt_down"
+			maboss_sim.network[node].logExp = request.POST['formula']
 
-		res = maboss_sim.check_formula(node, field, request.POST['formula'])
+		elif field == "rateUp":
+			maboss_sim.network[node].rt_up = request.POST['formula']
+
+		elif field == "rateDown":
+			maboss_sim.network[node].rt_down = request.POST['formula']
+
+		res = maboss_sim.check_model()
 
 		data = {'error': ''}
 
