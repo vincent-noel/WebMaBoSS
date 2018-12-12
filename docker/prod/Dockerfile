@@ -17,16 +17,13 @@ RUN \
     && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     && apt-get install -y nodejs yarn
 
+ADD . .
+
 # Updating pip
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install --upgrade django djangorestframework django-rest-auth[with_social] \
-                             coreapi mod_wsgi python-libsbml \
-                             git+https://github.com/vincent-noel/GINsim-python.git \
-                             git+https://github.com/vincent-noel/pyMaBoSS.git
-
-ADD . .
+    && pip install --upgrade -r /appCurie/requirements.txt
 
 # Removing node modules, downloading them from scratch, and transpiling the JSX
 RUN rm -fr node_modules/* yarn.lock; yarn && \

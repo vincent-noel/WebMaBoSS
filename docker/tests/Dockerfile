@@ -6,7 +6,8 @@ ADD . /appCurie
 WORKDIR /appCurie
 
 RUN apt-get -qq update \
-    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https
+    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https \
+                          apache2 apache2-dev
 
 RUN \
     # Yarn sources
@@ -34,9 +35,7 @@ RUN \
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install --upgrade django djangorestframework django-rest-auth[with_social] selenium \
-                             git+https://github.com/vincent-noel/GINsim-python.git coreapi \
-                             git+https://github.com/vincent-noel/pyMaBoSS.git
+    && pip install --upgrade -r /appCurie/requirements.txt
 
 
 RUN yarn \
