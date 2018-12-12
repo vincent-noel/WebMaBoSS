@@ -15,26 +15,6 @@ services:
       - "8000:8000"
     user: www-data
 
-  app-curie-dev:
-    build:
-      context: ./
-      dockerfile: docker/dev/Dockerfile
-
-    image: app-curie-dev
-    container_name: app-curie
-    ports:
-      - "8000:8000"
-      - "8889:8888"
-    user: user
-    volumes:
-      - ~/Work/code/AppCurie:/appCurie
-      - ~/Work/code/GINsim-python/ginsim:/opt/conda/lib/python3.6/site-packages/ginsim
-      - ~/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
-      - ~/Work/code/pyMaBoSS/maboss:/opt/conda/lib/python3.6/site-packages/maboss
-      - ~/Work/code/Notebooks/colomoto/notebook:/notebook
-
-    restart: unless-stopped
-
   app-curie-test:
     build:
       context: ./
