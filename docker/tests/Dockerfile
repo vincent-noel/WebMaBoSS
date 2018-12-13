@@ -2,7 +2,7 @@ FROM colomoto/colomoto-docker:2018-08-17
 MAINTAINER Vincent Noel <contact@vincent-noel.fr>
 
 USER root
-ADD . /appCurie
+ADD . /appCurie/
 WORKDIR /appCurie
 
 RUN apt-get -qq update \
@@ -30,6 +30,7 @@ RUN \
     && echo "deb http://http.debian.net/debian unstable main" | tee /etc/apt/sources.list.d/debian-unstable.list \
     && apt-get -qq update \
     && apt-get install -y firefox
+
 
 # Updating pip
 RUN pip install pip --upgrade \

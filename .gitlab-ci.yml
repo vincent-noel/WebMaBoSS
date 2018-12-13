@@ -10,6 +10,15 @@ before_script:
   - pip install docker-compose
   - docker-compose -v
 
+
+build-dev:
+  stage: build
+  script:
+    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+    - docker-compose build app-curie-dev
+    - docker tag app-curie-dev:latest vnoel/app-curie-dev:latest
+    - docker push vnoel/app-curie-dev:latest
+
 build-test:
   stage: build
   script:

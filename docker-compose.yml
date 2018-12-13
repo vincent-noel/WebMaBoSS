@@ -15,6 +15,22 @@ services:
       - "8000:8000"
     user: www-data
 
+  app-curie-dev:
+    build:
+      context: ./
+      dockerfile: docker/dev/Dockerfile
+
+    image: app-curie-dev
+    container_name: app-curie
+    ports:
+      - "8000:8000"
+      - "8889:8888"
+    user: user
+    volumes:
+      - .:/appCurie
+
+    restart: unless-stopped
+
   app-curie-test:
     build:
       context: ./

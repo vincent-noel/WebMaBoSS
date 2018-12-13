@@ -5,7 +5,8 @@ USER root
 WORKDIR /appCurie
 
 RUN apt-get -qq update \
-    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https apache2 apache2-dev
+    && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https \
+                          apache2 apache2-dev
 
 RUN \
     # Yarn sources
@@ -29,13 +30,13 @@ RUN \
     && apt-get -qq update \
     && apt-get install -y firefox
 
-ADD requirements.txt /requirements.txt
+ADD requirements.txt /appCurie/requirements.txt
 
 # Updating pip
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install --upgrade -r /requirements.txt
+    && pip install --upgrade -r /appCurie/requirements.txt
 
 # Exposing port 8000 for server access
 EXPOSE 8000
