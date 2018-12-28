@@ -38,6 +38,18 @@ RUN pip install pip --upgrade \
     && easy_install -U distribute \
     && pip install --upgrade -r /appCurie/requirements.txt
 
+# Installing MaBoSS from github repo
+RUN apt-get install -y flex bison \
+    && git clone https://github.com/vincent-noel/MaBoSS-env-2.0 /MaBoSS-env-2.0 \
+    && cd /MaBoSS-env-2.0/engine/src/ \
+    && make install \
+    && make MAXNODES=128 install \
+    && make MAXNODES=256 install \
+    && rm /opt/conda/bin/MaBoSS* \
+    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS /opt/conda/bin \
+    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS_128n /opt/conda/bin \
+    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS_256n /opt/conda/bin
+
 # Exposing port 8000 for server access
 EXPOSE 8000
 # Exposing port 8888 for notebook access
