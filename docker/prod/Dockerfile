@@ -1,4 +1,4 @@
-FROM colomoto/colomoto-docker:2018-08-17
+FROM colomoto/colomoto-docker:2018-12-22
 MAINTAINER Vincent Noel <contact@vincent-noel.fr>
 
 USER root
@@ -17,16 +17,25 @@ RUN \
     && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     && apt-get install -y nodejs yarn
 
+ADD . .
+
 # Updating pip
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install --upgrade django djangorestframework django-rest-auth[with_social] \
-                             coreapi mod_wsgi python-libsbml \
-                             git+https://github.com/vincent-noel/GINsim-python.git \
-                             git+https://github.com/vincent-noel/pyMaBoSS.git
+    && pip install --upgrade -r /appCurie/requirements.txt
 
-ADD . .
+# Installing MaBoSS from github repo
+RUN apt-get install -y flex bison \
+    && git clone https://github.com/vincent-noel/MaBoSS-env-2.0 /MaBoSS-env-2.0 \
+    && cd /MaBoSS-env-2.0/engine/src/ \
+    && make install \
+    && make MAXNODES=128 install \
+    && make MAXNODES=256 install \
+    && rm /opt/conda/bin/MaBoSS* \
+    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS /opt/conda/bin \
+    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS_128n /opt/conda/bin \
+    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS_256n /opt/conda/bin
 
 # Removing node modules, downloading them from scratch, and transpiling the JSX
 RUN rm -fr node_modules/* yarn.lock; yarn && \

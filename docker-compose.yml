@@ -27,10 +27,7 @@ services:
       - "8889:8888"
     user: user
     volumes:
-      - /home/labestiol/Work/code/AppCurie:/appCurie
-      - /home/labestiol/Work/code/GINsim-python/ginsim:/opt/conda/lib/python3.6/site-packages/ginsim
-      - /home/labestiol/Work/code/GINsim-python/biolqm:/opt/conda/lib/python3.6/site-packages/biolqm
-      - /home/labestiol/Work/code/pyMaBoSS/maboss:/opt/conda/lib/python3.6/site-packages/maboss
+      - .:/appCurie
 
     restart: unless-stopped
 
@@ -46,7 +43,7 @@ services:
       - "8888:8888"
     user: user
     volumes:
-      - ${PWD}:/appCurie
+      - .:/appCurie
 
     restart: unless-stopped
 

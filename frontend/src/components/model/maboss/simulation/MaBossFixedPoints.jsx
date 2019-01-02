@@ -59,7 +59,7 @@ class MaBossFixedPoints extends React.Component {
 	render() {
 
 		if (this.state.fptableLoaded) {
-			return <PieChart table={this.state.fptable} colormap={this.props.colormap} title={"poil"}/>
+			return <PieChart table={this.state.fptable} colormap={this.props.colormap} title={""}/>
 
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
