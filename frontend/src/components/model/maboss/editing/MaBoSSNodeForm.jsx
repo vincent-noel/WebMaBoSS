@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
 import APICalls from "../../../api/apiCalls";
 import LoadingInlineIcon from "../../../commons/loaders/LoadingInlineIcon";
+import BufferedTextField from "./MaBoSSFormulaForm";
 
 class MaBoSSNodeForm extends React.Component {
 
@@ -94,11 +95,13 @@ class MaBoSSNodeForm extends React.Component {
 						{ this.state.showErrors ? <ErrorAlert errorMessages={errors}/> : null}
 						<div className="form-group">
 							<label htmlFor="value">Name</label>
-							<input
-								id="name" name="name" ref={this.inputNameRef}
-								type="text" value={this.state.name}
-								className={"form-control" + (this.state.nameError !== "" ?" is-invalid":"")}
-								onChange={(e) => this.onNameChange(e.target.value)}/>
+							<BufferedTextField
+								id="name" name="name" inputRef={this.inputNameRef}
+								value={this.state.name}
+								error={this.state.nameError} disabled={this.props.field !== null}
+								onValueChange={(e) => this.onNameChange(e.target.value)}
+
+							/>
 						</div>
 
 					</CardBody>

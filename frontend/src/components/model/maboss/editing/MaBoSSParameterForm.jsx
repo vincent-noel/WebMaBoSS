@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
 import APICalls from "../../../api/apiCalls";
 import LoadingInlineIcon from "../../../commons/loaders/LoadingInlineIcon";
+import BufferedTextField from "./MaBoSSNodeForm";
 
 class MaBoSSParameterForm extends React.Component {
 
@@ -166,21 +167,23 @@ class MaBoSSParameterForm extends React.Component {
 						{ this.state.showErrors ? <ErrorAlert errorMessages={errors}/> : null}
 						<div className="form-group">
 							<label htmlFor="name">Name</label>
-							<input
-								id="name" name="name" ref={this.inputNameRef}
-								type="text" value={this.props.name !== null ? this.props.name : this.state.name}
-								className={"form-control" + (this.state.nameError !== "" ?" is-invalid":"")}
-								onChange={(e) => this.onNameChange(e.target.value)}
-								disabled={this.props.name !== null}
+							<BufferedTextField
+								id="name" name="name" inputRef={this.inputNameRef}
+								value={this.props.name !== null ? this.props.name : this.state.name}
+								error={this.state.nameError} disabled={this.props.name !== null}
+								onValueChange={(e) => this.onNameChange(e.target.value)}
+
 							/>
 						</div>
 						<div className="form-group">
 							<label htmlFor="value">Value</label>
-							<input
-								id="value" name="value" ref={this.inputValueRef}
-								type="text" value={this.state.value}
-								className={"form-control" + (this.state.valueError !== "" ?" is-invalid":"")}
-								onChange={(e) => this.onValueChange(e.target.value)}/>
+							<BufferedTextField
+								id="value" name="value" inputRef={this.inputValueRef}
+								value={this.state.value}
+								error={this.state.nameError}
+								onValueChange={(e) => this.onValueChange(e.target.value)}
+
+							/>
 						</div>
 
 					</CardBody>

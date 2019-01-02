@@ -7,8 +7,9 @@ class BufferedTextField extends Component {
 	static propTypes = {
 		onValueChange: PropTypes.func.isRequired,
 		name: PropTypes.string.isRequired,
-
 	};
+
+	defaultBuffer = 200;
 
 	constructor (props) {
 		super(props);
@@ -23,7 +24,7 @@ class BufferedTextField extends Component {
 
 		this.setState({value: value});
 
-		this.timer = setTimeout(() => this.changeValue(value), this.props.buffer);
+		this.timer = setTimeout(() => this.changeValue(value), this.props.buffer?this.props.buffer:this.defaultBuffer);
 	}
 
 	changeValue(value) {
