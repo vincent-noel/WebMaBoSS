@@ -1,0 +1,9 @@
+   div.list_results_steadystates {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(25rem, 1fr));
+
+      div.result_steadystates {
+          padding: 2rem 3rem;
+      }
+
+   }

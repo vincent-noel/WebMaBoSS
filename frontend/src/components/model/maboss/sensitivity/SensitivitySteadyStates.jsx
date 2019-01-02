@@ -3,6 +3,8 @@ import {Pie} from "react-chartjs-2";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import APICalls from "../../../api/apiCalls";
 import PieChart from "../../../charts/PieChart";
+import "./table-results.scss";
+
 
 class SensitivitySteadyStates extends React.Component {
 
@@ -46,22 +48,20 @@ class SensitivitySteadyStates extends React.Component {
 	render() {
 		if (this.state.fptableLoaded) {
 
-			return (
-				<div className="container"><div className="row">
-				{
 
+			return (
+				<div className="list_results_steadystates">
+				{
 					Object.keys(this.state.fptable).map((name, index) => {
 
-						const chart = <div className="col-md" key={index}><PieChart
+						return <div className="result_steadystates" key={index}><PieChart
 							title={name}
 							table={this.state.fptable[name]}
 							colormap={this.props.colormap}
 						/></div>;
-
-						return chart;
 					})
 				}
-				</div></div>
+				</div>
 			);
 		} else if (this.props.analysisId !== null) {
 			return <LoadingIcon width="3rem"/>
