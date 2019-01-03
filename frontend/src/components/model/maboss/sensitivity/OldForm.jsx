@@ -10,49 +10,31 @@ class OldForm extends React.Component {
 		super(props);
 
 		this.state = {
-			listOfSensitivityAnalysis: [],
+			listOfSensitivityAnalysis: null,
 			selectedAnalysis: "Please select a simulation",
 			selectedAnalysisId: null,
 		};
 
 		this.getAnalysesCall = null;
-		// this.removeSimulationCall = null;
+		this.removeAnalysesCall = null;
 	}
 
 	loadSensitivityAnalyses (project_id, model_id) {
 		if (this.getAnalysesCall !== null) { this.getAnalysesCall.cancel(); }
+		this.setState({listOfSensitivityAnalysis: null});
 		this.getAnalysesCall = APICalls.MaBoSSCalls.getSensitivityAnalysis(project_id, model_id);
 
 		this.getAnalysesCall.promise.then(response => {
-			this.setState({listOfSensitivityAnalysis: response});
+			this.setState({listOfSensitivityAnalysis: response, selectedAnalysis: "Please select a simulation", selectedAnalysisId: null});
 		})
 	}
 
-	// loadListSimulations(project_id, model_id) {
-	//
-	// 	if (this.getListSimulationCall !== null) {
-	// 		this.getListSimulationCall.cancel();
-    //     }
-	//
-	// 	this.setState({
-	// 		listOfSimulations: [],
-	// 		selectedSimulation: "Please select a simulation",
-	// 		selectedSimulationId: null
-	// 	});
-	//
-	// 	this.getListSimulationCall = APICalls.MaBoSSCalls.getListOfMaBoSSSimulations(project_id, model_id);
-	// 	this.getListSimulationCall.promise.then(data => {
-	// 		this.setState({listOfSimulations: data});
-	// 		this.props.showOldSimButton(data.length > 0);
-	// 	});
-	// }
 
-	// removeOldSim(project_id, simulation_id) {
-	//
-	// 	this.removeSimulationCall = APICalls.MaBoSSCalls.deleteMaBossSimulation(project_id, simulation_id);
-	// 	this.removeSimulationCall.promise.then(response => this.loadListSimulations(this.props.project, this.props.modelId))
-	// }
-	//
+	removeOldAnalyses(project_id, analysis_id) {
+		this.removeAnalysesCall = APICalls.MaBoSSCalls.deleteSensitivityAnalysis(project_id, analysis_id);
+		this.removeAnalysesCall.promise.then(response => this.loadSensitivityAnalyses(this.props.project, this.props.modelId))
+	}
+
 	onSubmit(e) {
 		e.preventDefault();
 		this.props.onSubmit(this.state.selectedAnalysisId);
@@ -94,7 +76,7 @@ class OldForm extends React.Component {
 						<CardHeader>Load existing sensitivity analysis</CardHeader>
 						<CardBody>
                             {
-                            	this.state.listOfSensitivityAnalysis.length > 0 ?
+                            	this.state.listOfSensitivityAnalysis != null ?
 									<div className="dropdown container-fluid">
 										<button className="btn btn-secondary dropdown-toggle" type="button"
 												id="dropdownMenuButton"
@@ -120,7 +102,7 @@ class OldForm extends React.Component {
 						<CardFooter>
 							<ButtonToolbar className="d-flex">
 								<Button color="danger" className="mr-auto" onClick={() => {this.props.toggle();}}>Close</Button>
-								{/*<Button color="danger" className="ml-auto mr-auto" onClick={() => {this.removeOldSim(this.props.project, this.state.selectedSimulationId);}}>Remove</Button>*/}
+								<Button color="danger" className="ml-auto mr-auto" onClick={() => {this.removeOldAnalyses(this.props.project, this.state.selectedAnalysisId);}}>Remove</Button>
 								<Button type="submit" color="default" className="ml-auto">Submit</Button>
 							</ButtonToolbar>
 						</CardFooter>

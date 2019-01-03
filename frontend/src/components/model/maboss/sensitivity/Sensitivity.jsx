@@ -76,12 +76,12 @@ class Sensitivity extends React.Component {
 		});
 	}
 
-	startNew() {
-
+	startNew(analysis_id) {
+		this.setState(prevState => ({analysisId: analysis_id, newForm: {...prevState.newForm, show: false}}));
 	}
 
 	loadExistingAnalysis(analysis_id) {
-		this.setState(prevState => ({analysisId: analysis_id, oldForm: {...prevState.oldForm, show: false}}))
+		this.setState(prevState => ({analysisId: analysis_id, oldForm: {...prevState.oldForm, show: false}}));
 	}
 
 	componentDidMount() {
@@ -105,7 +105,7 @@ class Sensitivity extends React.Component {
 
 								<Button color="default" onClick={() => this.createSensitivityAnalysis()}>New sensitivity analysis</Button>
 								<Button color="default" onClick={() => this.showSensitivityAnalysis()}>Existing sensitivity analysis</Button>
-								<br/>
+								<br/><br/>
 								<NewForm
 									project={projectContext.project} modelId={modelContext.modelId}
 									status={this.state.newForm.show} toggle={this.toggleNewForm}

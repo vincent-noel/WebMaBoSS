@@ -29,6 +29,8 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 
 		maboss_model = self.getMaBoSSModel()
 
+		analysis_settings = loads(request.POST['settings'])
+
 		if self.model.format == LogicalModel.ZGINML:
 
 			bnd_path = join(settings.TMP_ROOT, splitext(basename(self.model.file.path))[0] + ".bnd")
@@ -44,7 +46,7 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 			sensitivity_analysis = MaBoSSSensitivityAnalysis(
 				project=self.project,
 				model=self.model,
-				name="Whatever",
+				name=analysis_settings['name'],
 				bnd_file=File(open(bnd_path, 'rb')),
 				cfg_file=File(open(cfg_path, 'rb'))
 			)
@@ -58,7 +60,7 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 			sensitivity_analysis = MaBoSSSensitivityAnalysis(
 				project=self.project,
 				model=self.model,
-				name="whatever",
+				name=analysis_settings['name'],
 				bnd_file=File(open(join(settings.MEDIA_ROOT, self.model.bnd_file.path), 'rb')),
 				cfg_file=File(open(join(settings.MEDIA_ROOT, self.model.cfg_file.path), 'rb'))
 			)
@@ -67,43 +69,51 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 		else:
 			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
 
-		analysis_settings = loads(request.POST['settings'])
+		thread = Thread(target=run_analysis, args=(maboss_model, sensitivity_analysis, analysis_settings))
+		thread.start()
 
-		print(analysis_settings)
+		return Response({'analysis_id': sensitivity_analysis.id}, status=status.HTTP_200_OK)
 
-		if analysis_settings['singleMutations']['on']:
+class MaBoSSSensitivityAnalysisRemove(HasMaBoSSSensitivity):
 
-			for species in maboss_model.network.keys():
+	def delete(self, request, project_id, analysis_id):
 
-				maboss_simulation = MaBoSSSensitivitySimulation(
-					sensitivity_analysis=sensitivity_analysis,
-					name=("%s++" % species),
-				)
-				maboss_simulation.save()
+		HasMaBoSSSensitivity.load(self, request, project_id, analysis_id)
 
-				t_model = maboss_model.copy()
-				t_model.mutate(species, 'ON')
-
-				thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
-				thread.start()
-
-		if analysis_settings['singleMutations']['off']:
-
-			for species in maboss_model.network.keys():
-				maboss_simulation = MaBoSSSensitivitySimulation(
-					sensitivity_analysis=sensitivity_analysis,
-					name=("%s--" % species),
-				)
-				maboss_simulation.save()
-
-				t_model = maboss_model.copy()
-				t_model.mutate(species, 'OFF')
-
-				thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
-				thread.start()
-
+		self.analysis.delete()
 		return Response(status=status.HTTP_200_OK)
 
+def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
+
+	if analysis_settings['singleMutations']['on']:
+
+		for species in maboss_model.network.keys():
+			maboss_simulation = MaBoSSSensitivitySimulation(
+				sensitivity_analysis=sensitivity_analysis,
+				name=("%s++" % species),
+			)
+			maboss_simulation.save()
+
+			t_model = maboss_model.copy()
+			t_model.mutate(species, 'ON')
+
+			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+			thread.start()
+
+	if analysis_settings['singleMutations']['off']:
+
+		for species in maboss_model.network.keys():
+			maboss_simulation = MaBoSSSensitivitySimulation(
+				sensitivity_analysis=sensitivity_analysis,
+				name=("%s--" % species),
+			)
+			maboss_simulation.save()
+
+			t_model = maboss_model.copy()
+			t_model.mutate(species, 'OFF')
+
+			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+			thread.start()
 
 def run_simulation(maboss_model, maboss_simulation_id):
 

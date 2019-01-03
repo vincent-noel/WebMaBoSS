@@ -408,7 +408,7 @@ class MaBoSSCalls {
 					headers: getDefaultHeaders()
 				}
 			).then(response => checkAuthorization(response)
-			)
+			).then(response => response.json())
 		);
 	}
 
@@ -422,6 +422,19 @@ class MaBoSSCalls {
 				}
             ).then(response => checkAuthorization(response)
 			).then(response => response.json())
+        )
+    }
+
+
+	static deleteSensitivityAnalysis(project_id, analysis_id) {
+        return makeCancelable(
+            fetch(
+				"/api/maboss_sensitivity/" + project_id + "/" + analysis_id + "/",
+				{
+					method: "delete",
+					headers: getDefaultHeaders()
+				}
+            ).then(response => checkAuthorization(response))
         )
     }
 

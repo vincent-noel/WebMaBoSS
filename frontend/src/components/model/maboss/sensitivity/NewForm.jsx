@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter, Collapse} from "reactstrap";
+import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter, Collapse, TabPane} from "reactstrap";
 import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
 
@@ -22,6 +22,8 @@ class NewForm extends React.Component {
 
 		this.state = {
 
+			name: "",
+
 			singleMutations: {
 				show: false,
 				on: false,
@@ -36,7 +38,6 @@ class NewForm extends React.Component {
 			initialStates: false,
 			rates: false,
 
-
 			showErrors: true,
 			waitSubmit: false,
 		};
@@ -50,6 +51,10 @@ class NewForm extends React.Component {
 		this.toggleRates = this.toggleRates.bind(this);
 
 		this.createCall = null;
+	}
+
+	handleNameChange(name) {
+		this.setState({name: name});
 	}
 
 	toggleSingleMutations(state) {
@@ -88,6 +93,7 @@ class NewForm extends React.Component {
 		e.preventDefault();
 
 		this.createCall = APICalls.MaBoSSCalls.createSensitivityAnalysis(this.props.project, this.props.modelId, {
+			name: this.state.name,
 			singleMutations: {
 				on: this.state.singleMutations.on,
 				off: this.state.singleMutations.off,
@@ -96,7 +102,12 @@ class NewForm extends React.Component {
 				on: this.state.doubleMutations.on,
 				off: this.state.doubleMutations.off,
 			}
-		})
+		});
+
+		this.createCall.promise.then(response => {
+			this.props.submit(response['analysis_id']);
+		});
+
 	}
 
 	render() {
@@ -110,6 +121,13 @@ class NewForm extends React.Component {
 					<CardHeader>New sensitivity analysis</CardHeader>
 					<CardBody>
 						{ this.state.showErrors ? <ErrorAlert errorMessages={errors}/> : null}
+							<div className="form-group general">
+								<label htmlFor="name" className="name">Name</label>
+								<input type="text" className="form-control large" id="name" placeholder="Name of the simulation"
+									   value={this.state.name}
+									   onChange={(e) => this.handleNameChange(e.target.value)}
+								/>
+							</div>
 
 						<ul className="list-options">
 							<li className="option">
