@@ -7,7 +7,7 @@ WORKDIR /appCurie
 RUN apt-get -qq update \
     && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https \
                           apache2 apache2-dev \
-                          libgl1-mesa-glx
+                          libmariadbclient-dev libgl1-mesa-glx
 
 RUN \
     # Yarn sources

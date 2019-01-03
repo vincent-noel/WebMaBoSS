@@ -7,3 +7,4 @@ djangorestframework
 git+https://github.com/vincent-noel/GINsim-python.git
 git+https://github.com/vincent-noel/pyMaBoSS.git
 git+https://github.com/vincent-noel/MaBoSS-Client.git
+mysqlclient
