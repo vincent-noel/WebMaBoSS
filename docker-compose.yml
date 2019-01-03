@@ -10,10 +10,16 @@ services:
     image: app-curie
     container_name: app-curie
     volumes:
-      - app-curie-data:/appCurie/data
+      - data:/appCurie/data
     ports:
       - "8000:8000"
     user: www-data
+    environment:
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_HOST=app-curie-db
+      - DB_PORT=3306
 
   app-curie-dev:
     build:
@@ -28,7 +34,12 @@ services:
     user: user
     volumes:
       - .:/appCurie
-
+    environment:
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_HOST=app-curie-db
+      - DB_PORT=3306
     restart: unless-stopped
 
   app-curie-test:
@@ -44,8 +55,26 @@ services:
     user: user
     volumes:
       - .:/appCurie
-
+    environment:
+      - DB_NAME=${MYSQL_DATABASE}
+      - DB_USER=${MYSQL_USER}
+      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_HOST=app-curie-db
+      - DB_PORT=3306
     restart: unless-stopped
 
+  app-curie-db:
+    image: mariadb
+    container_name: app-curie-db
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
 volumes:
-  app-curie-data:
+  db:
+  data:
