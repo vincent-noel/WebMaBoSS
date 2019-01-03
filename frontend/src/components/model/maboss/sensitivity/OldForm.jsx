@@ -86,13 +86,16 @@ class OldForm extends React.Component {
 										</button>
 										<div className="dropdown-menu" aria-labelledby="dropdownMenuButton"
 											 style={{width: '100%'}}>
-											{this.state.listOfSensitivityAnalysis.map((analysis, id) => {
-												return <a
-													className="dropdown-item" key={analysis.id}
-													onClick={(e) => this.onAnalysisChanged(analysis.id, analysis.name)}
-												>{analysis.name}</a>
-
-											})}
+											{
+												this.state.listOfSensitivityAnalysis.length > 0 ?
+												this.state.listOfSensitivityAnalysis.map((analysis, id) => {
+													return <a
+														className="dropdown-item" key={analysis.id}
+														onClick={(e) => this.onAnalysisChanged(analysis.id, analysis.name)}
+													>{analysis.name}</a>
+												})
+												: null
+											}
 										</div>
 									</div>
                                 :
