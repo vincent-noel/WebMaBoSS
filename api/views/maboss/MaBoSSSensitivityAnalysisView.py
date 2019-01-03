@@ -31,6 +31,9 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 
 		analysis_settings = loads(request.POST['settings'])
 
+		for name, is_output in analysis_settings['outputVariables'].items():
+			maboss_model.network[name].is_internal = not is_output
+
 		if self.model.format == LogicalModel.ZGINML:
 
 			bnd_path = join(settings.TMP_ROOT, splitext(basename(self.model.file.path))[0] + ".bnd")
