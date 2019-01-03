@@ -118,6 +118,77 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
 			thread.start()
 
+	if analysis_settings['doubleMutations']['on']:
+
+		for species in maboss_model.network.keys():
+			for subspecies in maboss_model.network.keys():
+				if subspecies != species:
+					maboss_simulation = MaBoSSSensitivitySimulation(
+						sensitivity_analysis=sensitivity_analysis,
+						name=("%s++, %s++" % (species, subspecies))
+					)
+					maboss_simulation.save()
+
+					t_model = maboss_model.copy()
+					t_model.mutate(species, 'ON')
+					t_model.mutate(subspecies, 'ON')
+
+					thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+					thread.start()
+
+			if analysis_settings['doubleMutations']['off']:
+
+				for subspecies in maboss_model.network.keys():
+					if subspecies != species:
+						maboss_simulation = MaBoSSSensitivitySimulation(
+							sensitivity_analysis=sensitivity_analysis,
+							name=("%s++, %s--" % (species, subspecies))
+						)
+						maboss_simulation.save()
+
+						t_model = maboss_model.copy()
+						t_model.mutate(species, 'ON')
+						t_model.mutate(subspecies, 'OFF')
+
+						thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+						thread.start()
+
+	if analysis_settings['doubleMutations']['off']:
+
+		for species in maboss_model.network.keys():
+			for subspecies in maboss_model.network.keys():
+				if subspecies != species:
+					maboss_simulation = MaBoSSSensitivitySimulation(
+						sensitivity_analysis=sensitivity_analysis,
+						name=("%s--, %s--" % (species, subspecies))
+					)
+					maboss_simulation.save()
+
+					t_model = maboss_model.copy()
+					t_model.mutate(species, 'OFF')
+					t_model.mutate(subspecies, 'OFF')
+
+					thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+					thread.start()
+
+			if analysis_settings['doubleMutations']['on']:
+
+				for subspecies in maboss_model.network.keys():
+					if subspecies != species:
+						maboss_simulation = MaBoSSSensitivitySimulation(
+							sensitivity_analysis=sensitivity_analysis,
+							name=("%s--, %s++" % (species, subspecies))
+						)
+						maboss_simulation.save()
+
+						t_model = maboss_model.copy()
+						t_model.mutate(species, 'OFF')
+						t_model.mutate(subspecies, 'ON')
+
+						thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+						thread.start()
+
+
 def run_simulation(maboss_model, maboss_simulation_id):
 
 	try:

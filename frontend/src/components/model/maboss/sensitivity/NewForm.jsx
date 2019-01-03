@@ -52,6 +52,9 @@ class NewForm extends React.Component {
 		this.toggleSingleMutationsOff = this.toggleSingleMutationsOff.bind(this);
 
 		this.toggleDoubleMutations = this.toggleDoubleMutations.bind(this);
+		this.toggleDoubleMutationsOn = this.toggleDoubleMutationsOn.bind(this);
+		this.toggleDoubleMutationsOff = this.toggleDoubleMutationsOff.bind(this);
+
 		this.toggleInitialStates = this.toggleInitialStates.bind(this);
 		this.toggleRates = this.toggleRates.bind(this);
 
@@ -92,6 +95,14 @@ class NewForm extends React.Component {
         } else {
 			this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, show: false, on: false, off: false}}));
 		}
+	}
+
+	toggleDoubleMutationsOn(state) {
+		this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, on: state}}));
+	}
+
+	toggleDoubleMutationsOff(state) {
+		this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, off: state}}));
 	}
 
 	toggleInitialStates(state) {
@@ -242,6 +253,28 @@ class NewForm extends React.Component {
 											/>
 										</span>
 									</li>
+									<Collapse isOpen={this.state.doubleMutations.show}>
+										<li className="sub-option">
+											<span className="name">OFF mutations</span>
+											<span className="value">
+												<Switch
+													checked={this.state.doubleMutations.on}
+													updateCallback={this.toggleDoubleMutationsOn}
+													id={"double_mutations_on"}
+												/>
+											</span>
+										</li>
+										<li className="sub-option">
+											<span className="name">ON mutations</span>
+											<span className="value">
+												<Switch
+													checked={this.state.doubleMutations.off}
+													updateCallback={this.toggleDoubleMutationsOff}
+													id={"double_mutations_off"}
+												/>
+											</span>
+										</li>
+									</Collapse>
 								</ul>
 							</TabPane>
 							<TabPane tabId="outputs" className="tab-outputs">
