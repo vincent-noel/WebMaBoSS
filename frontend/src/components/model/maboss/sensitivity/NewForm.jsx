@@ -118,7 +118,7 @@ class NewForm extends React.Component {
 		this.getSettingsCall.promise.then(response => {
 			const output_variables = Object.keys(response['output_variables']).reduce(
 				(acc, key) => {
-					acc[key] = response['output_variables'][key] === 1;
+					acc[key] = response['output_variables'][key];
 					return acc;
 				}, {}
 			);
