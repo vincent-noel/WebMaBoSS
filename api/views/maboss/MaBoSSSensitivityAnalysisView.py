@@ -158,6 +158,7 @@ def run_simulation(maboss_model, maboss_simulation_id):
 		with transaction.atomic():
 			maboss_simulation.status = MaBoSSSimulation.ERROR
 			maboss_simulation.error = "Simulation failed"
+			maboss_simulation.save()
 
 class MaBoSSSensitivitySteadyStatesView(HasMaBoSSSensitivity):
 
