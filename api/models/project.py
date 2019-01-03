@@ -31,7 +31,7 @@ class Project(models.Model):
 
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
 	name = models.CharField(max_length=256)
-	description = models.CharField(max_length=102400, blank=True)
+	description = models.CharField(max_length=10240, blank=True)
 	path = models.CharField(max_length=256, default=new_project_path)
 
 
