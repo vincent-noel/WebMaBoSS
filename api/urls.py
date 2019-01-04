@@ -19,8 +19,11 @@ from api.views.maboss.MaBoSSModel import (
 	MaBoSSInitialStates, MaBoSSModelSettings
 )
 from api.views.AuthView import TestAuthView, LogoutViewEx, UserEmailView
+from api.views.InstallStatus import InstallStatus
+
 from rest_auth.views import LoginView, PasswordChangeView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
+
 from rest_framework.documentation import include_docs_urls
 from django.conf.urls import include
 
@@ -82,5 +85,7 @@ urlpatterns = [
 	path('api/maboss_sensitivity/<int:project_id>/<int:analysis_id>/steady_states/', MaBoSSSensitivitySteadyStatesView.as_view()),
 
 	path('api/maboss/servers/', MaBoSSServerView.as_view()),
-	path('api/maboss/servers/<int:server_id>', MaBoSSServerView.as_view())
+	path('api/maboss/servers/<int:server_id>', MaBoSSServerView.as_view()),
+
+	path('api/install_status', InstallStatus.as_view()),
 ]

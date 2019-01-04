@@ -1,0 +1,105 @@
+{% load static from staticfiles %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Inflame Installation</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href={% static 'bootstrap/dist/css/bootstrap.min.css' %} rel="stylesheet">
+    <style>
+
+
+        div.form {
+            display: flex !important;
+            justify-content: center;
+            align-items: center;
+            padding: 0 .5rem;
+        }
+        label.name {
+            flex-shrink: 0;
+            margin-bottom: 0;
+            flex: 1 1 auto !important;
+        }
+
+        input[type=text], input[type=password] {
+            width: 20rem;
+            margin-left: 3rem;
+            {#text-align: right;#}
+        }
+
+    </style>
+  </head>
+
+  <body>
+
+    <header>
+      <!-- Fixed navbar -->
+      <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#">InFlame</a>
+      </nav>
+    </header>
+
+    <!-- Begin page content -->
+    <main role="main" class="container">
+        <br/><br/>
+
+        {% if install_done == False %}
+        <h1 class="mt-5">Installation</h1>
+        <hr><br>
+            <form method="post">
+            {% csrf_token %}
+                <div class="form_container">
+                    <div class="form-group form">
+                        <label for="admin_username" class="name">Admin</label>
+                        <input type="text" class="form-control" id="admin_username" name="admin_username" value=""/>
+                    </div>
+                    <div class="form-group form">
+                        <label for="admin_email" class="name">Admin email address</label>
+                        <input type="text" class="form-control" id="admin_email" name="admin_email" value=""/>
+                    </div>
+                    <div class="form-group form">
+                        <label for="admin_password1" class="name">Password</label>
+                        <input type="password" class="form-control" id="admin_password1" name="admin_password1" value=""/>
+                    </div>
+                    <div class="form-group form">
+                        <label for="admin_password2" class="name">Password (confirmation)</label>
+                        <input type="password" class="form-control" id="admin_password2" name="admin_password2" value=""/>
+                    </div>
+                </div>
+
+                <br/><hr/>
+
+                <div style="text-align: right">
+                    <input type="submit" class="btn btn-primary btn-primary" value="Create">
+                </div>
+            </form>
+        {% else %}
+            <div class="container-fluid">
+                <br/><br/>
+                <h4>Please wait while the installation finishes...</h4>
+                <script>
+                    setInterval(()=> {
+                        fetch(
+                            "api/install_status",
+                            {
+                                method: 'POST'
+                            },
+                        ).then(res => console.log(res));
+                    }, 1000);
+                </script>
+	    	</div>
+        {% endif %}
+    </main>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="{% static 'jquery/dist/jquery.slim.js' %}"></script>
+    <script src="{% static 'bootstrap/dist/js/bootstrap.min.js' %}"></script>
+  </body>
+</html>
