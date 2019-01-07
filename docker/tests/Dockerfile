@@ -50,8 +50,8 @@ RUN apt-get install -y flex bison \
     && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS_128n /opt/conda/bin \
     && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS_256n /opt/conda/bin
 
-RUN yarn \
-    && npm run dev
+RUN yarn && \
+    npm run dev
 
 # Exposing port 8000 for server access
 EXPOSE 8000
