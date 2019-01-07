@@ -41,8 +41,5 @@ test:
     - docker pull vnoel/app-curie-test:latest
     - docker tag vnoel/app-curie-test:latest app-curie-test:latest
     - docker-compose up -d app-curie-test app-curie-db
-    - docker exec -t app-curie python manage.py makemigrations -v 2 --settings=settings.test_settings
-    - docker exec -t app-curie python manage.py migrate -v 2 --settings=settings.test_settings
-    - docker exec -t app-curie python manage.py collectstatic --noinput > /dev/null && \
-    - docker exec -t app-curie python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
+    - docker exec -t app-curie /bin/bash create_default_db.sh
     - docker exec -t app-curie python manage.py test api -v 2 --settings=settings.test_settings
