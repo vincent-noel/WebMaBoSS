@@ -19,141 +19,231 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = '(h9yxhf%gnv*cm+u%4+yl@u-b_s(6qnfe4)xv=1bdl4u!tnnnp'
+if os.path.exists(os.path.join(BASE_DIR, "config.yml")):
 
-# SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+    RUN_INSTALL = False
 
-ALLOWED_HOSTS = ['*']
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = '(h9yxhf%gnv*cm+u%4+yl@u-b_s(6qnfe4)xv=1bdl4u!tnnnp'
+
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = True
+
+    ALLOWED_HOSTS = ['*']
 
 
-# Application definition
+    # Application definition
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
 
-    'django.contrib.sites',
-    'rest_framework',
-    'rest_framework.authtoken',
-    'rest_auth',
-    'rest_auth.registration',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
+        'django.contrib.sites',
+        'rest_framework',
+        'rest_framework.authtoken',
+        'rest_auth',
+        'rest_auth.registration',
+        'allauth',
+        'allauth.account',
+        'allauth.socialaccount',
 
-    'api',
-    'frontend',
-    'mod_wsgi.server',
-]
+        'api',
+        'frontend',
+        'mod_wsgi.server',
+    ]
 
-SITE_ID = 1
+    SITE_ID = 1
 
-MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'django.middleware.gzip.GZipMiddleware',
-]
+    MIDDLEWARE = [
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'django.middleware.gzip.GZipMiddleware',
+    ]
 
-ROOT_URLCONF = 'settings.urls'
+    ROOT_URLCONF = 'settings.urls'
 
-TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
         },
-    },
-]
+    ]
 
-WSGI_APPLICATION = 'settings.wsgi.application'
+    WSGI_APPLICATION = 'settings.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+    # Database
+    # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('DB_NAME'),
-        'USER': os.environ.get('DB_USER'),
-        'PASSWORD': os.environ.get('DB_PASSWORD'),
-        'HOST': os.environ.get('DB_HOST'),
-        'PORT': os.environ.get('DB_PORT')
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME'),
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+            'HOST': os.environ.get('DB_HOST'),
+            'PORT': os.environ.get('DB_PORT')
+        }
     }
-}
-ACCOUNT_EMAIL_VERIFICATION = 'none'
+    ACCOUNT_EMAIL_VERIFICATION = 'none'
 
-# Password validation
-# https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
+    # Password validation
+    # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
-    ),
-    # 'DEFAULT_PERMISSION_CLASSES': (
-    #     'rest_framework.permissions.IsAuthenticated',
-    # ),
-}
+    REST_FRAMEWORK = {
+        'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework.authentication.TokenAuthentication',
+        ),
+        # 'DEFAULT_PERMISSION_CLASSES': (
+        #     'rest_framework.permissions.IsAuthenticated',
+        # ),
+    }
 
-# Internationalization
-# https://docs.djangoproject.com/en/1.11/topics/i18n/
+    # Internationalization
+    # https://docs.djangoproject.com/en/1.11/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+    LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+    TIME_ZONE = 'UTC'
 
-USE_I18N = True
+    USE_I18N = True
 
-USE_L10N = True
+    USE_L10N = True
 
-USE_TZ = True
+    USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.11/howto/static-files/
+    # Static files (CSS, JavaScript, Images)
+    # https://docs.djangoproject.com/en/1.11/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, "data", "media")
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, "data", "media")
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'frontend', 'static/'),
-)
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'frontend', 'static/'),
+    )
 
-TMP_ROOT = '/tmp/'
+    TMP_ROOT = '/tmp/'
 
-APPEND_SLASH = False
+    APPEND_SLASH = False
+
+
+
+else:
+
+    RUN_INSTALL = True
+
+    # SECURITY WARNING: keep the secret key used in production secret!
+    SECRET_KEY = '(h9yxhf%gnv*cm+u%4+yl@u-b_s(6qnfe4)xv=1bdl4u!tnnnp'
+
+    # SECURITY WARNING: don't run with debug turned on in production!
+    DEBUG = True
+
+    ALLOWED_HOSTS = []
+
+    # Application definition
+
+    INSTALLED_APPS = [
+        'django.contrib.admin',
+        'django.contrib.auth',
+        'django.contrib.contenttypes',
+        'django.contrib.sessions',
+        'django.contrib.messages',
+        'django.contrib.staticfiles',
+
+        'django.contrib.sites',
+        'rest_framework',
+        'rest_framework.authtoken',
+        'rest_auth',
+        'rest_auth.registration',
+        'allauth',
+        'allauth.account',
+        'allauth.socialaccount',
+
+        'api',
+        'frontend',
+        'mod_wsgi.server',
+
+    ]
+
+    ROOT_URLCONF = 'settings.install_urls'
+
+    TEMPLATES = [
+        {
+            'BACKEND': 'django.template.backends.django.DjangoTemplates',
+            'DIRS': [],
+            'APP_DIRS': True,
+            'OPTIONS': {
+                'context_processors': [
+                    'django.template.context_processors.debug',
+                    'django.template.context_processors.request',
+                    'django.contrib.auth.context_processors.auth',
+                    'django.contrib.messages.context_processors.messages',
+                ],
+            },
+        },
+    ]
+
+    WSGI_APPLICATION = 'settings.wsgi.application'
+
+    # Database
+    # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.mysql',
+            'NAME': os.environ.get('DB_NAME'),
+            'USER': os.environ.get('DB_USER'),
+            'PASSWORD': os.environ.get('DB_PASSWORD'),
+            'HOST': os.environ.get('DB_HOST'),
+            'PORT': os.environ.get('DB_PORT')
+        }
+    }
+
+    STATIC_URL = '/static/'
+    STATIC_ROOT = os.path.join(BASE_DIR, "static")
+    MEDIA_URL = '/media/'
+    MEDIA_ROOT = os.path.join(BASE_DIR, "data", "media")
+
+    STATICFILES_DIRS = (
+        os.path.join(BASE_DIR, 'node_modules/'),
+    )
+
+    print(STATIC_ROOT)
+    print(os.path.exists(os.path.join(STATIC_ROOT, "bootstrap/dist/css/bootstrap.min.css")))
+

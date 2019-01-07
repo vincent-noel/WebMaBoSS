@@ -10,12 +10,6 @@ before_script:
   - pip install docker-compose
   - docker-compose -v
 
-variables:
-  MYSQL_ROOT_PASSWORD: mysql_test_rootpassword
-  MYSQL_DATABASE: inflame
-  MYSQL_USER: inflame
-  MYSQL_PASSWORD: mysql_user_password
-
 build-dev:
   stage: build
   script:
@@ -46,5 +40,9 @@ test:
     - docker login -u vnoel -p $DOCKERHUB_PASSWORD
     - docker pull vnoel/app-curie-test:latest
     - docker tag vnoel/app-curie-test:latest app-curie-test:latest
-    - docker-compose up -d app-curie-test
+    - docker-compose up -d app-curie-test app-curie-db
+    - docker exec -t app-curie python manage.py makemigrations -v 2 --settings=settings.test_settings
+    - docker exec -t app-curie python manage.py migrate -v 2 --settings=settings.test_settings
+    - docker exec -t app-curie python manage.py collectstatic --noinput > /dev/null && \
+    - docker exec -t app-curie python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
     - docker exec -t app-curie python manage.py test api -v 2 --settings=settings.test_settings

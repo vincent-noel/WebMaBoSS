@@ -2,6 +2,18 @@
 version: '3.3'
 services:
 
+  app-curie-db:
+    image: mariadb
+    container_name: app-curie-db
+    restart: always
+    volumes:
+      - db:/var/lib/mysql
+    environment:
+      - MYSQL_RANDOM_ROOT_PASSWORD=yes
+      - MYSQL_DATABASE=inflame
+      - MYSQL_USER=inflame
+      - MYSQL_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
+
   app-curie:
     build:
       context: ./
@@ -15,9 +27,9 @@ services:
       - "8000:8000"
     user: www-data
     environment:
-      - DB_NAME=${MYSQL_DATABASE}
-      - DB_USER=${MYSQL_USER}
-      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_NAME=inflame
+      - DB_USER=inflame
+      - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
       - DB_HOST=app-curie-db
       - DB_PORT=3306
 
@@ -35,9 +47,9 @@ services:
     volumes:
       - .:/appCurie
     environment:
-      - DB_NAME=${MYSQL_DATABASE}
-      - DB_USER=${MYSQL_USER}
-      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_NAME=inflame
+      - DB_USER=inflame
+      - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
       - DB_HOST=app-curie-db
       - DB_PORT=3306
     restart: unless-stopped
@@ -56,24 +68,13 @@ services:
     volumes:
       - .:/appCurie
     environment:
-      - DB_NAME=${MYSQL_DATABASE}
-      - DB_USER=${MYSQL_USER}
-      - DB_PASSWORD=${MYSQL_PASSWORD}
+      - DB_NAME=inflame
+      - DB_USER=inflame
+      - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
       - DB_HOST=app-curie-db
       - DB_PORT=3306
     restart: unless-stopped
 
-  app-curie-db:
-    image: mariadb
-    container_name: app-curie-db
-    restart: always
-    volumes:
-      - db:/var/lib/mysql
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${MYSQL_DATABASE}
-      - MYSQL_USER=${MYSQL_USER}
-      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
 volumes:
   db:

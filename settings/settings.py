@@ -10,14 +10,15 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os
+import os, yaml
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-print(os.path.exists(os.path.join(BASE_DIR, "config.yml")))
-
 if os.path.exists(os.path.join(BASE_DIR, "config.yml")):
+
+    settings = yaml.load(open(os.path.join(BASE_DIR, "config.yml"), 'r'))
+
 
     RUN_INSTALL = False
 
@@ -25,12 +26,12 @@ if os.path.exists(os.path.join(BASE_DIR, "config.yml")):
     # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
     # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = '(h9yxhf%gnv*cm+u%4+yl@u-b_s(6qnfe4)xv=1bdl4u!tnnnp'
+    SECRET_KEY = settings['secret_key']
 
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
-    ALLOWED_HOSTS = []
+    ALLOWED_HOSTS = settings['allowed_hosts']
 
 
     # Application definition
@@ -160,7 +161,7 @@ if os.path.exists(os.path.join(BASE_DIR, "config.yml")):
 
     TMP_ROOT = '/tmp/'
 
-    APPEND_SLASH=False
+    APPEND_SLASH = False
 
 else:
 
@@ -185,6 +186,15 @@ else:
         'django.contrib.staticfiles',
 
         'django.contrib.sites',
+        'rest_framework',
+        'rest_framework.authtoken',
+        'rest_auth',
+        'rest_auth.registration',
+        'allauth',
+        'allauth.account',
+        'allauth.socialaccount',
+
+        'api',
         'frontend',
     ]
 
@@ -230,6 +240,5 @@ else:
         os.path.join(BASE_DIR, 'node_modules/'),
     )
 
-    print(STATIC_ROOT)
-    print(os.path.exists(os.path.join(STATIC_ROOT, "bootstrap/dist/css/bootstrap.min.css")))
+    TMP_ROOT = '/tmp/'
 

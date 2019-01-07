@@ -39,18 +39,18 @@ RUN apt-get install -y flex bison \
 
 # Removing node modules, downloading them from scratch, and transpiling the JSX
 RUN rm -fr node_modules/* yarn.lock; yarn && \
-                  npm run build && \
-                  rm -fr node_modules/ docker/
+                  npm run build
+#                  rm -fr node_modules/ docker/
 
 # Removing old db and medias, creating a new one, with default user admin:admin
 RUN rm -fr data/ && \
     mkdir -p data/media && \
     mkdir -p data/db && \
-    rm -fr api/migrations/*.py && \
-    python manage.py makemigrations api --noinput && \
-    python manage.py migrate --noinput && \
-    python manage.py collectstatic --noinput > /dev/null && \
-    python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
+    rm -fr api/migrations/*.py
+#    python manage.py makemigrations api --noinput && \
+#    python manage.py migrate --noinput && \
+#    python manage.py collectstatic --noinput > /dev/null && \
+#    python manage.py shell -c "from django.contrib.auth.models import User; User.objects.create_superuser('admin', 'admin@example.com', 'admin')"
 
 # Removing old server, and creating it from scratch
 RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
@@ -62,8 +62,9 @@ RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
                                 --url-alias /data/media media/ \
                                 --reload-on-changes
 
-RUN chown -R www-data:www-data settings data server;
-
+RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations && chown www-data:www-data .
+RUN ln -s /appCurie/node_modules/bootstrap /static && \
+    ln -s /appCurie/node_modules/jquery /static
 # Exposing port 8000 for server access
 EXPOSE 8000
 
@@ -71,4 +72,8 @@ EXPOSE 8000
 USER www-data
 
 # Running server
-ENTRYPOINT /appCurie/server/apachectl -D FOREGROUND
+ENTRYPOINT sleep 5 && \
+#    python manage.py makemigrations api frontend --noinput --settings=settings.prod_settings && \
+#    python manage.py migrate --noinput --settings=settings.prod_settings && \
+#    python manage.py collectstatic --noinput --settings=settings.prod_settings > /dev/null && \
+    /appCurie/server/apachectl -D FOREGROUND

@@ -61,7 +61,7 @@ class InstallView(TemplateView):
 		self.install_done = True
 		if username is not None and email is not None and password1 is not None and password1 == password2:
 			admin = User.objects.create_superuser(username, email, password1)
-
+			print("Created admin accout with credential %s@%s" % (username, password1))
 			secret_key = ''.join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(60))
 
 			settings = {
