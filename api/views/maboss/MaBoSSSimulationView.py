@@ -162,7 +162,7 @@ class MaBossSettings(HasModel):
 
 		maboss_model = self.getMaBoSSModel()
 
-		output_variables = {var: value.is_internal == '0' for var, value in maboss_model.network.items()}
+		output_variables = {var: not value.is_internal for var, value in maboss_model.network.items()}
 		initial_states = maboss_model.network.get_istate()
 		mutations = maboss_model.get_mutations()
 		settings = {key: value for key, value in maboss_model.param.items() if not key.startswith("$")}
