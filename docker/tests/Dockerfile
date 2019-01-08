@@ -38,6 +38,13 @@ RUN pip install pip --upgrade \
     && easy_install -U distribute \
     && pip install --upgrade -r /appCurie/requirements.txt
 
+# Removing old db and medias, creating a new one, with default user admin:admin
+RUN rm -fr /appCurie/data/ && \
+    mkdir -p /appCurie/data/media && \
+    mkdir -p /appCurie/data/db && \
+    rm -fr /appCurie/api/migrations/*.py && \
+    chown -R www-data:www-data /appCurie/settings /appCurie/data /appCurie/static /appCurie/api/migrations && chown www-data:www-data /appCurie
+
 # Installing MaBoSS from github repo
 RUN apt-get install -y flex bison \
     && git clone https://github.com/vincent-noel/MaBoSS-env-2.0 /MaBoSS-env-2.0 \
@@ -52,6 +59,8 @@ RUN apt-get install -y flex bison \
 
 RUN yarn && \
     npm run dev
+
+USER www-data
 
 # Exposing port 8000 for server access
 EXPOSE 8000
