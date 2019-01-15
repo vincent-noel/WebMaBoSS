@@ -1,16 +1,21 @@
 import React from "react";
 import {Pie} from "react-chartjs-2";
 import ReactDOMServer from "react-dom/server";
-
+import html2canvas from "html2canvas";
 import "./chart-legend.scss"
+import {Button} from "reactstrap";
 
 class PieChart extends React.Component {
 
 	constructor(props) {
 		super(props);
 
+		this.state = {
+			imgHref: null
+		};
 		this.chartRef = this.chartRef.bind(this);
 		this.legendRef = this.legendRef.bind(this);
+		this.divRef = React.createRef();
 
 		this.chartInstance = null;
 	}
@@ -46,6 +51,7 @@ class PieChart extends React.Component {
 	   		element.classList.add('disable-legend')
 	   	}
 
+	   	this.setState({imgHref: null});
 	   	this.chartInstance.update();
 	}
 
@@ -82,12 +88,35 @@ class PieChart extends React.Component {
 				title: {
 					display: true,
 					text: this.props.title
-				}
+				},
+
+				animation : {
+					onComplete : (animation) => {
+						// Here we have a problem, which is html2canvas triggers the animation, and is launch after the
+						// animation completes. So it's a loop. So what we did is to only print it once after loading,
+						// or after clicking on the legend
+						if (this.state.imgHref == null){
+							html2canvas(this.divRef.current, {windowWidth: this.divRef.current.offsetWidth}).then(canvas => {
+								let myImage = canvas.toDataURL("image/png");
+								this.setState({imgHref: myImage});
+							});
+						}
+					}
+    			}
 			};
 
 			return <React.Fragment>
-				<Pie data={data} options={options} ref={this.chartRef}/>
-				<div ref={this.legendRef} className={"chart-legend"}></div>
+				<div ref={this.divRef}>
+					<Pie data={data} options={options} ref={this.chartRef}/>
+					<div ref={this.legendRef} className={"chart-legend"}></div>
+				</div>
+				{ this.state.imgHref !== null ?
+					<a href={this.state.imgHref} download="chart.png">
+						<Button className="mr-1">Download</Button>
+					</a> :
+					null
+				}
+
 			</React.Fragment>;
 		}
 	}
