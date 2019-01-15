@@ -92,7 +92,7 @@ class HasModel(HasProject):
 		elif self.model.format == LogicalModel.MABOSS:
 			biolqm_model = self.getBioLQMModel()
 			ginsim_model = biolqm.to_ginsim(biolqm_model)
-			ginsim.layout(ginsim_model, 2)
+			ginsim.service("layout").runLayout(2, ginsim_model)
 			return ginsim_model
 
 		else:
@@ -106,7 +106,7 @@ class HasModel(HasProject):
 			path = tempfile.mkdtemp()
 			tmp_sbml = tempfile.mkstemp(dir=path, suffix='.sbml')[1]
 
-			ginsim.to_sbmlqual(ginsim_model, tmp_sbml)
+			biolqm.save(ginsim_model, tmp_sbml, "sbml")
 			return tmp_sbml
 
 		elif self.model.format == LogicalModel.MABOSS:
@@ -115,7 +115,7 @@ class HasModel(HasProject):
 			path = tempfile.mkdtemp()
 			tmp_sbml = tempfile.mkstemp(dir=path, suffix='.sbml')[1]
 
-			ginsim.to_sbmlqual(ginsim_model, tmp_sbml)
+			biolqm.save(ginsim_model, tmp_sbml, "sbml")
 			return tmp_sbml
 
 	def getZGINMLModelFile(self):

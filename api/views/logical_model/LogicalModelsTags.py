@@ -114,7 +114,7 @@ class TaggedLogicalModelSBMLFile(HasModel):
 			ginsim_model = ginsim.load(join(settings.MEDIA_ROOT, tagged_version.file.path))
 
 			sbml_filename = join(settings.TMP_ROOT, splitext(basename(tagged_version.file.path))[0] + ".sbml")
-			ginsim.to_sbmlqual(ginsim_model, sbml_filename)
+			biolqm.save(ginsim_model, sbml_filename, "sbml")
 
 			return FileResponse(
 				open(sbml_filename, 'rb'),
