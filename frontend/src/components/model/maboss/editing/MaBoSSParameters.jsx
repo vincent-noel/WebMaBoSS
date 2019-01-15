@@ -105,6 +105,15 @@ class MaBoSSParameters extends React.Component {
 		})
 	}
 
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		if (nextProps.project !== this.props.project || nextProps.modelId !== this.props.modelId) {
+			this.loadParameters(nextProps.project, nextProps.modelId);
+			return false;
+		}
+
+		return true;
+	}
+
 	componentDidMount() {
 		this.loadParameters(this.props.project, this.props.modelId)
 	}

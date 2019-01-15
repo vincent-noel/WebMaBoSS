@@ -204,6 +204,15 @@ class MaBoSSNodes extends React.Component {
 		}
 	}
 
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		if (nextProps.project !== this.props.project || nextProps.modelId !== this.props.modelId) {
+			this.loadNodes(nextProps.project, nextProps.modelId);
+			return false;
+		}
+
+		return true;
+	}
+
 	render() {
 
 		return (
