@@ -79,8 +79,10 @@ class MaBoSSSimulation(models.Model):
 		if self.project:
 			self.path = new_simulation_path(self.project)
 			super(MaBoSSSimulation, self).save(*args, **kwargs)
-			if self.name == "":
+			if self.name.strip() == "":
 				self.name = "Simulation #%d" % self.id
+				super(MaBoSSSimulation, self).save(*args, **kwargs)
+
 
 pre_delete.connect(remove_simulation_model, sender=MaBoSSSimulation)
 pre_save.connect(create_path, sender=MaBoSSSimulation)
@@ -123,8 +125,9 @@ class MaBoSSSensitivityAnalysis(models.Model):
 		if self.project:
 			self.path = new_simulation_path(self.project)
 			super(MaBoSSSensitivityAnalysis, self).save(*args, **kwargs)
-			if self.name == "":
+			if self.name.strip() == "":
 				self.name = "Sensitivity analysis #%d" % self.id
+				super(MaBoSSSensitivityAnalysis, self).save(*args, **kwargs)
 
 pre_delete.connect(remove_sensitivityanalysis_path, sender=MaBoSSSensitivityAnalysis)
 pre_save.connect(create_path, sender=MaBoSSSensitivityAnalysis)
