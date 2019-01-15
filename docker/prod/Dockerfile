@@ -59,7 +59,9 @@ RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
                                 --reload-on-changes
 
 RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations && chown www-data:www-data .
-RUN ln -s /appCurie/node_modules/bootstrap/ /appCurie/static && \
+
+RUN rm -fr /appCurie/static/bootstrap /appCurie/static/jquery /appCurie/config.yml && \
+    ln -s /appCurie/node_modules/bootstrap/ /appCurie/static && \
     ln -s /appCurie/node_modules/jquery/ /appCurie/static
 # Exposing port 8000 for server access
 EXPOSE 8000
