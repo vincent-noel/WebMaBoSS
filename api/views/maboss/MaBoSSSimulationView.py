@@ -55,7 +55,8 @@ class MaBoSSSimulationView(HasModel):
 				model=self.model,
 				name=request.POST['name'],
 				bnd_file=File(open(tmp_bnd_path, 'rb')),
-				cfg_file=File(open(tmp_cfg_path, 'rb'))
+				cfg_file=File(open(tmp_cfg_path, 'rb')),
+				status=MaBoSSSimulation.BUSY
 			)
 			maboss_simulation.save()
 
@@ -72,7 +73,8 @@ class MaBoSSSimulationView(HasModel):
 				model=self.model,
 				name=request.POST['name'],
 				bnd_file=File(open(bnd_path, 'rb')),
-				cfg_file=File(open(cfg_path, 'rb'))
+				cfg_file=File(open(cfg_path, 'rb')),
+				status=MaBoSSSimulation.BUSY
 			)
 			maboss_simulation.save()
 
@@ -105,43 +107,35 @@ class MaBoSSSimulationView(HasModel):
 def run_simulation(maboss_model, maboss_simulation_id):
 
 	try:
-		maboss_simulation = MaBoSSSimulation.objects.get(id=maboss_simulation_id)
-
-		with transaction.atomic():
-			maboss_simulation.status = MaBoSSSimulation.BUSY
-			maboss_simulation.save()
 		res = maboss_model.run()
 
 		fixed_points = res.get_fptable()
 		if fixed_points is not None:
 			fixed_points_json = fixed_points.to_json()
-
-			with transaction.atomic():
-				maboss_simulation.fixpoints = fixed_points_json
-				maboss_simulation.save()
+		else:
+			fixed_points_json = "{}"
 
 		states_probtraj = res.get_states_probtraj()
 		states_probtraj_json = states_probtraj.to_json()
-
-		with transaction.atomic():
-			maboss_simulation.states_probtraj = states_probtraj_json
-			maboss_simulation.save()
 
 		nodes_probtraj = res.get_nodes_probtraj()
 		nodes_probtraj_json = nodes_probtraj.to_json()
 
 		with transaction.atomic():
+			maboss_simulation = MaBoSSSimulation.objects.get(id=maboss_simulation_id)
+			maboss_simulation.fixpoints = fixed_points_json
+			maboss_simulation.states_probtraj = states_probtraj_json
 			maboss_simulation.nodes_probtraj = nodes_probtraj_json
-			maboss_simulation.save()
 
-		with transaction.atomic():
 			maboss_simulation.status = MaBoSSSimulation.ENDED
 			maboss_simulation.save()
 
 	except:
 		with transaction.atomic():
+			maboss_simulation = MaBoSSSimulation.objects.get(id=maboss_simulation_id)
 			maboss_simulation.status = MaBoSSSimulation.ERROR
 			maboss_simulation.error = "Simulation failed"
+			maboss_simulation.save()
 
 
 class MaBoSSSimulationRemove(HasMaBoSSSimulation):
