@@ -163,7 +163,6 @@ class MaBoSSNodes extends React.Component {
 
 		this.getNodesFormulaCall = APICalls.MaBoSSCalls.getMaBoSSNodesFormulas(project_id, model_id);
 		this.getNodesFormulaCall.promise.then((data) => {
-			console.log(data);
 			this.setState({nodesFormulas: data});
 
 		});
@@ -214,8 +213,7 @@ class MaBoSSNodes extends React.Component {
 	}
 
 	render() {
-
-		return (
+		return(
 			<React.Fragment>
 			<ul className="list-nodes">
 				{
@@ -241,8 +239,10 @@ class MaBoSSNodes extends React.Component {
 										</th>
 									</tr>
 									</thead>
-									<tbody>
-										<Collapse isOpen={this.state.showNodesDetails[index]}>
+								</table>
+								<Collapse isOpen={this.state.showNodesDetails[index]}>
+									<table className="table-nodes">
+										<tbody>
 										{
 											Object.keys(this.state.nodesFormulas).length > 0 && Object.keys(this.state.nodesFormulas[name]).length > 0 ?
 											Object.keys(this.state.nodesFormulas[name]).map((field, f_index) => (
@@ -272,9 +272,9 @@ class MaBoSSNodes extends React.Component {
 											</tr>
 											)):<tr><td><LoadingIcon width={"3rem"}/></td></tr>
 										}
-										</Collapse>
-									</tbody>
-								</table>
+										</tbody>
+									</table>
+								</Collapse>
 							</li>
 						);
 					}) :
