@@ -32,7 +32,7 @@ build-prod:
     - docker login -u vnoel -p $DOCKERHUB_PASSWORD
     - docker-compose build app-curie
     - docker tag app-curie:latest vnoel/app-curie:latest
-#    - docker push vnoel/app-curie:latest
+    - docker push vnoel/app-curie:latest
 
 test:
   stage: test
