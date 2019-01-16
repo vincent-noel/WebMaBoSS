@@ -6,7 +6,8 @@ from rest_framework.parsers import JSONParser
 
 from django.core.files import File
 from django.core.files.base import ContentFile
-from django.http import Http404, HttpResponse
+from django.http import Http404, HttpResponse, FileResponse
+
 from django.conf import settings
 from django.db import transaction
 from api.views.HasModel import HasModel
@@ -82,7 +83,6 @@ class MaBoSSSimulationView(HasModel):
 		else:
 			return HttpResponse(status=500)
 
-
 		cfg_settings = loads(request.POST['settings'])
 		maboss_model.param.update(cfg_settings)
 
@@ -96,6 +96,8 @@ class MaBoSSSimulationView(HasModel):
 
 		for var, istate in loads(request.POST['initialStates']).items():
 			maboss_model.network.set_istate(var, [1.0-float(istate), float(istate)])
+
+		maboss_simulation.update_model(maboss_model)
 
 		thread = Thread(target=run_simulation, args=(maboss_model, maboss_simulation.id))
 		thread.start()
@@ -200,4 +202,36 @@ class MaBossSettings(HasModel):
 			'mutations': mutations,
 			'settings': settings
 		})
+
+
+class MaBoSSSimulationBNDFile(HasMaBoSSSimulation):
+
+	def get(self, request, project_id, simulation_id):
+		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
+
+		bnd_filename = self.getBNDFilePath()
+
+		if bnd_filename is None:
+			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+		return FileResponse(
+			open(bnd_filename, 'rb'),
+			as_attachment=True, filename=basename(bnd_filename)
+		)
+
+
+class MaBoSSSimulationCFGFile(HasMaBoSSSimulation):
+
+	def get(self, request, project_id, simulation_id):
+		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
+
+		cfg_filename = self.getCFGFilePath()
+
+		if cfg_filename is None:
+			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+		return FileResponse(
+			open(cfg_filename, 'rb'),
+			as_attachment=True, filename=basename(cfg_filename)
+		)
 
