@@ -23,3 +23,9 @@ class HasMaBoSSSimulation(HasProject):
 
 		except MaBoSSSimulation.DoesNotExist:
 			raise NotFound
+
+	def getBNDFilePath(self):
+		return self.simulation.bnd_file.path
+
+	def getCFGFilePath(self):
+		return self.simulation.cfg_file.path
