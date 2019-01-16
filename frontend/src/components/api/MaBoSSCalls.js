@@ -453,22 +453,28 @@ class MaBoSSCalls {
     }
 
     static downloadMaBoSSModel(project_id, simulation_id, filetype) {
-		fetch("/api/maboss/" + project_id + "/" + simulation_id + "/" + filetype, {
-			method: "get",
-			headers: getDefaultHeaders()
-		}).then(response => checkAuthorization(response))
-		.then(response => Promise.all([
-			extractFilename(response.headers.get('content-disposition')),
-			response.blob()])
+		return makeCancelable(
+			fetch("/api/maboss/" + project_id + "/" + simulation_id + "/" + filetype, {
+				method: "get",
+				headers: getDefaultHeaders()
+			}).then(response => checkAuthorization(response))
+			.then(response => Promise.all([
+				extractFilename(response.headers.get('content-disposition')),
+				response.blob()])
+			)
+			.then(([filename, blob]) => FileSaver.saveAs(blob, filename))
 		)
-		.then(([filename, blob]) => FileSaver.saveAs(blob, filename));
 	}
 	static createNewModelFromSimulation(project_id, simulation_id) {
-		fetch("/api/maboss/" + project_id + "/" + simulation_id + "/new_model", {
-			method: "get",
-			headers: getDefaultHeaders()
-		}).then(response => checkAuthorization(response)
-		).then(response => response.json())
+		return makeCancelable(
+			fetch(
+			"/api/maboss/" + project_id + "/" + simulation_id + "/new_model",
+			{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		)
 	}
 }
 export default MaBoSSCalls;
