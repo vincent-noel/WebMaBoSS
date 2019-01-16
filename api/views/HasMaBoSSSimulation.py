@@ -1,8 +1,8 @@
 from api.views.HasProject import HasProject
 from rest_framework.exceptions import NotFound, PermissionDenied
-
+from django.conf import settings
 from api.models import MaBoSSSimulation
-
+from os.path import join
 
 class HasMaBoSSSimulation(HasProject):
 
@@ -25,7 +25,7 @@ class HasMaBoSSSimulation(HasProject):
 			raise NotFound
 
 	def getBNDFilePath(self):
-		return self.simulation.bnd_file.path
+		return join(settings.MEDIA_ROOT, self.simulation.bnd_file.path)
 
 	def getCFGFilePath(self):
-		return self.simulation.cfg_file.path
+		return join(settings.MEDIA_ROOT, self.simulation.cfg_file.path)
