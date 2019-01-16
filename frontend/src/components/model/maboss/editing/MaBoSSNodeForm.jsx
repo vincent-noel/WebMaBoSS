@@ -4,7 +4,7 @@ import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
 import APICalls from "../../../api/apiCalls";
 import LoadingInlineIcon from "../../../commons/loaders/LoadingInlineIcon";
-import BufferedTextField from "./MaBoSSFormulaForm";
+import BufferedTextField from "../../../commons/buttons/BufferedTextField";
 
 class MaBoSSNodeForm extends React.Component {
 
