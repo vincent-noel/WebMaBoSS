@@ -235,3 +235,23 @@ class MaBoSSSimulationCFGFile(HasMaBoSSSimulation):
 			as_attachment=True, filename=basename(cfg_filename)
 		)
 
+
+class MaBoSSSimulationNewModel(HasMaBoSSSimulation):
+
+	def get(self, request, project_id, simulation_id):
+		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
+
+		try:
+			new_model = LogicalModel(
+				project=self.project,
+				name=self.simulation.name + " model",
+				bnd_file=File(open(self.getBNDFilePath(), 'rb')),
+				cfg_file=File(open(self.getCFGFilePath(), 'rb')),
+				format=LogicalModel.MABOSS
+			)
+			new_model.save()
+
+			return Response(status=status.HTTP_200_OK)
+
+		except:
+			return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
