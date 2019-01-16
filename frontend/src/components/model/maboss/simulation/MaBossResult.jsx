@@ -1,5 +1,5 @@
 import React from "react";
-import {TabContent, TabPane, Nav, NavItem, NavLink, ButtonToolbar, Button} from "reactstrap";
+import {TabContent, TabPane, Nav, NavItem, NavLink, ButtonToolbar, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from "reactstrap";
 
 import MaBossFixedPoints from "./MaBossFixedPoints";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
@@ -18,8 +18,11 @@ class MaBossResult extends React.Component {
 
 		this.toggle = this.toggle.bind(this);
 		this.state = {
-			activeTab: 'fp'
-		}
+			activeTab: 'fp',
+			dropdownOpen: false
+		};
+
+		this.toggleDropdown = this.toggleDropdown.bind(this);
 	}
 
 	toggle(tab) {
@@ -28,31 +31,44 @@ class MaBossResult extends React.Component {
 		}
 	}
 
+	toggleDropdown() {
+		this.setState({dropdownOpen: !this.state.dropdownOpen});
+	}
 	render() {
 
 		if (this.props.simulationId !== null) {
 			return (
 				<React.Fragment>
 
-					<Nav tabs>
-						<NavItem>
-							<NavLink
-								onClick={() => this.toggle('fp')}
-							  	className={classnames({ active: this.state.activeTab === 'fp' })}
-							>Steady states distribution</NavLink>
-						</NavItem>
-						<NavItem>
-							<NavLink
-								onClick={() => this.toggle('npt')}
-								className={classnames({ active: this.state.activeTab === 'npt' })}
-							>Nodes probability trajectories</NavLink>
-						</NavItem>
-						<NavItem>
-							<NavLink
-								onClick={() => this.toggle('spt')}
-								className={classnames({ active: this.state.activeTab === 'spt' })}
-							>States probability trajectories</NavLink>
-						</NavItem>
+					<Nav tabs style={{"justifyContent": "space-between"}}>
+						<div className={"d-flex"} style={{"justifyContent": "flex-start"}}>
+							<NavItem>
+								<NavLink
+									onClick={() => this.toggle('fp')}
+									className={classnames({ active: this.state.activeTab === 'fp' })}
+								>Steady states distribution</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink
+									onClick={() => this.toggle('npt')}
+									className={classnames({ active: this.state.activeTab === 'npt' })}
+								>Nodes probability trajectories</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink
+									onClick={() => this.toggle('spt')}
+									className={classnames({ active: this.state.activeTab === 'spt' })}
+								>States probability trajectories</NavLink>
+							</NavItem>
+						</div>
+						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
+							<DropdownToggle caret/>
+							<DropdownMenu right>
+								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.createNewModelFromSimulation(this.props.project, this.props.simulationId);}}>Save as new model</DropdownItem>
+								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "bnd_file")}}>Download BND file</DropdownItem>
+								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "cfg_file")}}>Download CFG file</DropdownItem>
+							</DropdownMenu>
+						</Dropdown>
 					</Nav>
 					<TabContent activeTab={this.state.activeTab}>
 						<TabPane tabId="fp">
@@ -80,11 +96,6 @@ class MaBossResult extends React.Component {
 							/>
 						</TabPane>
 					</TabContent>
-					<ButtonToolbar>
-						<Button className={"mr-1"} onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "bnd_file")}}>Download BND File</Button>
-						<Button className={"mr-1"} onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "cfg_file")}}>Download CFG File</Button>
-
-					</ButtonToolbar>
 				</React.Fragment>
 			);
 		} else return null;

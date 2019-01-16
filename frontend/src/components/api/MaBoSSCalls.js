@@ -463,5 +463,12 @@ class MaBoSSCalls {
 		)
 		.then(([filename, blob]) => FileSaver.saveAs(blob, filename));
 	}
+	static createNewModelFromSimulation(project_id, simulation_id) {
+		fetch("/api/maboss/" + project_id + "/" + simulation_id + "/new_model", {
+			method: "get",
+			headers: getDefaultHeaders()
+		}).then(response => checkAuthorization(response)
+		).then(response => response.json())
+	}
 }
 export default MaBoSSCalls;
