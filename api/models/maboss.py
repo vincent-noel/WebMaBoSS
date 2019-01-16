@@ -83,6 +83,16 @@ class MaBoSSSimulation(models.Model):
 				self.name = "Simulation #%d" % self.id
 				super(MaBoSSSimulation, self).save(*args, **kwargs)
 
+	def update_model(self, model):
+
+		cfg_file = open(join(settings.MEDIA_ROOT, self.cfg_file.path), 'w')
+		model.print_cfg(out=cfg_file)
+		cfg_file.close()
+
+		bnd_file = open(join(settings.MEDIA_ROOT, self.bnd_file.path), 'w')
+		model.print_bnd(out=bnd_file)
+		bnd_file.close()
+
 
 pre_delete.connect(remove_simulation_model, sender=MaBoSSSimulation)
 pre_save.connect(create_path, sender=MaBoSSSimulation)
