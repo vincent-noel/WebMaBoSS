@@ -1,11 +1,5 @@
-import {checkAuthorization, makeCancelable, getDefaultHeaders} from "./commons";
+import {checkAuthorization, makeCancelable, getDefaultHeaders, extractFilename} from "./commons";
 import FileSaver from "file-saver";
-
-function extractFilename(content_disposition) {
-	let filename = content_disposition.substr(content_disposition.lastIndexOf("filename"), content_disposition.length);
-	if (filename.indexOf(";") >= 0) filename = filename.substr(0, filename.indexOf(";"));
-	return filename.split("=")[1].replace(/"/g, '');
-}
 
 class ModelsCalls {
 

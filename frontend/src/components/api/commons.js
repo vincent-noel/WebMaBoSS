@@ -31,4 +31,10 @@ function getDefaultHeaders() {
 	return new Headers({'Authorization': "Token " + getAPIKey()})
 }
 
-export {checkAuthorization, makeCancelable, getDefaultHeaders};
+function extractFilename(content_disposition) {
+	let filename = content_disposition.substr(content_disposition.lastIndexOf("filename"), content_disposition.length);
+	if (filename.indexOf(";") >= 0) filename = filename.substr(0, filename.indexOf(";"));
+	return filename.split("=")[1].replace(/"/g, '');
+}
+
+export {checkAuthorization, makeCancelable, getDefaultHeaders, extractFilename};
