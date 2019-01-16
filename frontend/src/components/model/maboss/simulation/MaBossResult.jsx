@@ -23,6 +23,9 @@ class MaBossResult extends React.Component {
 		};
 
 		this.toggleDropdown = this.toggleDropdown.bind(this);
+		this.createNewModel = this.createNewModel.bind(this);
+
+		this.createNewModelCall = null;
 	}
 
 	toggle(tab) {
@@ -34,6 +37,23 @@ class MaBossResult extends React.Component {
 	toggleDropdown() {
 		this.setState({dropdownOpen: !this.state.dropdownOpen});
 	}
+
+	createNewModel() {
+		this.createNewModelCall = APICalls.MaBoSSCalls.createNewModelFromSimulation(this.props.project, this.props.simulationId);
+		this.createNewModelCall.promise.then(response => {
+			this.props.getModels(this.props.project);
+		});
+	}
+
+	componentWillUnmount() {
+
+		if (this.createNewModelCall !== null) {
+			this.createNewModelCall.cancel();
+		}
+
+	}
+
+
 	render() {
 
 		if (this.props.simulationId !== null) {
@@ -64,7 +84,7 @@ class MaBossResult extends React.Component {
 						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
 							<DropdownToggle caret/>
 							<DropdownMenu right>
-								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.createNewModelFromSimulation(this.props.project, this.props.simulationId);}}>Save as new model</DropdownItem>
+								<DropdownItem onClick={() => {this.createNewModel();}}>Save as new model</DropdownItem>
 								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "bnd_file")}}>Download BND file</DropdownItem>
 								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "cfg_file")}}>Download CFG file</DropdownItem>
 							</DropdownMenu>

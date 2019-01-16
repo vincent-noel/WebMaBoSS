@@ -70,6 +70,7 @@ class MaBoss extends React.Component {
 								<MaBossResult
 									project={projectContext.project}
 									simulationId={this.state.simulationId}
+									getModels={modelContext.getModels}
 								/>
 							</React.Fragment>
 						)}
