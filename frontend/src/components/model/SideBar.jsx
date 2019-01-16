@@ -14,6 +14,9 @@ class SideBar extends React.Component {
 					modelName={this.props.modelName}
 					onModelChanged={this.props.onModelChanged}
 					path={this.props.path}
+					models={this.props.models}
+					loaded={this.props.loaded}
+					getModels={this.props.getModels}
 				/>
 				<br/>
 				<ul className="sidebar-nav">

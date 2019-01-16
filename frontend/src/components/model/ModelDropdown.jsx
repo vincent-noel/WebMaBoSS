@@ -1,52 +1,28 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
-import APICalls from "../api/apiCalls";
 import LoadingIcon from "../commons/loaders/LoadingIcon";
 
 
 class ModelDropdown extends React.Component {
 
-	constructor(props) {
-		super(props);
-		this.state = {
-			loaded: false,
-			models: [],
-		};
-
-		this.getModelsCall = null;
-	}
-
-	getModels(project_id) {
-		this.setState({models: [], loaded: false});
-		this.getModelsCall = APICalls.ModelsCalls.getModels(project_id)
-		this.getModelsCall.promise.then(models => {
-			this.setState({ models: models, loaded: true });
-		});
-	}
-
 	componentDidMount(){
-		this.getModels(this.props.project);
-	}
-
-	componentWillUnmount(){
-		this.getModelsCall.cancel();
+		this.props.getModels(this.props.project);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.project !== this.props.project) {
-			this.getModelsCall.cancel();
-			this.getModels(nextProps.project);
+			this.props.getModels(nextProps.project);
 			return false;
 		}
 
-		if (nextState.models !== this.state.models) {
+		if (nextProps.models !== this.props.models) {
 
-			if (nextState.models.length === 0) {
+			if (nextProps.models.length === 0) {
 				return false;
 			}
 
-			const modelIds = Object.keys(nextState.models).reduce((acc, key) => {
-				acc.push(nextState.models[key]['id']);
+			const modelIds = Object.keys(nextProps.models).reduce((acc, key) => {
+				acc.push(nextProps.models[key]['id']);
 				return acc;
 			}, []);
 
@@ -55,8 +31,8 @@ class ModelDropdown extends React.Component {
 				this.props.onModelChanged(nextProps.project, nextProps.modelId);
 			}
 			else {
-				if (nextState.models.length > 0){
-					this.props.onModelChanged(nextProps.project, nextState.models[0].id);
+				if (nextProps.models.length > 0){
+					this.props.onModelChanged(nextProps.project, nextProps.models[0].id);
 				}
 			}
 		}
@@ -66,7 +42,7 @@ class ModelDropdown extends React.Component {
 
 	render() {
 
-		if (!this.state.loaded) {
+		if (!this.props.loaded) {
 			return <LoadingIcon width="1rem" />;
 
 		} else {
@@ -81,7 +57,7 @@ class ModelDropdown extends React.Component {
 						{this.props.modelName !== null ? this.props.modelName : <LoadingIcon width="1rem"/>}
 					</button>
 					<div className="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton" style={style}>
-						{this.state.models.map((model, id) => {
+						{this.props.models.map((model, id) => {
 							return <NavLink
 								to={this.props.path}
 								className="dropdown-item bg-dark" key={model.id}
