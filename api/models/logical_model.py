@@ -13,10 +13,11 @@ def new_model_path(project):
 	rand_string = ''.join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(12))
 	while isdir(join(settings.MEDIA_ROOT, project.path, rand_string)):
 		rand_string = ''.join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(12))
+
 	return rand_string
 
 def path_logical_model(instance, filename):
-	return join(instance.project.path, 'logical_models', instance.path, filename)
+	return join(instance.project.path, 'logical_models', instance.path, basename(filename))
 
 def remove_logical_model(sender, instance, **kwargs):
 	if instance.format == LogicalModel.ZGINML and instance.file and exists(join(settings.MEDIA_ROOT, instance.file.path)):
