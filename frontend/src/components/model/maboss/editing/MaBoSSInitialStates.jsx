@@ -5,6 +5,7 @@ import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 
 import "./table-initial-states.scss";
 import BufferedRange from "../../../commons/buttons/BufferedRange";
+import {Button, ButtonToolbar} from "reactstrap";
 
 
 class MaBoSSInitialStates extends React.Component {
@@ -13,7 +14,8 @@ class MaBoSSInitialStates extends React.Component {
 		super(props);
 
 		this.state = {
-			initialStates: {}
+			initialStates: {},
+			updatingInitialStates: {}
 		};
 
 		this.getInitialStatesCall = null;
@@ -30,7 +32,14 @@ class MaBoSSInitialStates extends React.Component {
 					return acc;
 				}, {}
 			);
-			this.setState({initialStates: initial_states});
+			const updatingInitialStates = Object.keys(response['initial_states']).reduce(
+				(acc, key) => {
+					acc[key] = false;
+					return acc;
+				}, {}
+			);
+
+			this.setState({initialStates: initial_states, updatingInitialStates: updatingInitialStates});
 		});
 	}
 
@@ -39,6 +48,10 @@ class MaBoSSInitialStates extends React.Component {
 		if (this.saveInitialStatesCall !== null) {
 			this.saveInitialStatesCall.cancel();
 		}
+
+		let updating = this.state.updatingInitialStates;
+		updating[name] = true;
+		this.setState({updatingInitialStates: updating});
 
 		const initial_states = this.state.initialStates;
 		initial_states[name] = value;
@@ -55,7 +68,12 @@ class MaBoSSInitialStates extends React.Component {
 
 		this.saveInitialStatesCall.promise.then((response) => {
 			if (response.status === 200) {
-				this.setState({initialStates: initial_states});
+
+
+				let updating = this.state.updatingInitialStates;
+				updating[name] = false;
+
+				this.setState({initialStates: initial_states, updatingInitialStates: updating});
 			}
 		});
 	}
@@ -102,8 +120,13 @@ class MaBoSSInitialStates extends React.Component {
 											<BufferedRange
 												value={this.state.initialStates[name]} id={"initial_state_" + index}
 											   	updateCallback={(value) => this.updateInitialState(name, value)}
-												buffer={50}
+												buffer={50} waiting={this.state.updatingInitialStates[name]}
 										   	/>
+										</th>
+										<th className={"d-flex align-items-center"}>
+											<ButtonToolbar>
+												<Button className="ml-1 btn-sm" onClick={() => this.updateInitialState(name, 50)}>Random</Button>
+											</ButtonToolbar>
 										</th>
 									</tr>
 									</thead>

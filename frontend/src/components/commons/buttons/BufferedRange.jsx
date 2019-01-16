@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import '../../../scss/toggle_switch.scss';
+import LoadingIcon from "../loaders/LoadingIcon";
 
 class BufferedRange extends Component {
 
@@ -14,6 +15,7 @@ class BufferedRange extends Component {
 
 		this.state = {
 			value: this.props.value,
+			waiting: false
 		};
 	}
 
@@ -27,9 +29,25 @@ class BufferedRange extends Component {
 
 	changeValue(value) {
 		this.props.updateCallback(value);
+		this.setState({waiting: true});
 	}
 
-  	render() {
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+
+		if (nextProps.value !== this.props.value && this.state.waiting) {
+			this.setState({waiting: false});
+			return false;
+		}
+
+		if (nextProps.waiting !== this.state.waiting) {
+			this.setState({waiting: nextProps.waiting});
+			return false;
+		}
+
+		return true;
+	}
+
+	render() {
   		return <React.Fragment>
 			<label className="range" data-toggle="tooltip"
 					data-placement="top"
@@ -39,10 +57,13 @@ class BufferedRange extends Component {
 					   min="0" max="100" step="1"
 					   id={this.props.id + "slider"}
 					   onChange={(e) => {this.handleChangeValue(e.target.value)}}
-					   defaultValue={this.props.value}
+					   value={this.props.value}
 				/>
 			</label>
-			<span className="range-indicator">{this.props.value + "%"}</span>
+			{ this.state.waiting ?
+				<span style={{width: "3rem"}}><LoadingIcon width={"1rem"}/></span> :
+				<span style={{width: "3rem"}} className="range-indicator">{this.props.value + "%"}</span>
+			}
 		</React.Fragment>;
   	}
 }
