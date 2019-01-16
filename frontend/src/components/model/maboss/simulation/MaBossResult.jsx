@@ -1,11 +1,12 @@
 import React from "react";
-import {TabContent, TabPane, Nav, NavItem, NavLink} from "reactstrap";
+import {TabContent, TabPane, Nav, NavItem, NavLink, ButtonToolbar, Button} from "reactstrap";
 
 import MaBossFixedPoints from "./MaBossFixedPoints";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
 import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
 
 import classnames from 'classnames';
+import APICalls from "../../../api/apiCalls";
 
 
 class MaBossResult extends React.Component {
@@ -79,6 +80,11 @@ class MaBossResult extends React.Component {
 							/>
 						</TabPane>
 					</TabContent>
+					<ButtonToolbar>
+						<Button className={"mr-1"} onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "bnd_file")}}>Download BND File</Button>
+						<Button className={"mr-1"} onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "cfg_file")}}>Download CFG File</Button>
+
+					</ButtonToolbar>
 				</React.Fragment>
 			);
 		} else return null;

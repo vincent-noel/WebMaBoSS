@@ -1,4 +1,5 @@
-import {checkAuthorization, makeCancelable, getDefaultHeaders} from "./commons";
+import {checkAuthorization, makeCancelable, getDefaultHeaders, extractFilename} from "./commons";
+import FileSaver from "file-saver";
 
 class MaBoSSCalls {
 
@@ -450,5 +451,17 @@ class MaBoSSCalls {
 			).then(response => response.json())
         )
     }
+
+    static downloadMaBoSSModel(project_id, simulation_id, filetype) {
+		fetch("/api/maboss/" + project_id + "/" + simulation_id + "/" + filetype, {
+			method: "get",
+			headers: getDefaultHeaders()
+		}).then(response => checkAuthorization(response))
+		.then(response => Promise.all([
+			extractFilename(response.headers.get('content-disposition')),
+			response.blob()])
+		)
+		.then(([filename, blob]) => FileSaver.saveAs(blob, filename));
+	}
 }
 export default MaBoSSCalls;
