@@ -6,7 +6,7 @@ import "./chart-legend.scss"
 import {Button} from "reactstrap";
 import {faSave} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import LoadingIcon from "./LineChart";
+import LoadingIcon from "../commons/loaders/LoadingIcon";
 
 class PieChart extends React.Component {
 
@@ -20,6 +20,7 @@ class PieChart extends React.Component {
 		this.chartRef = this.chartRef.bind(this);
 		this.legendRef = this.legendRef.bind(this);
 		this.downloadRef = React.createRef();
+		this.parentRef = React.createRef();
 
 		this.chartInstance = null;
 		this.legend = null;
@@ -111,25 +112,23 @@ class PieChart extends React.Component {
 							this.chartHeight = this.chartInstance.canvas.height;
 							this.chartWidth = this.chartInstance.canvas.width;
 
-							let canvas_res = document.createElement('canvas');
-
-							canvas_res.width = this.chartInstance.canvas.width;
-							canvas_res.height = (
-								this.chartInstance.canvas.height +
-								this.legend.offsetHeight
-							);
-
-							let ctx_res = canvas_res.getContext("2d");
-							ctx_res.drawImage(this.chartInstance.canvas, 0, 0);
-
 							html2canvas(this.legend, {
-								width: this.legend.offsetWidth,
-								windowWidth: this.legend.offsetWidth,
+								width: this.chartInstance.canvas.width,
                                 backgroundColor: null,
-                                x: 0,
+								scale: 1,
 								logging: false
 							}).then(canvas => {
 
+								let canvas_res = document.createElement('canvas');
+
+								canvas_res.width = this.chartInstance.canvas.width;
+								canvas_res.height = (
+									this.chartInstance.canvas.height + canvas.height
+								);
+
+								let ctx_res = canvas_res.getContext("2d");
+
+								ctx_res.drawImage(this.chartInstance.canvas, 0, 0);
 								ctx_res.drawImage(canvas, 0, this.chartInstance.canvas.height);
 
 								let myImage = canvas_res.toDataURL("image/png");
@@ -143,31 +142,28 @@ class PieChart extends React.Component {
 
 			return <React.Fragment>
 				<div
-					onMouseOver={() => {
-					if (this.downloadRef.current !== null && this.chartInstance !== null && this.legend !== null) {
-						this.downloadRef.current.style.display = "flex";
-						this.downloadRef.current.style.justifyContent = "end";
-						this.downloadRef.current.style.position = "relative";
-						this.downloadRef.current.style.top = (- this.chartInstance.canvas.offsetHeight - this.legend.offsetHeight + 4).toString() + "px";
-
-						}
-					}}
-
-					onMouseOut={() => {
-						if (this.downloadRef.current !== null) {
-							this.downloadRef.current.style.display= "none";
-						}
-					}}
+					ref={this.parentRef}
+					style={{position: "relative"}}
 				>
 					<Pie data={data} options={options} ref={this.chartRef}/>
 					<div ref={this.legendRef} className={"chart-legend"}></div>
-					{ this.state.imgHref !== null ?
-						<a href={this.state.imgHref} download="chart.png" ref={this.downloadRef} style={{display: "none"}}>
+						<a
+							style={{
+								top: "0px",
+								right: "0px",
+								position: "absolute",
+							}}
+							href={this.state.imgHref}
+							download="chart.png"
+							ref={this.downloadRef}
+						>
 							<Button className="ml-1">
-								<FontAwesomeIcon icon={faSave}/>
+								{
+									this.state.imgHref !== null ?
+									<FontAwesomeIcon icon={faSave}/> : <LoadingIcon width="1rem" />
+								}
 							</Button>
-						</a> : null
-					}
+						</a>
 
 				</div>
 

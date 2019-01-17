@@ -112,31 +112,28 @@ class LineChart extends React.Component {
 							this.chartHeight = this.chartInstance.canvas.height;
 							this.chartWidth = this.chartInstance.canvas.width;
 
-							let canvas_res = document.createElement('canvas');
-
-							canvas_res.width = this.chartInstance.canvas.width;
-							canvas_res.height = (
-								this.chartInstance.canvas.height +
-								this.legend.offsetHeight
-							);
-
-							let ctx_res = canvas_res.getContext("2d");
-							ctx_res.drawImage(this.chartInstance.canvas, 0, 0);
-
 							html2canvas(this.legend, {
-								width: this.legend.offsetWidth,
-								windowWidth: this.legend.offsetWidth,
+								width: this.chartInstance.canvas.width,
                                 backgroundColor: null,
-                                x: 0,
+								scale: 1,
 								logging: false
 							}).then(canvas => {
 
+								let canvas_res = document.createElement('canvas');
+
+								canvas_res.width = this.chartInstance.canvas.width;
+								canvas_res.height = (
+									this.chartInstance.canvas.height + canvas.height
+								);
+
+								let ctx_res = canvas_res.getContext("2d");
+
+								ctx_res.drawImage(this.chartInstance.canvas, 0, 0);
 								ctx_res.drawImage(canvas, 0, this.chartInstance.canvas.height);
 
 								let myImage = canvas_res.toDataURL("image/png");
 								this.setState({imgHref: myImage});
-							});
-						}
+							});						}
 					}
     			},
 
@@ -144,29 +141,26 @@ class LineChart extends React.Component {
 
 			return (
 				<React.Fragment>
-					<div onMouseOver={() => {
-						if (this.downloadRef.current !== null && this.chartInstance !== null && this.legend !== null) {
-							this.downloadRef.current.style.display = "flex";
-							this.downloadRef.current.style.justifyContent = "end";
-							this.downloadRef.current.style.position = "relative";
-							this.downloadRef.current.style.top = (- this.chartInstance.canvas.offsetHeight - this.legend.offsetHeight + 4).toString() + "px";
-						}
-
-					}} onMouseOut={() => {
-						if (this.downloadRef.current !== null) {
-							this.downloadRef.current.style.display= "none";
-						}
-
-					}}>
+					<div
+						style={{position: "relative"}}
+					>
 						<Line data={data} options={options} ref={this.chartRef}/>
 						<div ref={this.legendRef} className={"chart-legend"}></div>
-						{ this.state.imgHref !== null ?
-							<a href={this.state.imgHref} download="chart.png" ref={this.downloadRef} style={{display: "none"}}>
-								<Button className="ml-1">
-									<FontAwesomeIcon icon={faSave}/>
-								</Button>
-							</a> : null
-						}
+						<a href={this.state.imgHref} download="chart.png" ref={this.downloadRef}
+						   style={{
+								top: "0px",
+								right: "0px",
+								position: "absolute",
+						   }}
+						>
+							<Button className="ml-1">
+								{
+									this.state.imgHref !== null ?
+									<FontAwesomeIcon icon={faSave}/> :
+									<LoadingIcon width="1rem" />
+								}
+							</Button>
+						</a>
 					</div>
 				</React.Fragment>
 			);
