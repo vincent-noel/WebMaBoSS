@@ -41,9 +41,9 @@ class MaBossActions extends React.Component {
 		this.props.onSubmit(project_id, model_id, data);
 	}
 
-	onSubmitOldSim(data) {
+	onSubmitOldSim(data, name) {
 		this.setState({showOldSimForm: false});
-		this.props.onSubmitOldSim(data);
+		this.props.onSubmitOldSim(data, name);
 	}
 
 	showOldSimButton(value) {

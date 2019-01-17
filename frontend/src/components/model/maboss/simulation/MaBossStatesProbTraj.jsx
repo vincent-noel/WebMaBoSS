@@ -1,6 +1,4 @@
 import React from "react";
-import ReactDOMServer from "react-dom/server";
-import {Line} from "react-chartjs-2";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import APICalls from "../../../api/apiCalls";
 import LineChart from "../../../charts/LineChart";
@@ -65,51 +63,7 @@ class MaBossStatesProbTraj extends React.Component {
 	render() {
 
 		if (this.state.statesProbTrajLoaded) {
-			return <LineChart traj={this.state.statesProbTraj} colormap={this.props.colormap}/>
-			// const probtraj = this.state.statesProbTraj;
-			// let data = {
-			// 	labels: Object.keys(Object.values(probtraj)[0]),
-			// 	datasets : Object.keys(probtraj).map(
-			// 		(key, index) => {
-			// 			return {
-			// 				label: key,
-			// 				data: Object.values(probtraj[key]),
-			// 				fill: false,
-            // 				backgroundColor: this.props.colormap[index%this.props.colormap.length],
-          	// 				borderColor: this.props.colormap[index%this.props.colormap.length],
-			// 			};
-			// 		}
-			// 	)
-			// };
-			//
-			// let options = {
-			// 	legend: {
-			// 		display: false,
-			//
-			// 	},
-			// 	legendCallback: (chart) => {
-			//
-			// 		return (ReactDOMServer.renderToStaticMarkup(<ul className="chart-legend">
-			// 			{
-			// 				chart.data.datasets.map((dataset, index) => {
-			// 					return <li key={index} className={"legend-item d-flex"}>
-			// 						<span className={"legend-color"}
-			// 							style={{backgroundColor: dataset.backgroundColor}}
-			// 						></span>
-			// 						<span className={"legend-label align-items-start"}>{dataset.label}</span>
-			// 					</li>;
-			// 				})
-			// 			}
-			// 		</ul>));
-			// 	}
-			// };
-			//
-			// return (
-			// 	<React.Fragment>
-			// 		<Line data={data} options={options} ref={this.chartRef}/>
-			// 		<div ref={this.legendRef}></div>
-			// 	</React.Fragment>
-			// );
+			return <LineChart traj={this.state.statesProbTraj} colormap={this.props.colormap} title={this.props.simulationName}/>
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
 		} else {

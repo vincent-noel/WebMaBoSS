@@ -98,6 +98,7 @@ class MaBossResult extends React.Component {
 								project={this.props.project}
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
+								simulationName={this.props.simulationName}
 								colormap={MaBossResult.colormap}
 							/>
 						</TabPane>
@@ -106,6 +107,7 @@ class MaBossResult extends React.Component {
 								project={this.props.project}
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
+								simulationName={this.props.simulationName}
 								colormap={MaBossResult.colormap}
 							/>
 						</TabPane>
@@ -114,6 +116,7 @@ class MaBossResult extends React.Component {
 								project={this.props.project}
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
+								simulationName={this.props.simulationName}
 								colormap={MaBossResult.colormap}
 							/>
 						</TabPane>

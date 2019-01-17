@@ -46,7 +46,7 @@ class OldSimForm extends React.Component {
 
 	onSubmit(e) {
 		e.preventDefault();
-		this.props.onSubmit(this.state.selectedSimulationId);
+		this.props.onSubmit(this.state.selectedSimulationId, this.state.selectedSimulation);
 	}
 
 	onSimulationChanged(simulation_id, name) {

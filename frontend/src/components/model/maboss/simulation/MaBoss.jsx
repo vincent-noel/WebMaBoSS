@@ -16,6 +16,7 @@ class MaBoss extends React.Component {
 
 		this.state = {
 			simulationId: null,
+			simulationName: "",
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
@@ -28,14 +29,14 @@ class MaBoss extends React.Component {
 	onSubmit(project_id, model_id, data) {
 		this.setState({simulationId: null});
 		this.createMaBossSimulationCall = APICalls.MaBoSSCalls.createMaBoSSSimulation(project_id, model_id, data);
-		this.createMaBossSimulationCall.promise.then(data => {
-			this.setState({showNewSimForm: false, simulationId: data['simulation_id']})
+		this.createMaBossSimulationCall.promise.then(api_data => {
+			this.setState({showNewSimForm: false, simulationId: api_data['simulation_id'], simulationName: data.name})
 		});
 
 	}
 
-	onSubmitOldSim(data) {
-		this.setState({showOldSimForm: false, simulationId: data});
+	onSubmitOldSim(data, name) {
+		this.setState({showOldSimForm: false, simulationId: data, simulationName: name});
 	}
 
 	updateSim(simulation_id) {
@@ -70,6 +71,7 @@ class MaBoss extends React.Component {
 								<MaBossResult
 									project={projectContext.project}
 									simulationId={this.state.simulationId}
+									simulationName={this.state.simulationName}
 									getModels={modelContext.getModels}
 								/>
 							</React.Fragment>
