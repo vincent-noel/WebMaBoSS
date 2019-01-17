@@ -48,6 +48,7 @@ body {
     #sidebar-wrapper {
       width: var(--sidebar-width);
     }
+
   }
 
   #sidebar-wrapper {
@@ -69,7 +70,7 @@ body {
     padding: 1rem 0rem;
 
     @include media-breakpoint-up(md) {
-      width: 0;
+      width: var(--sidebar-width);
     }
   }
 
