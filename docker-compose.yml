@@ -33,6 +33,9 @@ services:
       - DB_HOST=app-curie-db
       - DB_PORT=3306
 
+    depends_on:
+      - app-curie-db
+
   app-curie-dev:
     build:
       context: ./
@@ -52,6 +55,10 @@ services:
       - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
       - DB_HOST=app-curie-db
       - DB_PORT=3306
+
+    depends_on:
+      - app-curie-db
+
     restart: unless-stopped
 
   app-curie-test:
@@ -73,6 +80,10 @@ services:
       - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
       - DB_HOST=app-curie-db
       - DB_PORT=3306
+
+    depends_on:
+      - app-curie-db
+
     restart: unless-stopped
 
 
