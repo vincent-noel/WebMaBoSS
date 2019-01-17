@@ -7,6 +7,8 @@ import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
 
 import classnames from 'classnames';
 import APICalls from "../../../api/apiCalls";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCaretDown} from "@fortawesome/free-solid-svg-icons";
 
 
 class MaBossResult extends React.Component {
@@ -82,7 +84,7 @@ class MaBossResult extends React.Component {
 							</NavItem>
 						</div>
 						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
-							<DropdownToggle caret/>
+							<DropdownToggle><FontAwesomeIcon icon={faCaretDown}/></DropdownToggle>
 							<DropdownMenu right>
 								<DropdownItem onClick={() => {this.createNewModel();}}>Save as new model</DropdownItem>
 								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "bnd_file")}}>Download BND file</DropdownItem>
