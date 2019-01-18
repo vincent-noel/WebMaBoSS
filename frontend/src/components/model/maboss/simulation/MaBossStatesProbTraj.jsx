@@ -63,7 +63,7 @@ class MaBossStatesProbTraj extends React.Component {
 	render() {
 
 		if (this.state.statesProbTrajLoaded) {
-			return <LineChart traj={this.state.statesProbTraj} colormap={this.props.colormap} title={this.props.simulationName}/>
+			return <LineChart traj={this.state.statesProbTraj} colorList={this.props.colormap} title={this.props.simulationName}/>
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
 		} else {

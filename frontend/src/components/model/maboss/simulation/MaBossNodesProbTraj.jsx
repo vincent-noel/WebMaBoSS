@@ -66,7 +66,7 @@ class MaBossNodesProbTraj extends React.Component {
 		if (this.state.nodesProbTrajLoaded) {
 			return <LineChart
 				traj={this.state.nodesProbTraj}
-				colormap={this.props.colormap}
+				colorList={this.props.colormap}
 				title={this.props.simulationName}
 			/>
 

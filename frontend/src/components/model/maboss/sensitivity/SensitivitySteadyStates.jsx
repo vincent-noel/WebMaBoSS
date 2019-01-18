@@ -6,6 +6,52 @@ import "./table-results.scss";
 
 class SensitivitySteadyStates extends React.Component {
 
+	constructor(props) {
+
+		super(props);
+
+		this.state = {
+			listStates: [],
+			colorMap: {}
+		};
+	}
+
+	computeStateList(table) {
+
+		let u = {}, res = [], colors = {};
+
+		Object.values(table).map(
+			(condition, index) => {
+				Object.keys(condition).map(
+					(state) => {
+						if (!u.hasOwnProperty(state)) {
+							res.push(state);
+							u[state] = 1;
+						}
+					}
+				);
+			}
+		);
+		res.map((state, index) => {
+			colors[state] = this.props.colormap[index % this.props.colormap.length]
+		});
+
+		this.setState({listStates: res, colorMap: colors});
+	}
+
+
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+
+		if (nextProps.steadyStates.loaded !== this.props.steadyStates.loaded && nextProps.steadyStates.loaded) {
+
+			this.computeStateList(nextProps.steadyStates.table);
+
+			return false;
+		}
+
+		return true;
+	}
+
 	render() {
 
 		if (this.props.steadyStates.loaded) {
@@ -19,7 +65,7 @@ class SensitivitySteadyStates extends React.Component {
 						return <div className="result_steadystates" key={index}><PieChart
 							title={name}
 							table={this.props.steadyStates.table[name]}
-							colormap={this.props.colormap}
+							colorMap={this.state.colorMap}
 						/></div>;
 					})
 				}

@@ -75,8 +75,16 @@ class PieChart extends React.Component {
 				labels: Object.keys(this.props.table),
 				datasets: [{
 					data: Object.values(this.props.table),
-					backgroundColor: Object.values(this.props.table).map(
-						(value, index) => { return this.props.colormap[index]}
+					backgroundColor: Object.keys(this.props.table).map(
+						(value, index) => {
+							if (this.props.colorMap !== undefined) {
+								return this.props.colorMap[value]
+
+							} else if (this.props.colorList !== undefined) {
+								return this.props.colorList[index % this.props.colorList.length]
+
+							}
+						}
 					)
 				}]
 			};

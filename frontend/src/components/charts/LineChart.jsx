@@ -72,12 +72,22 @@ class LineChart extends React.Component {
 				labels: Object.keys(Object.values(this.props.traj)[0]),
 				datasets : Object.keys(this.props.traj).map(
 					(key, index) => {
+
+						let color;
+						if (this.props.colorMap !== undefined) {
+							color = this.props.colorMap[value]
+
+						} else if (this.props.colorList !== undefined) {
+							color = this.props.colorList[index % this.props.colorList.length]
+
+						}
+
 						return {
 							label: key,
 							data: Object.values(this.props.traj[key]),
 							fill: false,
-            				backgroundColor: this.props.colormap[index%this.props.colormap.length],
-          					borderColor: this.props.colormap[index%this.props.colormap.length],
+            				backgroundColor: color,
+          					borderColor: color,
 						};
 					}
 				)
