@@ -158,7 +158,7 @@ class NewForm extends React.Component {
 		});
 
 		this.createCall.promise.then(response => {
-			this.props.submit(response['analysis_id']);
+			this.props.submit(this.props.project, response['analysis_id']);
 		});
 
 	}

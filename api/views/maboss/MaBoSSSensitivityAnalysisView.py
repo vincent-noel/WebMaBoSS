@@ -231,28 +231,34 @@ class MaBoSSSensitivitySteadyStatesView(HasMaBoSSSensitivity):
 		HasMaBoSSSensitivity.load(self, request, project_id, analysis_id)
 
 		results = {}
-		finished = []
 		simulations = MaBoSSSensitivitySimulation.objects.filter(sensitivity_analysis=self.analysis)
 
+		results.update({'results': {}})
+
 		for simulation in simulations:
-			finished.append(simulation.status == MaBoSSSensitivitySimulation.ENDED)
 
-		
-		if all(finished):
+			fixed_points = None
 
-			results.update({'status': MaBoSSSensitivityAnalysis.ENDED, 'results': {}})
+			if simulation.states_probtraj is not None:
+				fixed_points = {}
+				for key, values in loads(simulation.states_probtraj).items():
+					last_time = list(values.keys())[len(values.keys()) - 1]
+					if values[last_time] > 0:
+						fixed_points.update({key: values[last_time]})
 
-			for simulation in simulations:
-
-				fixed_points = None
-
-				if simulation.states_probtraj is not None:
-					fixed_points = {}
-					for key, values in loads(simulation.states_probtraj).items():
-						last_time = list(values.keys())[len(values.keys()) - 1]
-						if values[last_time] > 0:
-							fixed_points.update({key: values[last_time]})
-
-				results['results'].update({simulation.name: fixed_points})
+			results['results'].update({simulation.name: fixed_points})
 
 		return Response(results, status=status.HTTP_200_OK)
+
+
+class MaBoSSSensitivityStatusView(HasMaBoSSSensitivity):
+
+	def get(self, request, project_id, analysis_id):
+
+		HasMaBoSSSensitivity.load(self, request, project_id, analysis_id)
+
+		simulations = MaBoSSSensitivitySimulation.objects.filter(sensitivity_analysis=self.analysis)
+		finished = [simulation.status == MaBoSSSensitivitySimulation.ENDED for simulation in simulations]
+		result = {'done': float(sum(finished))/float(len(simulations)) if len(simulations) > 0 else 0}
+
+		return Response(result, status=status.HTTP_200_OK)

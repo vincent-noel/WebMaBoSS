@@ -37,7 +37,7 @@ class OldForm extends React.Component {
 
 	onSubmit(e) {
 		e.preventDefault();
-		this.props.onSubmit(this.state.selectedAnalysisId);
+		this.props.onSubmit(this.props.project, this.state.selectedAnalysisId);
 	}
 
 	onAnalysisChanged(simulation_id, name) {

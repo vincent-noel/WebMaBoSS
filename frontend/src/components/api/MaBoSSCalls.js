@@ -439,7 +439,20 @@ class MaBoSSCalls {
         )
     }
 
-	static getSensitivityAnalysisSteadyStates(project_id, analysis_id) {
+    static getSensitivityAnalysisStatus(project_id, analysis_id) {
+        return makeCancelable(
+            fetch(
+				"/api/maboss_sensitivity/" + project_id + "/" + analysis_id + "/status",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+            ).then(response => checkAuthorization(response)
+			).then(response => response.json())
+        )
+    }
+
+    static getSensitivityAnalysisSteadyStates(project_id, analysis_id) {
         return makeCancelable(
             fetch(
 				"/api/maboss_sensitivity/" + project_id + "/" + analysis_id + "/steady_states/",
