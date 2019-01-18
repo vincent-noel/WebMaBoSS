@@ -21,7 +21,6 @@ class MaBossActions extends React.Component {
 
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onSubmitOldSim = this.onSubmitOldSim.bind(this);
-		this.showOldSimButton = this.showOldSimButton.bind(this);
 	}
 
 	toggleNewSimForm() {
@@ -46,10 +45,6 @@ class MaBossActions extends React.Component {
 		this.props.onSubmitOldSim(data, name);
 	}
 
-	showOldSimButton(value) {
-		this.setState({showOldSimButton: value, showOldSimForm: value && this.state.showOldSimForm});
-	}
-
 	shouldComponentUpdate(nextProps) {
 		if (nextProps.modelId !== this.props.modelId) {
 			this.props.updateSim(null);
@@ -66,7 +61,7 @@ class MaBossActions extends React.Component {
 				<ButtonToolbar className="justify-content-start">
 					<Button className="mr-1" onClick={() => {this.toggleNewSimForm();}}>New simulation</Button>
 					{
-						this.state.showOldSimButton
+						this.props.listOfSimulations !== null && this.props.listOfSimulations.length > 0
 						? 	<Button className="mr-1" onClick={() => {this.toggleOldSimForm();}}>
 								Load old simulation
 							</Button>
@@ -87,7 +82,9 @@ class MaBossActions extends React.Component {
 					onSubmit={this.onSubmitOldSim}
 					status={this.state.showOldSimForm}
 					toggle={this.toggleOldSimForm}
-					showOldSimButton={this.showOldSimButton}
+					listOfSimulations={this.props.listOfSimulations}
+					loadListSimulations={this.props.loadListSimulations}
+					removeOldSim={this.props.removeOldSim}
 				/>
 			</React.Fragment>
 		);

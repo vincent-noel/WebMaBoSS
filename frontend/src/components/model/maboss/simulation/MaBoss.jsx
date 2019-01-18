@@ -17,20 +17,59 @@ class MaBoss extends React.Component {
 		this.state = {
 			simulationId: null,
 			simulationName: "",
+
+			listOfSimulations: null,
 		};
 
 		this.onSubmit = this.onSubmit.bind(this);
 		this.onSubmitOldSim = this.onSubmitOldSim.bind(this);
 		this.updateSim = this.updateSim.bind(this);
+		this.loadListSimulations = this.loadListSimulations.bind(this);
+		this.removeOldSim = this.removeOldSim.bind(this);
 
 		this.createMaBossSimulationCall = null;
+		this.getListSimulationCall = null;
+		this.removeSimulationCall = null;
 	}
+
+	removeOldSim(project_id, model_id, simulation_id) {
+
+		this.removeSimulationCall = APICalls.MaBoSSCalls.deleteMaBossSimulation(project_id, simulation_id);
+		this.removeSimulationCall.promise.then(response => this.loadListSimulations(project_id, model_id))
+	}
+
+
+	loadListSimulations(project_id, model_id) {
+
+		if (this.getListSimulationCall !== null) {
+			this.getListSimulationCall.cancel();
+        }
+
+		this.setState({
+			listOfSimulations: null,
+		});
+
+		this.getListSimulationCall = APICalls.MaBoSSCalls.getListOfMaBoSSSimulations(project_id, model_id);
+		this.getListSimulationCall.promise.then(data => {
+			if (data.length > 0)
+				this.setState({listOfSimulations: data});
+		});
+	}
+
 
 	onSubmit(project_id, model_id, data) {
 		this.setState({simulationId: null});
 		this.createMaBossSimulationCall = APICalls.MaBoSSCalls.createMaBoSSSimulation(project_id, model_id, data);
 		this.createMaBossSimulationCall.promise.then(api_data => {
-			this.setState({showNewSimForm: false, simulationId: api_data['simulation_id'], simulationName: data.name})
+
+			let listOfSimulations = this.state.listOfSimulations !== null ? this.state.listOfSimulations : [];
+			listOfSimulations.push({id: api_data['simulation_id'], name: data.name});
+
+			this.setState({
+				showNewSimForm: false,
+				simulationId: api_data['simulation_id'], simulationName: data.name,
+				listOfSimulations: listOfSimulations
+			});
 		});
 
 	}
@@ -45,8 +84,9 @@ class MaBoss extends React.Component {
 
 	componentWillUnmount() {
 		if (this.createMaBossSimulationCall !== null) this.createMaBossSimulationCall.cancel();
+		if (this.getListSimulationCall !== null) this.getListSimulationCall.cancel();
+		if (this.removeSimulationCall !== null) this.removeSimulationCall.cancel();
 	}
-
 
 	render() {
 
@@ -67,6 +107,9 @@ class MaBoss extends React.Component {
 									onSubmitOldSim={this.onSubmitOldSim}
 									updateSim={this.updateSim}
 									remove={this.removeOldSim}
+									listOfSimulations={this.state.listOfSimulations}
+									loadListSimulations={this.loadListSimulations}
+									removeOldSim={this.removeOldSim}
 								/>
 								<MaBossResult
 									project={projectContext.project}
