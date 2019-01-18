@@ -8,6 +8,7 @@ import {Button} from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSave} from "@fortawesome/free-solid-svg-icons";
 import LoadingIcon from "../commons/loaders/LoadingIcon";
+import LoadingInlineIcon from "../commons/loaders/LoadingInlineIcon";
 
 class LineChart extends React.Component {
 
@@ -21,6 +22,7 @@ class LineChart extends React.Component {
 		this.chartRef = this.chartRef.bind(this);
 		this.legendRef = this.legendRef.bind(this);
 		this.downloadRef = React.createRef();
+		this.parentRef = React.createRef();
 
 		this.chartInstance = null;
 		this.legend = null;
@@ -109,13 +111,17 @@ class LineChart extends React.Component {
 						// or after clicking on the legend, or after a detected size change
 						if (this.chartInstance.width > 0 && (this.state.imgHref == null || this.chartHeight !== this.chartInstance.canvas.height || this.chartWidth !== this.chartInstance.canvas.width)){
 
+							this.setState({imgHref: null});
+
 							this.chartHeight = this.chartInstance.canvas.height;
 							this.chartWidth = this.chartInstance.canvas.width;
 
 							html2canvas(this.legend, {
-								width: this.chartInstance.canvas.width,
-                                backgroundColor: null,
-								scale: 1,
+								width: this.legend.offsetWidth,
+								windowWidth: window.innerWidth - (
+									document.getElementById("sidebar-wrapper").offsetWidth
+								),
+						        backgroundColor: null,
 								logging: false
 							}).then(canvas => {
 
@@ -133,7 +139,8 @@ class LineChart extends React.Component {
 
 								let myImage = canvas_res.toDataURL("image/png");
 								this.setState({imgHref: myImage});
-							});						}
+							});
+						}
 					}
     			},
 
@@ -142,22 +149,26 @@ class LineChart extends React.Component {
 			return (
 				<React.Fragment>
 					<div
+						ref={this.parentRef}
 						style={{position: "relative"}}
 					>
 						<Line data={data} options={options} ref={this.chartRef}/>
 						<div ref={this.legendRef} className={"chart-legend"}></div>
-						<a href={this.state.imgHref} download="chart.png" ref={this.downloadRef}
+						<a
 						   style={{
-								top: "0px",
+								top: "3px",
 								right: "0px",
 								position: "absolute",
 						   }}
+						   href={this.state.imgHref}
+						   download="chart.png"
+						   ref={this.downloadRef}
 						>
-							<Button className="ml-1">
+							<Button className="ml-1 btn-sm">
 								{
 									this.state.imgHref !== null ?
 									<FontAwesomeIcon icon={faSave}/> :
-									<LoadingIcon width="1rem" />
+									<LoadingInlineIcon width="1rem" dark/>
 								}
 							</Button>
 						</a>

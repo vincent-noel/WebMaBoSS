@@ -7,6 +7,7 @@ import {Button} from "reactstrap";
 import {faSave} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import LoadingIcon from "../commons/loaders/LoadingIcon";
+import LoadingInlineIcon from "../commons/loaders/LoadingInlineIcon";
 
 class PieChart extends React.Component {
 
@@ -109,15 +110,40 @@ class PieChart extends React.Component {
 						// or after clicking on the legend, or after a detected size change
 						if (this.chartInstance.width > 0 && (this.state.imgHref == null || this.chartHeight !== this.chartInstance.canvas.height || this.chartWidth !== this.chartInstance.canvas.width)){
 
+							this.setState({imgHref: null});
+
 							this.chartHeight = this.chartInstance.canvas.height;
 							this.chartWidth = this.chartInstance.canvas.width;
 
+							// console.log("Sidebar width : " + document.getElementById("sidebar-wrapper").offsetWidth);
+							// console.log("Device pixel Ratio: " + window.devicePixelRatio);
+							// console.log("Window outer width: " + window.outerWidth);
+							// console.log("Window inner width: " + window.innerWidth);
+
+							// Here we have another problem. When the sidebar is off, the generated PNG is perfect.
+							// When it's on, the legend and the chart are not aligned/the same width.
+							// For now we are giving up
+
 							html2canvas(this.legend, {
-								width: this.chartInstance.canvas.width,
+								width: this.legend.offsetWidth,
+								windowWidth: window.innerWidth - (
+									document.getElementById("sidebar-wrapper").offsetWidth
+								),
                                 backgroundColor: null,
-								scale: 1,
 								logging: false
 							}).then(canvas => {
+
+								// console.log(canvas);
+								// console.log(this.legend);
+								// console.log("Original legend width: " + this.legend.offsetWidth);
+								// console.log("Original doc aspectRatio: " + window.devicePixelRatio);
+								// console.log("Sidebar width: " + document.getElementById("sidebar-wrapper").offsetWidth);
+								// console.log("Chart width : " + this.chartInstance.canvas.width);
+								// console.log("Chart scale ratio : " + this.chartInstance.aspectRatio);
+								// console.log("Legend width : " + canvas.width);
+								// console.log("Legend width : " + canvas.width);
+								// console.log("Forced windowWidth: "+ (window.innerWidth - (
+								// document.getElementById("sidebar-wrapper").offsetWidth)));
 
 								let canvas_res = document.createElement('canvas');
 
@@ -149,7 +175,7 @@ class PieChart extends React.Component {
 					<div ref={this.legendRef} className={"chart-legend"}></div>
 						<a
 							style={{
-								top: "0px",
+								top: "3px",
 								right: "0px",
 								position: "absolute",
 							}}
@@ -157,10 +183,11 @@ class PieChart extends React.Component {
 							download="chart.png"
 							ref={this.downloadRef}
 						>
-							<Button className="ml-1">
+							<Button className="ml-1 btn-sm">
 								{
 									this.state.imgHref !== null ?
-									<FontAwesomeIcon icon={faSave}/> : <LoadingIcon width="1rem" />
+									<FontAwesomeIcon icon={faSave}/> :
+									<LoadingInlineIcon width="1rem" dark/>
 								}
 							</Button>
 						</a>
