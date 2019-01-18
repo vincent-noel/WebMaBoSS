@@ -12,6 +12,10 @@ class LoadingIcon extends React.Component {
 			<img
 				src={src}
 				style={{width: this.props.width}} />
+			{
+				this.props.percent !== undefined ?
+				<span>{Math.round(this.props.percent * 100.0)}%</span> : null
+			}
 		</div>;
 	}
 }

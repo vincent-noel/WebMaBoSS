@@ -26,7 +26,7 @@ class SensitivitySteadyStates extends React.Component {
 				</div>
 			);
 		} else if (this.props.analysisId !== null) {
-			return <LoadingIcon width="3rem"/>
+			return <LoadingIcon width="3rem" percent={this.props.analysisStatus}/>
 		} else {
 			return <div/>
 		}
