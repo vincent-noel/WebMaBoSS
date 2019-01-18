@@ -47,7 +47,7 @@ class MaBossActions extends React.Component {
 	}
 
 	showOldSimButton(value) {
-		this.setState({showOldSimButton: value});
+		this.setState({showOldSimButton: value, showOldSimForm: value && this.state.showOldSimForm});
 	}
 
 	shouldComponentUpdate(nextProps) {
