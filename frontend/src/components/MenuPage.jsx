@@ -32,7 +32,7 @@ class MenuPage extends React.Component {
 					<div id="page-content-wrapper">
 						{this.props.children}
 					</div>
-					<a className="btn btn-secondary" id="menu-toggle" onClick={(e) => this.toggle(e)} >
+					<a className="btn btn-secondary" id="menu-toggle" onClick={(e) => this.toggle(e)} style={{color: "white"}}>
 						<FontAwesomeIcon icon={faBars} />
 					</a>
 				</div>
