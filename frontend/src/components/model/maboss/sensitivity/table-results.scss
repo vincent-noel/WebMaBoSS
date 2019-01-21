@@ -7,3 +7,13 @@
       }
 
    }
+
+   div.list_pages {
+     display: flex !important;
+     justify-content: center;
+   }
+
+   span.item_page {
+     margin-left: 0.5rem;
+     margin-right: 0.5rem;
+   }

@@ -6,14 +6,21 @@ import "./table-results.scss";
 
 class SensitivitySteadyStates extends React.Component {
 
+	static nbPerPage = 10;
+
 	constructor(props) {
 
 		super(props);
 
 		this.state = {
 			listStates: [],
-			colorMap: {}
+			colorMap: {},
+			page: 0,
+			nbPages: 1,
 		};
+
+		this.changePage = this.changePage.bind(this);
+		this.makeLinks = this.makeLinks.bind(this);
 	}
 
 	computeStateList(table) {
@@ -39,12 +46,18 @@ class SensitivitySteadyStates extends React.Component {
 		this.setState({listStates: res, colorMap: colors});
 	}
 
+	computePages(table) {
+
+		this.setState({page: 0, nbPages: Math.ceil(Object.keys(table).length / SensitivitySteadyStates.nbPerPage)})
+
+	}
 
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 
 		if (nextProps.steadyStates.loaded !== this.props.steadyStates.loaded && nextProps.steadyStates.loaded) {
 
 			this.computeStateList(nextProps.steadyStates.table);
+			this.computePages(nextProps.steadyStates.table);
 
 			return false;
 		}
@@ -52,24 +65,53 @@ class SensitivitySteadyStates extends React.Component {
 		return true;
 	}
 
+	changePage(page) {
+		this.setState({page: page});
+	}
+
+	makeLinks(nbPages) {
+
+		let res = [];
+		let i;
+		for (i=0; i < nbPages; i++) {
+
+			if (i == this.state.page) {
+				res.push(<span className="item_page">{i+1}</span>);
+			} else {
+				const page = i;
+				res.push(<a href="#" key={i} onClick={(e) => {e.preventDefault(); this.changePage(page);}}><span className="item_page">{i+1}</span></a>);
+			}
+			if (i < (nbPages - 1)) {
+				res.push("-");
+			}
+		}
+		return res;
+	}
+
 	render() {
 
 		if (this.props.steadyStates.loaded) {
 
-
 			return (
-				<div className="list_results_steadystates">
-				{
-					Object.keys(this.props.steadyStates.table).map((name, index) => {
-
-						return <div className="result_steadystates" key={index}><PieChart
-							title={name}
-							table={this.props.steadyStates.table[name]}
-							colorMap={this.state.colorMap}
-						/></div>;
-					})
-				}
-				</div>
+				<React.Fragment>
+					<div className="list_results_steadystates">
+					{
+						Object.keys(this.props.steadyStates.table).map((name, index) => {
+							if (
+								index >= (this.state.page*SensitivitySteadyStates.nbPerPage)
+								&& index < ((this.state.page+1)*SensitivitySteadyStates.nbPerPage)
+							) {
+								return <div className="result_steadystates" key={index}><PieChart
+									title={name}
+									table={this.props.steadyStates.table[name]}
+									colorMap={this.state.colorMap}
+								/></div>;
+							}
+						})
+					}
+					</div>
+					<div className="list_pages">{this.makeLinks(this.state.nbPages)}</div>
+				</React.Fragment>
 			);
 		} else if (this.props.analysisId !== null) {
 			return <LoadingIcon width="3rem" percent={this.props.analysisStatus}/>
