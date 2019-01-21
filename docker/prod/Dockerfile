@@ -46,6 +46,7 @@ RUN rm -fr node_modules/* yarn.lock; yarn && \
 RUN rm -fr data/ && \
     mkdir -p data/media && \
     mkdir -p data/db && \
+    mkdir -p data/settings && \
     rm -fr api/migrations/*.py
 
 # Removing old server, and creating it from scratch
@@ -60,7 +61,7 @@ RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
 
 RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations && chown www-data:www-data .
 
-RUN rm -fr /appCurie/static/bootstrap /appCurie/static/jquery /appCurie/config.yml && \
+RUN rm -fr /appCurie/static/bootstrap /appCurie/static/jquery && \
     ln -s /appCurie/node_modules/bootstrap/ /appCurie/static && \
     ln -s /appCurie/node_modules/jquery/ /appCurie/static
 # Exposing port 8000 for server access

@@ -15,9 +15,9 @@ import os, yaml
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-if os.path.exists(os.path.join(BASE_DIR, "config.yml")):
+if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
 
-    settings = yaml.load(open(os.path.join(BASE_DIR, "config.yml"), 'r'))
+    settings = yaml.load(open(os.path.join(BASE_DIR, "data", "settings", "config.yml"), 'r'))
 
 
     RUN_INSTALL = False

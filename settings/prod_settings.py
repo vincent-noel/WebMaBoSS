@@ -10,7 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
-import os
+import os, yaml
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -19,17 +19,19 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-if os.path.exists(os.path.join(BASE_DIR, "config.yml")):
+if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
+
+    settings = yaml.load(open(os.path.join(BASE_DIR, "data", "settings", "config.yml"), 'r'))
 
     RUN_INSTALL = False
 
     # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = '(h9yxhf%gnv*cm+u%4+yl@u-b_s(6qnfe4)xv=1bdl4u!tnnnp'
+    SECRET_KEY = settings['secret_key']
 
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
-    ALLOWED_HOSTS = ['*']
+    ALLOWED_HOSTS = settings['allowed_hosts']
 
 
     # Application definition

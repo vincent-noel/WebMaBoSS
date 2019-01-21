@@ -39,9 +39,10 @@ RUN pip install pip --upgrade \
     && pip install --upgrade -r /appCurie/requirements.txt
 
 # Removing old db and medias, creating a new one, with default user admin:admin
-RUN rm -fr /appCurie/data/ /appCurie/config.yml /appCurie/api/migrations/*.py && \
+RUN rm -fr /appCurie/data/ /appCurie/api/migrations/*.py && \
     mkdir -p /appCurie/data/media && \
     mkdir -p /appCurie/data/db && \
+    mkdir -p /appCurie/data/settings && \
     chown -R www-data:www-data /appCurie/settings /appCurie/data /appCurie/static /appCurie/api/migrations && chown www-data:www-data /appCurie
 
 # Installing MaBoSS from github repo
