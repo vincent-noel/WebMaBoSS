@@ -21,13 +21,64 @@ class MaBossResult extends React.Component {
 		this.toggle = this.toggle.bind(this);
 		this.state = {
 			activeTab: 'fp',
-			dropdownOpen: false
+			dropdownOpen: false,
+
+			fixedPoints: null,
+			nodesProbTraj: null,
+			statesProbTraj: null,
 		};
 
 		this.toggleDropdown = this.toggleDropdown.bind(this);
 		this.createNewModel = this.createNewModel.bind(this);
 
 		this.createNewModelCall = null;
+
+		this.getStatusCall = null;
+		this.getFixedPointsCall = null;
+		this.getNodesProbtrajCall = null;
+		this.getStateProbtrajCall = null;
+		this.statusChecker = null;
+	}
+
+
+	getStatus(project_id, simulation_id) {
+		if (this.getStatusCall !== null) this.getStatusCall.cancel();
+		this.getStatusCall = APICalls.MaBoSSCalls.getStatus(project_id, simulation_id);
+		this.getStatusCall.promise.then((data) => {
+			if (data.done) {
+				clearInterval(this.statusChecker);
+				this.getFixedPoints(project_id, simulation_id);
+				this.getNodesProbtraj(project_id, simulation_id);
+				this.getStateProbtraj(project_id, simulation_id);
+			}
+		});
+
+	}
+
+
+	getFixedPoints(project_id, simulation_id) {
+		this.setState({fptableLoaded: false, fptable: null});
+		this.getFixedPointsCall = APICalls.MaBoSSCalls.getFixedPoints(project_id, simulation_id);
+		this.getFixedPointsCall.promise.then(data => {
+			this.setState({fixedPoints: data['fixed_points']})
+		});
+	}
+
+	getNodesProbtraj(project_id, simulation_id) {
+
+		this.setState({nodesProbTraj: null});
+		this.getNodesProbtrajCall = APICalls.MaBoSSCalls.getNodesProbTraj(project_id, simulation_id);
+		this.getNodesProbtrajCall.promise.then(data => {
+			this.setState({nodesProbTraj: data['nodes_probtraj']})
+		});
+	}
+
+	getStateProbtraj(project_id, simulation_id) {
+		this.setState({statesProbTraj: null});
+		this.getStateProbtrajCall = APICalls.MaBoSSCalls.getStatesProbTraj(project_id, simulation_id);
+		this.getStateProbtrajCall.promise.then(data => {
+			this.setState({statesProbTraj: data['states_probtraj']})
+		});
 	}
 
 	toggle(tab) {
@@ -52,10 +103,27 @@ class MaBossResult extends React.Component {
 		if (this.createNewModelCall !== null) {
 			this.createNewModelCall.cancel();
 		}
+		if (this.getStatusCall !== null) this.getStatusCall.cancel();
+		if (this.getFixedPointsCall !== null) this.getFixedPointsCall.cancel();
+		if (this.getNodesProbtrajCall !== null) this.getNodesProbtrajCall.cancel();
+		if (this.getStateProbtrajCall !== null) this.getStateProbtrajCall.cancel();
 
 	}
 
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
 
+		if (this.props.simulationId !== nextProps.simulationId && nextProps.simulationId !== null) {
+			if (this.getStatusCall !== null) this.getStatusCall.cancel();
+			this.setState({
+				fixedPoints: null,
+				nodesProbTraj: null,
+				statesProbTraj: null,
+			});
+			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), 1000);
+			return false;
+		}
+		return true;
+	}
 	render() {
 
 		if (this.props.simulationId !== null) {
@@ -100,6 +168,7 @@ class MaBossResult extends React.Component {
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
 								colormap={MaBossResult.colormap}
+								fixedPoints={this.state.fixedPoints}
 							/>
 						</TabPane>
 						<TabPane tabId="npt">
@@ -109,6 +178,7 @@ class MaBossResult extends React.Component {
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
 								colormap={MaBossResult.colormap}
+								nodesProbas={this.state.nodesProbTraj}
 							/>
 						</TabPane>
 						<TabPane tabId="spt">
@@ -118,6 +188,7 @@ class MaBossResult extends React.Component {
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
 								colormap={MaBossResult.colormap}
+								statesProbas={this.state.statesProbTraj}
 							/>
 						</TabPane>
 					</TabContent>
