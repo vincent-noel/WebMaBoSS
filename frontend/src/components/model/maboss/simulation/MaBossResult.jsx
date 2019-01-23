@@ -10,6 +10,7 @@ import classnames from 'classnames';
 import APICalls from "../../../api/apiCalls";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCaretDown} from "@fortawesome/free-solid-svg-icons";
+import MaBossSteadyStatesPCA from "./MaBossSteadyStatesPCA";
 
 
 class MaBossResult extends React.Component {
@@ -31,6 +32,12 @@ class MaBossResult extends React.Component {
 			pcaArrows: null,
 			pcaArrowLabels: null,
 			pcaExplainedVariance: null,
+
+			sspca: null,
+			sspcaArrows: null,
+			sspcaArrowLabels: null,
+			sspcaExplainedVariance: null,
+
 		};
 
 		this.toggleDropdown = this.toggleDropdown.bind(this);
@@ -43,6 +50,7 @@ class MaBossResult extends React.Component {
 		this.getNodesProbtrajCall = null;
 		this.getStateProbtrajCall = null;
 		this.getPCACall = null;
+		this.getSSPCACall = null;
 		this.statusChecker = null;
 	}
 
@@ -57,6 +65,7 @@ class MaBossResult extends React.Component {
 				this.getNodesProbtraj(project_id, simulation_id);
 				this.getStateProbtraj(project_id, simulation_id);
 				this.getPCA(project_id, simulation_id);
+				this.getSSPCA(project_id, simulation_id);
 			}
 		});
 
@@ -100,6 +109,18 @@ class MaBossResult extends React.Component {
 		});
 	}
 
+	getSSPCA(project_id, simulation_id) {
+		this.setState({sspca: null, sspcaArrows: null, sspcaArrowLabels: null, sspcaExplainedVariance: null});
+		this.getSSPCACall = APICalls.MaBoSSCalls.getSSPCA(project_id, simulation_id);
+		this.getSSPCACall.promise.then(data => {
+			this.setState({
+				sspca: JSON.parse(data.data),
+				sspcaArrows: data.arrows, sspcaArrowLabels: data.arrowlabels,
+				sspcaExplainedVariance: data.explainedVariance
+			})
+		});
+	}
+
 	toggle(tab) {
 		if (this.state.activeTab !== tab) {
 			this.setState({activeTab: tab});
@@ -127,6 +148,7 @@ class MaBossResult extends React.Component {
 		if (this.getNodesProbtrajCall !== null) this.getNodesProbtrajCall.cancel();
 		if (this.getStateProbtrajCall !== null) this.getStateProbtrajCall.cancel();
 		if (this.getPCACall !== null) this.getPCACall.cancel();
+		if (this.getSSPCACall !== null) this.getSSPCACall.cancel();
 
 	}
 
@@ -141,7 +163,11 @@ class MaBossResult extends React.Component {
 				pca: null,
 				pcaArrows: null,
 				pcaArrowLabels: null,
-				pcaExplainedVariance: null
+				pcaExplainedVariance: null,
+				sspca: null,
+				sspcaArrows: null,
+				sspcaArrowLabels: null,
+				sspcaExplainedVariance: null,
 			});
 			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), 1000);
 			return false;
@@ -179,6 +205,12 @@ class MaBossResult extends React.Component {
 									onClick={() => this.toggle('pca')}
 									className={classnames({ active: this.state.activeTab === 'pca' })}
 								>PCA</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink
+									onClick={() => this.toggle('sspca')}
+									className={classnames({ active: this.state.activeTab === 'sspca' })}
+								>Steady states PCA</NavLink>
 							</NavItem>
 						</div>
 						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
@@ -232,6 +264,19 @@ class MaBossResult extends React.Component {
 								arrows={this.state.pcaArrows}
 								arrowLabels={this.state.pcaArrowLabels}
 								explainedVariance={this.state.pcaExplainedVariance}
+							/>
+						</TabPane>
+						<TabPane tabId="sspca">
+							<MaBossSteadyStatesPCA
+								project={this.props.project}
+								modelId={this.props.modelId}
+								simulationId={this.props.simulationId}
+								simulationName={this.props.simulationName}
+								colormap={MaBossResult.colormap}
+								data={this.state.sspca}
+								arrows={this.state.sspcaArrows}
+								arrowLabels={this.state.sspcaArrowLabels}
+								explainedVariance={this.state.sspcaExplainedVariance}
 							/>
 						</TabPane>
 					</TabContent>

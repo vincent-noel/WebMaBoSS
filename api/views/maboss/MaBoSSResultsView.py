@@ -68,7 +68,7 @@ class MaBoSSResultsFixedPointsPCA(HasMaBoSSSimulation):
 			values = []
 			names = []
 			for i, arrow_raw in enumerate(raw_arrows):
-				as_list = [round_sig(val, 10) for val in list(arrow_raw)]
+				as_list = [round(val, 2) for val in list(arrow_raw)]
 				if as_list not in values:
 					values.append(as_list)
 					names.append([output_vars[i]])
@@ -82,6 +82,101 @@ class MaBoSSResultsFixedPointsPCA(HasMaBoSSSimulation):
 				'status': 'Finished', 'data': json.dumps(res),
 				'arrows': values, 'arrowlabels': names,
 				'explainedVariance': [round_sig(value*100, 4) for value in list(pca.explained_variance_ratio_[0:2])]
+			})
+
+		else:
+			return Response({'status': 'Busy'})
+
+class MaBoSSResultsSteadyStatesPCA(HasMaBoSSSimulation):
+
+	def get(self, request, project_id, simulation_id):
+
+		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
+
+		model = maboss.load(self.getBNDFilePath(), self.getCFGFilePath())
+
+		if self.simulation.states_probtraj is not None:
+
+			states_probtraj = loads(self.simulation.states_probtraj)
+			states_lastprob = {}
+			for state, values in states_probtraj.items():
+				list_values = list(values.values())
+				states_lastprob.update({state: list_values[len(list_values) - 1]})
+
+			nodes = [name for name, node in model.network.items() if not node.is_internal]
+			nb_nodes = len(nodes)
+			nb_fp = len(states_lastprob.keys())
+			states = []
+
+			res = np.zeros((nb_nodes, 0))
+			for index, proba in states_lastprob.items():
+				if proba > 0.01:
+					states.append(index)
+					if index == "<nil>":
+						res = np.append(res, np.zeros((nb_nodes, 1)), axis=1)
+					else:
+						t_res = np.zeros((nb_nodes, 1))
+						for node in [t_node.strip() for t_node in index.split("--")]:
+							#                 print(node)
+							t_res[nodes.index(node)] = 1
+
+						res = np.append(res, t_res, axis=1)
+			columns = ["FP%d" % i for i in range(res.shape[1])]
+			mat = np.transpose(res)
+
+
+			pca = PCA()
+			pca_res = pca.fit(mat)
+			x_new = pca.transform(mat)
+
+			res = {}
+			for i, state in enumerate(states):
+				res.update({state: list(x_new[i, 0:2])})
+
+			raw_arrows = np.transpose(pca_res.components_[0:2, :])
+
+			# Adjusting arrow length to fit in the graph
+			max_x_arrows = max(raw_arrows[:, 0])
+			min_x_arrows = min(raw_arrows[:, 0])
+			max_x_values = max(x_new[:, 0])
+			min_x_values = min(x_new[:, 0])
+			min_x_ratio = abs(min_x_values / min_x_arrows)
+			max_x_ratio = abs(max_x_values / max_x_arrows)
+			x_ratio = min(min_x_ratio, max_x_ratio)
+
+			max_y_arrows = max(raw_arrows[:, 1])
+			min_y_arrows = min(raw_arrows[:, 1])
+			max_y_values = max(x_new[:, 1])
+			min_y_values = min(x_new[:, 1])
+			min_y_ratio = abs(min_y_values / min_y_arrows)
+			max_y_ratio = abs(max_y_values / max_y_arrows)
+			y_ratio = min(min_y_ratio, max_y_ratio)
+
+			from math import log10, floor
+
+			def round_sig(x, sig=2):
+				if x == 0.0:
+					return x
+				return round(x, sig - int(floor(log10(abs(x)))) - 1)
+
+			values = []
+			names = []
+			for i, arrow_raw in enumerate(raw_arrows):
+				as_list = [round(val, 2) for val in list(arrow_raw)]
+				if as_list not in values:
+					values.append(as_list)
+					names.append([nodes[i]])
+
+				else:
+					names[values.index(as_list)].append(nodes[i])
+
+			values = [[value[0] * x_ratio, value[1] * y_ratio] for value in values]
+
+			return Response({
+				'status': 'Finished', 'data': json.dumps(res),
+				'arrows': values, 'arrowlabels': names,
+				'explainedVariance': [round_sig(value * 100, 4) for value in
+									  list(pca.explained_variance_ratio_[0:2])]
 			})
 
 		else:
