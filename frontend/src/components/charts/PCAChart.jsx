@@ -75,8 +75,7 @@ class PCAChart extends React.Component {
 		Chart.pluginService.register({
 			id: 'pcaArrows',
 			afterDraw: (chart, easing) => {
-				// console.log("after draw");
-				if (chart.chart.config.type == "bubble" && this.state.showArrows) {
+				if (chart.id === this.chartInstance.id && this.state.showArrows) {
 					let x0 = chart.chartArea.left;
 					let x1 = chart.chartArea.right;
 					let y0 = chart.chartArea.top;
@@ -92,9 +91,6 @@ class PCAChart extends React.Component {
 
 					let x_ratio = (x1-x0)/(vx1-vx0);
 					let y_ratio = (y1-y0)/(vy1-vy0);
-
-					// console.log(this.props.arrows);
-					// console.log(this.props.arrowLabels);
 
 					let getX = (x) => {
 						return x0 + (x - vx0) * x_ratio;
