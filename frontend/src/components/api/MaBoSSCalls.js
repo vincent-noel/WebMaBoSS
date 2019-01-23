@@ -409,6 +409,19 @@ class MaBoSSCalls {
 		);
 	}
 
+	static getPCA(project_id, simulation_id) {
+		return makeCancelable(
+			fetch(
+				"/api/maboss/" + project_id + "/" + simulation_id + "/pca",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
+
 	static createSensitivityAnalysis(project_id, model_id, settings) {
 		const formData = new FormData();
 		formData.append('settings', JSON.stringify(settings));

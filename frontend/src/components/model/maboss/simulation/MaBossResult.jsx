@@ -4,6 +4,7 @@ import {TabContent, TabPane, Nav, NavItem, NavLink, ButtonToolbar, Button, Dropd
 import MaBossFixedPoints from "./MaBossFixedPoints";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
 import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
+import MaBossPCA from "./MaBossPCA";
 
 import classnames from 'classnames';
 import APICalls from "../../../api/apiCalls";
@@ -26,6 +27,10 @@ class MaBossResult extends React.Component {
 			fixedPoints: null,
 			nodesProbTraj: null,
 			statesProbTraj: null,
+			pca: null,
+			pcaArrows: null,
+			pcaArrowLabels: null,
+			pcaExplainedVariance: null,
 		};
 
 		this.toggleDropdown = this.toggleDropdown.bind(this);
@@ -37,6 +42,7 @@ class MaBossResult extends React.Component {
 		this.getFixedPointsCall = null;
 		this.getNodesProbtrajCall = null;
 		this.getStateProbtrajCall = null;
+		this.getPCACall = null;
 		this.statusChecker = null;
 	}
 
@@ -50,6 +56,7 @@ class MaBossResult extends React.Component {
 				this.getFixedPoints(project_id, simulation_id);
 				this.getNodesProbtraj(project_id, simulation_id);
 				this.getStateProbtraj(project_id, simulation_id);
+				this.getPCA(project_id, simulation_id);
 			}
 		});
 
@@ -81,6 +88,18 @@ class MaBossResult extends React.Component {
 		});
 	}
 
+	getPCA(project_id, simulation_id) {
+		this.setState({pca: null, pcaArrows: null, pcaArrowLabels: null, pcaExplainedVariance: null});
+		this.getPCACall = APICalls.MaBoSSCalls.getPCA(project_id, simulation_id);
+		this.getPCACall.promise.then(data => {
+			this.setState({
+				pca: JSON.parse(data.data),
+				pcaArrows: data.arrows, pcaArrowLabels: data.arrowlabels,
+				pcaExplainedVariance: data.explainedVariance
+			})
+		});
+	}
+
 	toggle(tab) {
 		if (this.state.activeTab !== tab) {
 			this.setState({activeTab: tab});
@@ -107,6 +126,7 @@ class MaBossResult extends React.Component {
 		if (this.getFixedPointsCall !== null) this.getFixedPointsCall.cancel();
 		if (this.getNodesProbtrajCall !== null) this.getNodesProbtrajCall.cancel();
 		if (this.getStateProbtrajCall !== null) this.getStateProbtrajCall.cancel();
+		if (this.getPCACall !== null) this.getPCACall.cancel();
 
 	}
 
@@ -118,6 +138,10 @@ class MaBossResult extends React.Component {
 				fixedPoints: null,
 				nodesProbTraj: null,
 				statesProbTraj: null,
+				pca: null,
+				pcaArrows: null,
+				pcaArrowLabels: null,
+				pcaExplainedVariance: null
 			});
 			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), 1000);
 			return false;
@@ -149,6 +173,12 @@ class MaBossResult extends React.Component {
 									onClick={() => this.toggle('spt')}
 									className={classnames({ active: this.state.activeTab === 'spt' })}
 								>States probability trajectories</NavLink>
+							</NavItem>
+							<NavItem>
+								<NavLink
+									onClick={() => this.toggle('pca')}
+									className={classnames({ active: this.state.activeTab === 'pca' })}
+								>PCA</NavLink>
 							</NavItem>
 						</div>
 						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
@@ -189,6 +219,19 @@ class MaBossResult extends React.Component {
 								simulationName={this.props.simulationName}
 								colormap={MaBossResult.colormap}
 								statesProbas={this.state.statesProbTraj}
+							/>
+						</TabPane>
+						<TabPane tabId="pca">
+							<MaBossPCA
+								project={this.props.project}
+								modelId={this.props.modelId}
+								simulationId={this.props.simulationId}
+								simulationName={this.props.simulationName}
+								colormap={MaBossResult.colormap}
+								data={this.state.pca}
+								arrows={this.state.pcaArrows}
+								arrowLabels={this.state.pcaArrowLabels}
+								explainedVariance={this.state.pcaExplainedVariance}
 							/>
 						</TabPane>
 					</TabContent>
