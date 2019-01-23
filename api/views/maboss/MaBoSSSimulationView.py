@@ -255,3 +255,14 @@ class MaBoSSSimulationNewModel(HasMaBoSSSimulation):
 
 		except:
 			return Response(status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+class MaBoSSSimulationStatusView(HasMaBoSSSimulation):
+
+	def get(self, request, project_id, simulation_id):
+		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
+
+		result = {'done': self.simulation.status == MaBoSSSimulation.ENDED}
+
+		return Response(result, status=status.HTTP_200_OK)

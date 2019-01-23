@@ -10,7 +10,7 @@ from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
 
 from api.views.maboss.MaBossServerView import MaBoSSServerView
-from api.views.maboss.MaBoSSSimulationView import MaBoSSSimulationView, MaBoSSSimulationRemove, MaBossSettings, MaBoSSSimulationBNDFile, MaBoSSSimulationCFGFile, MaBoSSSimulationNewModel
+from api.views.maboss.MaBoSSSimulationView import MaBoSSSimulationView, MaBoSSSimulationRemove, MaBossSettings, MaBoSSSimulationBNDFile, MaBoSSSimulationCFGFile, MaBoSSSimulationNewModel, MaBoSSSimulationStatusView
 from api.views.maboss.MaBoSSSensitivityAnalysisView import MaBoSSSensitivityAnalysisView, MaBoSSSensitivityAnalysisRemove, MaBoSSSensitivitySteadyStatesView, MaBoSSSensitivityStatusView
 from api.views.maboss.MaBoSSResultsView import MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj
 from api.views.maboss.MaBoSSModel import (
@@ -77,6 +77,7 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/settings', MaBoSSModelSettings.as_view()),
 
 	path('api/maboss/<int:project_id>/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),
+	path('api/maboss/<int:project_id>/<int:simulation_id>/status', MaBoSSSimulationStatusView.as_view()),
 	path('api/maboss/<int:project_id>/<int:simulation_id>/fixed_points/', MaBoSSResultsFixedPoints.as_view()),
 	path('api/maboss/<int:project_id>/<int:simulation_id>/states_trajs/', MaBoSSResultsStatesProbTraj.as_view()),
 	path('api/maboss/<int:project_id>/<int:simulation_id>/nodes_trajs/', MaBoSSResultsNodesProbTraj.as_view()),

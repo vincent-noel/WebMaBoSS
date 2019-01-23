@@ -358,6 +358,19 @@ class MaBoSSCalls {
 		);
 	}
 
+	static getStatus(project_id, simulation_id) {
+		return makeCancelable(
+			fetch(
+				"/api/maboss/" + project_id + "/" + simulation_id + "/status",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response)
+			).then(response => response.json())
+		);
+	}
+
 	static getFixedPoints(project_id, simulation_id) {
 		return makeCancelable(
 			fetch(
