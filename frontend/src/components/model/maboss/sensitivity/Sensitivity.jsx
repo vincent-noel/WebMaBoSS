@@ -10,7 +10,6 @@ import ErrorAlert from "../../../commons/ErrorAlert";
 import NewForm from "./NewForm";
 import OldForm from "./OldForm";
 import SensitivityResult from "./SensitivityResult";
-import APICalls from "../../../api/apiCalls";
 
 
 class Sensitivity extends React.Component {
@@ -31,11 +30,6 @@ class Sensitivity extends React.Component {
 			analysisId: null,
 			analysisStatus: 0,
 
-			steadyStates : {
-				loaded: false,
-				table: null
-			},
-
 			errorMessages: []
 		};
 
@@ -46,35 +40,6 @@ class Sensitivity extends React.Component {
 
 		this.startNew = this.startNew.bind(this);
 		this.loadExistingAnalysis = this.loadExistingAnalysis.bind(this);
-		this.getFixedPoints = this.getFixedPoints.bind(this);
-
-		this.getAnalysesCall = null;
-		this.getFixedPointsCall = null;
-
-		this.getStatus = null;
-
-		this.statusChecker = null;
-	}
-
-	getFixedPoints(project_id, analysis_id) {
-
-		this.setState({steadyStates: {loaded: false, table: null}});
-		this.getFixedPointsCall = APICalls.MaBoSSCalls.getSensitivityAnalysisSteadyStates(project_id, analysis_id);
-		this.getFixedPointsCall.promise.then(data => {
-			this.setState({steadyStates: {loaded: true, table: data.results}})
-
-		});
-	}
-
-	checkAnalysisStatus(project_id, analysis_id) {
-		this.getStatus = APICalls.MaBoSSCalls.getSensitivityAnalysisStatus(project_id, analysis_id);
-		this.getStatus.promise.then(data => {
-			this.setState({analysisStatus: data.done});
-			if (data.done == 1) {
-				this.stopCheckingStatus();
-				this.getFixedPoints(project_id, analysis_id);
-			}
-		});
 	}
 
 	toggleOldForm() {
@@ -96,10 +61,6 @@ class Sensitivity extends React.Component {
 		this.setState({errorMessages: errorMessages});
 	}
 
-	onAnalysisChange(analysis_id) {
-
-	}
-
 	createSensitivityAnalysis() {
 		this.setState({
 			newForm: {
@@ -108,34 +69,16 @@ class Sensitivity extends React.Component {
 		});
 	}
 
-	startCheckingStatus(project_id, analysis_id) {
-		this.statusChecker = setInterval(
-			() => this.checkAnalysisStatus(project_id, analysis_id),
-			1000
-		);
-	}
-
 	stopCheckingStatus() {
 		clearInterval(this.statusChecker);
 	}
 
 	startNew(project_id, analysis_id) {
 		this.setState(prevState => ({analysisId: analysis_id, newForm: {...prevState.newForm, show: false}}));
-		this.startCheckingStatus(project_id, analysis_id);
 	}
 
 	loadExistingAnalysis(project_id, analysis_id) {
 		this.setState(prevState => ({analysisId: analysis_id, oldForm: {...prevState.oldForm, show: false}}));
-		this.startCheckingStatus(project_id, analysis_id);
-	}
-
-
-	componentDidMount() {
-		// this.loadSensitivityAnalyses(this.props.project, this.props.modelId);
-    }
-
-    componentWillUnmount() {
-		clearInterval(this.statusChecker)
 	}
 
 	render() {

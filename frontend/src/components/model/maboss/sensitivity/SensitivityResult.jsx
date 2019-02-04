@@ -5,6 +5,7 @@ import {TabContent, TabPane, Nav, NavItem, NavLink} from "reactstrap";
 import classnames from 'classnames';
 import SensitivitySteadyStates from "./SensitivitySteadyStates";
 import Settings from "../../../Settings";
+import APICalls from "../../../api/apiCalls";
 
 
 class SensitivityResult extends React.Component {
@@ -14,14 +15,57 @@ class SensitivityResult extends React.Component {
 
 		this.toggle = this.toggle.bind(this);
 		this.state = {
-			activeTab: 'fp'
-		}
+			activeTab: 'fp',
+
+			steadyStates : {
+				loaded: false,
+				table: null
+			},
+
+		};
+
+		this.getFixedPointsCall = null;
+		this.getStatus = null;
+		this.statusChecker = null;
+	}
+
+	checkAnalysisStatus(project_id, analysis_id) {
+		this.getStatus = APICalls.MaBoSSCalls.getSensitivityAnalysisStatus(project_id, analysis_id);
+		this.getStatus.promise.then(data => {
+			this.setState({analysisStatus: data.done});
+			if (data.done == 1) {
+				clearInterval(this.statusChecker);
+				this.getFixedPoints(project_id, analysis_id);
+			}
+		});
+	}
+
+	getFixedPoints(project_id, analysis_id) {
+
+		this.setState({steadyStates: {loaded: false, table: null}});
+		this.getFixedPointsCall = APICalls.MaBoSSCalls.getSensitivityAnalysisSteadyStates(project_id, analysis_id);
+		this.getFixedPointsCall.promise.then(data => {
+			this.setState({steadyStates: {loaded: true, table: data.results}})
+		});
 	}
 
 	toggle(tab) {
 		if (this.state.activeTab !== tab) {
 			this.setState({activeTab: tab});
 		}
+	}
+
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+
+		if (nextProps.analysisId !== this.props.analysisId && nextProps.analysisId !== null) {
+			this.statusChecker = setInterval(
+				() => this.checkAnalysisStatus(nextProps.project, nextProps.analysisId),
+				Settings.updateRate
+			);
+			return false;
+		}
+
+		return true;
 	}
 
 	render() {
@@ -56,9 +100,9 @@ class SensitivityResult extends React.Component {
 								project={this.props.project}
 								analysisId={this.props.analysisId}
 								analysisStatus={this.props.analysisStatus}
-								colormap={Settings.colormap}
 								steadyStates={this.props.steadyStates}
-								getSteadyStates={this.props.getSteadyStates}
+								colormap={Settings.colormap}
+
 							/>
 						</TabPane>
 						{/*<TabPane tabId="npt">*/}
