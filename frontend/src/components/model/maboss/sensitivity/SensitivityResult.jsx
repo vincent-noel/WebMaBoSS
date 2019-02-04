@@ -4,11 +4,10 @@ import {TabContent, TabPane, Nav, NavItem, NavLink} from "reactstrap";
 
 import classnames from 'classnames';
 import SensitivitySteadyStates from "./SensitivitySteadyStates";
+import Settings from "../../../Settings";
 
 
 class SensitivityResult extends React.Component {
-
-	static colormap = ['#4c72b0', '#55a868', '#c44e52', '#8172b2', '#ccb974', '#64b5cd', '#4c72b0', '#55a868', '#c44e52', '#8172b2'];
 
 	constructor(props){
 		super(props);
@@ -57,7 +56,7 @@ class SensitivityResult extends React.Component {
 								project={this.props.project}
 								analysisId={this.props.analysisId}
 								analysisStatus={this.props.analysisStatus}
-								colormap={SensitivityResult.colormap}
+								colormap={Settings.colormap}
 								steadyStates={this.props.steadyStates}
 								getSteadyStates={this.props.getSteadyStates}
 							/>
@@ -67,7 +66,7 @@ class SensitivityResult extends React.Component {
 								{/*project={this.props.project}*/}
 								{/*modelId={this.props.modelId}*/}
 								{/*simulationId={this.props.simulationId}*/}
-								{/*colormap={MaBossResult.colormap}*/}
+								{/*colormap={Settings.colormap}*/}
 							{/*/>*/}
 						{/*</TabPane>*/}
 						{/*<TabPane tabId="spt">*/}
@@ -75,7 +74,7 @@ class SensitivityResult extends React.Component {
 								{/*project={this.props.project}*/}
 								{/*modelId={this.props.modelId}*/}
 								{/*simulationId={this.props.simulationId}*/}
-								{/*colormap={MaBossResult.colormap}*/}
+								{/*colormap={Settings.colormap}*/}
 							{/*/>*/}
 						{/*</TabPane>*/}
 					</TabContent>

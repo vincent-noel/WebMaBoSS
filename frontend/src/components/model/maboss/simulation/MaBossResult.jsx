@@ -15,8 +15,6 @@ import MaBossSteadyStatesPCA from "./MaBossSteadyStatesPCA";
 
 class MaBossResult extends React.Component {
 
-	static colormap = ['#4c72b0', '#55a868', '#c44e52', '#8172b2', '#ccb974', '#64b5cd', '#4c72b0', '#55a868', '#c44e52', '#8172b2'];
-
 	constructor(props){
 		super(props);
 
@@ -230,7 +228,7 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={MaBossResult.colormap}
+								colormap={Settings.colormap}
 								fixedPoints={this.state.fixedPoints}
 							/>
 						</TabPane>
@@ -240,7 +238,7 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={MaBossResult.colormap}
+								colormap={Settings.colormap}
 								nodesProbas={this.state.nodesProbTraj}
 							/>
 						</TabPane>
@@ -250,7 +248,7 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={MaBossResult.colormap}
+								colormap={Settings.colormap}
 								statesProbas={this.state.statesProbTraj}
 							/>
 						</TabPane>
@@ -260,7 +258,7 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={MaBossResult.colormap}
+								colormap={Settings.colormap}
 								data={this.state.pca}
 								arrows={this.state.pcaArrows}
 								arrowLabels={this.state.pcaArrowLabels}
@@ -273,7 +271,7 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={MaBossResult.colormap}
+								colormap={Settings.colormap}
 								data={this.state.sspca}
 								arrows={this.state.sspcaArrows}
 								arrowLabels={this.state.sspcaArrowLabels}
