@@ -1,6 +1,6 @@
 import React from "react";
 import {TabContent, TabPane, Nav, NavItem, NavLink, ButtonToolbar, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from "reactstrap";
-
+import Settings from "../../../Settings";
 import MaBossFixedPoints from "./MaBossFixedPoints";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
 import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
@@ -169,7 +169,8 @@ class MaBossResult extends React.Component {
 				sspcaArrowLabels: null,
 				sspcaExplainedVariance: null,
 			});
-			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), 1000);
+
+			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), Settings.updateRate);
 			return false;
 		}
 		return true;
