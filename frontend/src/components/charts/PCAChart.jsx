@@ -110,9 +110,8 @@ class PCAChart extends React.Component {
 
 						let size_labels = this.props.arrowLabels[index].length * 20;
 
-						this.props.arrowLabels[index].map((label, index) => {
-							console.log(label);
-							chart.chart.ctx.fillText(label, getX(values[0]), getY(values[1])+(index*20)-(size_labels/2));
+						this.props.arrowLabels[index].map((label, index_label) => {
+							chart.chart.ctx.fillText(label, getX(values[0]), getY(values[1])+(index_label*20)-(size_labels/2));
 						});
 
 					});
