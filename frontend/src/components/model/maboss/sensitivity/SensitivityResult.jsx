@@ -100,7 +100,7 @@ class SensitivityResult extends React.Component {
 								project={this.props.project}
 								analysisId={this.props.analysisId}
 								analysisStatus={this.props.analysisStatus}
-								steadyStates={this.props.steadyStates}
+								steadyStates={this.state.steadyStates}
 							/>
 						</TabPane>
 						{/*<TabPane tabId="npt">*/}
