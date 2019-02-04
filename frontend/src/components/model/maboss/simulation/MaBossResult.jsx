@@ -228,7 +228,6 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={Settings.colormap}
 								fixedPoints={this.state.fixedPoints}
 							/>
 						</TabPane>
@@ -238,7 +237,6 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={Settings.colormap}
 								nodesProbas={this.state.nodesProbTraj}
 							/>
 						</TabPane>
@@ -248,7 +246,6 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={Settings.colormap}
 								statesProbas={this.state.statesProbTraj}
 							/>
 						</TabPane>
@@ -258,7 +255,6 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={Settings.colormap}
 								data={this.state.pca}
 								arrows={this.state.pcaArrows}
 								arrowLabels={this.state.pcaArrowLabels}
@@ -271,7 +267,6 @@ class MaBossResult extends React.Component {
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								colormap={Settings.colormap}
 								data={this.state.sspca}
 								arrows={this.state.sspcaArrows}
 								arrowLabels={this.state.sspcaArrowLabels}

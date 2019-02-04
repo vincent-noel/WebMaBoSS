@@ -3,6 +3,7 @@ import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import APICalls from "../../../api/apiCalls";
 import {Bubble} from "react-chartjs-2";
 import PCAChart from "../../../charts/PCAChart";
+import Settings from "../../../Settings";
 // import 'chartjs-plugin-annotation';
 
 class MaBossPCA extends React.Component {
@@ -66,7 +67,7 @@ class MaBossPCA extends React.Component {
 
 		if (this.props.data) {
 			return <PCAChart
-				data={this.props.data} arrows={this.props.arrows} colormap={this.props.colormap}
+				data={this.props.data} arrows={this.props.arrows} colormap={Settings.colormap}
 				arrowLabels={this.props.arrowLabels} title={this.props.simulationName}
 				xLabel={"PC1 (" + this.props.explainedVariance[0] + "%)"}
 				yLabel={"PC2 (" + this.props.explainedVariance[1] + "%)"}

@@ -1,6 +1,7 @@
 import React from "react";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import LineChart from "../../../charts/LineChart";
+import Settings from "../../../Settings";
 
 
 class MaBossStatesProbTraj extends React.Component {
@@ -9,7 +10,7 @@ class MaBossStatesProbTraj extends React.Component {
 
 		if (this.props.statesProbas !== null) {
 			return <LineChart
-				traj={this.props.statesProbas} colorList={this.props.colormap} title={this.props.simulationName}
+				traj={this.props.statesProbas} colorList={Settings.colormap} title={this.props.simulationName}
 			/>;
 
 		} else if (this.props.simulationId !== null) {

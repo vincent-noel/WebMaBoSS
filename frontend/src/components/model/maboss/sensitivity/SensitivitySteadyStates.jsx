@@ -2,6 +2,7 @@ import React from "react";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import PieChart from "../../../charts/PieChart";
 import "./table-results.scss";
+import Settings from "../../../Settings";
 
 
 class SensitivitySteadyStates extends React.Component {
@@ -40,7 +41,7 @@ class SensitivitySteadyStates extends React.Component {
 			}
 		);
 		res.map((state, index) => {
-			colors[state] = this.props.colormap[index % this.props.colormap.length]
+			colors[state] = Settings.colormap[index % Settings.colormap.length]
 		});
 
 		this.setState({listStates: res, colorMap: colors});
@@ -76,7 +77,7 @@ class SensitivitySteadyStates extends React.Component {
 		for (i=0; i < nbPages; i++) {
 
 			if (i == this.state.page) {
-				res.push(<span className="item_page">{i+1}</span>);
+				res.push(<span className="item_page" key={i}>{i+1}</span>);
 			} else {
 				const page = i;
 				res.push(<a href="#" key={i} onClick={(e) => {e.preventDefault(); this.changePage(page);}}><span className="item_page">{i+1}</span></a>);
