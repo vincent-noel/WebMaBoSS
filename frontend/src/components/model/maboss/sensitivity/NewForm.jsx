@@ -172,6 +172,22 @@ class NewForm extends React.Component {
 		if (this.createCall != null) { this.createCall.cancel(); }
 	}
 
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+
+		if (nextProps.project !== this.props.project) {
+			return false;
+		}
+
+		if (nextProps.modelId !== this.props.modelId) {
+			this.getSettingsCall.cancel();
+			this.getSettings(nextProps.project, nextProps.modelId);
+			return false;
+		}
+
+		return true;
+
+	}
+
 	render() {
 
 		const errors = [];
