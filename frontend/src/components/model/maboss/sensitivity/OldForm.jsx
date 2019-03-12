@@ -10,25 +10,12 @@ class OldForm extends React.Component {
 		super(props);
 
 		this.state = {
-			listOfSensitivityAnalysis: null,
 			selectedAnalysis: "Please select a simulation",
 			selectedAnalysisId: null,
 		};
 
-		this.getAnalysesCall = null;
 		this.removeAnalysesCall = null;
 	}
-
-	loadSensitivityAnalyses (project_id, model_id) {
-		if (this.getAnalysesCall !== null) { this.getAnalysesCall.cancel(); }
-		this.setState({listOfSensitivityAnalysis: null});
-		this.getAnalysesCall = APICalls.MaBoSSCalls.getSensitivityAnalysis(project_id, model_id);
-
-		this.getAnalysesCall.promise.then(response => {
-			this.setState({listOfSensitivityAnalysis: response, selectedAnalysis: "Please select a simulation", selectedAnalysisId: null});
-		})
-	}
-
 
 	removeOldAnalyses(project_id, analysis_id) {
 		this.removeAnalysesCall = APICalls.MaBoSSCalls.deleteSensitivityAnalysis(project_id, analysis_id);
@@ -48,21 +35,17 @@ class OldForm extends React.Component {
 	}
 
 	componentDidMount() {
-		this.loadSensitivityAnalyses(this.props.project, this.props.modelId);
-	}
-
-	componentWillUnmount() {
-		if (this.getAnalysesCall !== null) this.getAnalysesCall.cancel();
+		this.props.loadSensitivityAnalyses(this.props.project, this.props.modelId);
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 		if (nextProps.modelId !== this.props.modelId) {
-			this.loadSensitivityAnalyses(nextProps.project, nextProps.modelId);
+			this.props.loadSensitivityAnalyses(nextProps.project, nextProps.modelId);
 			return false;
 		}
 
 		if (nextProps.status && nextProps.status !== this.props.status) {
-			this.loadSensitivityAnalyses(nextProps.project, nextProps.modelId);
+			this.props.loadSensitivityAnalyses(nextProps.project, nextProps.modelId);
 		}
 
 		return true;
@@ -76,7 +59,7 @@ class OldForm extends React.Component {
 						<CardHeader>Load existing sensitivity analysis</CardHeader>
 						<CardBody>
                             {
-                            	this.state.listOfSensitivityAnalysis != null ?
+                            	this.props.listOfSensitivityAnalysis != null ?
 									<div className="dropdown container-fluid">
 										<button className="btn btn-secondary dropdown-toggle" type="button"
 												id="dropdownMenuButton"
@@ -87,8 +70,8 @@ class OldForm extends React.Component {
 										<div className="dropdown-menu" aria-labelledby="dropdownMenuButton"
 											 style={{width: '100%'}}>
 											{
-												this.state.listOfSensitivityAnalysis.length > 0 ?
-												this.state.listOfSensitivityAnalysis.map((analysis, id) => {
+												this.props.listOfSensitivityAnalysis.length > 0 ?
+												this.props.listOfSensitivityAnalysis.map((analysis, id) => {
 													return <a
 														className="dropdown-item" key={analysis.id}
 														onClick={(e) => this.onAnalysisChanged(analysis.id, analysis.name)}

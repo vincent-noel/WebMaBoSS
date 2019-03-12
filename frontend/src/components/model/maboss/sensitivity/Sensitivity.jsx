@@ -10,6 +10,7 @@ import ErrorAlert from "../../../commons/ErrorAlert";
 import NewForm from "./NewForm";
 import OldForm from "./OldForm";
 import SensitivityResult from "./SensitivityResult";
+import APICalls from "../../../api/apiCalls";
 
 
 class Sensitivity extends React.Component {
@@ -30,6 +31,8 @@ class Sensitivity extends React.Component {
 			analysisId: null,
 			analysisStatus: 0,
 
+			listOfSensitivityAnalysis: null,
+
 			errorMessages: []
 		};
 
@@ -39,7 +42,11 @@ class Sensitivity extends React.Component {
 		this.toggleOldForm = this.toggleOldForm.bind(this);
 
 		this.startNew = this.startNew.bind(this);
+
 		this.loadExistingAnalysis = this.loadExistingAnalysis.bind(this);
+		this.loadSensitivityAnalyses = this.loadSensitivityAnalyses.bind(this);
+
+		this.getAnalysesCall = null;
 	}
 
 	toggleOldForm() {
@@ -55,10 +62,19 @@ class Sensitivity extends React.Component {
 	showSensitivityAnalysis() {
 		this.setState(prevstate => ({oldForm: {...prevstate.oldForm, show: true}}));
 	}
-
-
+	
 	showErrorMessages(errorMessages) {
 		this.setState({errorMessages: errorMessages});
+	}
+
+	loadSensitivityAnalyses (project_id, model_id) {
+		if (this.getAnalysesCall !== null) { this.getAnalysesCall.cancel(); }
+		this.setState({listOfSensitivityAnalysis: null});
+		this.getAnalysesCall = APICalls.MaBoSSCalls.getSensitivityAnalysis(project_id, model_id);
+
+		this.getAnalysesCall.promise.then(response => {
+			this.setState({listOfSensitivityAnalysis: response, selectedAnalysis: "Please select a simulation", selectedAnalysisId: null});
+		})
 	}
 
 	createSensitivityAnalysis() {
@@ -81,6 +97,10 @@ class Sensitivity extends React.Component {
 		this.setState(prevState => ({analysisId: analysis_id, oldForm: {...prevState.oldForm, show: false}}));
 	}
 
+	componentWillMount() {
+		if (this.getAnalysesCall !== null) { this.getAnalysesCall.cancel(); }
+	}
+
 	render() {
 
 		return (
@@ -97,7 +117,14 @@ class Sensitivity extends React.Component {
 								<ErrorAlert errorMessages={this.state.errorMessages}/>
 
 								<Button color="default" onClick={() => this.createSensitivityAnalysis()}>New sensitivity analysis</Button>
-								<Button color="default" onClick={() => this.showSensitivityAnalysis()}>Existing sensitivity analysis</Button>
+								{
+									this.state.listOfSensitivityAnalysis !== null && this.state.listOfSensitivityAnalysis.length > 0
+									? 	<Button color="default" onClick={() => this.showSensitivityAnalysis()}>
+											Existing sensitivity analysis
+										</Button>
+									: null
+								}
+
 								<br/><br/>
 								<NewForm
 									project={projectContext.project} modelId={modelContext.modelId}
@@ -108,6 +135,8 @@ class Sensitivity extends React.Component {
 									project={projectContext.project} modelId={modelContext.modelId}
 									status={this.state.oldForm.show} toggle={this.toggleOldForm}
 									onSubmit={this.loadExistingAnalysis}
+									loadSensitivityAnalyses={this.loadSensitivityAnalyses}
+									listOfSensitivityAnalysis={this.state.listOfSensitivityAnalysis}
 								/>
 
 								<SensitivityResult
