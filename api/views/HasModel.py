@@ -64,17 +64,9 @@ class HasModel(HasProject):
 			tmp_bnet = tempfile.mkstemp(dir=path, suffix='.bnet')[1]
 
 			with open(tmp_bnet, "w") as bnet_file:
-				maboss_sim.print_logical_rules(bnet_file)
+				for node, rule in maboss_sim.get_logical_rules().items():
+					bnet_file.write("%s, %s\n" % (node, rule))
 
-			f = open(tmp_bnet, "r")
-			string = f.readlines()
-			new_string = [line.replace(" : ", ", ") for line in string]
-			f.close()
-
-			f = open(tmp_bnet, "w")
-			f.write("targets, factors\n")
-			f.writelines(new_string)
-			f.close()
 			return biolqm.load(tmp_bnet)
 
 		elif self.model.format == LogicalModel.ZGINML:
