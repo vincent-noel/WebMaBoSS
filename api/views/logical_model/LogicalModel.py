@@ -7,7 +7,7 @@ from django.conf import settings
 from api.views.HasModel import HasModel
 from api.models.logical_model import LogicalModel
 from api.serializers import LogicalModelNameSerializer
-
+from api.views.maboss.MaBoSSModel import simplify_messages
 from os.path import join, basename
 
 import ginsim
@@ -127,7 +127,7 @@ class LogicalModelNodes(HasModel):
 
 		maboss_model = self.getMaBoSSModel()
 		maboss_model.network.remove_node(request.POST['name'])
-		res = maboss_model.check_model()
+		res = simplify_messages(maboss_model.check())
 
 		data = {'error': ''}
 		if len(res) > 0:

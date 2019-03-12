@@ -114,7 +114,7 @@ class MaBoSSCheckFormula(HasModel):
 		else:
 			maboss_sim.network[node].internal_var.update({field: request.POST['formula']})
 
-		res = maboss_sim.check_model()
+		res = simplify_messages(maboss_sim.check())
 
 		data = {'error': ''}
 
@@ -150,7 +150,7 @@ class MaBoSSCheckFormula(HasModel):
 		else:
 			del maboss_sim.network[node].internal_var[field]
 
-		res = maboss_sim.check_model()
+		res = simplify_messages(maboss_sim.check())
 		data = {'error': ''}
 
 		if any([message == ("invalid use of alias attribute @%s in node %s" % (field, node)) for message in res]):
@@ -228,7 +228,7 @@ class MaBoSSCheckParameter(HasModel):
 		maboss_sim = self.getMaBoSSModel()
 		maboss_sim.param[name] = request.POST['value']
 
-		res = maboss_sim.check_model()
+		res = simplify_messages(maboss_sim.check())
 
 		data = {'error': ''}
 
@@ -247,7 +247,7 @@ class MaBoSSCheckParameter(HasModel):
 		maboss_sim = self.getMaBoSSModel()
 		del maboss_sim.param[name]
 
-		res = maboss_sim.check_model()
+		res = simplify_messages(maboss_sim.check())
 
 		data = {'error': ''}
 
@@ -343,3 +343,19 @@ class MaBoSSModelSettings(HasModel):
 		self.saveMaBoSSModel(maboss_model)
 
 		return Response(status=HTTP_200_OK)
+
+def simplify_messages(messages):
+
+	new_messages = []
+
+	if len(messages) > 0:
+		for message in messages:
+			for token in message.split(":"):
+				cleaned_token = token.replace("BooleanNetwork exception", "")
+				cleaned_token = cleaned_token.replace("MaBoSS", "").strip()
+				if cleaned_token != "":
+					new_messages.append(cleaned_token)
+
+		new_messages = list(set(new_messages))
+
+	return new_messages
