@@ -48,6 +48,27 @@ class PieChart extends React.Component {
 		}
 	}
 
+	updateLegend(table, colormap) {
+		this.chartInstance.options.legendCallback = (chart) => {
+			return ReactDOMServer.renderToStaticMarkup(
+				Object.keys(table).map(
+					(datalabel, index) => {
+						return <div key={index} className={"legend-item"}>
+							<span className={"legend-color"} key={"rect_" + index}
+								style={{backgroundColor: colormap[datalabel]}}
+							></span>
+							<span className={"legend-label"}>{datalabel}</span>
+						</div>;
+					}
+				)
+			)
+		};
+		this.legend.innerHTML = this.chartInstance.generateLegend();
+		Object.values(this.legend.childNodes).map((child) => {
+			child.addEventListener('click', (e) => this.onClickLegend(e.currentTarget))
+		});
+	}
+
 	onClickLegend(element) {
 
 		let index = Object.values(element.parentNode.childNodes).indexOf(element);
@@ -67,7 +88,16 @@ class PieChart extends React.Component {
 	   	this.chartInstance.update();
 	}
 
-    render() {
+	shouldComponentUpdate(nextProps, nextState, nextContext) {
+		if (nextProps.table !== this.props.table) {
+			this.updateLegend(nextProps.table, nextProps.colorMap);
+			this.setState({imgHref: null});
+		}
+
+		return true;
+	}
+
+	render() {
 
 		if (this.props.table !== null) {
 
@@ -94,16 +124,20 @@ class PieChart extends React.Component {
 					display: false,
 				},
 
-				legendCallback: (chart) => ReactDOMServer.renderToStaticMarkup(
-					chart.data.labels.map(
-						(datalabel, index) => <div key={index} className={"legend-item"}>
-							<span className={"legend-color"} key={"rect_" + index}
-								style={{backgroundColor: chart.data.datasets[0].backgroundColor[index]}}
-							></span>
-							<span className={"legend-label"}>{datalabel}</span>
-						</div>
+				legendCallback: (chart) => {
+					return ReactDOMServer.renderToStaticMarkup(
+						Object.keys(this.props.table).map(
+							(datalabel, index) => {
+								return <div key={index} className={"legend-item"}>
+									<span className={"legend-color"} key={"rect_" + index}
+										style={{backgroundColor: chart.data.datasets[0].backgroundColor[index]}}
+									></span>
+									<span className={"legend-label"}>{datalabel}</span>
+								</div>;
+							}
+						)
 					)
-				),
+				},
 
 				title: {
 					display: true,
