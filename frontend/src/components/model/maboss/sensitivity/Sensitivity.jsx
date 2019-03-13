@@ -62,7 +62,7 @@ class Sensitivity extends React.Component {
 	showSensitivityAnalysis() {
 		this.setState(prevstate => ({oldForm: {...prevstate.oldForm, show: true}}));
 	}
-	
+
 	showErrorMessages(errorMessages) {
 		this.setState({errorMessages: errorMessages});
 	}

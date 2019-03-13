@@ -1,11 +1,12 @@
 import React from "react";
-import {TabContent, TabPane, Nav, NavItem, NavLink} from "reactstrap";
-
-
+import { TabContent, TabPane, Nav, NavItem, NavLink, Button } from "reactstrap";
 import classnames from 'classnames';
 import SensitivitySteadyStates from "./SensitivitySteadyStates";
 import Settings from "../../../Settings";
 import APICalls from "../../../api/apiCalls";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faFilter} from "@fortawesome/free-solid-svg-icons";
+import FiltersForm from "./FiltersForm";
 
 
 class SensitivityResult extends React.Component {
@@ -19,15 +20,51 @@ class SensitivityResult extends React.Component {
 
 			steadyStates : {
 				loaded: false,
-				table: null
+				table: null,
+				filteredTable: null,
 			},
 
+			showFiltersForm: false,
+
+			listStates: null,
+			colorMap: null,
 		};
 
 		this.getFixedPointsCall = null;
 		this.getStatus = null;
 		this.statusChecker = null;
+		this.toggleFiltersForm = this.toggleFiltersForm.bind(this);
+		this.filterStates = this.filterStates.bind(this);
+		this.clearFilters = this.clearFilters.bind(this);
 	}
+
+	toggleFiltersForm() {
+		this.setState({showFiltersForm: !this.state.showFiltersForm});
+	}
+
+	computeStateList(table) {
+
+		let u = {}, res = [], colors = {};
+
+		Object.values(table).map(
+			(condition, index) => {
+				Object.keys(condition).map(
+					(state) => {
+						if (!u.hasOwnProperty(state)) {
+							res.push(state);
+							u[state] = 1;
+						}
+					}
+				);
+			}
+		);
+		res.map((state, index) => {
+			colors[state] = Settings.colormap[index % Settings.colormap.length]
+		});
+
+		this.setState({listStates: res.sort(), colorMap: colors});
+	}
+
 
 	checkAnalysisStatus(project_id, analysis_id) {
 		this.getStatus = APICalls.MaBoSSCalls.getSensitivityAnalysisStatus(project_id, analysis_id);
@@ -45,7 +82,8 @@ class SensitivityResult extends React.Component {
 		this.setState({steadyStates: {loaded: false, table: null}});
 		this.getFixedPointsCall = APICalls.MaBoSSCalls.getSensitivityAnalysisSteadyStates(project_id, analysis_id);
 		this.getFixedPointsCall.promise.then(data => {
-			this.setState({steadyStates: {loaded: true, table: data.results}})
+			this.setState({steadyStates: {loaded: true, table: data.results, filteredTable: data.results}});
+			this.computeStateList(data.results);
 		});
 	}
 
@@ -68,31 +106,66 @@ class SensitivityResult extends React.Component {
 		return true;
 	}
 
+	filterStates(i_state, operator, value) {
+
+
+		let filtered = Object.keys(this.state.steadyStates.table).reduce((filtered, key) => {
+			let state = this.state.listStates[i_state];
+			let celline = this.state.steadyStates.table[key];
+
+			if (Object.keys(celline).includes(state)){
+
+				if (operator === 0 && celline[state] < value) {
+					filtered[key] = celline;
+				}
+
+				if (operator === 1 && celline[state] > value) {
+					filtered[key] = celline;
+				}
+			}
+			return filtered;
+		}, {});
+
+		this.setState(prevState => ({steadyStates: {...prevState.steadyStates, filteredTable: filtered}}));
+
+	}
+
+	clearFilters() {
+		this.setState(prevState => ({steadyStates: {...prevState.steadyStates, filteredTable: prevState.steadyStates.table}}));
+	}
+
 	render() {
 
 		if (this.props.analysisId !== null) {
 			return (
 				<React.Fragment>
-
-					<Nav tabs>
-						<NavItem>
-							<NavLink
-								onClick={() => this.toggle('fp')}
-							  	className={classnames({ active: this.state.activeTab === 'fp' })}
-							>Steady states distribution</NavLink>
-						</NavItem>
-						{/*<NavItem>*/}
-							{/*<NavLink*/}
-								{/*onClick={() => this.toggle('npt')}*/}
-								{/*className={classnames({ active: this.state.activeTab === 'npt' })}*/}
-							{/*>Nodes probability trajectories</NavLink>*/}
-						{/*</NavItem>*/}
-						{/*<NavItem>*/}
-							{/*<NavLink*/}
-								{/*onClick={() => this.toggle('spt')}*/}
-								{/*className={classnames({ active: this.state.activeTab === 'spt' })}*/}
-							{/*>States probability trajectories</NavLink>*/}
-						{/*</NavItem>*/}
+					<FiltersForm
+						status={this.state.showFiltersForm} toggle={this.toggleFiltersForm}
+						listStates={this.state.listStates} filterStates={this.filterStates}
+						clearFilters={this.clearFilters}
+					/>
+					<Nav tabs style={{"justifyContent": "space-between"}}>
+						<div className={"d-flex"} style={{"justifyContent": "flex-start"}}>
+							<NavItem>
+								<NavLink
+									onClick={() => this.toggle('fp')}
+									className={classnames({ active: this.state.activeTab === 'fp' })}
+								>Steady states distribution</NavLink>
+							</NavItem>
+							{/*<NavItem>*/}
+								{/*<NavLink*/}
+									{/*onClick={() => this.toggle('npt')}*/}
+									{/*className={classnames({ active: this.state.activeTab === 'npt' })}*/}
+								{/*>Nodes probability trajectories</NavLink>*/}
+							{/*</NavItem>*/}
+							{/*<NavItem>*/}
+								{/*<NavLink*/}
+									{/*onClick={() => this.toggle('spt')}*/}
+									{/*className={classnames({ active: this.state.activeTab === 'spt' })}*/}
+								{/*>States probability trajectories</NavLink>*/}
+							{/*</NavItem>*/}
+						</div>
+						<Button onClick={this.toggleFiltersForm}><FontAwesomeIcon icon={faFilter}/></Button>
 					</Nav>
 					<TabContent activeTab={this.state.activeTab}>
 						<TabPane tabId="fp">

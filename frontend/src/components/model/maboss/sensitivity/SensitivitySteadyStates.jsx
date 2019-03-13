@@ -55,10 +55,10 @@ class SensitivitySteadyStates extends React.Component {
 
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 
-		if (nextProps.steadyStates.loaded !== this.props.steadyStates.loaded && nextProps.steadyStates.loaded) {
+		if (nextProps.steadyStates.loaded && this.props.steadyStates.filteredTable !== nextProps.steadyStates.filteredTable) {
 
-			this.computeStateList(nextProps.steadyStates.table);
-			this.computePages(nextProps.steadyStates.table);
+			this.computeStateList(nextProps.steadyStates.filteredTable);
+			this.computePages(nextProps.steadyStates.filteredTable);
 
 			return false;
 		}
@@ -97,14 +97,14 @@ class SensitivitySteadyStates extends React.Component {
 				<React.Fragment>
 					<div className="list_results_steadystates">
 					{
-						Object.keys(this.props.steadyStates.table).map((name, index) => {
+						Object.keys(this.props.steadyStates.filteredTable).map((name, index) => {
 							if (
 								index >= (this.state.page*SensitivitySteadyStates.nbPerPage)
 								&& index < ((this.state.page+1)*SensitivitySteadyStates.nbPerPage)
 							) {
 								return <div className="result_steadystates" key={index}><PieChart
 									title={name}
-									table={this.props.steadyStates.table[name]}
+									table={this.props.steadyStates.filteredTable[name]}
 									colorMap={this.state.colorMap}
 								/></div>;
 							}
