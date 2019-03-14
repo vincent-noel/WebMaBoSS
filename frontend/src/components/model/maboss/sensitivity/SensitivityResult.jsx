@@ -70,9 +70,18 @@ class SensitivityResult extends React.Component {
 		this.getStatus = APICalls.MaBoSSCalls.getSensitivityAnalysisStatus(project_id, analysis_id);
 		this.getStatus.promise.then(data => {
 			this.setState({analysisStatus: data.done});
+
 			if (data.done == 1) {
 				clearInterval(this.statusChecker);
 				this.getFixedPoints(project_id, analysis_id);
+
+			} else {
+				if (!this.statusChecker) {
+					this.statusChecker = setInterval(
+						() => this.checkAnalysisStatus(project_id, analysis_id),
+						Settings.updateRate
+					);
+				}
 			}
 		});
 	}
@@ -96,10 +105,8 @@ class SensitivityResult extends React.Component {
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 
 		if (nextProps.analysisId !== this.props.analysisId && nextProps.analysisId !== null) {
-			this.statusChecker = setInterval(
-				() => this.checkAnalysisStatus(nextProps.project, nextProps.analysisId),
-				Settings.updateRate
-			);
+			this.checkAnalysisStatus(nextProps.project, nextProps.analysisId);
+
 			return false;
 		}
 
