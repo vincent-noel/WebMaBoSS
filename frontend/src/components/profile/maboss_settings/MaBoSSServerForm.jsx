@@ -96,7 +96,7 @@ class MaBoSSServerForm extends React.Component {
 								/>
 							</div>
 							<div className="form-group">
-								<label htmlFor="serverPort">Description</label>
+								<label htmlFor="serverPort">Port</label>
 								<input
 									id="serverPort"
 									className="form-control"

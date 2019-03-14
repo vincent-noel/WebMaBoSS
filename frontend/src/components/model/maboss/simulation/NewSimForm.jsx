@@ -1,5 +1,12 @@
 import React from "react";
-import {Nav, NavItem, NavLink, TabPane, TabContent, Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import {
+	Nav, NavItem, NavLink,
+	TabPane, TabContent,
+	Button,	ButtonToolbar,
+	Modal,
+	Card, CardHeader, CardBody, CardFooter,
+	Dropdown, DropdownToggle, DropdownMenu, DropdownItem
+} from "reactstrap";
 import classnames from 'classnames';
 import TableSwitches from "../../../commons/TableSwitches";
 import APICalls from "../../../api/apiCalls";
@@ -25,7 +32,6 @@ class NewSimForm extends React.Component {
 				statdist_traj_count: 1000,
 				statdist_cluster_threshold: 0.98,
 				thread_count: 4,
-
 			},
 
 			name: "",
@@ -36,6 +42,11 @@ class NewSimForm extends React.Component {
 			initialStates: {},
 			outputVariables: {},
 			mutatedVariables: {},
+
+			listServers: [],
+			serverDropdownOpen: false,
+			selectedServerLabel: "Local",
+			selectedServer: -1,
 
 			errors: [],
 		};
@@ -57,7 +68,26 @@ class NewSimForm extends React.Component {
 		this.updateOutputVariables = this.updateOutputVariables.bind(this);
 		this.updateMutatedVariables = this.updateMutatedVariables.bind(this);
 
+		this.toggleServerDropdown = this.toggleServerDropdown.bind(this);
+
 		this.getSettingsCall = null;
+		this.getServersCall = null;
+	}
+
+	getServers() {
+
+		this.getServersCall = APICalls.MaBoSSServerCalls.getMaBoSSServers();
+		this.getServersCall.promise.then(response => {
+			this.setState({listServers: response});
+		});
+	}
+
+	selectServer(ind, label) {
+		this.setState({selectedServer: ind, selectedServerLabel: label});
+	}
+
+	toggleServerDropdown() {
+		this.setState({serverDropdownOpen: !this.state.serverDropdownOpen});
 	}
 
 	getSettings(project_id, model_id) {
@@ -246,6 +276,15 @@ class NewSimForm extends React.Component {
 
 			);
 
+			let server_host, server_port;
+			if (this.state.selectedServer < 0) {
+				server_host = null;
+				server_port = null;
+			} else {
+				server_host = this.state.listServers[this.state.selectedServer].host;
+				server_port = this.state.listServers[this.state.selectedServer].port;
+			}
+
 			this.props.onSubmit(
 				this.props.project, this.props.modelId,
 				{
@@ -254,6 +293,9 @@ class NewSimForm extends React.Component {
 					initialStates: initial_states,
 					outputVariables: this.state.outputVariables,
 					mutations: mutations,
+					serverHost: server_host,
+					serverPort: server_port
+
 				}
 			);
 		}
@@ -261,10 +303,12 @@ class NewSimForm extends React.Component {
 
 	componentDidMount() {
 		this.getSettings(this.props.project, this.props.modelId);
+		this.getServers();
 	}
 
 	componentWillUnmount() {
 		if (this.getSettingsCall !== null) this.getSettingsCall.cancel();
+		if (this.getServersCall !== null) this.getServersCall.cancel();
 	}
 
 	shouldComponentUpdate(nextProps, nextState) {
@@ -384,6 +428,22 @@ class NewSimForm extends React.Component {
 										   onChange={(e) => this.handleStatdistClusterThreshold(e)}
 										/>
 									</div>
+
+									<Dropdown isOpen={this.state.serverDropdownOpen} toggle={this.toggleServerDropdown} className="container-fluid">
+										<DropdownToggle style={{width: '100%'}} caret>{this.state.selectedServerLabel}</DropdownToggle>
+										<DropdownMenu style={{width: '100%'}}>
+											<DropdownItem onClick={() => this.selectServer(-1, "Local")}>Local</DropdownItem>
+											{
+												this.state.listServers.length > 0 ?
+													this.state.listServers.map((server, id) => {
+														return <DropdownItem key={id}
+															onClick={() => this.selectServer(id, server.host)}
+														>{server.host}</DropdownItem>
+												}) : null
+											}
+									</DropdownMenu>
+								  </Dropdown>
+
 								</TabPane>
 								<TabPane tabId="initial_states">
 									<TableSwitches

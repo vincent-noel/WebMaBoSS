@@ -39,8 +39,8 @@ class MaBoSSServerView(HasUser):
 
 		MaBoSSServer(
 			user=self.user,
-			host=self.POST['host'],
-			port=self.POST['port']
+			host=request.POST['host'],
+			port=request.POST['port']
 		).save()
 
 		return Response(status=status.HTTP_200_OK)

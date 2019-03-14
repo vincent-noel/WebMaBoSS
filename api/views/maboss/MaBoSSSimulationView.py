@@ -99,17 +99,25 @@ class MaBoSSSimulationView(HasModel):
 
 		maboss_simulation.update_model(maboss_model)
 
-		thread = Thread(target=run_simulation, args=(maboss_model, maboss_simulation.id))
+		server_host = request.POST.get('serverHost')
+		server_port = request.POST.get('serverPort')
+
+		thread = Thread(target=run_simulation, args=(maboss_model, maboss_simulation.id, server_host, server_port))
 		thread.start()
 
 		return Response({'simulation_id': maboss_simulation.id}, status=status.HTTP_200_OK)
 
 
 
-def run_simulation(maboss_model, maboss_simulation_id):
+def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port):
 
 	try:
-		res = maboss_model.run()
+		if server_host is None:
+			res = maboss_model.run()
+		else:
+			mbcli = maboss.MaBoSSClient(server_host, int(server_port))
+			res = mbcli.run(maboss_model)
+			mbcli.close()
 
 		fixed_points = res.get_fptable()
 		if fixed_points is not None:

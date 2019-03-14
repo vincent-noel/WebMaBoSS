@@ -306,6 +306,11 @@ class MaBoSSCalls {
 		formData.append('outputVariables', JSON.stringify(data.outputVariables));
 		formData.append('mutations', JSON.stringify(data.mutations));
 
+		if (data.serverHost !== null && data.serverPort !== null) {
+			formData.append('serverHost', data.serverHost);
+			formData.append('serverPort', data.serverPort);
+		}
+
 		return makeCancelable(
 			fetch(
 				"/api/logical_model/" + project_id + "/" + model_id + "/maboss",
