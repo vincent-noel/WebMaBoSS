@@ -4,7 +4,6 @@ import Settings from "../../../Settings";
 import MaBossFixedPoints from "./MaBossFixedPoints";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
 import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
-import MaBossPCA from "./MaBossPCA";
 
 import classnames from 'classnames';
 import APICalls from "../../../api/apiCalls";
@@ -26,15 +25,11 @@ class MaBossResult extends React.Component {
 			fixedPoints: null,
 			nodesProbTraj: null,
 			statesProbTraj: null,
+
 			pca: null,
 			pcaArrows: null,
 			pcaArrowLabels: null,
 			pcaExplainedVariance: null,
-
-			sspca: null,
-			sspcaArrows: null,
-			sspcaArrowLabels: null,
-			sspcaExplainedVariance: null,
 
 		};
 
@@ -48,7 +43,6 @@ class MaBossResult extends React.Component {
 		this.getNodesProbtrajCall = null;
 		this.getStateProbtrajCall = null;
 		this.getPCACall = null;
-		this.getSSPCACall = null;
 		this.statusChecker = null;
 	}
 
@@ -63,7 +57,6 @@ class MaBossResult extends React.Component {
 				this.getNodesProbtraj(project_id, simulation_id);
 				this.getStateProbtraj(project_id, simulation_id);
 				this.getPCA(project_id, simulation_id);
-				this.getSSPCA(project_id, simulation_id);
 			}
 		});
 
@@ -97,24 +90,13 @@ class MaBossResult extends React.Component {
 
 	getPCA(project_id, simulation_id) {
 		this.setState({pca: null, pcaArrows: null, pcaArrowLabels: null, pcaExplainedVariance: null});
-		this.getPCACall = APICalls.MaBoSSCalls.getPCA(project_id, simulation_id);
+		this.getPCACall = APICalls.MaBoSSCalls.getSSPCA(project_id, simulation_id);
 		this.getPCACall.promise.then(data => {
 			this.setState({
 				pca: JSON.parse(data.data),
-				pcaArrows: data.arrows, pcaArrowLabels: data.arrowlabels,
+				pcaArrows: data.arrows,
+				pcaArrowLabels: data.arrowlabels,
 				pcaExplainedVariance: data.explainedVariance
-			})
-		});
-	}
-
-	getSSPCA(project_id, simulation_id) {
-		this.setState({sspca: null, sspcaArrows: null, sspcaArrowLabels: null, sspcaExplainedVariance: null});
-		this.getSSPCACall = APICalls.MaBoSSCalls.getSSPCA(project_id, simulation_id);
-		this.getSSPCACall.promise.then(data => {
-			this.setState({
-				sspca: JSON.parse(data.data),
-				sspcaArrows: data.arrows, sspcaArrowLabels: data.arrowlabels,
-				sspcaExplainedVariance: data.explainedVariance
 			})
 		});
 	}
@@ -146,7 +128,6 @@ class MaBossResult extends React.Component {
 		if (this.getNodesProbtrajCall !== null) this.getNodesProbtrajCall.cancel();
 		if (this.getStateProbtrajCall !== null) this.getStateProbtrajCall.cancel();
 		if (this.getPCACall !== null) this.getPCACall.cancel();
-		if (this.getSSPCACall !== null) this.getSSPCACall.cancel();
 
 	}
 
@@ -162,10 +143,6 @@ class MaBossResult extends React.Component {
 				pcaArrows: null,
 				pcaArrowLabels: null,
 				pcaExplainedVariance: null,
-				sspca: null,
-				sspcaArrows: null,
-				sspcaArrowLabels: null,
-				sspcaExplainedVariance: null,
 			});
 
 			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), Settings.updateRate);
@@ -204,12 +181,6 @@ class MaBossResult extends React.Component {
 									onClick={() => this.toggle('pca')}
 									className={classnames({ active: this.state.activeTab === 'pca' })}
 								>PCA</NavLink>
-							</NavItem>
-							<NavItem>
-								<NavLink
-									onClick={() => this.toggle('sspca')}
-									className={classnames({ active: this.state.activeTab === 'sspca' })}
-								>Steady states PCA</NavLink>
 							</NavItem>
 						</div>
 						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
@@ -250,7 +221,7 @@ class MaBossResult extends React.Component {
 							/>
 						</TabPane>
 						<TabPane tabId="pca">
-							<MaBossPCA
+							<MaBossSteadyStatesPCA
 								project={this.props.project}
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
@@ -259,18 +230,6 @@ class MaBossResult extends React.Component {
 								arrows={this.state.pcaArrows}
 								arrowLabels={this.state.pcaArrowLabels}
 								explainedVariance={this.state.pcaExplainedVariance}
-							/>
-						</TabPane>
-						<TabPane tabId="sspca">
-							<MaBossSteadyStatesPCA
-								project={this.props.project}
-								modelId={this.props.modelId}
-								simulationId={this.props.simulationId}
-								simulationName={this.props.simulationName}
-								data={this.state.sspca}
-								arrows={this.state.sspcaArrows}
-								arrowLabels={this.state.sspcaArrowLabels}
-								explainedVariance={this.state.sspcaExplainedVariance}
 							/>
 						</TabPane>
 					</TabContent>
