@@ -100,6 +100,7 @@ pre_save.connect(create_path, sender=MaBoSSSimulation)
 class MaBoSSServer(models.Model):
 
 	user = models.ForeignKey(User, on_delete=models.CASCADE)
+	desc = models.CharField(max_length=256)
 	host = models.CharField(max_length=256)
 	port = models.IntegerField()
 

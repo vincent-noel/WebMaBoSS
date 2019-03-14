@@ -437,8 +437,8 @@ class NewSimForm extends React.Component {
 												this.state.listServers.length > 0 ?
 													this.state.listServers.map((server, id) => {
 														return <DropdownItem key={id}
-															onClick={() => this.selectServer(id, server.host)}
-														>{server.host}</DropdownItem>
+															onClick={() => this.selectServer(id, server.desc)}
+														>{server.desc}</DropdownItem>
 												}) : null
 											}
 									</DropdownMenu>

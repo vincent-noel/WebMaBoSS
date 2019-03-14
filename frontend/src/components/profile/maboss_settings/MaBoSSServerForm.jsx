@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, ButtonGroup, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import APICalls from "../../api/apiCalls";
 
 class MaBoSSServerForm extends React.Component {
@@ -9,15 +9,17 @@ class MaBoSSServerForm extends React.Component {
 
 		this.state = {
 			id: null,
+			desc: "",
 			host: "",
 			port: "",
 
 		};
-		this.handleHostChange.bind(this);
-		this.handlePortChange.bind(this);
-		this.handleSubmit.bind(this);
 
 		this.apiCall = null;
+	}
+
+	handleDescChange(e) {
+		this.setState({desc: e.target.value});
 	}
 
 	handleHostChange(e) {
@@ -33,15 +35,20 @@ class MaBoSSServerForm extends React.Component {
 		if (this.apiCall !== null) this.apiCall.cancel();
 
 		if (this.state.id === null)
-			this.apiCall = APICalls.MaBoSSServerCalls.createMaBoSSServer(this.state.host, this.state.port);
+			this.apiCall = APICalls.MaBoSSServerCalls.createMaBoSSServer(
+				this.state.host, this.state.port, this.state.desc
+			);
 		else
-			this.apiCall = APICalls.MaBoSSServerCalls.updateMaBoSSServer(this.state.host, this.state.port, this.state.id);
+			this.apiCall = APICalls.MaBoSSServerCalls.updateMaBoSSServer(
+				this.state.host, this.state.port, this.state.desc, this.state.id
+			);
 
 		this.apiCall.promise.then(response => {
 
 				this.props.hide();
 				this.setState({
 					id: null,
+					desc: "",
 					host: "",
 					port: "",
 				});
@@ -57,12 +64,14 @@ class MaBoSSServerForm extends React.Component {
 
 				this.setState({
 					id: nextProps.id.id,
+					desc: nextProps.id.desc,
 					host: nextProps.id.host,
 					port: nextProps.id.port,
 				});
 			} else {
 				this.setState({
 					id: null,
+					desc: "",
 					host: "",
 					port: "",
 				});
@@ -83,6 +92,18 @@ class MaBoSSServerForm extends React.Component {
 					<Card>
 						<CardHeader>{(this.props.id !== null) ? "Editing a MaBoSS server" : "Add new MaBoSS server"}</CardHeader>
 						<CardBody>
+							<div className="form-group">
+								<label htmlFor="serverDesc">Description</label>
+								<input
+									id="serverDesc"
+									className="form-control"
+									type="text"
+									name="desc"
+									onChange={(e) => this.handleDescChange(e)}
+									value={this.state.desc}
+									required
+								/>
+							</div>
 							<div className="form-group">
 								<label htmlFor="serverHost">Host</label>
 								<input

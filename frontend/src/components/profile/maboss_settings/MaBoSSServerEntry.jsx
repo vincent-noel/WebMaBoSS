@@ -6,7 +6,7 @@ import DeleteButton from "../../commons/buttons/DeleteButton";
 class MaBoSSServerEntry extends Component {
   render() {
     return <tr>
-        <td>{this.props.entry["host"] + ":" + this.props.entry["port"]}</td>
+        <td>{this.props.entry["desc"] + " (" + this.props.entry["host"] + ":" + this.props.entry["port"] + ")"}</td>
         <td>
             <ButtonToolbar className="justify-content-end">
                 <EditButton endpoint={this.props.endpoint} update={this.props.updateServers} id={this.props.entry.id} edit={this.props.edit}/>

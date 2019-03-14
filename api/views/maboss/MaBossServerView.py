@@ -39,6 +39,7 @@ class MaBoSSServerView(HasUser):
 
 		MaBoSSServer(
 			user=self.user,
+			desc=request.POST['desc'],
 			host=request.POST['host'],
 			port=request.POST['port']
 		).save()
@@ -55,6 +56,7 @@ class MaBoSSServerView(HasUser):
 			if server.user != self.user:
 				raise PermissionDenied
 
+			server.desc = request.data['desc']
 			server.host = request.data['host']
 			server.port = int(request.data['port'])
 			server.save()

@@ -16,9 +16,10 @@ class MaBoSSServerCalls {
 		);
 	}
 
-	static createMaBoSSServer(host, port) {
+	static createMaBoSSServer(host, port, desc) {
 
 		const formData = new FormData();
+		formData.append('desc', desc);
 		formData.append('host', host);
 		formData.append('port', port);
 
@@ -34,8 +35,9 @@ class MaBoSSServerCalls {
 		);
 	}
 
-	static updateMaBoSSServer(host, port, id) {
+	static updateMaBoSSServer(host, port, desc, id) {
 		const formData = new FormData();
+		formData.append('desc', desc);
 		formData.append('host', host);
 		formData.append('port', port);
 
