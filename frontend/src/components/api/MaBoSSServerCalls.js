@@ -65,6 +65,18 @@ class MaBoSSServerCalls {
 		);
 	}
 
+	static checkMaBoSSServer(id) {
+		return makeCancelable(
+			fetch(
+				"/api/maboss/check_server/" + id,
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response)
+			).then(response => response.json())
+		)
+	}
 
 }
 export default MaBoSSServerCalls;

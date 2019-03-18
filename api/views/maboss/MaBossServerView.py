@@ -7,6 +7,9 @@ from django.http import Http404
 
 from api.models.maboss import MaBoSSServer
 from api.serializers import MaBoSSServerSerializer
+from maboss import MaBoSSClient
+from socket import timeout
+
 
 class MaBoSSServerView(HasUser):
 
@@ -31,7 +34,6 @@ class MaBoSSServerView(HasUser):
 
 		except MaBoSSServer.DoesNotExist:
 			raise Http404
-
 
 	def post(self, request):
 
@@ -66,7 +68,6 @@ class MaBoSSServerView(HasUser):
 		except MaBoSSServer.DoesNotExist:
 			raise Http404
 
-
 	def delete(self, request, server_id):
 
 		HasUser.load(self, request)
@@ -82,3 +83,26 @@ class MaBoSSServerView(HasUser):
 
 		except MaBoSSServer.DoesNotExist:
 			raise Http404
+
+
+class CheckServerView(HasUser):
+
+	def get(self, request, server_id):
+
+		HasUser.load(self, request)
+
+		try:
+			server = MaBoSSServer.objects.get(id=server_id)
+
+			if server.user != self.user:
+				raise PermissionDenied
+
+			mbcli = MaBoSSClient(server.host, int(server.port), timeout=1)
+			mbcli.close()
+			return Response(status=status.HTTP_200_OK, data=True)
+
+		except MaBoSSServer.DoesNotExist:
+			raise Http404
+
+		except (timeout, TimeoutError, ConnectionRefusedError):
+			return Response(status=status.HTTP_200_OK, data=False)

@@ -9,7 +9,7 @@ from api.views.logical_model.LogicalModelsTags import LogicalModelsTags, TaggedL
 from api.views.Projects import Projects
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
 
-from api.views.maboss.MaBossServerView import MaBoSSServerView
+from api.views.maboss.MaBossServerView import MaBoSSServerView, CheckServerView
 from api.views.maboss.MaBoSSSimulationView import MaBoSSSimulationView, MaBoSSSimulationRemove, MaBossSettings, MaBoSSSimulationBNDFile, MaBoSSSimulationCFGFile, MaBoSSSimulationNewModel, MaBoSSSimulationStatusView
 from api.views.maboss.MaBoSSSensitivityAnalysisView import MaBoSSSensitivityAnalysisView, MaBoSSSensitivityAnalysisRemove, MaBoSSSensitivitySteadyStatesView, MaBoSSSensitivityStatusView
 from api.views.maboss.MaBoSSResultsView import MaBoSSResultsFixedPoints, MaBoSSResultsNodesProbTraj, MaBoSSResultsStatesProbTraj, MaBoSSResultsFixedPointsPCA, MaBoSSResultsSteadyStatesPCA
@@ -93,6 +93,7 @@ urlpatterns = [
 
 	path('api/maboss/servers/', MaBoSSServerView.as_view()),
 	path('api/maboss/servers/<int:server_id>', MaBoSSServerView.as_view()),
+	path('api/maboss/check_server/<int:server_id>', CheckServerView.as_view()),
 
 	path('api/install_status', InstallStatus.as_view()),
 ]
