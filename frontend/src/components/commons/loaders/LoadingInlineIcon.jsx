@@ -8,7 +8,7 @@ class LoadingInlineIcon extends React.Component {
 	render() {
 
 		const src = this.props.dark !== undefined ? "/static/images/loading_dark.svg" : "/static/images/loading.svg";
-		return <span align="center" className="d-inline-flex">
+		return <span align="center" className={"d-inline-flex" + " " + this.props.className}>
 			<img
 				src={src}
 				className="align-items-center"
