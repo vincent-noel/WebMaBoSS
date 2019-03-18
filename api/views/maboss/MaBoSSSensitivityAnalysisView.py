@@ -12,6 +12,8 @@ from threading import Thread
 from os.path import join, exists, splitext, basename
 from os import remove
 from json import loads, dumps
+from maboss import MaBoSSClient
+
 
 class MaBoSSSensitivityAnalysisView(HasModel):
 
@@ -88,6 +90,9 @@ class MaBoSSSensitivityAnalysisRemove(HasMaBoSSSensitivity):
 
 def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 
+	server_host = analysis_settings.get('serverHost')
+	server_port = analysis_settings.get('serverPort')
+
 	if analysis_settings['singleMutations']['on']:
 
 		for species in maboss_model.network.keys():
@@ -100,7 +105,7 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 			t_model = maboss_model.copy()
 			t_model.mutate(species, 'ON')
 
-			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
 			thread.start()
 
 	if analysis_settings['singleMutations']['off']:
@@ -115,7 +120,7 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 			t_model = maboss_model.copy()
 			t_model.mutate(species, 'OFF')
 
-			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
 			thread.start()
 
 	if analysis_settings['doubleMutations']['on']:
@@ -134,7 +139,7 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 					t_model.mutate(species, 'ON')
 					t_model.mutate(subspecies, 'ON')
 
-					thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+					thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
 					thread.start()
 
 			if analysis_settings['doubleMutations']['off']:
@@ -152,7 +157,7 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 						t_model.mutate(species, 'ON')
 						t_model.mutate(subspecies, 'OFF')
 
-						thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+						thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
 						thread.start()
 
 	if analysis_settings['doubleMutations']['off']:
@@ -171,7 +176,7 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 					t_model.mutate(species, 'OFF')
 					t_model.mutate(subspecies, 'OFF')
 
-					thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+					thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
 					thread.start()
 
 			if analysis_settings['doubleMutations']['on']:
@@ -189,13 +194,17 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 						t_model.mutate(species, 'OFF')
 						t_model.mutate(subspecies, 'ON')
 
-						thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id))
+						thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
 						thread.start()
 
-def run_simulation(maboss_model, maboss_simulation_id):
+def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port):
 
 	try:
-		res = maboss_model.run()
+		if server_host is not None and server_port is not None:
+			mbcli = MaBoSSClient(server_host, int(server_port))
+			res = mbcli.run(maboss_model)
+		else:
+			res = maboss_model.run()
 
 		fixed_points = res.get_fptable()
 		if fixed_points is not None:

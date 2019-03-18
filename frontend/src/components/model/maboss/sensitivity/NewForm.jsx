@@ -1,5 +1,20 @@
 import React from "react";
-import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter, Collapse, TabContent, TabPane, Nav, NavItem, NavLink} from "reactstrap";
+import {
+	Button,
+	ButtonToolbar,
+	Modal,
+	Card,
+	CardHeader,
+	CardBody,
+	CardFooter,
+	Collapse,
+	TabContent,
+	TabPane,
+	Nav,
+	NavItem,
+	NavLink,
+	DropdownToggle, DropdownMenu, DropdownItem, Dropdown
+} from "reactstrap";
 import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
 
@@ -12,6 +27,8 @@ import APICalls from "../../../api/apiCalls";
 import classnames from 'classnames';
 import TableSwitches from "../../../commons/TableSwitches";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
 
 class NewForm extends React.Component {
 
@@ -45,6 +62,12 @@ class NewForm extends React.Component {
 
 			showErrors: true,
 		    waitSubmit: false,
+
+			listServers: [],
+			serverDropdownOpen: false,
+			selectedServerLabel: "Local",
+			selectedServer: -1,
+			statusServer: [],
 		};
 
 		this.toggleSingleMutations = this.toggleSingleMutations.bind(this);
@@ -57,12 +80,65 @@ class NewForm extends React.Component {
 
 		this.toggleInitialStates = this.toggleInitialStates.bind(this);
 		this.toggleRates = this.toggleRates.bind(this);
+		this.toggleServerDropdown = this.toggleServerDropdown.bind(this);
 
 		this.updateOutputVariables = this.updateOutputVariables.bind(this);
 
 		this.createCall = null;
 		this.getSettingsCall = null;
+		this.getServersCall = null;
 	}
+
+	getServerStatus(id) {
+		if (this.state.statusServer[id] === -1) {
+			return <LoadingInlineIcon width="1rem" className="ml-auto"/>;
+		}
+		if (this.state.statusServer[id] === 1) {
+			return <FontAwesomeIcon icon={faCheck} className="ml-auto"/>;
+		}
+		if (this.state.statusServer[id] === 0) {
+			return <FontAwesomeIcon icon={faTimes} className="ml-auto"/>;
+		}
+	}
+
+	buildServersStatus(servers) {
+		let serversCalls = new Array(servers.length).fill(null);
+		for (let i=0; i < servers.length; i++) {
+			serversCalls[i] = APICalls.MaBoSSServerCalls.checkMaBoSSServer(servers[i].id);
+			serversCalls[i].promise.then(response => {
+				if (response) {
+					this.setState(prevState => {
+						let t_states = prevState.statusServer;
+						t_states[i] = 1;
+						return {statusServer: t_states};
+					})
+				} else {
+					this.setState(prevState => {
+						let t_states = prevState.statusServer;
+						t_states[i] = 0;
+						return {statusServer: t_states};
+					})
+				}
+			});
+		}
+	}
+
+	getServers() {
+
+		this.getServersCall = APICalls.MaBoSSServerCalls.getMaBoSSServers();
+		this.getServersCall.promise.then(response => {
+			this.setState({listServers: response});
+		});
+	}
+
+	selectServer(ind, label) {
+		this.setState({selectedServer: ind, selectedServerLabel: label});
+	}
+
+	toggleServerDropdown() {
+		this.setState({serverDropdownOpen: !this.state.serverDropdownOpen});
+	}
+
 	toggleTab(tab) {
 		if (this.state.activeTab !== tab) {
 			this.setState({activeTab: tab });
@@ -144,6 +220,14 @@ class NewForm extends React.Component {
 	onSubmit(e) {
 		e.preventDefault();
 
+
+		let server_host, server_port = null;
+		if (this.state.selectedServer >= 0) {
+			server_host = this.state.listServers[this.state.selectedServer].host;
+			server_port = this.state.listServers[this.state.selectedServer].port;
+		}
+
+
 		this.createCall = APICalls.MaBoSSCalls.createSensitivityAnalysis(this.props.project, this.props.modelId, {
 			name: this.state.name,
 			singleMutations: {
@@ -155,6 +239,8 @@ class NewForm extends React.Component {
 				off: this.state.doubleMutations.off,
 			},
 			outputVariables: this.state.outputVariables,
+			serverHost: server_host,
+			serverPort: server_port,
 		});
 
 		this.createCall.promise.then(response => {
@@ -165,11 +251,13 @@ class NewForm extends React.Component {
 
 	componentDidMount() {
 		this.getSettings(this.props.project, this.props.modelId);
+		this.getServers();
 	}
 
 	componentWillUnmount() {
 		if (this.getSettingsCall != null) { this.getSettingsCall.cancel(); }
 		if (this.createCall != null) { this.createCall.cancel(); }
+		if (this.getServersCall != null) { this.getServersCall.cancel(); }
 	}
 
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -292,6 +380,20 @@ class NewForm extends React.Component {
 										</li>
 									</Collapse>
 								</ul>
+								<Dropdown isOpen={this.state.serverDropdownOpen} toggle={this.toggleServerDropdown} className="container-fluid">
+									<DropdownToggle style={{width: '25rem'}} caret>{this.state.selectedServerLabel}</DropdownToggle>
+									<DropdownMenu style={{width: '25rem'}}>
+										<DropdownItem onClick={() => this.selectServer(-1, "Local")}>Local</DropdownItem>
+										{
+											this.state.listServers.length > 0 ?
+												this.state.listServers.map((server, id) => {
+													return <DropdownItem key={id} className="d-flex"
+														onClick={() => this.selectServer(id, server.desc)}
+													>{server.desc}{this.getServerStatus(id)}</DropdownItem>
+											}) : null
+										}
+									</DropdownMenu>
+							 	</Dropdown>
 							</TabPane>
 							<TabPane tabId="outputs" className="tab-outputs">
 								{
