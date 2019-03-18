@@ -14,7 +14,9 @@ import ErrorAlert from "../../../commons/ErrorAlert";
 
 import "./new-sim-form.scss";
 import Switch from "../../../commons/buttons/Switch";
-
+import LoadingInlineIcon from "../../../commons/loaders/LoadingInlineIcon";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faCheck, faFilter, faTimes} from "@fortawesome/free-solid-svg-icons";
 class NewSimForm extends React.Component {
 
 	constructor(props) {
@@ -44,6 +46,7 @@ class NewSimForm extends React.Component {
 			mutatedVariables: {},
 
 			listServers: [],
+			statusServer: [],
 			serverDropdownOpen: false,
 			selectedServerLabel: "Local",
 			selectedServer: -1,
@@ -74,11 +77,46 @@ class NewSimForm extends React.Component {
 		this.getServersCall = null;
 	}
 
+	getServerStatus(id) {
+		if (this.state.statusServer[id] === -1) {
+			return <LoadingInlineIcon width="1rem" className="ml-auto"/>;
+		}
+		if (this.state.statusServer[id] === 1) {
+			return <FontAwesomeIcon icon={faCheck} className="ml-auto"/>;
+		}
+		if (this.state.statusServer[id] === 0) {
+			return <FontAwesomeIcon icon={faTimes} className="ml-auto"/>;
+		}
+	}
+
+	buildServersStatus(servers) {
+		let serversCalls = new Array(servers.length).fill(null);
+		for (let i=0; i < servers.length; i++) {
+			serversCalls[i] = APICalls.MaBoSSServerCalls.checkMaBoSSServer(servers[i].id);
+			serversCalls[i].promise.then(response => {
+				if (response) {
+					this.setState(prevState => {
+						let t_states = prevState.statusServer;
+						t_states[i] = 1;
+						return {statusServer: t_states};
+					})
+				} else {
+					this.setState(prevState => {
+						let t_states = prevState.statusServer;
+						t_states[i] = 0;
+						return {statusServer: t_states};
+					})
+				}
+			});
+		}
+	}
+
 	getServers() {
 
 		this.getServersCall = APICalls.MaBoSSServerCalls.getMaBoSSServers();
 		this.getServersCall.promise.then(response => {
-			this.setState({listServers: response});
+			this.buildServersStatus(response);
+			this.setState({listServers: response, statusServer: new Array(response.length).fill(-1)});
 		});
 	}
 
@@ -252,6 +290,9 @@ class NewSimForm extends React.Component {
 
 		}
 
+		if (this.state.statusServer[this.state.selectedServer] !== 1) {
+			errors.push("Please select an online MaBoSS server")
+		}
 
 		this.setState({errors: errors});
 
@@ -430,15 +471,15 @@ class NewSimForm extends React.Component {
 									</div>
 
 									<Dropdown isOpen={this.state.serverDropdownOpen} toggle={this.toggleServerDropdown} className="container-fluid">
-										<DropdownToggle style={{width: '100%'}} caret>{this.state.selectedServerLabel}</DropdownToggle>
-										<DropdownMenu style={{width: '100%'}}>
+										<DropdownToggle style={{width: '25rem'}} caret>{this.state.selectedServerLabel}</DropdownToggle>
+										<DropdownMenu style={{width: '25rem'}}>
 											<DropdownItem onClick={() => this.selectServer(-1, "Local")}>Local</DropdownItem>
 											{
 												this.state.listServers.length > 0 ?
 													this.state.listServers.map((server, id) => {
-														return <DropdownItem key={id}
+														return <DropdownItem key={id} className="d-flex"
 															onClick={() => this.selectServer(id, server.desc)}
-														>{server.desc}</DropdownItem>
+														>{server.desc}{this.getServerStatus(id)}</DropdownItem>
 												}) : null
 											}
 									</DropdownMenu>
