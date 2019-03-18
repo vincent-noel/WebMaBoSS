@@ -68,6 +68,8 @@ class NewForm extends React.Component {
 			selectedServerLabel: "Local",
 			selectedServer: -1,
 			statusServer: [],
+
+			errors: []
 		};
 
 		this.toggleSingleMutations = this.toggleSingleMutations.bind(this);
@@ -127,6 +129,7 @@ class NewForm extends React.Component {
 
 		this.getServersCall = APICalls.MaBoSSServerCalls.getMaBoSSServers();
 		this.getServersCall.promise.then(response => {
+			this.buildServersStatus(response);
 			this.setState({listServers: response});
 		});
 	}
@@ -220,33 +223,49 @@ class NewForm extends React.Component {
 	onSubmit(e) {
 		e.preventDefault();
 
+		let errors = [];
 
-		let server_host, server_port = null;
-		if (this.state.selectedServer >= 0) {
-			server_host = this.state.listServers[this.state.selectedServer].host;
-			server_port = this.state.listServers[this.state.selectedServer].port;
+		if (this.state.statusServer[this.state.selectedServer] !== 1) {
+			errors.push("Please select an online MaBoSS server")
 		}
 
+		if (!([
+			this.state.singleMutations.on, this.state.singleMutations.off,
+			this.state.doubleMutations.on, this.state.doubleMutations.off
+		].some(element => element))) {
+			errors.push("Please select at least one option");
+		}
 
-		this.createCall = APICalls.MaBoSSCalls.createSensitivityAnalysis(this.props.project, this.props.modelId, {
-			name: this.state.name,
-			singleMutations: {
-				on: this.state.singleMutations.on,
-				off: this.state.singleMutations.off,
-            },
-			doubleMutations: {
-				on: this.state.doubleMutations.on,
-				off: this.state.doubleMutations.off,
-			},
-			outputVariables: this.state.outputVariables,
-			serverHost: server_host,
-			serverPort: server_port,
-		});
+		this.setState({errors: errors});
 
-		this.createCall.promise.then(response => {
-			this.props.submit(this.props.project, response['analysis_id']);
-		});
+		if (errors.length == 0){
 
+			let server_host, server_port = null;
+			if (this.state.selectedServer >= 0) {
+				server_host = this.state.listServers[this.state.selectedServer].host;
+				server_port = this.state.listServers[this.state.selectedServer].port;
+			}
+
+
+			this.createCall = APICalls.MaBoSSCalls.createSensitivityAnalysis(this.props.project, this.props.modelId, {
+				name: this.state.name,
+				singleMutations: {
+					on: this.state.singleMutations.on,
+					off: this.state.singleMutations.off,
+				},
+				doubleMutations: {
+					on: this.state.doubleMutations.on,
+					off: this.state.doubleMutations.off,
+				},
+				outputVariables: this.state.outputVariables,
+				serverHost: server_host,
+				serverPort: server_port,
+			});
+
+			this.createCall.promise.then(response => {
+				this.props.submit(this.props.project, response['analysis_id']);
+			});
+		}
 	}
 
 	componentDidMount() {
@@ -278,16 +297,13 @@ class NewForm extends React.Component {
 
 	render() {
 
-		const errors = [];
-
 		return (
 			<Modal isOpen={this.props.status} toggle={() => this.props.toggle()}>
 				<form onSubmit={(e) => this.onSubmit(e)}>
 				<Card>
 					<CardHeader>New sensitivity analysis</CardHeader>
 					<CardBody>
-						{ this.state.showErrors ? <ErrorAlert errorMessages={errors}/> : null}
-
+						<ErrorAlert errorMessages={this.state.errors}/>
 						<Nav tabs>
 								<NavItem>
 									<NavLink
