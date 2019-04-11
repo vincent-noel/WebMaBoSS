@@ -47,7 +47,7 @@ RUN rm -fr /appCurie/data/ /appCurie/api/migrations/*.py && \
 
 # Installing MaBoSS from github repo
 RUN apt-get install -y flex bison \
-    && git clone https://github.com/vincent-noel/MaBoSS-env-2.0 /MaBoSS-env-2.0 \
+    && git clone https://github.com/maboss-bkmc/MaBoSS-env-2.0 /MaBoSS-env-2.0 \
     && cd /MaBoSS-env-2.0/engine/src/ \
     && make install \
     && make MAXNODES=128 install \

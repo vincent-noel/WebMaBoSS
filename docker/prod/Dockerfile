@@ -27,7 +27,7 @@ RUN pip install pip --upgrade \
 
 # Installing MaBoSS from github repo
 RUN apt-get install -y flex bison \
-    && git clone https://github.com/vincent-noel/MaBoSS-env-2.0 /MaBoSS-env-2.0 \
+    && git clone https://github.com/maboss-bkmc/MaBoSS-env-2.0 /MaBoSS-env-2.0 \
     && cd /MaBoSS-env-2.0/engine/src/ \
     && make install \
     && make MAXNODES=128 install \
@@ -71,5 +71,5 @@ EXPOSE 8000
 USER www-data
 
 # Running server
-ENTRYPOINT sleep 5 && /bin/bash /appCurie/create_default_db.sh && \
+ENTRYPOINT sleep 5 && /bin/bash /appCurie/create_default_db.sh --settings=settings.prod_settings && \
     /appCurie/server/apachectl -D FOREGROUND
