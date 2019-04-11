@@ -19,9 +19,16 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/1.11/howto/deployment/checklist/
 
-if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
+settings = None
 
-    settings = yaml.load(open(os.path.join(BASE_DIR, "data", "settings", "config.yml"), 'r'))
+if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
+    settings = yaml.load(
+        open(os.path.join(BASE_DIR, "data", "settings", "config.yml"), 'r'),
+        Loader=yaml.FullLoader
+    )
+
+
+if settings is not None and 'admin' in settings.keys():
 
     RUN_INSTALL = False
 
@@ -32,7 +39,6 @@ if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
     DEBUG = True
 
     ALLOWED_HOSTS = settings['allowed_hosts']
-
 
     # Application definition
 
@@ -164,19 +170,22 @@ if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
 
     APPEND_SLASH = False
 
-
-
 else:
 
     RUN_INSTALL = True
 
-    # SECURITY WARNING: keep the secret key used in production secret!
-    SECRET_KEY = '(h9yxhf%gnv*cm+u%4+yl@u-b_s(6qnfe4)xv=1bdl4u!tnnnp'
+    if settings is not None and 'secret_key' in settings.keys():
+        SECRET_KEY = settings['secret_key']
+    else:
+        SECRET_KEY = '(h9yxhf%gnv*cm+u%4+yl@u-b_s(6qnfe4)xv=1bdl4u!tnnnp'
 
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
-    ALLOWED_HOSTS = []
+    if settings is not None and 'allowed_hosts' in settings.keys():
+        ALLOWED_HOSTS = settings['allowed_hosts']
+    else:
+        ALLOWED_HOSTS = []
 
     # Application definition
 
@@ -201,6 +210,17 @@ else:
         'frontend',
         'mod_wsgi.server',
 
+    ]
+
+    MIDDLEWARE = [
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+        'django.middleware.clickjacking.XFrameOptionsMiddleware',
+        'django.middleware.gzip.GZipMiddleware',
     ]
 
     ROOT_URLCONF = 'settings.install_urls'
@@ -245,7 +265,4 @@ else:
     STATICFILES_DIRS = (
         os.path.join(BASE_DIR, 'node_modules/'),
     )
-
-    print(STATIC_ROOT)
-    print(os.path.exists(os.path.join(STATIC_ROOT, "bootstrap/dist/css/bootstrap.min.css")))
 
