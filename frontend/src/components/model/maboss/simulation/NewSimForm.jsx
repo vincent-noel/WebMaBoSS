@@ -290,7 +290,7 @@ class NewSimForm extends React.Component {
 
 		}
 
-		if (this.state.statusServer[this.state.selectedServer] !== 1) {
+		if (this.state.selectedServer !== -1 && this.state.statusServer[this.state.selectedServer] !== 1) {
 			errors.push("Please select an online MaBoSS server")
 		}
 
