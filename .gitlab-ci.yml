@@ -33,6 +33,8 @@ build-prod:
     - docker-compose build app-curie
     - docker tag app-curie:latest vnoel/app-curie:latest
     - docker push vnoel/app-curie:latest
+    - docker tag app-curie:latest vnoel/webmaboss:latest
+    - docker push vnoel/webmaboss:latest
 
 test:
   stage: test
