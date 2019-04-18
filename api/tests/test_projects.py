@@ -70,7 +70,6 @@ class TestProjects(TestCase):
 		data_projects = loads(request.content)
 
 		self.assertEqual(len(data_projects), 1)
-		self.assertEqual(data_projects[0]['id'], 1)
 		self.assertEqual(data_projects[0]['user'], 1)
 		self.assertEqual(data_projects[0]['name'], "My Project")
 		self.assertEqual(data_projects[0]['description'], "")
@@ -92,7 +91,6 @@ class TestProjects(TestCase):
 		data_projects = loads(request.content)
 
 		self.assertEqual(len(data_projects), 2)
-		self.assertEqual(data_projects[1]['id'], 2)
 		self.assertEqual(data_projects[1]['user'], 1)
 		self.assertEqual(data_projects[1]['name'], "metastasis")
 		self.assertEqual(data_projects[1]['description'], "A project about metastasis")
@@ -102,11 +100,11 @@ class TestProjects(TestCase):
 		self.assertEqual(request_del.status_code, status.HTTP_404_NOT_FOUND)
 
 		# Now with the good id
-		request_del = self.client.delete('/api/projects/2')
+		request_del = self.client.delete('/api/projects/%d' % data_projects[1]['id'])
 		self.assertEqual(request_del.status_code, status.HTTP_200_OK)
 
 		# Also removing the default project
-		request_del = self.client.delete('/api/projects/1')
+		request_del = self.client.delete('/api/projects/%d' % data_projects[0]['id'])
 		self.assertEqual(request_del.status_code, status.HTTP_200_OK)
 
 		# Checking if the list ends up empty

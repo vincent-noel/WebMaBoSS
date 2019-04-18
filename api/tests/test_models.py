@@ -71,6 +71,7 @@ class TestModels(TestCase):
 		self.assertEqual(loads(request.content), [])
 
 		model_name = 'Flobak2015_full_journal.pcbi.1004426.s003.ZGINML'
+
 		# Checking if we can add a model
 		request_add = self.client.post(
 			'/api/logical_models/%d/' % self.project_id,
@@ -89,7 +90,6 @@ class TestModels(TestCase):
 		model_id = 1
 		json_content = loads(request.content)
 		self.assertEqual(len(json_content), 1)
-		self.assertEqual(json_content[0]['id'], model_id)
 		self.assertEqual(json_content[0]['name'], "Flobak full")
 		self.assertEqual(json_content[0]['project'], self.project_id)
 
@@ -98,7 +98,7 @@ class TestModels(TestCase):
 		self.assertEqual(request_del.status_code, status.HTTP_404_NOT_FOUND)
 
 		# Now with the good id
-		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, model_id))
+		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, json_content[0]['id']))
 		self.assertEqual(request_del.status_code, status.HTTP_200_OK)
 
 		# Checking if the list ends up empty
