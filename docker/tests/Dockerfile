@@ -36,7 +36,8 @@ RUN \
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install --upgrade -r /appCurie/requirements.txt
+    && pip install --upgrade -r /appCurie/requirements.txt \
+    && pip install --upgrade selenium
 
 # Removing old db and medias, creating a new one, with default user admin:admin
 RUN rm -fr /appCurie/data/ /appCurie/api/migrations/*.py && \

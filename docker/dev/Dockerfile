@@ -36,7 +36,8 @@ ADD requirements.txt /appCurie/requirements.txt
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
     && easy_install -U distribute \
-    && pip install --upgrade -r /appCurie/requirements.txt
+    && pip install --upgrade -r /appCurie/requirements.txt \
+    && pip install --upgrade selenium
 
 # Installing MaBoSS from github repo
 RUN apt-get install -y flex bison \
