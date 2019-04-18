@@ -36,7 +36,7 @@ build-prod:
     - docker tag app-curie:latest vnoel/webmaboss:latest
     - docker push vnoel/webmaboss:latest
 
-test:
+test-api:
   stage: test
   script:
     - docker login -u vnoel -p $DOCKERHUB_PASSWORD
@@ -47,3 +47,15 @@ test:
     - docker exec -u www-data -t app-curie /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
     - docker exec -u www-data -t app-curie /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
     - docker exec -u www-data -t app-curie python manage.py test api -v 2 --settings=settings.test_settings
+
+test-frontend:
+  stage: test
+  script:
+    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+    - docker pull vnoel/app-curie-test:latest
+    - docker tag vnoel/app-curie-test:latest app-curie-test:latest
+    - docker-compose up -d app-curie-test app-curie-db
+    - docker exec -u www-data -t app-curie /bin/bash -c "sleep 10"
+    - docker exec -u www-data -t app-curie /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
+    - docker exec -u www-data -t app-curie /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
+    - docker exec -u www-data -t app-curie python manage.py test frontend -v 2 --settings=settings.test_settings
