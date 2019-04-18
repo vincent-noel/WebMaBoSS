@@ -6,13 +6,13 @@ from os.path import isfile, join
 from time import sleep
 
 
-class TestStaticJSChrome (TestChrome):
+class TestStaticJSChrome(TestChrome):
 
 	def testMainJS(self):
 
-		self.assertTrue(isfile(join(settings.BASE_DIR, "frontend", "static", "index.js.gz")))
+		self.assertTrue(isfile(join(settings.BASE_DIR, "frontend", "static", "js", "index.js.gz")))
 
-		response = self.get("/static/index.js.gz")
+		response = self.get("/static/js/index.js.gz")
 		sleep(1)
 
 		self.assertNotEqual(response.page_source,
@@ -25,9 +25,9 @@ class TestStaticJSFirefox(TestFirefox):
 
 	def testMainJS(self):
 
-		self.assertTrue(isfile(join(settings.BASE_DIR, "frontend", "static", "index.js.gz")))
+		self.assertTrue(isfile(join(settings.BASE_DIR, "frontend", "static", "js", "index.js.gz")))
 
-		response = self.get("/static/index.js.gz")
+		response = self.get("/static/js/index.js.gz")
 		sleep(1)
 
 		self.assertNotEqual(response.page_source,
