@@ -1,4 +1,4 @@
-FROM colomoto/colomoto-docker:2018-12-22
+FROM colomoto/colomoto-docker:2019-07-17
 MAINTAINER Vincent Noel <contact@vincent-noel.fr>
 
 USER root
