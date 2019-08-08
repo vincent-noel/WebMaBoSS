@@ -22,10 +22,10 @@ RUN \
 
 RUN \
     # Installing geckodriver
-    wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz \
-    && tar xvfz geckodriver-v0.21.0-linux64.tar.gz \
+    wget https://github.com/mozilla/geckodriver/releases/download/v0.24.0/geckodriver-v0.24.0-linux64.tar.gz \
+    && tar xvfz geckodriver-v0.24.0-linux64.tar.gz \
     && mv geckodriver /usr/local/bin \
-    && rm geckodriver-v0.21.0-linux64.tar.gz \
+    && rm geckodriver-v0.24.0-linux64.tar.gz \
     # Firefox sources
     && echo "deb http://http.debian.net/debian unstable main" | tee /etc/apt/sources.list.d/debian-unstable.list \
     && apt-get -qq update \
