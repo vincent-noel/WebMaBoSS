@@ -9,39 +9,40 @@ before_script:
   - docker info
   - apk add docker-compose --update-cache --repository http://dl-3.alpinelinux.org/alpine/edge/testing/ --allow-untrusted
   - docker-compose -v
+  - echo "$CI_JOB_TOKEN" | docker login -u gitlab-ci-token --password-stdin $CI_REGISTRY
+
 
 build-dev:
   stage: build
   script:
-    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
+#    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
     - docker-compose build app-curie-dev
-    - docker tag app-curie-dev:latest vnoel/app-curie-dev:latest
-#    - docker push vnoel/app-curie-dev:latest
+    - docker tag app-curie-dev registry.gitlab.com/vincent.noel/appcurie:dev
+    - docker push registry.gitlab.com/vincent.noel/appcurie:dev
 
 build-test:
   stage: build
   script:
-    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
+#    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
     - docker-compose build app-curie-test
-    - docker tag app-curie-test:latest vnoel/app-curie-test:latest
-    - docker push vnoel/app-curie-test:latest
+    - docker tag app-curie-test registry.gitlab.com/vincent.noel/appcurie:test
+    - docker push registry.gitlab.com/vincent.noel/appcurie:test
 
 build-prod:
   stage: build
   script:
-    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
+#    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
     - docker-compose build app-curie
-    - docker tag app-curie:latest vnoel/app-curie:latest
-    - docker push vnoel/app-curie:latest
-    - docker tag app-curie:latest vnoel/webmaboss:latest
-    - docker push vnoel/webmaboss:latest
+    - docker tag app-curie registry.gitlab.com/vincent.noel/appcurie
+    - docker push registry.gitlab.com/vincent.noel/appcurie
+#    - docker push vnoel/webmaboss:latest
 
 test-api:
   stage: test
   script:
-    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
-    - docker pull vnoel/app-curie-test:latest
-    - docker tag vnoel/app-curie-test:latest app-curie-test:latest
+#    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
+    - docker pull registry.gitlab.com/vincent.noel/appcurie:test
+    - docker tag registry.gitlab.com/vincent.noel/appcurie:test app-curie-test:latest
     - docker-compose up -d app-curie-test app-curie-db
     - docker exec -u www-data -t app-curie-test /bin/bash -c "sleep 10"
     - docker exec -u www-data -t app-curie-test /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
@@ -51,10 +52,10 @@ test-api:
 test-frontend:
   stage: test
   script:
-    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
-    - docker pull vnoel/app-curie-test:latest
-    - docker tag vnoel/app-curie-test:latest app-curie-test:latest
-    - docker-compose up -d app-curie-test app-curie-db
+#    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
+    - docker pull registry.gitlab.com/vincent.noel/appcurie:test
+    - docker tag registry.gitlab.com/vincent.noel/appcurie:test app-curie-test:latest
+    - docker-compose up -d app-curie-test
     - docker exec -u www-data -t app-curie-test /bin/bash -c "sleep 10"
     - docker exec -u www-data -t app-curie-test /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
     - docker exec -u www-data -t app-curie-test /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
