@@ -42,7 +42,7 @@ services:
       dockerfile: docker/dev/Dockerfile
 
     image: app-curie-dev
-    container_name: app-curie
+    container_name: app-curie-dev
     ports:
       - "8000:8000"
       - "8889:8888"
@@ -67,7 +67,7 @@ services:
       dockerfile: docker/tests/Dockerfile
 
     image: app-curie-test:latest
-    container_name: app-curie
+    container_name: app-curie-test
     ports:
       - "8000:8000"
       - "8888:8888"
