@@ -13,7 +13,7 @@ before_script:
 build-dev:
   stage: build
   script:
-    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
     - docker-compose build app-curie-dev
     - docker tag app-curie-dev:latest vnoel/app-curie-dev:latest
 #    - docker push vnoel/app-curie-dev:latest
@@ -21,7 +21,7 @@ build-dev:
 build-test:
   stage: build
   script:
-    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
     - docker-compose build app-curie-test
     - docker tag app-curie-test:latest vnoel/app-curie-test:latest
     - docker push vnoel/app-curie-test:latest
@@ -29,7 +29,7 @@ build-test:
 build-prod:
   stage: build
   script:
-    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
     - docker-compose build app-curie
     - docker tag app-curie:latest vnoel/app-curie:latest
     - docker push vnoel/app-curie:latest
@@ -39,7 +39,7 @@ build-prod:
 test-api:
   stage: test
   script:
-    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
     - docker pull vnoel/app-curie-test:latest
     - docker tag vnoel/app-curie-test:latest app-curie-test:latest
     - docker-compose up -d app-curie-test app-curie-db
@@ -51,7 +51,7 @@ test-api:
 test-frontend:
   stage: test
   script:
-    - docker login -u vnoel -p $DOCKERHUB_PASSWORD
+    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
     - docker pull vnoel/app-curie-test:latest
     - docker tag vnoel/app-curie-test:latest app-curie-test:latest
     - docker-compose up -d app-curie-test app-curie-db
