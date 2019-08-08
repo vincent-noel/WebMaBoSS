@@ -18,7 +18,11 @@ RUN \
     && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google.list \
     # Node sources
     && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-    && apt-get install -y nodejs yarn google-chrome-stable chromedriver
+    && apt-get install -y nodejs yarn google-chrome-stable unzip \
+    && wget https://chromedriver.storage.googleapis.com/76.0.3809.68/chromedriver_linux64.zip \
+    && unzip chromedriver_linux64.zip \
+    && mv chromedriver /usr/local/bin \
+    && chmod 775 /usr/local/bin/chromedriver
 
 RUN \
     # Installing geckodriver
@@ -44,7 +48,10 @@ RUN rm -fr /appCurie/data/ /appCurie/api/migrations/*.py && \
     mkdir -p /appCurie/data/media && \
     mkdir -p /appCurie/data/db && \
     mkdir -p /appCurie/data/settings && \
-    chown -R www-data:www-data /appCurie/settings /appCurie/data /appCurie/static /appCurie/api/migrations && chown www-data:www-data /appCurie
+    chown -R www-data:www-data /appCurie/settings /appCurie/data /appCurie/static /appCurie/api/migrations && chown www-data:www-data /appCurie && \
+    mkdir /home/www-data && \
+    usermod -d /home/www-data www-data && \
+    chown -R www-data:www-data /home/www-data
 
 # Installing MaBoSS from github repo
 RUN apt-get install -y flex bison \

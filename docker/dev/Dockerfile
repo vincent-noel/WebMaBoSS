@@ -17,7 +17,11 @@ RUN \
     && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google.list \
     # Node sources
     && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
-    && apt-get install -y nodejs yarn google-chrome-stable chromedriver
+    && apt-get install -y nodejs yarn google-chrome-stable unzip \
+    && wget https://chromedriver.storage.googleapis.com/76.0.3809.68/chromedriver_linux64.zip \
+    && unzip chromedriver_linux64.zip \
+    && mv chromedriver /usr/local/bin \
+    && chmod 775 /usr/local/bin/chromedriver
 
 RUN \
     # Installing geckodriver
