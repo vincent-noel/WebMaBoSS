@@ -22,7 +22,6 @@ if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
         Loader=yaml.FullLoader
     )
 
-
 if settings is not None and 'admin' in settings.keys():
 
     RUN_INSTALL = False
@@ -261,9 +260,9 @@ else:
 
     USE_TZ = True
 
-    STATIC_URL = '/static/'
+    STATIC_URL = 'static/'
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
-    MEDIA_URL = '/media/'
+    MEDIA_URL = 'media/'
     MEDIA_ROOT = os.path.join(BASE_DIR, "data", "media")
 
     TMP_ROOT = '/tmp/'
