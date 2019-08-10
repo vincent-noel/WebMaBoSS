@@ -199,25 +199,27 @@ class NewForm extends React.Component {
 	}
 
 	getSettings(project_id, model_id) {
+		if (project_id !== undefined && model_id !== undefined) {
 
-		this.setState({
-			outputVariables: null,
-		});
+			this.setState({
+				outputVariables: null,
+			});
 
-		this.getSettingsCall = APICalls.MaBoSSCalls.getMaBoSSSimulationSettings(project_id, model_id);
-		this.getSettingsCall.promise.then(response => {
-			const output_variables = Object.keys(response['output_variables']).reduce(
-				(acc, key) => {
-					acc[key] = response['output_variables'][key];
-					return acc;
-				}, {}
-			);
+			this.getSettingsCall = APICalls.MaBoSSCalls.getMaBoSSSimulationSettings(project_id, model_id);
+			this.getSettingsCall.promise.then(response => {
+				const output_variables = Object.keys(response['output_variables']).reduce(
+					(acc, key) => {
+						acc[key] = response['output_variables'][key];
+						return acc;
+					}, {}
+				);
 
-			this.setState(
-			{
-				outputVariables: output_variables,
-			}
-		)})
+				this.setState(
+				{
+					outputVariables: output_variables,
+				}
+			)})
+		}
 	}
 
 	onSubmit(e) {

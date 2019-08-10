@@ -23,7 +23,7 @@ class ProjectDropdown extends React.Component {
 		this.getProjectCall = APICalls.ProjectCalls.getProjects();
 		this.getProjectCall.promise.then((projects) => {
 			this.setState({ projects: projects, loaded: true });
-			if (getProject() !== null) {
+			if (getProject() !== null && getProject() !== undefined) {
 				for (const project in projects) {
 					if (projects[project].id === getProject()) {
 						this.setState({projectName: projects[project].name});
@@ -34,6 +34,7 @@ class ProjectDropdown extends React.Component {
 				if (projects.length > 0){
 					setProject(projects[0].id);
 					this.setState({projectName: projects[0].name});
+					this.props.updateProject(projects[0].id);
 				}
 			}
 		});

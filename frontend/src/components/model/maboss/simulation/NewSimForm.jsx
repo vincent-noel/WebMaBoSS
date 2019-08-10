@@ -130,55 +130,57 @@ class NewSimForm extends React.Component {
 
 	getSettings(project_id, model_id) {
 
+		if (project_id !== undefined && model_id !== undefined) {
+			this.setState({
+				listNodes: [],
+				initialStates: {},
+				outputVariables: {},
+			});
 
-		this.setState({
-			listNodes: [],
-			initialStates: {},
-			outputVariables: {},
-		});
+			this.getSettingsCall = APICalls.MaBoSSCalls.getMaBoSSSimulationSettings(project_id, model_id)
+			this.getSettingsCall.promise.then(response => {
 
-		this.getSettingsCall = APICalls.MaBoSSCalls.getMaBoSSSimulationSettings(project_id, model_id)
-		this.getSettingsCall.promise.then(response => {
+				const initial_states = Object.keys(response['initial_states']).reduce(
+					(acc, key) => {
+						acc[key] = response['initial_states'][key]['1'] * 100;
+						return acc;
+					}, {}
+				);
 
-			const initial_states = Object.keys(response['initial_states']).reduce(
-				(acc, key) => {
-					acc[key] = response['initial_states'][key]['1']*100;
-					return acc;
-				}, {}
-			);
+				const output_variables = Object.keys(response['output_variables']).reduce(
+					(acc, key) => {
+						acc[key] = response['output_variables'][key];
+						return acc;
+					}, {}
+				);
 
-			const output_variables = Object.keys(response['output_variables']).reduce(
-				(acc, key) => {
-					acc[key] = response['output_variables'][key];
-					return acc;
-				}, {}
-			);
+				const mutated_variables = Object.keys(response['initial_states']).reduce(
+					(acc, key) => {
 
-			const mutated_variables = Object.keys(response['initial_states']).reduce(
-				(acc, key) => {
+						if (Object.keys(response['initial_states']).includes(key)) {
+							if (response['initial_states'][key] === 'OFF') acc[key] = -1;
+							else if (response['initial_states'][key] === 'ON') acc[key] = 1;
+							else acc[key] = 0;
 
-					if (Object.keys(response['initial_states']).includes(key)) {
-						if (response['initial_states'][key] === 'OFF') acc[key] = -1;
-						else if (response['initial_states'][key] === 'ON') acc[key] = 1;
-						else acc[key] = 0;
+						} else {
+							acc[key] = 0
 
-					} else {
-						acc[key] = 0
+						}
+						return acc;
+					}, {}
+				);
 
+				this.setState(
+					{
+						outputVariables: output_variables,
+						initialStates: initial_states,
+						listNodes: Object.keys(response['initial_states']),
+						mutatedVariables: mutated_variables,
+						settings: response['settings']
 					}
-					return acc;
-				}, {}
-			);
-
-			this.setState(
-			{
-				outputVariables: output_variables,
-				initialStates: initial_states,
-				listNodes: Object.keys(response['initial_states']),
-				mutatedVariables: mutated_variables,
-				settings: response['settings']
-			}
-		)})
+				)
+			})
+		}
 	}
 
 	updateInitialState(node, value) {
@@ -359,7 +361,9 @@ class NewSimForm extends React.Component {
 		}
 
 		if (nextProps.modelId !== this.props.modelId) {
-			this.getSettingsCall.cancel();
+			if (this.getSettingsCall !== null) {
+				this.getSettingsCall.cancel();
+			}
 			this.getSettings(nextProps.project, nextProps.modelId);
 			return false;
 		}

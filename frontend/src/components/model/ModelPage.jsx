@@ -27,20 +27,26 @@ class ModelPage extends React.Component {
 	}
 
 	getModels(project_id) {
-		this.setState({models: [], loaded: false});
-		this.getModelsCall = APICalls.ModelsCalls.getModels(project_id);
-		this.getModelsCall.promise.then(models => {
-			this.setState({ models: models, loaded: true });
-		});
+		if (project_id !== undefined) {
+			this.setState({models: [], loaded: false});
+			this.getModelsCall = APICalls.ModelsCalls.getModels(project_id);
+			this.getModelsCall.promise.then(models => {
+				this.setState({ models: models, loaded: true });
+			});
+		}
 	}
 
 
 	getName(project_id, model_id) {
-		if (this.getNameCall !== null) this.getNameCall.cancel();
-		this.setState({modelName: null});
+		if (project_id !== undefined && model_id !== undefined) {
+			if (this.getNameCall !== null) this.getNameCall.cancel();
+			this.setState({modelName: null});
 
-		this.getNameCall = APICalls.ModelCalls.getName(project_id, model_id);
-		this.getNameCall.promise.then(data => {this.setState({modelName: data['name']})});
+			this.getNameCall = APICalls.ModelCalls.getName(project_id, model_id);
+			this.getNameCall.promise.then(data => {
+				this.setState({modelName: data['name']})
+			});
+		}
 	}
 
 	onModelChanged(project_id, model_id) {
