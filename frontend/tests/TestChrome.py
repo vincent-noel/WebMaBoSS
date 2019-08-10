@@ -17,12 +17,11 @@ class TestChrome(TestFrontend):
 		chrome_options.add_argument("--headless")
 		chrome_options.add_argument("--no-sandbox")
 		chrome_options.add_argument("--disable-dev-shm-usage")
-		chrome_options.add_argument("--log-path=chromedriver.log")
 
-		chrome_desired_capabilities = DesiredCapabilities.CHROME
-		chrome_desired_capabilities['loggingPrefs'] = {'browser': 'ALL'}
 		self.driver = webdriver.Chrome(
 			executable_path='chromedriver',
 			chrome_options=chrome_options,
-			desired_capabilities=chrome_desired_capabilities
+			service_args=["--verbose", "--log-path=chromedriver.log"]
 		)
+
+		TestFrontend.setUp(self)

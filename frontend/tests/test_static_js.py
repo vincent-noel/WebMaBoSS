@@ -3,7 +3,6 @@ from .TestFirefox import TestFirefox
 
 from django.conf import settings
 from os.path import isfile, join
-from time import sleep
 
 
 class TestStaticJSChrome(TestChrome):
@@ -13,7 +12,6 @@ class TestStaticJSChrome(TestChrome):
 		self.assertTrue(isfile(join(settings.BASE_DIR, "frontend", "static", "js", "index.js.gz")))
 
 		response = self.get("/static/js/index.js.gz")
-		sleep(1)
 
 		self.assertNotEqual(response.page_source,
 			'<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body><h1>Not Found</h1>'
@@ -28,7 +26,6 @@ class TestStaticJSFirefox(TestFirefox):
 		self.assertTrue(isfile(join(settings.BASE_DIR, "frontend", "static", "js", "index.js.gz")))
 
 		response = self.get("/static/js/index.js.gz")
-		sleep(1)
 
 		self.assertNotEqual(response.page_source,
 			'<html xmlns="http://www.w3.org/1999/xhtml"><head></head><body><h1>Not Found</h1>'

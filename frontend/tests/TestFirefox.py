@@ -18,3 +18,4 @@ class TestFirefox(TestFrontend):
 			executable_path='geckodriver'
 		)
 
+		TestFrontend.setUp(self)

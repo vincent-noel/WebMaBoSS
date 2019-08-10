@@ -12,7 +12,7 @@ class TestIndexChrome (TestChrome):
 
 class TestIndexFirefox(TestFirefox):
 
-	def testFirefox(self):
+	def testTitle(self):
 
 		response = self.get("/")
 		self.assertEqual(response.title, "WebMaBoSS")
