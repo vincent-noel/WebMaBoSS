@@ -25,7 +25,7 @@
 from django.views.generic import TemplateView
 from django.conf import settings as django_settings
 from django.contrib.auth.models import User
-from os import utime
+from os import utime, environ
 from os.path import join
 from threading import Thread
 import yaml
@@ -42,22 +42,40 @@ class InstallView(TemplateView):
 		self.install_done = False
 
 
+
+	def fix_install(self, admin):
+		settings = {
+			'admin': admin.username,
+			'admin_address': admin.email,
+			'allowed_hosts': '*',
+			'secret_key': ''.join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(60))
+		}
+
+		with open(join(django_settings.BASE_DIR, "data", "settings", "config.yml"), "w") as settings_file:
+			settings_file.write(yaml.dump(settings))
+
+		self.install_done = True
+		thread = ReloadConf()
+		thread.start()
+
 	def get_context_data(self, **kwargs):
 
 		kwargs['install_done'] = self.install_done
 		return kwargs
 
+	def get(self, request, *args, **kwargs):
+		admins = User.objects.filter(is_superuser=True)
+		if len(admins) > 0:
+			self.fix_install(admins[0])
+		return TemplateView.get(self, request, *args, **kwargs)
 
 	def post(self, request, *args, **kwargs):
-
-		# print("Here we are")
 
 		username = request.POST.get('admin_username')
 		email = request.POST.get('admin_email')
 		password1 = request.POST.get('admin_password1')
 		password2 = request.POST.get('admin_password2')
 
-		# print(request.POST)
 		self.install_done = True
 		if username is not None and email is not None and password1 is not None and password1 == password2:
 			admin = User.objects.create_superuser(username, email, password1)
@@ -87,4 +105,5 @@ class ReloadConf(Thread):
 		Thread.__init__(self)
 
 	def run(self):
-		utime(join(django_settings.BASE_DIR, "settings/wsgi.py"), None)
+		settings = ".".join(environ["DJANGO_SETTINGS_MODULE"].split(".")[1:])
+		utime(join(django_settings.BASE_DIR, "settings/%s.py" % settings), None)
