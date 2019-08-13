@@ -2,47 +2,47 @@
 version: '3.3'
 services:
 
-  app-curie-db:
+  webmaboss-db:
     image: mariadb
-    container_name: app-curie-db
+    container_name: webmaboss-db
     restart: always
     volumes:
       - db:/var/lib/mysql
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
-      - MYSQL_DATABASE=inflame
-      - MYSQL_USER=inflame
+      - MYSQL_DATABASE=webmaboss
+      - MYSQL_USER=webmaboss
       - MYSQL_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
 
-  app-curie:
+  webmaboss:
     build:
       context: ./
       dockerfile: docker/prod/Dockerfile
 
-    image: app-curie
-    container_name: app-curie
+    image: webmaboss
+    container_name: webmaboss
     volumes:
       - data:/appCurie/data
     ports:
       - "8000:8000"
     user: www-data
     environment:
-      - DB_NAME=inflame
-      - DB_USER=inflame
+      - DB_NAME=webmaboss
+      - DB_USER=webmaboss
       - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
-      - DB_HOST=app-curie-db
+      - DB_HOST=webmaboss-db
       - DB_PORT=3306
 
     depends_on:
-      - app-curie-db
+      - webmaboss-db
 
-  app-curie-dev:
+  webmaboss-dev:
     build:
       context: ./
       dockerfile: docker/dev/Dockerfile
 
-    image: app-curie-dev
-    container_name: app-curie-dev
+    image: webmaboss-dev
+    container_name: webmaboss-dev
     ports:
       - "8000:8000"
       - "8889:8888"
@@ -50,24 +50,24 @@ services:
     volumes:
       - .:/appCurie
     environment:
-      - DB_NAME=inflame
-      - DB_USER=inflame
+      - DB_NAME=webmaboss
+      - DB_USER=webmaboss
       - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
-      - DB_HOST=app-curie-db
+      - DB_HOST=webmaboss-db
       - DB_PORT=3306
 
     depends_on:
-      - app-curie-db
+      - webmaboss-db
 
     restart: unless-stopped
 
-  app-curie-test:
+  webmaboss-test:
     build:
       context: ./
       dockerfile: docker/tests/Dockerfile
 
-    image: app-curie-test:latest
-    container_name: app-curie-test
+    image: webmaboss-test:latest
+    container_name: webmaboss-test
     ports:
       - "8000:8000"
       - "8888:8888"
@@ -75,14 +75,14 @@ services:
     volumes:
       - data:/appCurie/data
     environment:
-      - DB_NAME=inflame
-      - DB_USER=inflame
+      - DB_NAME=webmaboss
+      - DB_USER=webmaboss
       - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
-      - DB_HOST=app-curie-db
+      - DB_HOST=webmaboss-db
       - DB_PORT=3306
 
     depends_on:
-      - app-curie-db
+      - webmaboss-db
 
     restart: unless-stopped
 

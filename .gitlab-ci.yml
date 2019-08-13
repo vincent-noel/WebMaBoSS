@@ -16,47 +16,47 @@ build-dev:
   stage: build
   script:
 #    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
-    - docker-compose build app-curie-dev
-    - docker tag app-curie-dev registry.gitlab.com/vincent.noel/appcurie:dev
-    - docker push registry.gitlab.com/vincent.noel/appcurie:dev
+    - docker-compose build webmaboss-dev
+    - docker tag webmaboss-dev registry.gitlab.com/vincent.noel/appcurie/webmaboss:dev
+    - docker push registry.gitlab.com/vincent.noel/appcurie/webmaboss:dev
 
 build-test:
   stage: build
   script:
 #    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
-    - docker-compose build app-curie-test
-    - docker tag app-curie-test registry.gitlab.com/vincent.noel/appcurie:test
-    - docker push registry.gitlab.com/vincent.noel/appcurie:test
+    - docker-compose build webmaboss-test
+    - docker tag webmaboss-test registry.gitlab.com/vincent.noel/appcurie/webmaboss:test
+    - docker push registry.gitlab.com/vincent.noel/appcurie/webmaboss:test
 
 build-prod:
   stage: build
   script:
 #    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
-    - docker-compose build app-curie
-    - docker tag app-curie registry.gitlab.com/vincent.noel/appcurie
-    - docker push registry.gitlab.com/vincent.noel/appcurie
+    - docker-compose build webmaboss
+    - docker tag webmaboss registry.gitlab.com/vincent.noel/appcurie/webmaboss
+    - docker push registry.gitlab.com/vincent.noel/appcurie/webmaboss
 #    - docker push vnoel/webmaboss:latest
 
 test-api:
   stage: test
   script:
 #    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
-    - docker pull registry.gitlab.com/vincent.noel/appcurie:test
-    - docker tag registry.gitlab.com/vincent.noel/appcurie:test app-curie-test:latest
-    - docker-compose up -d app-curie-test app-curie-db
-    - docker exec -u www-data -t app-curie-test /bin/bash -c "sleep 30"
-    - docker exec -u www-data -t app-curie-test /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
-    - docker exec -u www-data -t app-curie-test /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
-    - docker exec -u www-data -t app-curie-test python manage.py test api -v 2 --settings=settings.test_settings
+    - docker pull registry.gitlab.com/vincent.noel/appcurie/webmaboss:test
+    - docker tag registry.gitlab.com/vincent.noel/appcurie/webmaboss:test webmaboss-test:latest
+    - docker-compose up -d webmaboss-test
+    - docker exec -u www-data -t webmaboss-test /bin/bash -c "sleep 30"
+    - docker exec -u www-data -t webmaboss-test /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test python manage.py test api -v 2 --settings=settings.test_settings
 
 test-frontend:
   stage: test
   script:
 #    - echo "$DOCKERHUB_PASSWORD" | docker login -u vnoel --password-stdin
-    - docker pull registry.gitlab.com/vincent.noel/appcurie:test
-    - docker tag registry.gitlab.com/vincent.noel/appcurie:test app-curie-test:latest
-    - docker-compose up -d app-curie-test
-    - docker exec -u www-data -t app-curie-test /bin/bash -c "sleep 30"
-    - docker exec -u www-data -t app-curie-test /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
-    - docker exec -u www-data -t app-curie-test /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
-    - docker exec -u www-data -t app-curie-test python manage.py test frontend -v 2 --settings=settings.test_settings
+    - docker pull registry.gitlab.com/vincent.noel/appcurie/webmaboss:test
+    - docker tag registry.gitlab.com/vincent.noel/appcurie/webmaboss:test webmaboss-test:latest
+    - docker-compose up -d webmaboss-test
+    - docker exec -u www-data -t webmaboss-test /bin/bash -c "sleep 30"
+    - docker exec -u www-data -t webmaboss-test /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test python manage.py test frontend -v 2 --settings=settings.test_settings
