@@ -177,7 +177,9 @@ else:
     if settings is not None and 'secret_key' in settings.keys():
         SECRET_KEY = settings['secret_key']
     else:
-        SECRET_KEY = '(h9yxhf%gnv*cm+u%4+yl@u-b_s(6qnfe4)xv=1bdl4u!tnnnp'
+        from string import ascii_uppercase, ascii_lowercase, digits
+        from random import choice
+        SECRET_KEY = ''.join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(24))
 
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
