@@ -48,7 +48,7 @@ RUN rm -fr data/ && \
     mkdir -p data/media && \
     mkdir -p data/db && \
     mkdir -p data/settings && \
-    rm -fr api/migrations/*.py
+#    rm -fr api/migrations/*.py
 
 # Removing old server, and creating it from scratch
 RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
