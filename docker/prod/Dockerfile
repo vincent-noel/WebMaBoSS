@@ -6,8 +6,9 @@ WORKDIR /appCurie
 
 RUN apt-get -qq update \
     && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https \
-                          apache2 apache2-dev \
-                          libmariadbclient-dev libgl1-mesa-glx
+                          apache2 apache2-dev libmariadbclient-dev
+#                          libgl1-mesa-glx
+
 
 RUN \
     # Yarn sources
@@ -17,30 +18,30 @@ RUN \
     && curl -sL https://deb.nodesource.com/setup_8.x | bash - \
     && apt-get install -y nodejs yarn
 
-ADD . .
-
 # Updating pip
 RUN pip install pip --upgrade \
     && pip install setuptools --upgrade \
-    && easy_install -U distribute \
-    && pip install --upgrade -r /appCurie/requirements.txt
+    && easy_install -U distribute
 
 # Installing MaBoSS from github repo
 RUN apt-get install -y flex bison \
-    && git clone https://github.com/maboss-bkmc/MaBoSS-env-2.0 /MaBoSS-env-2.0 \
-    && cd /MaBoSS-env-2.0/engine/src/ \
+    && git clone https://github.com/maboss-bkmc/MaBoSS-env-2.0 /usr/share/MaBoSS-env-2.0 \
+    && cd /usr/share/MaBoSS-env-2.0/engine/src/ \
     && make install \
     && make MAXNODES=128 install \
     && make MAXNODES=256 install \
     && rm /opt/conda/bin/MaBoSS* \
-    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS /opt/conda/bin \
-    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS_128n /opt/conda/bin \
-    && ln -s /MaBoSS-env-2.0/engine/pub/MaBoSS_256n /opt/conda/bin
+    && ln -s /usr/share/MaBoSS-env-2.0/engine/pub/MaBoSS /opt/conda/bin \
+    && ln -s /usr/share/MaBoSS-env-2.0/engine/pub/MaBoSS_128n /opt/conda/bin \
+    && ln -s /usr/share/MaBoSS-env-2.0/engine/pub/MaBoSS_256n /opt/conda/bin
+
+ADD . /appCurie/
+RUN pip install --upgrade -r /appCurie/requirements.txt
 
 # Removing node modules, downloading them from scratch, and transpiling the JSX
-RUN rm -fr node_modules/* yarn.lock; yarn && \
-                  npm run build
-#                  rm -fr node_modules/ docker/
+RUN rm -fr node_modules/* yarn.lock \
+    && yarn \
+    && npm run build
 
 # Removing old db and medias, creating a new one, with default user admin:admin
 RUN rm -fr data/ && \
