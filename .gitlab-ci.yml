@@ -15,30 +15,30 @@ build-dev:
   stage: build
   script:
     - docker-compose build webmaboss-dev
-    - docker tag webmaboss-dev registry.gitlab.com/vincent.noel/appcurie/webmaboss:dev
-    - docker push registry.gitlab.com/vincent.noel/appcurie/webmaboss:dev
+    - docker tag webmaboss-dev registry.gitlab.com/vincent.noel/webmaboss:dev
+    - docker push registry.gitlab.com/vincent.noel/webmaboss:dev
 
 build-test:
   stage: build
   script:
     - docker-compose build webmaboss-test
-    - docker tag webmaboss-test registry.gitlab.com/vincent.noel/appcurie/webmaboss:test
-    - docker push registry.gitlab.com/vincent.noel/appcurie/webmaboss:test
+    - docker tag webmaboss-test registry.gitlab.com/vincent.noel/webmaboss:test
+    - docker push registry.gitlab.com/vincent.noel/webmaboss:test
 
 build-prod:
   stage: build
   script:
     - docker-compose build webmaboss
-    - docker tag webmaboss registry.gitlab.com/vincent.noel/appcurie/webmaboss
-    - docker push registry.gitlab.com/vincent.noel/appcurie/webmaboss
+    - docker tag webmaboss registry.gitlab.com/vincent.noel/webmaboss
+    - docker push registry.gitlab.com/vincent.noel/webmaboss
     - docker tag webmaboss vnoel/webmaboss
     - docker push vnoel/webmaboss
 
 test-api:
   stage: test
   script:
-    - docker pull registry.gitlab.com/vincent.noel/appcurie/webmaboss:test
-    - docker tag registry.gitlab.com/vincent.noel/appcurie/webmaboss:test webmaboss-test:latest
+    - docker pull registry.gitlab.com/vincent.noel/webmaboss:test
+    - docker tag registry.gitlab.com/vincent.noel/webmaboss:test webmaboss-test:latest
     - docker-compose up -d webmaboss-test
     - docker exec -u www-data -t webmaboss-test /bin/bash -c "sleep 30"
     - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.test_settings
@@ -48,8 +48,8 @@ test-api:
 test-frontend:
   stage: test
   script:
-    - docker pull registry.gitlab.com/vincent.noel/appcurie/webmaboss:test
-    - docker tag registry.gitlab.com/vincent.noel/appcurie/webmaboss:test webmaboss-test:latest
+    - docker pull registry.gitlab.com/vincent.noel/webmaboss:test
+    - docker tag registry.gitlab.com/vincent.noel/webmaboss:test webmaboss-test:latest
     - docker-compose up -d webmaboss-test
     - docker exec -u www-data -t webmaboss-test /bin/bash -c "sleep 30"
     - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.test_settings
