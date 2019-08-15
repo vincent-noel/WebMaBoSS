@@ -41,8 +41,8 @@ test-api:
     - docker tag registry.gitlab.com/vincent.noel/appcurie/webmaboss:test webmaboss-test:latest
     - docker-compose up -d webmaboss-test
     - docker exec -u www-data -t webmaboss-test /bin/bash -c "sleep 30"
-    - docker exec -u www-data -t webmaboss-test /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
-    - docker exec -u www-data -t webmaboss-test /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_admin.sh  --settings=settings.test_settings
     - docker exec -u www-data -t webmaboss-test python manage.py test api -v 2 --settings=settings.test_settings
 
 test-frontend:
@@ -52,6 +52,6 @@ test-frontend:
     - docker tag registry.gitlab.com/vincent.noel/appcurie/webmaboss:test webmaboss-test:latest
     - docker-compose up -d webmaboss-test
     - docker exec -u www-data -t webmaboss-test /bin/bash -c "sleep 30"
-    - docker exec -u www-data -t webmaboss-test /bin/bash /appCurie/create_default_db.sh --settings=settings.test_settings
-    - docker exec -u www-data -t webmaboss-test /bin/bash /appCurie/create_default_admin.sh  --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_admin.sh  --settings=settings.test_settings
     - docker exec -u www-data -t webmaboss-test python manage.py test frontend -v 2 --settings=settings.test_settings

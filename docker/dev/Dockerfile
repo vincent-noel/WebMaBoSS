@@ -2,7 +2,7 @@ FROM colomoto/colomoto-docker:2019-07-17
 MAINTAINER Vincent Noel <contact@vincent-noel.fr>
 
 USER root
-WORKDIR /appCurie
+WORKDIR /var/webmaboss
 
 RUN apt-get -qq update \
     && apt-get install -y python3 python3-pip \
@@ -59,15 +59,13 @@ RUN \
     # Installing selenium
     && pip install --upgrade selenium
 
-ADD requirements.txt /appCurie/requirements.txt
-RUN pip install --upgrade -r /appCurie/requirements.txt
+ADD requirements.txt /var/webmaboss/requirements.txt
+RUN pip install --upgrade -r /var/webmaboss/requirements.txt
 
 # Exposing port 8000 for server access
 EXPOSE 8000
 # Exposing port 8888 for notebook access
 EXPOSE 8888
-
-WORKDIR /
 
 
 

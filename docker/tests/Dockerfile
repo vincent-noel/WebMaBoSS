@@ -2,7 +2,7 @@ FROM colomoto/colomoto-docker:2019-07-17
 MAINTAINER Vincent Noel <contact@vincent-noel.fr>
 
 USER root
-WORKDIR /appCurie
+WORKDIR /var/webmaboss
 
 RUN apt-get -qq update \
     && apt-get install -y python3 python3-pip \
@@ -58,17 +58,17 @@ RUN \
     # Installing selenium
     && pip install --upgrade selenium
 
-ADD . /appCurie/
+ADD . /var/webmaboss/
 
 # Installing python dependencies
-RUN pip install --upgrade -r /appCurie/requirements.txt
+RUN pip install --upgrade -r /var/webmaboss/requirements.txt
 
 # Removing old db and medias, creating a new one, with default user admin:admin
-RUN rm -fr /appCurie/data/ /appCurie/api/migrations/*.py && \
-    mkdir -p /appCurie/data/media && \
-    mkdir -p /appCurie/data/db && \
-    mkdir -p /appCurie/data/settings && \
-    chown -R www-data:www-data /appCurie/settings /appCurie/data /appCurie/static /appCurie/api/migrations && chown www-data:www-data /appCurie && \
+RUN rm -fr /var/webmaboss/data/ /var/webmaboss/api/migrations/*.py && \
+    mkdir -p /var/webmaboss/data/media && \
+    mkdir -p /var/webmaboss/data/db && \
+    mkdir -p /var/webmaboss/data/settings && \
+    chown -R www-data:www-data /var/webmaboss/settings /var/webmaboss/data /var/webmaboss/static /var/webmaboss/api/migrations && chown www-data:www-data /var/webmaboss && \
     mkdir /home/www-data && \
     usermod -d /home/www-data www-data && \
     chown -R www-data:www-data /home/www-data

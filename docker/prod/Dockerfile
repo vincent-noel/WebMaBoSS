@@ -2,7 +2,7 @@ FROM colomoto/colomoto-docker:2019-07-17
 MAINTAINER Vincent Noel <contact@vincent-noel.fr>
 
 USER root
-WORKDIR /appCurie
+WORKDIR /var/webmaboss
 
 RUN apt-get -qq update \
     && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https \
@@ -35,8 +35,8 @@ RUN apt-get install -y flex bison \
     && ln -s /usr/share/MaBoSS-env-2.0/engine/pub/MaBoSS_128n /opt/conda/bin \
     && ln -s /usr/share/MaBoSS-env-2.0/engine/pub/MaBoSS_256n /opt/conda/bin
 
-ADD . /appCurie/
-RUN pip install --upgrade -r /appCurie/requirements.txt
+ADD . /var/webmaboss/
+RUN pip install --upgrade -r /var/webmaboss/requirements.txt
 
 # Removing node modules, downloading them from scratch, and transpiling the JSX
 RUN rm -fr node_modules/* yarn.lock \
@@ -62,9 +62,9 @@ RUN rm -fr server/; python manage.py runmodwsgi --setup-only \
 
 RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations && chown www-data:www-data .
 
-RUN rm -fr /appCurie/static/bootstrap /appCurie/static/jquery && \
-    ln -s /appCurie/node_modules/bootstrap/ /appCurie/static && \
-    ln -s /appCurie/node_modules/jquery/ /appCurie/static
+RUN rm -fr /var/webmaboss/static/bootstrap /var/webmaboss/static/jquery && \
+    ln -s /var/webmaboss/node_modules/bootstrap/ /var/webmaboss/static && \
+    ln -s /var/webmaboss/node_modules/jquery/ /var/webmaboss/static
 # Exposing port 8000 for server access
 EXPOSE 8000
 
@@ -72,5 +72,5 @@ EXPOSE 8000
 USER www-data
 
 # Running server
-ENTRYPOINT sleep 5 && /bin/bash /appCurie/create_default_db.sh --settings=settings.prod_settings && \
-    /appCurie/server/apachectl -D FOREGROUND
+ENTRYPOINT sleep 5 && /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.prod_settings && \
+    /var/webmaboss/server/apachectl -D FOREGROUND

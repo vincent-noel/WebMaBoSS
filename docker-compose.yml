@@ -22,7 +22,7 @@ services:
     image: webmaboss
     container_name: webmaboss
     volumes:
-      - data:/appCurie/data
+      - data:/var/webmaboss/data
     ports:
       - "8000:8000"
     user: www-data
@@ -48,7 +48,7 @@ services:
       - "8889:8888"
     user: user
     volumes:
-      - .:/appCurie
+      - .:/var/webmaboss
     environment:
       - DB_NAME=webmaboss
       - DB_USER=webmaboss
@@ -73,7 +73,7 @@ services:
       - "8888:8888"
     user: user
     volumes:
-      - data:/appCurie/data
+      - data:/var/webmaboss/data
     environment:
       - DB_NAME=webmaboss
       - DB_USER=webmaboss
