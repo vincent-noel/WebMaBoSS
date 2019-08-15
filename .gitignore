@@ -17,3 +17,14 @@ __pycache__/
 
 # Yarn lock file
 yarn.lock
+
+# Log files
+yarn-error.log
+chromedriver.log
+geckodriver.log
+
+# Local docker-compose file
+docker-compose.override.yml
+
+# Compiled js files
+static/js/*
