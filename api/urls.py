@@ -28,7 +28,7 @@ from rest_framework.documentation import include_docs_urls
 from django.conf.urls import include
 
 urlpatterns = [
-	path('api/', include_docs_urls(title='InFlame API')),
+	path('api/', include_docs_urls(title='WebMaBoSS API')),
 	re_path('api-auth/', include('rest_framework.urls')),
 	path('api/auth/is_logged_in', TestAuthView.as_view(), name='is_logged_in', ),
 	path('api/auth/logout', LogoutViewEx.as_view(), name='logout', ),

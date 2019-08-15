@@ -115,7 +115,7 @@ class Register extends React.Component {
 			<div className="d-flex justify-content-center">
 				<form onSubmit={(e) => this.handleSubmit(e)}>
 					<Card style={{width: '20em'}}>
-						<CardHeader>Register to InFlame</CardHeader>
+						<CardHeader>Register to WebMaBoSS</CardHeader>
 						<CardBody>
 						<ErrorAlert errorMessages={this.state.errorMessages}/>
 						<div className="form-group">
