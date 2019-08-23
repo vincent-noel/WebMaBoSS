@@ -105,6 +105,8 @@ if settings is not None and 'admin' in settings.keys():
         }
     }
     ACCOUNT_EMAIL_VERIFICATION = 'none'
+    OLD_PASSWORD_FIELD_ENABLED = True
+    LOGOUT_ON_PASSWORD_CHANGE = False
 
     # Password validation
     # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators

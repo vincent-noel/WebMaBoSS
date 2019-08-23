@@ -51,15 +51,16 @@ class AuthCalls {
 		)
 	}
 
-	static changePassword(password1, password2) {
+	static changePassword(oldpassword, password1, password2) {
 
 		const formData = new FormData();
-		formData.append('password1', password1);
-		formData.append('password2', password2);
+		formData.append('old_password', oldpassword);
+		formData.append('new_password1', password1);
+		formData.append('new_password2', password2);
 
 		return makeCancelable(
 			fetch(
-				"/api/auth/register",
+				"/api/auth/password/change",
 				{
 				  	method: "post",
 				 	body: formData,

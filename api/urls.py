@@ -35,7 +35,7 @@ urlpatterns = [
 	path('api/auth/login', LoginView.as_view(), name='login', ),
 	path('api/auth/register', RegisterView.as_view(), name='register'),
 	path('api/auth/email', UserEmailView.as_view(), name='user_email'),
-	path('api/auth/password/change/', PasswordChangeView.as_view(), name='password_change'),
+	path('api/auth/password/change', PasswordChangeView.as_view(), name='password_change'),
 	path('api/auth/account-confirm-email', VerifyEmailView.as_view(), name='account_email_verification_sent'),
 	path('api/auth/account-confirm-email/<str:key>', VerifyEmailView.as_view(), name='account_confirm_email'),
 
