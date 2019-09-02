@@ -154,12 +154,14 @@ class NewSimForm extends React.Component {
 					}, {}
 				);
 
-				const mutated_variables = Object.keys(response['initial_states']).reduce(
+				// Here we take the keys of the outputs (will has all the species),
+				// to check the mutations
+				const mutated_variables = Object.keys(response['output_variables']).reduce(
 					(acc, key) => {
 
-						if (Object.keys(response['initial_states']).includes(key)) {
-							if (response['initial_states'][key] === 'OFF') acc[key] = -1;
-							else if (response['initial_states'][key] === 'ON') acc[key] = 1;
+						if (Object.keys(response['mutations']).includes(key)) {
+							if (response['mutations'][key] === 'OFF') acc[key] = -1;
+							else if (response['mutations'][key] === 'ON') acc[key] = 1;
 							else acc[key] = 0;
 
 						} else {
