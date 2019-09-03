@@ -51,18 +51,19 @@ class BufferedRange extends Component {
   		return <React.Fragment>
 			<label className="range" data-toggle="tooltip"
 					data-placement="top"
-					title={this.props.value + " %"}
+					title={(isNaN(this.props.value)) ? "" : this.props.value + " %"}
 			>
 				<input type="range" className="slider"
 					   min="0" max="100" step="1"
 					   id={this.props.id + "slider"}
 					   onChange={(e) => {this.handleChangeValue(e.target.value)}}
-					   value={this.props.value}
+					   value={(isNaN(this.props.value)) ? 50 : this.props.value}
+					   disabled={isNaN(this.props.value)}
 				/>
 			</label>
 			{ this.state.waiting ?
 				<span style={{width: "3rem"}}><LoadingIcon width={"1rem"}/></span> :
-				<span style={{width: "3rem"}} className="range-indicator">{this.props.value + "%"}</span>
+				<span style={{width: "3rem"}} className="range-indicator">{(isNaN(this.props.value)) ? "" : this.props.value + "%"}</span>
 			}
 		</React.Fragment>;
   	}

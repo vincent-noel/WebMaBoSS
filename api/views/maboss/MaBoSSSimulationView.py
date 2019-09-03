@@ -21,7 +21,7 @@ from os import remove
 from json import loads, dumps
 import ginsim
 import maboss
-
+from api.views.commons.parse import parseIstates,dumpIstates
 
 class MaBoSSSimulationView(HasModel):
 
@@ -94,8 +94,8 @@ class MaBoSSSimulationView(HasModel):
 			[key for key, value in loads(request.POST['outputVariables']).items() if value]
 		)
 
-		for var, istate in loads(request.POST['initialStates']).items():
-			maboss_model.network.set_istate(var, [1.0-float(istate), float(istate)])
+		for var, istate in parseIstates(request.POST['initialStates']).items():
+			maboss_model.network.set_istate(var, istate)
 
 		maboss_simulation.update_model(maboss_model)
 
@@ -106,8 +106,6 @@ class MaBoSSSimulationView(HasModel):
 		thread.start()
 
 		return Response({'simulation_id': maboss_simulation.id}, status=status.HTTP_200_OK)
-
-
 
 def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port):
 
@@ -177,36 +175,9 @@ class MaBossSettings(HasModel):
 		if settings['discrete_time'] in [0, 1]:
 			settings.update({'discrete_time': bool(settings['discrete_time'])})
 
-		# Here the problem is the variables with more than two states, who appear in the initial states as :
-		# (Var_1, Var_2, Var_3) : {(0, 0, 0): 1, (1, 0, 0): 0, (1, 1, 0): 0, (1, 1, 1): 0}
-		# The nice thing is that it shows the constraint that the state (0, 1, 1) is impossible. But I'm not sure
-		# how to show this constraint on the interface (Probably merging them as a single multi state variable,
-		# which they are. But for now, we just treat them as individual variables, ie. without the constraint.
-
-		fixed_initial_states = {}
-		for var, value in initial_states.items():
-			if isinstance(var, tuple):
-
-				t_values = {}
-				for i, subvar in enumerate(var):
-					t_values.update({subvar: {0: 0, 1: 0}})
-
-				for tuple_states, tuple_value in value.items():
-					for i_tuple, t_tuple in enumerate(tuple_states):
-						subvar = var[i_tuple]
-						t_value = t_values[subvar]
-						tt_value = t_value[t_tuple] + tuple_value
-						t_value.update({t_tuple: tt_value})
-						t_values.update({subvar: t_value})
-
-				fixed_initial_states.update(t_values)
-
-			else:
-				fixed_initial_states.update({var: value})
-
 		return Response({
 			'output_variables': output_variables,
-			'initial_states': fixed_initial_states,
+			'initial_states': dumpIstates(initial_states),
 			'mutations': mutations,
 			'settings': settings
 		})

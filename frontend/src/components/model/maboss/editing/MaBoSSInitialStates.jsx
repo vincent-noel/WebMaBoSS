@@ -15,7 +15,8 @@ class MaBoSSInitialStates extends React.Component {
 
 		this.state = {
 			initialStates: {},
-			updatingInitialStates: {}
+			updatingInitialStates: {},
+			rawInitialStates: {}
 		};
 
 		this.getInitialStatesCall = null;
@@ -28,7 +29,9 @@ class MaBoSSInitialStates extends React.Component {
 
 			const initial_states = Object.keys(response['initial_states']).reduce(
 				(acc, key) => {
-					acc[key] = response['initial_states'][key]['1'] * 100;
+
+					acc[key] = parseFloat(response['initial_states'][key]['1']) * 100;
+					// acc[key] = response['initial_states'][key]['1'] * 100;
 					return acc;
 				}, {}
 			);
@@ -39,7 +42,7 @@ class MaBoSSInitialStates extends React.Component {
 				}, {}
 			);
 
-			this.setState({initialStates: initial_states, updatingInitialStates: updatingInitialStates});
+			this.setState({initialStates: initial_states, updatingInitialStates: updatingInitialStates, rawInitialStates: response['initial_states']});
 		});
 	}
 
@@ -58,7 +61,16 @@ class MaBoSSInitialStates extends React.Component {
 
 		const initial_states_post = Object.keys(initial_states).reduce(
 			(acc, key) => {
-				acc[key] = initial_states[key]/100;
+				let new_value = this.state.initialStates[key]/100;
+				let old_value = parseFloat(this.state.rawInitialStates[key]['1']);
+				if (new_value !== old_value && !isNaN(old_value) && !isNaN(new_value)) {
+					acc[key] = {
+						"0": (1.0-this.state.initialStates[key]/100).toString(),
+						"1": (this.state.initialStates[key]/100).toString()
+					};
+				} else {
+					acc[key] = this.state.rawInitialStates[key];
+				}
 				return acc;
 			}, {}
 		);

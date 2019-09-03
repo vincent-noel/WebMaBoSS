@@ -42,6 +42,7 @@ class NewSimForm extends React.Component {
 
 			listNodes: [],
 			initialStates: {},
+			rawInitialStates: {},
 			outputVariables: {},
 			mutatedVariables: {},
 
@@ -139,10 +140,10 @@ class NewSimForm extends React.Component {
 
 			this.getSettingsCall = APICalls.MaBoSSCalls.getMaBoSSSimulationSettings(project_id, model_id)
 			this.getSettingsCall.promise.then(response => {
-
 				const initial_states = Object.keys(response['initial_states']).reduce(
 					(acc, key) => {
-						acc[key] = response['initial_states'][key]['1'] * 100;
+
+						acc[key] = parseFloat(response['initial_states'][key]['1']) * 100;
 						return acc;
 					}, {}
 				);
@@ -176,6 +177,7 @@ class NewSimForm extends React.Component {
 					{
 						outputVariables: output_variables,
 						initialStates: initial_states,
+						rawInitialStates: response['initial_states'],
 						listNodes: Object.keys(response['initial_states']),
 						mutatedVariables: mutated_variables,
 						settings: response['settings']
@@ -301,10 +303,18 @@ class NewSimForm extends React.Component {
 		this.setState({errors: errors});
 
 		if (errors.length === 0) {
-
 			const initial_states = Object.keys(this.state.initialStates).reduce(
 					(acc, key) => {
-						acc[key] = this.state.initialStates[key]/100;
+						let new_value = this.state.initialStates[key]/100;
+						let old_value = parseFloat(this.state.rawInitialStates[key]['1']);
+					    if (new_value !== old_value && !isNaN(old_value) && !isNaN(new_value)) {
+					        acc[key] = {
+					        	"0": (1.0-this.state.initialStates[key]/100).toString(),
+								"1": (this.state.initialStates[key]/100).toString()
+					        };
+                        } else {
+					        acc[key] = this.state.rawInitialStates[key];
+                        }
 						return acc;
 					}, {}
 				);
