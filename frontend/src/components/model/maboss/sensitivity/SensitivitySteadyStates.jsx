@@ -115,7 +115,7 @@ class SensitivitySteadyStates extends React.Component {
 				</React.Fragment>
 			);
 		} else if (this.props.analysisId !== null) {
-			return <LoadingIcon width="3rem" percent={this.props.analysisStatus}/>
+			return <LoadingIcon width="3rem" percent={this.props.analysisStatus*100}/>
 		} else {
 			return <div/>
 		}
