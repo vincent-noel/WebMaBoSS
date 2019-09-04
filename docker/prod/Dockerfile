@@ -6,7 +6,7 @@ WORKDIR /var/webmaboss
 
 RUN apt-get -qq update \
     && apt-get install -y python3 python3-pip curl software-properties-common nano git apt-transport-https \
-                          apache2 apache2-dev libmariadbclient-dev
+                          apache2 apache2-dev libmariadbclient-dev mariadb-client
 #                          libgl1-mesa-glx
 
 
@@ -47,7 +47,7 @@ RUN rm -fr node_modules/* yarn.lock \
 RUN rm -fr data/ && \
     mkdir -p data/media && \
     mkdir -p data/db && \
-    mkdir -p data/settings && \
+    mkdir -p data/settings
 #    rm -fr api/migrations/*.py
 
 # Removing old server, and creating it from scratch
@@ -72,5 +72,6 @@ EXPOSE 8000
 USER www-data
 
 # Running server
-ENTRYPOINT sleep 5 && /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.prod_settings && \
+ENTRYPOINT /var/webmaboss/wait_db.sh; \
+    /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.prod_settings; \
     /var/webmaboss/server/apachectl -D FOREGROUND
