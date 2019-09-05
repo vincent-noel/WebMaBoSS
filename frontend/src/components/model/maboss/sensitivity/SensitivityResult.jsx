@@ -28,6 +28,7 @@ class SensitivityResult extends React.Component {
 
 			listStates: null,
 			colorMap: null,
+			analysisStatus: false,
 		};
 
 		this.getFixedPointsCall = null;
@@ -179,7 +180,7 @@ class SensitivityResult extends React.Component {
 							<SensitivitySteadyStates
 								project={this.props.project}
 								analysisId={this.props.analysisId}
-								analysisStatus={this.props.analysisStatus}
+								analysisStatus={this.state.analysisStatus}
 								steadyStates={this.state.steadyStates}
 							/>
 						</TabPane>

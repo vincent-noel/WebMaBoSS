@@ -29,7 +29,6 @@ class Sensitivity extends React.Component {
 			},
 
 			analysisId: null,
-			analysisStatus: 0,
 
 			listOfSensitivityAnalysis: null,
 
@@ -85,10 +84,6 @@ class Sensitivity extends React.Component {
 		});
 	}
 
-	stopCheckingStatus() {
-		clearInterval(this.statusChecker);
-	}
-
 	startNew(project_id, analysis_id) {
 		this.setState(prevState => ({analysisId: analysis_id, newForm: {...prevState.newForm, show: false}}));
 	}
@@ -142,7 +137,6 @@ class Sensitivity extends React.Component {
 								<SensitivityResult
 									project={projectContext.project}
 									analysisId={this.state.analysisId}
-									analysisStatus={this.state.analysisStatus}
 									steadyStates={this.state.steadyStates}
 									getSteadyStates={this.getFixedPoints}
 								/>
