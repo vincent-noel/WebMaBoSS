@@ -8,7 +8,7 @@ class TableSwitches extends React.Component {
 
 	render() {
 		if (Object.keys(this.props.dict).length > 0) {
-			return <div className="container" style={{overflow: 'auto', height: '20rem'}}>
+			return <div className="container" style={{overflow: 'auto', height: (this.props.height !== undefined) ? this.props.height : "20rem"}}>
 				<table className="table table-striped" style={{width: '100%'}}>
 					<tbody>
 					{
