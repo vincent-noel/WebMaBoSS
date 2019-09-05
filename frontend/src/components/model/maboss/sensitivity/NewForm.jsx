@@ -248,7 +248,6 @@ class NewForm extends React.Component {
 				server_port = this.state.listServers[this.state.selectedServer].port;
 			}
 
-
 			this.createCall = APICalls.MaBoSSCalls.createSensitivityAnalysis(this.props.project, this.props.modelId, {
 				name: this.state.name,
 				singleMutations: {
@@ -348,9 +347,9 @@ class NewForm extends React.Component {
 											<span className="name">OFF mutations</span>
 											<span className="value">
 												<Switch
-													checked={this.state.singleMutations.on}
-													updateCallback={this.toggleSingleMutationsOn}
-													id={"single_mutations_on"}
+													checked={this.state.singleMutations.off}
+													updateCallback={this.toggleSingleMutationsOff}
+													id={"single_mutations_off"}
 												/>
 											</span>
 										</li>
@@ -358,9 +357,9 @@ class NewForm extends React.Component {
 											<span className="name">ON mutations</span>
 											<span className="value">
 												<Switch
-													checked={this.state.singleMutations.off}
-													updateCallback={this.toggleSingleMutationsOff}
-													id={"single_mutations_off"}
+													checked={this.state.singleMutations.on}
+													updateCallback={this.toggleSingleMutationsOn}
+													id={"single_mutations_on"}
 												/>
 											</span>
 										</li>
@@ -380,9 +379,9 @@ class NewForm extends React.Component {
 											<span className="name">OFF mutations</span>
 											<span className="value">
 												<Switch
-													checked={this.state.doubleMutations.on}
-													updateCallback={this.toggleDoubleMutationsOn}
-													id={"double_mutations_on"}
+													checked={this.state.doubleMutations.off}
+													updateCallback={this.toggleDoubleMutationsOff}
+													id={"double_mutations_off"}
 												/>
 											</span>
 										</li>
@@ -390,9 +389,9 @@ class NewForm extends React.Component {
 											<span className="name">ON mutations</span>
 											<span className="value">
 												<Switch
-													checked={this.state.doubleMutations.off}
-													updateCallback={this.toggleDoubleMutationsOff}
-													id={"double_mutations_off"}
+													checked={this.state.doubleMutations.on}
+													updateCallback={this.toggleDoubleMutationsOn}
+													id={"double_mutations_on"}
 												/>
 											</span>
 										</li>
