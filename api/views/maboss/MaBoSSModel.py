@@ -289,6 +289,37 @@ class MaBoSSInitialStates(HasModel):
 		return Response(status=HTTP_200_OK)
 
 
+
+class MaBoSSOutputs(HasModel):
+
+	def get(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_model = self.getMaBoSSModel()
+		outputs = {label: not node.is_internal for label, node in maboss_model.network.items()}
+
+		return Response({
+			'outputs': outputs,
+		})
+
+
+	def put(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		maboss_model = self.getMaBoSSModel()
+
+		for node, is_output in json.loads(request.POST['outputs']).items():
+			maboss_model.network[node].is_internal = not is_output
+
+		self.saveMaBoSSModel(maboss_model)
+
+		return Response(status=HTTP_200_OK)
+
+
+
+
 class MaBoSSModelSettings(HasModel):
 
 	def get(self, request, project_id, model_id):

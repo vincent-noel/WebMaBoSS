@@ -267,6 +267,36 @@ class MaBoSSCalls {
 		);
 	}
 
+	static getMaBoSSModelOutputs(project_id, model_id) {
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/outputs",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
+
+	static setMaBoSSModelOutputs(project_id, model_id, outputs) {
+
+		const body = new FormData();
+		body.append('outputs', JSON.stringify(outputs));
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/outputs",
+				{
+					method: "put",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		);
+	}
+
 	static getMaBoSSModelSettings(project_id, model_id) {
 		return makeCancelable(
 			fetch(

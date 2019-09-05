@@ -16,7 +16,7 @@ from api.views.maboss.MaBoSSResultsView import MaBoSSResultsFixedPoints, MaBoSSR
 from api.views.maboss.MaBoSSModel import (
 	MaBoSSSpeciesFormulas, MaBoSSSpeciesFormula, MaBoSSCheckFormula,
 	MaBoSSParameters, MaBoSSParameter, MaBoSSCheckParameter,
-	MaBoSSInitialStates, MaBoSSModelSettings
+	MaBoSSInitialStates, MaBoSSModelSettings, MaBoSSOutputs
 )
 from api.views.AuthView import TestAuthView, LogoutViewEx, UserEmailView
 from api.views.InstallStatus import InstallStatus
@@ -74,6 +74,7 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/check_parameter/<str:name>', MaBoSSCheckParameter.as_view()),
 
 	path('api/logical_model/<int:project_id>/<int:model_id>/initial_states', MaBoSSInitialStates.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/outputs', MaBoSSOutputs.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/settings', MaBoSSModelSettings.as_view()),
 
 	path('api/maboss/<int:project_id>/<int:simulation_id>/', MaBoSSSimulationRemove.as_view()),
