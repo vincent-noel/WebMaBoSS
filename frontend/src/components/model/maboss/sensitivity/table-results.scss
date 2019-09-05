@@ -11,6 +11,8 @@
    div.list_pages {
      display: flex !important;
      justify-content: center;
+     width: 100%;
+     flex-flow: wrap;
    }
 
    span.item_page {
