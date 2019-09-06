@@ -123,11 +123,11 @@ class MaBossResult extends React.Component {
 		if (this.createNewModelCall !== null) {
 			this.createNewModelCall.cancel();
 		}
-		if (this.getStatusCall !== null) this.getStatusCall.cancel();
-		if (this.getFixedPointsCall !== null) this.getFixedPointsCall.cancel();
-		if (this.getNodesProbtrajCall !== null) this.getNodesProbtrajCall.cancel();
-		if (this.getStateProbtrajCall !== null) this.getStateProbtrajCall.cancel();
-		if (this.getPCACall !== null) this.getPCACall.cancel();
+		if (this.getStatusCall !== null) {this.getStatusCall.cancel();}
+		if (this.getFixedPointsCall !== null) {this.getFixedPointsCall.cancel();}
+		if (this.getNodesProbtrajCall !== null) {this.getNodesProbtrajCall.cancel();}
+		if (this.getStateProbtrajCall !== null) {this.getStateProbtrajCall.cancel();}
+		if (this.getPCACall !== null) {this.getPCACall.cancel();}
 
 	}
 
