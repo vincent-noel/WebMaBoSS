@@ -114,6 +114,12 @@ class SensitivityResult extends React.Component {
 		return true;
 	}
 
+	componentWillUnmount() {
+		if (this.getStatus !== null) {
+			this.getStatus.cancel();
+		}
+	}
+
 	filterStates(i_state, operator, value) {
 
 
