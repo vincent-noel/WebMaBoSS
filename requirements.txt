@@ -9,3 +9,5 @@ maboss
 mysqlclient
 PyYAML
 scikit-learn
+networkx
+pydot
