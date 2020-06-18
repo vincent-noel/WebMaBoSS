@@ -10,6 +10,19 @@ class TableSwitches extends React.Component {
 		if (Object.keys(this.props.dict).length > 0) {
 			return <div className="container" style={{overflow: 'auto', height: (this.props.height !== undefined) ? this.props.height : "20rem"}}>
 				<table className="table table-striped" style={{width: '100%'}}>
+					{(this.props.allSwitch !== undefined) ?
+						<thead>
+							<tr key={"all"}>
+								<th ></th>
+								<th className="d-flex justify-content-end">
+									<Switch
+										id={"in-all"}
+										updateCallback={(value) => {this.props.allSwitchCallback(value);}}
+										checked={this.props.allSwitch}
+									/>
+								</th>
+							</tr>
+						</thead> : null}
 					<tbody>
 					{
 						Object.keys(this.props.dict).map((key, index) => {

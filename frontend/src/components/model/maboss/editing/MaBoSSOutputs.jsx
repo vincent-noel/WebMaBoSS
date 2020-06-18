@@ -1,11 +1,10 @@
 import React from "react";
 
 import APICalls from "../../../api/apiCalls";
-import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 
 import "./table-initial-states.scss";
-import {Button, ButtonToolbar} from "reactstrap";
 import TableSwitches from "../../../commons/TableSwitches";
+import Switch from "../../../commons/buttons/Switch";
 
 
 class MaBoSSOutputs extends React.Component {
@@ -14,10 +13,12 @@ class MaBoSSOutputs extends React.Component {
 		super(props);
 
 		this.state = {
+			allOutputVariables: false,
 			outputVariables: {},
 		};
 
 		this.updateOutputVariable = this.updateOutputVariable.bind(this);
+		this.updateAllOutputVariables = this.updateAllOutputVariables.bind(this);
 
 		this.getOutputVariablesCall = null;
 		this.setOutputVariablesCall = null;
@@ -30,12 +31,32 @@ class MaBoSSOutputs extends React.Component {
 		});
 	}
 
+	updateAllOutputVariables(value) {
+		let outputs = Object.keys(this.state.outputVariables).reduce(
+			(acc, key) => {
+				acc[key] = value;
+				return acc;
+			}, {}
+		);
+		this.setOutputVariablesCall = APICalls.MaBoSSCalls.setMaBoSSModelOutputs(this.props.project, this.props.modelId, outputs);
+		this.setOutputVariablesCall.promise.then(response => {
+			if (response.status === 200) {
+				console.log("Updating variables");
+				console.log(outputs);
+				this.setState({outputVariables: outputs});
+			}
+		})
+	}
+
 	updateOutputVariable(name, value) {
 		let outputs = this.state.outputVariables;
 		outputs[name] = value;
 		this.setOutputVariablesCall = APICalls.MaBoSSCalls.setMaBoSSModelOutputs(this.props.project, this.props.modelId, outputs);
 		this.setOutputVariablesCall.promise.then(response => {
+
 			if (response.status === 200) {
+				console.log("Updating one variable")
+				console.log(outputs)
 				this.setState({outputVariables: outputs});
 			}
 		})
@@ -69,12 +90,30 @@ class MaBoSSOutputs extends React.Component {
 
 		return (
 			<React.Fragment>
+				{/*<div className="container">*/}
+				{/*	<table className="table" style={{width: '100%'}}>*/}
+				{/*		<tbody>*/}
+				{/*			<tr key={"all"}>*/}
+				{/*				<td >All</td>*/}
+				{/*				<td className="d-flex justify-content-end">*/}
+				{/*					<Switch*/}
+				{/*						id={"in-all"}*/}
+				{/*						updateCallback={(value) => {this.updateAllOutputVariables(value)}}*/}
+				{/*						updateAllOutputVariableschecked={this.state.allOutputVariables}*/}
+				{/*					/>*/}
+				{/*				</td>*/}
+				{/*			</tr>*/}
+				{/*		</tbody>*/}
+				{/*	</table>*/}
+				{/*</div>*/}
 				<TableSwitches
 					id={"in"}
 					type='switch'
 					dict={this.state.outputVariables}
 					updateCallback={this.updateOutputVariable}
 					height={"100%"}
+					allSwitch={this.state.allOutputVariables}
+					allSwitchCallback={this.updateAllOutputVariables}
 				/>
 			</React.Fragment>
 		);
