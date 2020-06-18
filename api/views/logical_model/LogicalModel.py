@@ -154,9 +154,9 @@ class LogicalModelGraph(HasModel):
 		HasModel.load(self, request, project_id, model_id)
 
 		ginsim_model = self.getGINSimModel()
-		fig = ginsim.get_image(ginsim_model)
+		fig = ginsim._get_image(ginsim_model)
 
-		return HttpResponse(fig, content_type="image/png")
+		return HttpResponse(fig, content_type="image/svg+xml")
 
 
 	def post(self, request, project_id, model_id):
@@ -165,9 +165,9 @@ class LogicalModelGraph(HasModel):
 
 		steady_state = loads(request.data['steady_state'])
 		ginsim_model = self.getGINSimModel()
-		fig = ginsim.get_image(ginsim_model, steady_state)
+		fig = ginsim._get_image(ginsim_model, steady_state)
 
-		return HttpResponse(fig, content_type="image/png")
+		return HttpResponse(fig, content_type="image/svg+xml")
 
 
 class LogicalModelGraphRaw(HasModel):
