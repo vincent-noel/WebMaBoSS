@@ -3,7 +3,7 @@ version: '3.3'
 services:
 
   webmaboss-db:
-    image: mariadb
+    image: mariadb:10.5.4
     container_name: webmaboss-db
     restart: always
     volumes:
@@ -45,8 +45,7 @@ services:
     container_name: webmaboss-dev
     ports:
       - "8000:8000"
-      - "8889:8888"
-    user: user
+
     volumes:
       - .:/var/webmaboss
     environment:
