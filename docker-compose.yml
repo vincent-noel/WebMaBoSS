@@ -1,5 +1,5 @@
 #docker-compose.yml
-version: '3.3'
+version: '3.4'
 services:
 
   webmaboss-db:
@@ -17,7 +17,8 @@ services:
   webmaboss:
     build:
       context: ./
-      dockerfile: docker/prod/Dockerfile
+      dockerfile: docker/Dockerfile
+      target: webmaboss
 
     image: webmaboss
     container_name: webmaboss
@@ -39,7 +40,8 @@ services:
   webmaboss-dev:
     build:
       context: ./
-      dockerfile: docker/dev/Dockerfile
+      dockerfile: docker/Dockerfile
+      target: webmaboss-dev
 
     image: webmaboss-dev
     container_name: webmaboss-dev
@@ -63,14 +65,15 @@ services:
   webmaboss-test:
     build:
       context: ./
-      dockerfile: docker/tests/Dockerfile
+      dockerfile: docker/Dockerfile
+      target: webmaboss-test
 
     image: webmaboss-test:latest
     container_name: webmaboss-test
     ports:
       - "8000:8000"
       - "8888:8888"
-    user: user
+    user: www-data
     volumes:
       - data:/var/webmaboss/data
     environment:
