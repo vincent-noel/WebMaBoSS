@@ -62,6 +62,18 @@ services:
 
     restart: unless-stopped
 
+  webmaboss-test-db:
+      image: mariadb:10.5.4
+      container_name: webmaboss-test-db
+      restart: always
+      volumes:
+        - test-db:/var/lib/mysql
+      environment:
+        - MYSQL_RANDOM_ROOT_PASSWORD=yes
+        - MYSQL_DATABASE=webmaboss
+        - MYSQL_USER=webmaboss
+        - MYSQL_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
+    
   webmaboss-test:
     build:
       context: ./
@@ -72,19 +84,18 @@ services:
     container_name: webmaboss-test
     ports:
       - "8000:8000"
-      - "8888:8888"
     user: www-data
     volumes:
-      - data:/var/webmaboss/data
+      - test-data:/var/webmaboss/data
     environment:
       - DB_NAME=webmaboss
       - DB_USER=webmaboss
       - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
-      - DB_HOST=webmaboss-db
+      - DB_HOST=webmaboss-test-db
       - DB_PORT=3306
 
     depends_on:
-      - webmaboss-db
+      - webmaboss-test-db
 
     restart: unless-stopped
 
@@ -92,3 +103,5 @@ services:
 volumes:
   db:
   data:
+  test-data:
+  test-db:

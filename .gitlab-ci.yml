@@ -43,7 +43,7 @@ test-api:
     - docker exec -u www-data -t webmaboss-test /bin/bash -c "sleep 30"
     - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.test_settings
     - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_admin.sh  --settings=settings.test_settings
-    - docker exec -u www-data -t webmaboss-test python3 manage.py test api -v 2 --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test python3 manage.py test api -v 2 --settings=settings.test_settings --keepdb
 
 test-frontend:
   stage: test
@@ -54,4 +54,4 @@ test-frontend:
     - docker exec -u www-data -t webmaboss-test /bin/bash -c "sleep 30"
     - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.test_settings
     - docker exec -u www-data -t webmaboss-test /bin/bash /var/webmaboss/create_default_admin.sh  --settings=settings.test_settings
-    - docker exec -u www-data -t webmaboss-test python3 manage.py test frontend -v 2 --settings=settings.test_settings
+    - docker exec -u www-data -t webmaboss-test python3 manage.py test frontend -v 2 --settings=settings.test_settings --keepdb

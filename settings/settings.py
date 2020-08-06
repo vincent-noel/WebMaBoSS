@@ -101,7 +101,8 @@ if settings is not None and 'admin' in settings.keys():
             'USER': os.environ.get('DB_USER'),
             'PASSWORD': os.environ.get('DB_PASSWORD'),
             'HOST': os.environ.get('DB_HOST'),
-            'PORT': os.environ.get('DB_PORT')
+            'PORT': os.environ.get('DB_PORT'),
+            'TEST': {'NAME': os.environ.get('DB_NAME')}
         }
     }
     ACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -247,7 +248,8 @@ else:
             'USER': os.environ.get('DB_USER'),
             'PASSWORD': os.environ.get('DB_PASSWORD'),
             'HOST': os.environ.get('DB_HOST'),
-            'PORT': os.environ.get('DB_PORT')
+            'PORT': os.environ.get('DB_PORT'),
+            'TEST': {'NAME': os.environ.get('DB_NAME')}
         }
     }
 
