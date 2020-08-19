@@ -47,7 +47,7 @@ class ModelDropdown extends React.Component {
 
 		} else {
 			const style = {
-				width: "12rem"
+				width: "12rem", overflowX: "hidden", textOverflow: "ellipsis"
 			};
 			return (
 				<div className="dropdown" align="center">
