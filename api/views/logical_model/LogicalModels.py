@@ -6,6 +6,10 @@ from api.models import LogicalModel
 from api.serializers import LogicalModelSerializer
 from api.views.HasProject import HasProject
 
+from urllib.request import urlretrieve
+import os, tempfile
+from django.core.files import File
+
 
 class LogicalModels(HasProject):
 
@@ -40,8 +44,20 @@ class LogicalModels(HasProject):
 	def post(self, request, project_id):
 
 		HasProject.load(self, request, project_id)
-
-		if 'file2' in request.data.keys():
+		
+		if 'url' in request.data.keys():
+			sbml_file = tempfile.mkstemp(suffix=".sbml")
+			os.close(sbml_file[0])
+			urlretrieve(request.data['url'], sbml_file[1])
+			LogicalModel(
+				project=self.project, 
+				name=request.data['name'],
+				file=File(open(sbml_file[1], 'rb')),
+				format=LogicalModel.SBML
+			).save()
+			os.remove(sbml_file[1])
+			
+		elif 'file2' in request.data.keys():
 			LogicalModel(
 				project=self.project,
 				name=request.data['name'],

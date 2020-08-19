@@ -15,15 +15,20 @@ class ModelsCalls {
 		);
 	}
 
-	static importModel(project_id, file, name, file2) {
+	static importModel(project_id, file, name, file2, url) {
 
 		const formData = new FormData();
-		formData.append('file', file);
 		formData.append('name', name);
-		if (file2 !== undefined && file2 !== null) {
-			formData.append('file2', file2);
+		
+		if (url !== null) {
+			formData.append('url', url);		
+		} else {
+			formData.append('file', file);
+			if (file2 !== undefined && file2 !== null) {
+				formData.append('file2', file2);
+			}
 		}
-
+		
 		return makeCancelable(
 			fetch(
 				"/api/logical_models/" + project_id + "/",
