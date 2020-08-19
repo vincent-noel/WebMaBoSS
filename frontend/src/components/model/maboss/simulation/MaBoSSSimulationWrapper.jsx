@@ -1,12 +1,11 @@
 import React from "react";
-import Loadable from "react-loadable";
+import loadable from "@loadable/component";
 import LoadingPage from "../../../commons/loaders/LoadingPage";
 
 
-const MaBoSSSimulationWrapper = Loadable({
-	loader: () => import("./MaBoss"),
-	loading: () => <LoadingPage width="5rem"/>
-});
-
+const MaBoSSSimulationWrapper = loadable(
+	() => import("./MaBoss"), 
+	{ fallback: <LoadingPage width="5rem"/> }
+);
 
 export {MaBoSSSimulationWrapper};

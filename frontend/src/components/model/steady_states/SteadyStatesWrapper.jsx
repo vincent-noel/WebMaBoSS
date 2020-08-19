@@ -1,12 +1,12 @@
 import React from "react";
-import Loadable from "react-loadable";
+import loadable from "@loadable/component";
 import LoadingPage from "../../commons/loaders/LoadingPage";
 
 
-const SteadyStatesWrapper = Loadable({
-	loader: () => import("./ModelSteadyStates"),
-	loading: () => <LoadingPage width="5rem"/>
-});
+const SteadyStatesWrapper = loadable(
+	() => import("./ModelSteadyStates"),
+	{fallback: <LoadingPage width="5rem"/>}
+);
 
 
 export {SteadyStatesWrapper};
