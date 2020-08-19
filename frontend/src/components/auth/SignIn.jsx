@@ -81,7 +81,7 @@ class SignIn extends React.Component {
 		this.setState({password: e.target.value});
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		if (isConnected()) {
 			history.push("/");
 		}

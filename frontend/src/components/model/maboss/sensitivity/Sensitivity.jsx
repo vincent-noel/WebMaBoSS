@@ -92,7 +92,7 @@ class Sensitivity extends React.Component {
 		this.setState(prevState => ({analysisId: analysis_id, oldForm: {...prevState.oldForm, show: false}}));
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 		if (this.getAnalysesCall !== null) { this.getAnalysesCall.cancel(); }
 	}
 

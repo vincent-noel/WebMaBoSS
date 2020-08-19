@@ -27,7 +27,7 @@ class Page extends React.Component {
 	}
 
 
-	componentWillMount() {
+	componentDidMount() {
 		if (!isConnected() && this.props.path !== "/register/") {
 			history.push("/login/");
 		}

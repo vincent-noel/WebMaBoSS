@@ -70,7 +70,7 @@ class PCAChart extends React.Component {
 	   	this.chartInstance.update();
 	}
 
-	componentWillMount() {
+	componentDidMount() {
 
 		Chart.pluginService.register({
 			id: 'pcaArrows',
