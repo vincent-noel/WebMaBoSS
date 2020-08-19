@@ -80,6 +80,35 @@ class MaBoSSSimulationView(HasModel):
 			maboss_simulation.save()
 
 			maboss_model = maboss.load(bnd_path, cfg_path)
+	
+		elif self.model.format == LogicalModel.SBML:
+			
+			maboss_model = self.getMaBoSSModel()
+			
+			tmp_bnd_path = join(settings.TMP_ROOT, splitext(basename(self.model.file.path))[0] + ".bnd")
+			bnd_file = open(tmp_bnd_path, 'w')
+			maboss_model.print_bnd(out=bnd_file)
+			bnd_file.close()
+
+			tmp_cfg_path = join(settings.TMP_ROOT, splitext(basename(self.model.file.path))[0] + ".cfg")
+			cfg_file = open(tmp_cfg_path, 'w')
+			maboss_model.print_cfg(out=cfg_file)
+			cfg_file.close()
+
+			maboss_simulation = MaBoSSSimulation(
+				project=self.project,
+				model=self.model,
+				name=request.POST['name'],
+				bnd_file=File(open(tmp_bnd_path, 'rb')),
+				cfg_file=File(open(tmp_cfg_path, 'rb')),
+				status=MaBoSSSimulation.BUSY
+			)
+			maboss_simulation.save()
+
+			remove(tmp_bnd_path)
+			remove(tmp_cfg_path)
+			
+			
 		else:
 			return HttpResponse(status=500)
 

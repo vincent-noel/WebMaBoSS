@@ -43,8 +43,12 @@ class HasModel(HasProject):
 			ginsim_model = ginsim.load(self.model.file.path)
 			return ginsim.to_maboss(ginsim_model)
 
+		elif self.model.format == LogicalModel.SBML:
+			biolqm_model = biolqm.load(self.model.file.path)
+			return biolqm.to_maboss(biolqm_model)
+
 		else:
-			raise MethodNotAllowed
+			raise MethodNotAllowed()
 
 	def saveMaBoSSModel(self, maboss_sim):
 
@@ -59,22 +63,19 @@ class HasModel(HasProject):
 				join(settings.MEDIA_ROOT, self.model.bnd_file.path),
 				join(settings.MEDIA_ROOT, self.model.cfg_file.path)
 			)
-
-			path = tempfile.mkdtemp()
-			tmp_bnet = tempfile.mkstemp(dir=path, suffix='.bnet')[1]
-
-			with open(tmp_bnet, "w") as bnet_file:
-				for node, rule in maboss_sim.get_logical_rules().items():
-					bnet_file.write("%s, %s\n" % (node, rule))
-
-			return biolqm.load(tmp_bnet)
-
+			biolqm_model = maboss.to_biolqm(maboss_model)
+			return biolqm_model
+			
 		elif self.model.format == LogicalModel.ZGINML:
 			ginsim_model = ginsim.load(join(settings.MEDIA_ROOT, self.model.file.path))
 			return ginsim.to_biolqm(ginsim_model)
 
+		elif self.model.format == LogicalModel.SBML:
+			biolqm_model = biolqm.load(join(settings.MEDIA_ROOT, self.model.file.path))
+			return biolqm_model
+
 		else:
-			raise MethodNotAllowed
+			raise MethodNotAllowed()
 
 	def getGINSimModel(self):
 
@@ -86,10 +87,17 @@ class HasModel(HasProject):
 			ginsim_model = biolqm.to_ginsim(biolqm_model)
 			ginsim.service("layout").runLayout(2, ginsim_model)
 			return ginsim_model
-
+			
+		elif self.model.format == LogicalModel.SBML:
+			biolqm_model = biolqm.load(join(settings.MEDIA_ROOT, self.model.file.path))
+			ginsim_model = biolqm.to_ginsim(biolqm_model)
+			ginsim.service("layout").runLayout(2, ginsim_model)
+			return ginsim_model
+			
 		else:
-			raise MethodNotAllowed
+			raise MethodNowAllowed()
 
+		
 	def getSBMLModelFile(self):
 
 		if self.model.format == LogicalModel.ZGINML:
@@ -109,6 +117,12 @@ class HasModel(HasProject):
 
 			biolqm.save(ginsim_model, tmp_sbml, "sbml")
 			return tmp_sbml
+			
+		elif self.model.format == LogicalModel.SBML:
+			return join(settings.MEDIA_ROOT, self.model.file.path)
+
+		else:
+			raise MethodNotAllowed()
 
 	def getZGINMLModelFile(self):
 
