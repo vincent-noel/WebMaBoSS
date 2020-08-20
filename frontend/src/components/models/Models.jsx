@@ -1,5 +1,5 @@
 import React from "react";
-import {Button} from "reactstrap";
+import {Button, ButtonToolbar} from "reactstrap";
 import FullPage from "../FullPage";
 import LogicalModels from "./LogicalModels";
 import TableModels from "./TableModels";
@@ -7,6 +7,7 @@ import ModelForm from "./ModelForm";
 import ExportModelForm from "./ExportModelForm";
 import {ProjectContext} from "../context";
 import TagForm from "./TagForm";
+import ImportModelFromCC from "./ImportModelFromCC";
 
 
 class Models extends React.Component {
@@ -20,6 +21,8 @@ class Models extends React.Component {
 		this.hideExportModelForm = this.hideExportModelForm.bind(this);
 		this.showTagModelForm = this.showTagModelForm.bind(this);
 		this.hideTagModelForm = this.hideTagModelForm.bind(this);
+		this.showModelImport = this.showModelImport.bind(this);
+		this.hideModelImport = this.hideModelImport.bind(this);
 
 		this.state = {
 			showModelForm: false,
@@ -29,6 +32,7 @@ class Models extends React.Component {
 			tagExportModelForm: null,
 			showTagModelForm: false,
 			idTagModelForm: null,
+			showModelImport: false
 		}
 	}
 
@@ -42,6 +46,18 @@ class Models extends React.Component {
 	hideModelForm() {
 		this.setState({
 			showModelForm: false
+		})
+	}
+	
+	showModelImport() {
+		this.setState({
+			showModelImport: true,
+		})
+	}
+
+	hideModelImport() {
+		this.setState({
+			showModelImport: false
 		})
 	}
 
@@ -86,9 +102,10 @@ class Models extends React.Component {
 									download={this.showExportModelForm}
 									tag={this.showTagModelForm}
 								/>
-
-								<Button type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
-
+								<ButtonToolbar className="justify-content-start">
+									<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
+									<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelImport(null)}}>Import model</Button>
+								</ButtonToolbar>
 								<ModelForm
 									project={projectContext.project}
 									updateParent={updateParent}
@@ -112,6 +129,13 @@ class Models extends React.Component {
 									show={this.showTagModelForm}
 									hide={this.hideTagModelForm}
 									showExport={this.showExportModelForm}
+								/>
+								<ImportModelFromCC
+									project={projectContext.project}
+									updateParent={updateParent}
+									status={this.state.showModelImport}
+									show={this.showModelImport}
+									hide={this.hideModelImport}
 								/>
 							</React.Fragment>
 						}
