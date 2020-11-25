@@ -129,12 +129,12 @@ RUN rm -fr server/; python3 manage.py runmodwsgi --setup-only \
 RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations && chown www-data:www-data .
 
 RUN rm -fr /var/webmaboss/static/bootstrap /var/webmaboss/static/jquery && \
-    ln -s /var/webmaboss/node_modules/bootstrap/ /var/webmaboss/static && \
-    ln -s /var/webmaboss/node_modules/jquery/ /var/webmaboss/static
+    cp -r /var/webmaboss/node_modules/bootstrap/ /var/webmaboss/static && \
+    cp -r /var/webmaboss/node_modules/jquery/ /var/webmaboss/static
 
 # -------------------------------------------------------------------------------------------------
 # Cleanup    
-RUN rm -rf /var/lib/apt/lists/ * \
+RUN rm -rf /var/lib/apt/lists/* \
     && rm -rf /var/webmaboss/node_modules/* yarn.lock
 
 
