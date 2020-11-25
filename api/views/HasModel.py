@@ -63,7 +63,7 @@ class HasModel(HasProject):
 				join(settings.MEDIA_ROOT, self.model.bnd_file.path),
 				join(settings.MEDIA_ROOT, self.model.cfg_file.path)
 			)
-			biolqm_model = maboss.to_biolqm(maboss_model)
+			biolqm_model = maboss.to_biolqm(maboss_sim)
 			return biolqm_model
 			
 		elif self.model.format == LogicalModel.ZGINML:
