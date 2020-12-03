@@ -20,7 +20,7 @@ class ModelsCalls {
 		const formData = new FormData();
 		formData.append('name', name);
 		
-		if (url !== null) {
+		if (url !== undefined) {
 			formData.append('url', url);		
 		} else {
 			formData.append('file', file);
