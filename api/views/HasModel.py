@@ -90,6 +90,8 @@ class HasModel(HasProject):
 			
 		elif self.model.format == LogicalModel.SBML:
 			biolqm_model = biolqm.load(join(settings.MEDIA_ROOT, self.model.file.path))
+			for component in biolqm_model.getComponents():
+				component.setNodeID(component.getName().replace("/", "_"))
 			ginsim_model = biolqm.to_ginsim(biolqm_model)
 			ginsim.service("layout").runLayout(2, ginsim_model)
 			return ginsim_model
