@@ -1,6 +1,5 @@
 import React, {Component} from "react";
 import PropTypes from "prop-types";
-import key from "weak-key";
 import ProjectEntry from "./ProjectEntry";
 
 

@@ -33,7 +33,7 @@ RUN conda config --set auto_update_conda False \
 ## -----------------------------------------------------------------------------------------------
 ## NodeJS & Yarn install
 ##
-RUN curl -sL https://deb.nodesource.com/setup_12.x | bash - \
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
     && apt-get install -y --no-install-recommends nodejs \
     && apt clean -y \
     && npm install -g yarn
