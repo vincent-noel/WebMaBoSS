@@ -1,11 +1,13 @@
 const CompressionPlugin = require("compression-webpack-plugin");
 const TerserPlugin = require("terser-webpack-plugin");
+const path = require('path');
 
 module.exports = {
   module: {
 	rules: [
 	  {
 		test: /\.jsx?$/,
+		include: path.resolve(__dirname, 'frontend/src'),
 		exclude: /node_modules/,
 		resolve: {
 			extensions: ['.js', '.jsx'],
@@ -15,12 +17,15 @@ module.exports = {
 		}
 	  }, {
         test: /\.css$/,
+		include: path.resolve(__dirname, 'frontend/src'),
         use: [ 'style-loader', 'css-loader' ]
       }, {
         test: /\.(eot|ttf|woff|woff2)$/,
+		include: path.resolve(__dirname, 'frontend/src'),
         use:[{loader: 'file-loader?name=public/fonts/[name].[ext]'}]
 	  }, {
 		test: /\.scss$/,
+		include: path.resolve(__dirname, 'frontend/src'),
 		use: [
 			"style-loader", // creates style nodes from JS strings
 			"css-loader", // translates CSS into CommonJS
@@ -29,6 +34,7 @@ module.exports = {
 	  }
 	  , {
 		test: /\.(gif|png|jpe?g|svg|ico)$/i,
+		include: path.resolve(__dirname, 'frontend/src'),
   		use: [{
 			loader: 'file-loader',
 			options: {
@@ -51,11 +57,13 @@ module.exports = {
 		test: /\.js/
 	})
   ],
-  devtool: 'source-map',
+//   devtool: 'source-map',
   entry: './frontend/src/index.js',
   output: {
-	publicPath: "./frontend/static/js/",
+	path: path.resolve(__dirname, "frontend/static/js"),
+	publicPath: "frontend/static/js/",
 	filename: 'index.js',
 	// chunkFilename: '[name].js'
-  }
+  },
+  stats: 'verbose',
 };

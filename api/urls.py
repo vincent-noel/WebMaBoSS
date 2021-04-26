@@ -21,6 +21,8 @@ from api.views.maboss.MaBoSSModel import (
 from api.views.AuthView import TestAuthView, LogoutViewEx, UserEmailView
 from api.views.InstallStatus import InstallStatus
 
+from api.views.CCApi import CCApi
+from api.views.BioModelsAPI import BioModelsAPI
 from rest_auth.views import LoginView, PasswordChangeView
 from rest_auth.registration.views import RegisterView, VerifyEmailView
 
@@ -95,6 +97,9 @@ urlpatterns = [
 	path('api/maboss/servers/', MaBoSSServerView.as_view()),
 	path('api/maboss/servers/<int:server_id>', MaBoSSServerView.as_view()),
 	path('api/maboss/check_server/<int:server_id>', CheckServerView.as_view()),
+
+	path('api/ccapi/all', CCApi.as_view()),
+	path('api/biomodels/all', BioModelsAPI.as_view()),
 
 	path('api/install_status', InstallStatus.as_view()),
 ]

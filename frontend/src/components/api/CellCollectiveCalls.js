@@ -3,14 +3,45 @@ import FileSaver from "file-saver";
 
 class CellCollectiveCalls {
 
+	
+	static getCellCollectiveCount() {
+		
+		return makeCancelable(
+			fetch(
+				"https://research.cellcollective.org/_api/model/cards/count/research?modelTypes=boolean",
+				{
+					method: "get",
+				}
+			).then(response => response.json())
+		);
+	}
 
-	static getCellCollectiveList(from_model, to_model) {
+	static getCellCollectiveList() {
 
 		return makeCancelable(
 			fetch(
-				"https://research.cellcollective.org/_api/model/get",
+				"/api/ccapi/all",
 				{
 					method: "get",
+				}
+			).then(response => response.json())
+		);
+	}
+	
+	static getCellCollectiveAll(count) {
+
+		return makeCancelable(
+			fetch(
+				"https://research.cellcollective.org/api/model/cards/research?category=published&orderBy=recent&modelTypes=boolean&cards=" + count,
+				{
+					method: "get",
+					// headers: {
+					// 	"Content-Type": "text/plain;charset=UTF-8",
+					// 	"Cache-Control": "no-cache",
+					// 	"Pragma": "no-cache"
+					// },
+					// headers: { "Access-Control-Allow-Origin": "*"},
+					referrerPolicy: "unsafe-url"//"origin",//no-referrer-when-downgrade",
 				}
 			).then(response => response.json())
 		);

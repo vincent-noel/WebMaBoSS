@@ -3,7 +3,7 @@ import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} fr
 import APICalls from "../api/apiCalls";
 import LoadingIcon from "../commons/loaders/LoadingIcon";
 
-class ImportModelFromCC extends React.Component {
+class ImportModelsFromBiomodels extends React.Component {
 
 	constructor(props) {
 		super(props);
@@ -33,7 +33,7 @@ class ImportModelFromCC extends React.Component {
 	}
 
 	getModelsList() {
-		this.getModelsListCall = APICalls.CellCollective.getCellCollectiveList();
+		this.getModelsListCall = APICalls.BioModelsCalls.getBioModelsList();
 		this.getModelsListCall.promise.then(data => this.setState({ data: data, loaded: true }));
 	}
 	
@@ -52,7 +52,7 @@ class ImportModelFromCC extends React.Component {
 
 	loadModel(model_id, model_name) {
 		this.setState({importing: true})
-		let url = APICalls.CellCollective.getSBMLURLFromCC(model_id);
+		let url = APICalls.BioModelsCalls.getSBMLURLFromBioModels(model_id);
 		this.loadModelCall = APICalls.ModelsCalls.importModel(this.props.project, null, model_name, null, url);
 		this.loadModelCall.promise.then(() => { 
 			this.setState({importing: false});
@@ -85,4 +85,4 @@ class ImportModelFromCC extends React.Component {
 	}
 }
 
-export default ImportModelFromCC;
+export default ImportModelsFromBiomodels;

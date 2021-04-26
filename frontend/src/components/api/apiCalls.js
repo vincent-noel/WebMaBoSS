@@ -7,6 +7,7 @@ import ModelsCalls from "./ModelsCalls";
 import ModelTagsCalls from "./ModelTagsCalls";
 import ModelCalls from "./ModelCalls";
 import CellCollective from "./CellCollectiveCalls";
+import BioModelsCalls from "./BioModelsCalls";
 
 class APICalls {
 	static AuthCalls = AuthCalls;
@@ -18,5 +19,6 @@ class APICalls {
 	static ModelTagsCalls = ModelTagsCalls;
 	static ModelCalls = ModelCalls;
 	static CellCollective = CellCollective;
+	static BioModelsCalls = BioModelsCalls;
 }
 export default APICalls;

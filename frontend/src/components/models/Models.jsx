@@ -7,7 +7,7 @@ import ModelForm from "./ModelForm";
 import ExportModelForm from "./ExportModelForm";
 import {ProjectContext} from "../context";
 import TagForm from "./TagForm";
-import ImportModelFromCC from "./ImportModelFromCC";
+import ImportModel from "./ImportModel";
 
 
 class Models extends React.Component {
@@ -130,7 +130,7 @@ class Models extends React.Component {
 									hide={this.hideTagModelForm}
 									showExport={this.showExportModelForm}
 								/>
-								<ImportModelFromCC
+								<ImportModel
 									project={projectContext.project}
 									updateParent={updateParent}
 									status={this.state.showModelImport}

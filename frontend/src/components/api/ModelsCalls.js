@@ -42,7 +42,6 @@ class ModelsCalls {
 
 	}
 
-
 	static downloadModelAsZGINML(project_id, model_id, tag) {
 
 		let endpoint = null;
