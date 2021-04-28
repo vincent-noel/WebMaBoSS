@@ -22,7 +22,7 @@ from json import loads, dumps
 import ginsim
 import maboss
 from api.views.commons.parse import parseIstates,dumpIstates
-
+from time import time
 class MaBoSSSimulationView(HasModel):
 
 	def get(self, request, project_id, model_id):
@@ -33,9 +33,11 @@ class MaBoSSSimulationView(HasModel):
 		return Response(serializer.data)
 
 	def post(self, request, project_id, model_id):
-
+		print("Entering post function")
+		t0 = time()
 		HasModel.load(self, request, project_id, model_id)
-
+		t1 = time()
+		print("Model properties loaded (%.2gs)" % (t1-t0))
 		if self.model.format == LogicalModel.ZGINML:
 			path = join(settings.MEDIA_ROOT, self.model.file.path)
 			ginsim_model = ginsim.load(path)
@@ -111,6 +113,9 @@ class MaBoSSSimulationView(HasModel):
 			
 		else:
 			return HttpResponse(status=500)
+			
+		t2 = time()
+		print("Model loaded (%.2gs)" % (t2-t1))
 
 		cfg_settings = loads(request.POST['settings'])
 		maboss_model.param.update(cfg_settings)
@@ -132,6 +137,9 @@ class MaBoSSSimulationView(HasModel):
 		server_port = request.POST.get('serverPort')
 
 		thread = Thread(target=run_simulation, args=(maboss_model, maboss_simulation.id, server_host, server_port))
+		t3 = time()
+		print("Thread built (%.2gs)" % (t3-t2))
+
 		thread.start()
 
 		return Response({'simulation_id': maboss_simulation.id}, status=status.HTTP_200_OK)
@@ -139,25 +147,35 @@ class MaBoSSSimulationView(HasModel):
 def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port):
 
 	try:
+		t0 = time()
+		print("Started thread")
 		if server_host is None:
-			res = maboss_model.run()
+			res = maboss_model.run(cmaboss=True)
 		else:
 			mbcli = maboss.MaBoSSClient(server_host, int(server_port))
 			res = mbcli.run(maboss_model)
 			mbcli.close()
 
+		t1 = time()
+		print("Simulation done : %.2gs" % (t1-t0))
 		fixed_points = res.get_fptable()
 		if fixed_points is not None:
 			fixed_points_json = fixed_points.to_json()
 		else:
 			fixed_points_json = "{}"
-
+		t2 = time()
+		print("Loaded fixed points : %.2gs" % (t2-t1))
 		states_probtraj = res.get_states_probtraj()
 		states_probtraj_json = states_probtraj.to_json()
-
+		t3 = time()
+		print("Loaded probtraj : %.2gs" % (t3-t2))
+		
+		
 		nodes_probtraj = res.get_nodes_probtraj()
 		nodes_probtraj_json = nodes_probtraj.to_json()
-
+		t4 = time()
+		print("Loaded nodes probtraj : %.2gs" % (t4-t3))
+		
 		with transaction.atomic():
 			maboss_simulation = MaBoSSSimulation.objects.get(id=maboss_simulation_id)
 			maboss_simulation.fixpoints = fixed_points_json
@@ -166,6 +184,7 @@ def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port)
 
 			maboss_simulation.status = MaBoSSSimulation.ENDED
 			maboss_simulation.save()
+			print("Saved results : %.2gs" % (time()-t4))
 
 	except:
 		with transaction.atomic():

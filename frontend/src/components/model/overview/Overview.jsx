@@ -1,8 +1,7 @@
 import React from "react";
-
 import ModelPage from "../ModelPage";
 import ModelName from "../ModelName";
-import ModelGraph from "./ModelGraph";
+import ModelGraphRaw from "./ModelGraphRaw";
 
 import {ProjectContext, ModelContext} from "../../context";
 
@@ -20,7 +19,7 @@ class Overview extends React.Component {
 							modelId={modelContext.modelId}
 							modelName={modelContext.modelName}
 						/>
-						<ModelGraph
+						<ModelGraphRaw
 							project={projectContext.project}
 							modelId={modelContext.modelId}
 						/>

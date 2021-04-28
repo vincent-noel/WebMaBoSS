@@ -9,8 +9,8 @@ import maboss
 import ginsim
 import biolqm
 import tempfile
-
-
+import re
+from time import time
 class HasModel(HasProject):
 
 	def __init__(self, *args, **kwargs):
@@ -44,8 +44,15 @@ class HasModel(HasProject):
 			return ginsim.to_maboss(ginsim_model)
 
 		elif self.model.format == LogicalModel.SBML:
+			t0 = time()
 			biolqm_model = biolqm.load(self.model.file.path)
-			return biolqm.to_maboss(biolqm_model)
+			t1 = time()
+			print("Loaded sbml with biolqm : %.2gs" % (t1-t0))
+			maboss_model =biolqm.to_maboss(biolqm_model)
+			print("Converted to MaBoSS : %.2gs" % (time()-t1))
+			
+			return maboss_model
+			
 
 		else:
 			raise MethodNotAllowed()
@@ -89,10 +96,12 @@ class HasModel(HasProject):
 			return ginsim_model
 			
 		elif self.model.format == LogicalModel.SBML:
-			print(join(settings.MEDIA_ROOT, self.model.file.path))
 			biolqm_model = biolqm.load(join(settings.MEDIA_ROOT, self.model.file.path))
 			for component in biolqm_model.getComponents():
-				component.setNodeID(component.getName().replace("/", "_"))
+				if component.getName() != "":
+					
+					component.setNodeID(re.sub('[^A-Za-z0-9_]+', '', component.getName()))
+				
 			ginsim_model = biolqm.to_ginsim(biolqm_model)
 			ginsim.service("layout").runLayout(2, ginsim_model)
 			return ginsim_model

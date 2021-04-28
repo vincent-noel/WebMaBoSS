@@ -17,7 +17,7 @@ import Register from "./auth/Register";
 import ProjectsPage from "./projects/ProjectsPage";
 import Models from "./models/Models";
 import Data from "./Data";
-import {OverviewWrapper, Overview_v2Wrapper} from "./model/overview/OverviewWrapper";
+import {OverviewWrapper} from "./model/overview/OverviewWrapper";
 import {SteadyStatesWrapper} from "./model/steady_states/SteadyStatesWrapper";
 import {MaBoSSSimulationWrapper} from "./model/maboss/simulation/MaBoSSSimulationWrapper";
 import MaBossEditing from "./model/maboss/editing/Editing";
@@ -40,7 +40,6 @@ class App extends Component {
 					<Route exact path="/data/" component={Data} />
 
 					<Route exact path="/model/overview/" component={OverviewWrapper} />
-					<Route exact path="/model/overview_v2/" component={Overview_v2Wrapper} />
 					<Route exact path="/model/fixed_points/" component={SteadyStatesWrapper} />
 					<Route exact path="/model/maboss/simulation/" component={MaBoSSSimulationWrapper} />
 					<Route exact path="/model/maboss/editing/" component={MaBossEditing} />

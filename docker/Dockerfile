@@ -105,7 +105,7 @@ ADD . /var/webmaboss/
 # Removing node modules, downloading them from scratch, and transpiling the JSX
 RUN rm -fr node_modules/* yarn.lock \
     && yarn \
-    && npm run build
+    && npm run dev
 
 # Removing old db and medias, creating a new one, with default user admin:admin
 RUN rm -fr data/ \

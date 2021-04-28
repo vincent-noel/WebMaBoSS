@@ -176,12 +176,12 @@ class MaBossResult extends React.Component {
 									className={classnames({ active: this.state.activeTab === 'spt' })}
 								>States probability trajectories</NavLink>
 							</NavItem>
-							<NavItem>
+							{/* <NavItem>
 								<NavLink
 									onClick={() => this.toggle('pca')}
 									className={classnames({ active: this.state.activeTab === 'pca' })}
 								>PCA</NavLink>
-							</NavItem>
+							</NavItem> */}
 						</div>
 						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
 							<DropdownToggle><FontAwesomeIcon icon={faCaretDown}/></DropdownToggle>
@@ -220,7 +220,7 @@ class MaBossResult extends React.Component {
 								statesProbas={this.state.statesProbTraj}
 							/>
 						</TabPane>
-						<TabPane tabId="pca">
+						{/* <TabPane tabId="pca">
 							<MaBossSteadyStatesPCA
 								project={this.props.project}
 								modelId={this.props.modelId}
@@ -231,7 +231,7 @@ class MaBossResult extends React.Component {
 								arrowLabels={this.state.pcaArrowLabels}
 								explainedVariance={this.state.pcaExplainedVariance}
 							/>
-						</TabPane>
+						</TabPane> */}
 					</TabContent>
 				</React.Fragment>
 			);

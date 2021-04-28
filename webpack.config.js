@@ -45,25 +45,25 @@ module.exports = {
 	  }
 	]
   },
-   optimization: {
-    minimize: true,
-    minimizer: [new TerserPlugin()],
-  	// splitChunks: {
-    //   chunks: 'all',
-	// },
-  },
-  plugins: [
-    new CompressionPlugin({
-		test: /\.js/
-	})
-  ],
+//    optimization: {
+//     minimize: true,
+//     minimizer: [new TerserPlugin()],
+//   	splitChunks: {
+//       chunks: 'all',
+// 	},
+//   },
+//   plugins: [
+//     new CompressionPlugin({
+// 		test: /\.js/
+// 	})
+//   ],
 //   devtool: 'source-map',
   entry: './frontend/src/index.js',
   output: {
 	path: path.resolve(__dirname, "frontend/static/js"),
-	publicPath: "frontend/static/js/",
+	// publicPath: "frontend/static/js/",
 	filename: 'index.js',
-	// chunkFilename: '[name].js'
+	chunkFilename: '[name].js'
   },
   stats: 'verbose',
 };
