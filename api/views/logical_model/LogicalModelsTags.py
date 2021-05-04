@@ -52,15 +52,15 @@ class LogicalModelsTags(HasModel):
 			TaggedLogicalModel(
 				model=self.model,
 				tag=str(request.POST['tag']),
-				file=File(open(join(settings.MEDIA_ROOT, self.model.file.path), 'rb')),
+				file=File(open(join(settings.MEDIA_ROOT, self.model.file.path), 'rb'), name=basename(self.model.file.path)),
 			).save()
 
 		elif self.model.format == LogicalModel.MABOSS:
 			TaggedLogicalModel(
 				model=self.model,
 				tag=str(request.POST['tag']),
-				bnd_file=File(open(join(settings.MEDIA_ROOT, self.model.bnd_file.path), 'rb')),
-				cfg_file=File(open(join(settings.MEDIA_ROOT, self.model.cfg_file.path), 'rb'))
+				bnd_file=File(open(join(settings.MEDIA_ROOT, self.model.bnd_file.path), 'rb'), name=basename(self.model.bnd_file.path)),
+				cfg_file=File(open(join(settings.MEDIA_ROOT, self.model.cfg_file.path), 'rb'), name=basename(self.model.cfg_file.path))
 			).save()
 
 		else:

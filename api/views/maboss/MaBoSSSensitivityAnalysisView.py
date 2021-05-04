@@ -52,8 +52,8 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 				project=self.project,
 				model=self.model,
 				name=analysis_settings['name'],
-				bnd_file=File(open(bnd_path, 'rb')),
-				cfg_file=File(open(cfg_path, 'rb'))
+				bnd_file=File(open(bnd_path, 'rb'), name=basename(bnd_path)),
+				cfg_file=File(open(cfg_path, 'rb'), name=basename(cfg_path))
 			)
 			sensitivity_analysis.save()
 
@@ -66,8 +66,8 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 				project=self.project,
 				model=self.model,
 				name=analysis_settings['name'],
-				bnd_file=File(open(join(settings.MEDIA_ROOT, self.model.bnd_file.path), 'rb')),
-				cfg_file=File(open(join(settings.MEDIA_ROOT, self.model.cfg_file.path), 'rb'))
+				bnd_file=File(open(join(settings.MEDIA_ROOT, self.model.bnd_file.path), 'rb'), name=basename(self.model.bnd_file.path)),
+				cfg_file=File(open(join(settings.MEDIA_ROOT, self.model.cfg_file.path), 'rb'), name=basename(self.model.cfg_file.path))
 			)
 			sensitivity_analysis.save()
 

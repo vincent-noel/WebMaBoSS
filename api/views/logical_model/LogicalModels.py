@@ -78,8 +78,8 @@ class LogicalModels(HasProject):
 					new_model = LogicalModel(
 						project=self.project,
 						name=request.data['name'],
-						bnd_file=File(open(bnd_file, 'rb')),
-						cfg_file=File(open(cfg_file, 'rb')),
+						bnd_file=File(open(bnd_file, 'rb'), name=os.path.basename(bnd_file)),
+						cfg_file=File(open(cfg_file, 'rb'), name=os.path.basename(cfg_file)),
 						format=LogicalModel.MABOSS
 					).save()
 					os.remove(bnd_file)
@@ -94,12 +94,11 @@ class LogicalModels(HasProject):
 				urlretrieve(request.data['url'], sbml_file[1])
 				(bnd_file, cfg_file) = sbml_to_maboss(sbml_file[1])
 				
-				
 				new_model = LogicalModel(
 					project=self.project,
 					name=request.data['name'],
-					bnd_file=File(open(bnd_file, 'rb')),
-					cfg_file=File(open(cfg_file, 'rb')),
+					bnd_file=File(open(bnd_file, 'rb'), name=os.path.basename(bnd_file)),
+					cfg_file=File(open(cfg_file, 'rb'), name=os.path.basename(cfg_file)),
 					format=LogicalModel.MABOSS
 				).save()
 				os.remove(bnd_file)

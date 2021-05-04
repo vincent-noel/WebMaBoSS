@@ -57,8 +57,8 @@ class MaBoSSSimulationView(HasModel):
 				project=self.project,
 				model=self.model,
 				name=request.POST['name'],
-				bnd_file=File(open(tmp_bnd_path, 'rb')),
-				cfg_file=File(open(tmp_cfg_path, 'rb')),
+				bnd_file=File(open(tmp_bnd_path, 'rb'), name=basename(tmp_bnd_path)),
+				cfg_file=File(open(tmp_cfg_path, 'rb'), name=basename(tmp_cfg_path)),
 				status=MaBoSSSimulation.BUSY
 			)
 			maboss_simulation.save()
@@ -75,8 +75,8 @@ class MaBoSSSimulationView(HasModel):
 				project=self.project,
 				model=self.model,
 				name=request.POST['name'],
-				bnd_file=File(open(bnd_path, 'rb')),
-				cfg_file=File(open(cfg_path, 'rb')),
+				bnd_file=File(open(bnd_path, 'rb'), name=basename(bnd_path)),
+				cfg_file=File(open(cfg_path, 'rb'), name=basename(cfg_path)),
 				status=MaBoSSSimulation.BUSY
 			)
 			maboss_simulation.save()
@@ -101,8 +101,8 @@ class MaBoSSSimulationView(HasModel):
 				project=self.project,
 				model=self.model,
 				name=request.POST['name'],
-				bnd_file=File(open(tmp_bnd_path, 'rb')),
-				cfg_file=File(open(tmp_cfg_path, 'rb')),
+				bnd_file=File(open(tmp_bnd_path, 'rb'), name=basename(tmp_bnd_path)),
+				cfg_file=File(open(tmp_cfg_path, 'rb'), name=basename(tmp_cfg_path)),
 				status=MaBoSSSimulation.BUSY
 			)
 			maboss_simulation.save()
@@ -272,8 +272,8 @@ class MaBoSSSimulationNewModel(HasMaBoSSSimulation):
 			new_model = LogicalModel(
 				project=self.project,
 				name=self.simulation.name + " model",
-				bnd_file=File(open(self.getBNDFilePath(), 'rb')),
-				cfg_file=File(open(self.getCFGFilePath(), 'rb')),
+				bnd_file=File(open(self.getBNDFilePath(), 'rb'), name=basename(self.getBNDFilePath())),
+				cfg_file=File(open(self.getCFGFilePath(), 'rb'), name=basename(self.getCFGFilePath())),
 				format=LogicalModel.MABOSS
 			)
 			new_model.save()

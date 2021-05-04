@@ -56,7 +56,7 @@ class LogicalModel(models.Model):
 		if self.project:
 			self.path = new_model_path(self.project)
 			super(LogicalModel, self).save(*args, **kwargs)
-
+			
 pre_delete.connect(remove_logical_model, sender=LogicalModel)
 
 
