@@ -55,7 +55,6 @@ class MaBossActions extends React.Component {
 	}
 
 	render() {
-
 		return (
 			<React.Fragment>
 				<ButtonToolbar className="justify-content-start">

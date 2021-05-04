@@ -10,7 +10,7 @@ class ModelForm extends React.Component {
 
 		this.dictFormats = {
 			'zginml': "Z-GINML (Extended save)",
-			// 'sbml': "SBML qual",
+			'sbml': "SBML qual",
 			'maboss': "MaBoSS"
 		};
 
@@ -132,7 +132,7 @@ class ModelForm extends React.Component {
 			<Modal isOpen={this.props.status} toggle={() => {if (this.props.status) {this.props.hide();} else {this.props.show(this.state.id)}}}>
 				<form onSubmit={(e) => this.handleSubmit(e)}>
 					<Card>
-						<CardHeader>{this.state.id !== null ? "Edit" : "Create new"} model</CardHeader>
+						<CardHeader>{this.state.id !== null ? "Edit" : "Load"} model</CardHeader>
 						<CardBody>
 							<div className="form-group">
 								<label htmlFor="modelName">Name</label>
@@ -149,11 +149,10 @@ class ModelForm extends React.Component {
 							<div className="form-group">
 								<label htmlFor="modelFile">Type</label>
 								<MyDropdown
-									values={this.dictFormats}
+									dict={this.dictFormats}
 									width={"28rem"}
-									value={this.state.type}
-									onItemSelected={(item)=> this.handleTypeChange(item)}
-									loaded={true}
+									label={this.dictFormats[this.state.type]}
+									callback={item=>this.handleTypeChange(item)}
 								/>
 							</div>
 							<div className="form-group">

@@ -13,11 +13,11 @@ class TableSwitches extends React.Component {
 					{(this.props.allSwitch !== undefined) ?
 						<thead>
 							<tr key={"all"}>
-								<th ></th>
-								<th className="d-flex justify-content-end">
+								<th style={{borderTop: '0'}}></th>
+								<th style={{borderTop: '0'}} className="d-flex justify-content-end">
 									<Switch
 										id={"in-all"}
-										updateCallback={(value) => {this.props.allSwitchCallback(value);}}
+										toggle={() => {this.props.allSwitchToggle();}}
 										checked={this.props.allSwitch}
 									/>
 								</th>
@@ -26,6 +26,7 @@ class TableSwitches extends React.Component {
 					<tbody>
 					{
 						Object.keys(this.props.dict).map((key, index) => {
+							
 							return <tr key={index}>
 								<td onClick={() => this.props.toggle(key)}>{key}</td>
 								<td className="d-flex justify-content-end">
@@ -41,8 +42,7 @@ class TableSwitches extends React.Component {
 
 												case 'switch' :
 													return <Switch
-														id={this.props.id + "-" + key}
-														updateCallback={(value) => {this.props.updateCallback(key, value)}}
+														toggle={() => {this.props.toggleNode(key)}}
 														checked={this.props.dict[key]}
 													/>;
 

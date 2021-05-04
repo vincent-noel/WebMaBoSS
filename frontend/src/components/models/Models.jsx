@@ -103,7 +103,7 @@ class Models extends React.Component {
 									tag={this.showTagModelForm}
 								/>
 								<ButtonToolbar className="justify-content-start">
-									<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelForm(null)}}>New model</Button>
+									<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelForm(null)}}>Load model</Button>
 									<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelImport(null)}}>Import model</Button>
 								</ButtonToolbar>
 								<ModelForm

@@ -48,9 +48,13 @@ RUN apt-get install -y --no-install-recommends flex bison g++ make \
     && make install \
     && make MAXNODES=128 install \
     && make MAXNODES=256 install \
+    && make MAXNODES=512 install \
+    && make MAXNODES=1024 install \
     && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS /opt/conda/bin \
     && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS_128n /opt/conda/bin \
     && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS_256n /opt/conda/bin \
+    && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS_512n /opt/conda/bin \
+    && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS_1024n /opt/conda/bin \
     && rm -fr /opt/MaBoSS-env-2.0
     
 ADD requirements.txt /var/webmaboss/requirements.txt

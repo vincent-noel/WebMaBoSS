@@ -1,5 +1,6 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
+import MyDropdown from "../commons/buttons/MyDropdown";
 import LoadingIcon from "../commons/loaders/LoadingIcon";
 
 
@@ -46,28 +47,15 @@ class ModelDropdown extends React.Component {
 			return <LoadingIcon width="1rem" />;
 
 		} else {
-			const style = {
-				width: "12rem", overflowX: "hidden", textOverflow: "ellipsis"
-			};
-			return (
-				<div className="dropdown" align="center">
-					<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-							data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="false" style={style}>
-						{this.props.modelName !== null ? this.props.modelName : <LoadingIcon width="1rem"/>}
-					</button>
-					<div className="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton" style={style}>
-						{this.props.models.map((model, id) => {
-							return <NavLink
-								to={this.props.path}
-								className="dropdown-item bg-dark" key={model.id}
-								onClick={() => this.props.onModelChanged(this.props.project, model.id)}>{model.name}
-							</NavLink>
-
-						})}
-					</div>
-				</div>
-			);
+			return <MyDropdown
+				label={this.props.modelName !== null ? this.props.modelName : <LoadingIcon width="1rem"/>}
+				dict={this.props.models.reduce((result, model, ind)=>{
+					result[ind] = model.name;
+					return result;
+				}, {})}
+				callback={ind=>{ return this.props.onModelChanged(this.props.project, this.props.models[ind].id);}}
+				width={"12rem"}
+			/>;
 		}
 	}
 }

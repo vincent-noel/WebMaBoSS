@@ -1,37 +1,36 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
-import LoadingIcon from "../loaders/LoadingIcon";
-
+import { Dropdown, DropdownMenu, DropdownToggle, DropdownItem } from "reactstrap";
 
 class MyDropdown extends React.Component {
-
-	render() {
-
-		if (!this.props.loaded) {
-			return <LoadingIcon width="1rem" />;
-
-		} else {
-
-			return (
-				<div className="dropdown" align="center">
-					<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-							data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="false" style={{width: this.props.width}}>
-						{this.props.values[this.props.value]}
-					</button>
-					<div className="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton" style={{width: this.props.width}}>
-						{Object.keys(this.props.values).map((value, id) => {
-							return <a
-								href={"#"}
-								className="dropdown-item bg-dark active" key={id}
-								onClick={(e) => { e.preventDefault(); this.props.onItemSelected(value)}}>{this.props.values[value]}
-							</a>
-
-						})}
-					</div>
-				</div>
-			);
+	constructor(props) {
+		super(props);
+		
+		this.state = {
+			open: false
 		}
+		this.toggle = this.toggle.bind(this);
+		
+	}
+	
+	toggle() {
+		this.setState({open : !this.state.open});
+	}
+	
+	render() {
+		return <Dropdown isOpen={this.state.open} toggle={this.toggle} style={{textAlign: "center"}}>
+			<DropdownToggle style={{width: this.props.width, overflowX: "hidden", textOverflow: "ellipsis"}} caret>{this.props.label}</DropdownToggle>
+			<DropdownMenu style={{width: this.props.width}} className={"bg-dark"}>
+			{
+				Object.keys(this.props.dict).length > 0 ?
+					Object.keys(this.props.dict).map((key, id) => {
+						return <DropdownItem key={id} className={"bg-dark"}
+							style={{ overflowX: "hidden", textOverflow: "ellipsis", color: "#fff"}}
+							onClick={() => this.props.callback(key)}
+						>{this.props.dict[key]}</DropdownItem>
+				}) : null
+			}
+			</DropdownMenu>
+	 	</Dropdown>;
 	}
 }
 

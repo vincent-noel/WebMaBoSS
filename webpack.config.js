@@ -57,7 +57,7 @@ module.exports = {
 // 		test: /\.js/
 // 	})
 //   ],
-//   devtool: 'source-map',
+  devtool: 'source-map',
   entry: './frontend/src/index.js',
   output: {
 	path: path.resolve(__dirname, "frontend/static/js"),

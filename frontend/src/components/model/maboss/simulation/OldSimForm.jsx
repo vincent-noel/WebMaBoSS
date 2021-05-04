@@ -1,5 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
+import MyDropdown from "../../../commons/buttons/MyDropdown";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 
 
@@ -13,6 +14,9 @@ class OldSimForm extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = OldSimForm.defaultState;
+		
+		this.onSimulationChanged = this.onSimulationChanged.bind(this);
+		this.removeOldSim = this.removeOldSim.bind(this);
 	}
 
 	removeOldSim() {
@@ -26,10 +30,10 @@ class OldSimForm extends React.Component {
 		this.props.onSubmit(this.state.selectedSimulationId, this.state.selectedSimulation);
 	}
 
-	onSimulationChanged(simulation_id, name) {
+	onSimulationChanged(simulation_id) {
 		this.setState({
-			selectedSimulation: name,
-			selectedSimulationId: simulation_id
+			selectedSimulation: this.props.listOfSimulations[simulation_id].name,
+			selectedSimulationId: this.props.listOfSimulations[simulation_id].id
 		})
 	}
 
@@ -52,31 +56,23 @@ class OldSimForm extends React.Component {
 
 	render() {
 		return <React.Fragment>
-			<Modal isOpen={this.props.status && this.props.listOfSimulations !== null} toggle={() => {this.props.toggle()}}>
+			<Modal isOpen={this.props.status} toggle={() => {this.props.toggle()}}>
 				<form onSubmit={(e) => this.onSubmit(e)}>
 					<Card>
 						<CardHeader>Load existing simulation</CardHeader>
 						<CardBody>
                             {
                             	this.props.listOfSimulations != null ?
-									<div className="dropdown container-fluid">
-										<button className="btn btn-secondary dropdown-toggle" type="button"
-												id="dropdownMenuButton"
-												data-toggle="dropdown"
-												aria-haspopup="true" aria-expanded="false" style={{width: '100%'}}>
-											{this.state.selectedSimulation}
-										</button>
-										<div className="dropdown-menu" aria-labelledby="dropdownMenuButton"
-											 style={{width: '100%'}}>
-											{this.props.listOfSimulations.map((simulation, id) => {
-												return <a
-													className="dropdown-item" key={simulation.id}
-													onClick={(e) => this.onSimulationChanged(simulation.id, simulation.name)}
-												>{simulation.name}</a>
-
-											})}
-										</div>
-									</div>
+									
+									<MyDropdown
+										dict={this.props.listOfSimulations.reduce((result, simulation, ind)=>{
+											result[ind] = simulation.name;
+											return result;
+										}, {})}
+										label={this.state.selectedSimulation}
+										width="25rem"
+										callback={(id)=>this.onSimulationChanged(id)}
+									/>
                                 :
                                 	<LoadingIcon width="3rem"/>
                             }

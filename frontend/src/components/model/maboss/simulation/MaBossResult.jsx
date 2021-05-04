@@ -26,10 +26,10 @@ class MaBossResult extends React.Component {
 			nodesProbTraj: null,
 			statesProbTraj: null,
 
-			pca: null,
-			pcaArrows: null,
-			pcaArrowLabels: null,
-			pcaExplainedVariance: null,
+			// pca: null,
+			// pcaArrows: null,
+			// pcaArrowLabels: null,
+			// pcaExplainedVariance: null,
 
 		};
 
@@ -42,7 +42,7 @@ class MaBossResult extends React.Component {
 		this.getFixedPointsCall = null;
 		this.getNodesProbtrajCall = null;
 		this.getStateProbtrajCall = null;
-		this.getPCACall = null;
+		// this.getPCACall = null;
 		this.statusChecker = null;
 	}
 
@@ -56,7 +56,7 @@ class MaBossResult extends React.Component {
 				this.getFixedPoints(project_id, simulation_id);
 				this.getNodesProbtraj(project_id, simulation_id);
 				this.getStateProbtraj(project_id, simulation_id);
-				this.getPCA(project_id, simulation_id);
+				// this.getPCA(project_id, simulation_id);
 			}
 		});
 
@@ -88,18 +88,18 @@ class MaBossResult extends React.Component {
 		});
 	}
 
-	getPCA(project_id, simulation_id) {
-		this.setState({pca: null, pcaArrows: null, pcaArrowLabels: null, pcaExplainedVariance: null});
-		this.getPCACall = APICalls.MaBoSSCalls.getSSPCA(project_id, simulation_id);
-		this.getPCACall.promise.then(data => {
-			this.setState({
-				pca: JSON.parse(data.data),
-				pcaArrows: data.arrows,
-				pcaArrowLabels: data.arrowlabels,
-				pcaExplainedVariance: data.explainedVariance
-			})
-		});
-	}
+	// getPCA(project_id, simulation_id) {
+	// 	this.setState({pca: null, pcaArrows: null, pcaArrowLabels: null, pcaExplainedVariance: null});
+	// 	this.getPCACall = APICalls.MaBoSSCalls.getSSPCA(project_id, simulation_id);
+	// 	this.getPCACall.promise.then(data => {
+	// 		this.setState({
+	// 			pca: JSON.parse(data.data),
+	// 			pcaArrows: data.arrows,
+	// 			pcaArrowLabels: data.arrowlabels,
+	// 			pcaExplainedVariance: data.explainedVariance
+	// 		})
+	// 	});
+	// }
 
 	toggle(tab) {
 		if (this.state.activeTab !== tab) {
@@ -127,7 +127,7 @@ class MaBossResult extends React.Component {
 		if (this.getFixedPointsCall !== null) {this.getFixedPointsCall.cancel();}
 		if (this.getNodesProbtrajCall !== null) {this.getNodesProbtrajCall.cancel();}
 		if (this.getStateProbtrajCall !== null) {this.getStateProbtrajCall.cancel();}
-		if (this.getPCACall !== null) {this.getPCACall.cancel();}
+		// if (this.getPCACall !== null) {this.getPCACall.cancel();}
 
 	}
 
@@ -139,10 +139,10 @@ class MaBossResult extends React.Component {
 				fixedPoints: null,
 				nodesProbTraj: null,
 				statesProbTraj: null,
-				pca: null,
-				pcaArrows: null,
-				pcaArrowLabels: null,
-				pcaExplainedVariance: null,
+				// pca: null,
+				// pcaArrows: null,
+				// pcaArrowLabels: null,
+				// pcaExplainedVariance: null,
 			});
 
 			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), Settings.updateRate);

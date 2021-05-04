@@ -5,7 +5,6 @@ import {
 	Button,	ButtonToolbar,
 	Modal,
 	Card, CardHeader, CardBody, CardFooter,
-	Dropdown, DropdownToggle, DropdownMenu, DropdownItem
 } from "reactstrap";
 import classnames from 'classnames';
 import TableSwitches from "../../../commons/TableSwitches";
@@ -17,6 +16,7 @@ import Switch from "../../../commons/buttons/Switch";
 import LoadingInlineIcon from "../../../commons/loaders/LoadingInlineIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faFilter, faTimes} from "@fortawesome/free-solid-svg-icons";
+import MyDropdown from "../../../commons/buttons/MyDropdown";
 class NewSimForm extends React.Component {
 
 	constructor(props) {
@@ -25,13 +25,13 @@ class NewSimForm extends React.Component {
 		this.state = {
 
 			settings: {
-				sample_count: 50000,
+				sample_count: 1000,
 				max_time: 1000,
-				time_tick: .2,
+				time_tick: 50,
 				discrete_time: false,
 				use_physrandgen: true,
 				seed_pseudorandom: 100,
-				statdist_traj_count: 1000,
+				statdist_traj_count: 0,
 				statdist_cluster_threshold: 0.98,
 				thread_count: 4,
 			},
@@ -44,13 +44,13 @@ class NewSimForm extends React.Component {
 			initialStates: {},
 			rawInitialStates: {},
 			outputVariables: {},
+			allOutputVariables: false,
 			mutatedVariables: {},
 
 			listServers: [],
 			statusServer: [],
-			serverDropdownOpen: false,
 			selectedServerLabel: "Local",
-			selectedServer: -1,
+			selectedServer: "-1",
 
 			errors: [],
 		};
@@ -70,23 +70,23 @@ class NewSimForm extends React.Component {
 
 		this.updateInitialState = this.updateInitialState.bind(this);
 		this.updateOutputVariables = this.updateOutputVariables.bind(this);
+		this.toggleAllOutputVariables = this.toggleAllOutputVariables.bind(this);
 		this.updateMutatedVariables = this.updateMutatedVariables.bind(this);
 
-		this.toggleServerDropdown = this.toggleServerDropdown.bind(this);
-
+		this.getServerStatus = this.getServerStatus.bind(this);
 		this.getSettingsCall = null;
 		this.getServersCall = null;
 	}
 
 	getServerStatus(id) {
 		if (this.state.statusServer[id] === -1) {
-			return <LoadingInlineIcon width="1rem" className="ml-auto"/>;
+			return <LoadingInlineIcon width="1rem" className="float-right" key={id}/>;
 		}
 		if (this.state.statusServer[id] === 1) {
-			return <FontAwesomeIcon icon={faCheck} className="ml-auto"/>;
+			return <FontAwesomeIcon icon={faCheck} className="float-right" key={id}/>;
 		}
 		if (this.state.statusServer[id] === 0) {
-			return <FontAwesomeIcon icon={faTimes} className="ml-auto"/>;
+			return <FontAwesomeIcon icon={faTimes} className="float-right" key={id}/>;
 		}
 	}
 
@@ -121,12 +121,16 @@ class NewSimForm extends React.Component {
 		});
 	}
 
-	selectServer(ind, label) {
-		this.setState({selectedServer: ind, selectedServerLabel: label});
-	}
-
-	toggleServerDropdown() {
-		this.setState({serverDropdownOpen: !this.state.serverDropdownOpen});
+	selectServer(ind) {
+		console.log("Selecting server " + ind);
+		this.setState({
+			selectedServer: ind, 
+			selectedServerLabel: ind === "-1" ? "Local" : [
+				this.state.listServers[ind].desc, 
+				' ',
+				this.getServerStatus(ind)
+			]
+		});
 	}
 
 	getSettings(project_id, model_id) {
@@ -196,7 +200,21 @@ class NewSimForm extends React.Component {
 	updateOutputVariables(node) {
 		let output_variables = this.state.outputVariables;
 		output_variables[node] = !output_variables[node];
-		this.setState({outputVariables: output_variables});
+		
+		this.setState({	
+			allOutputVariables: (this.state.allOutputVariables && output_variables[node]), 
+			outputVariables: output_variables
+		});
+	}
+	
+	toggleAllOutputVariables() {
+		let outputs = Object.keys(this.state.outputVariables).reduce(
+			(acc, key) => {
+				acc[key] = !this.state.allOutputVariables;
+				return acc;
+			}, {}
+		);
+		this.setState({allOutputVariables: !this.state.allOutputVariables, outputVariables: outputs});
 	}
 
 	updateMutatedVariables(node, value) {
@@ -296,7 +314,7 @@ class NewSimForm extends React.Component {
 
 		}
 
-		if (this.state.selectedServer !== -1 && this.state.statusServer[this.state.selectedServer] !== 1) {
+		if (this.state.selectedServer !== "-1" && this.state.statusServer[this.state.selectedServer] !== 1) {
 			errors.push("Please select an online MaBoSS server")
 		}
 
@@ -419,8 +437,8 @@ class NewSimForm extends React.Component {
 								</NavItem>
 							</Nav>
 							<TabContent activeTab={this.state.activeTab}>
-								<br/>
 								<TabPane tabId="general" className="tab-general">
+									<br/>
 									<div className="form-group general">
 										<label htmlFor="name" className="name">Name</label>
 										<input type="text" className="form-control large" id="name" placeholder="Name of the simulation"
@@ -485,24 +503,22 @@ class NewSimForm extends React.Component {
 										   onChange={(e) => this.handleStatdistClusterThreshold(e)}
 										/>
 									</div>
-
-									<Dropdown isOpen={this.state.serverDropdownOpen} toggle={this.toggleServerDropdown} className="container-fluid">
-										<DropdownToggle style={{width: '25rem'}} caret>{this.state.selectedServerLabel}</DropdownToggle>
-										<DropdownMenu style={{width: '25rem'}}>
-											<DropdownItem onClick={() => this.selectServer(-1, "Local")}>Local</DropdownItem>
-											{
-												this.state.listServers.length > 0 ?
-													this.state.listServers.map((server, id) => {
-														return <DropdownItem key={id} className="d-flex"
-															onClick={() => this.selectServer(id, server.desc)}
-														>{server.desc}{this.getServerStatus(id)}</DropdownItem>
-												}) : null
-											}
-									</DropdownMenu>
-								  </Dropdown>
-
+									
+									<MyDropdown
+										dict={
+											this.state.listServers.reduce((result, server, ind)=>{
+													result[ind] = [server.desc,' ', this.getServerStatus(ind)];
+													return result;
+												}, {"-1": "Local"}
+											)
+										}
+										label={this.state.selectedServerLabel}
+										width={"25rem"}
+										callback={(id)=>this.selectServer(id)}
+									/>
 								</TabPane>
 								<TabPane tabId="initial_states">
+									<br/>
 									<TableSwitches
 										id={"is"}
 										type='range'
@@ -515,10 +531,13 @@ class NewSimForm extends React.Component {
 										id={"in"}
 										type='switch'
 										dict={this.state.outputVariables}
-										updateCallback={this.updateOutputVariables}
+										toggleNode={this.updateOutputVariables}
+										allSwitch={this.state.allOutputVariables}
+										allSwitchToggle={this.toggleAllOutputVariables}
 									/>
 								</TabPane>
 								<TabPane tabId="mutated_variables">
+									<br/>
 									<TableSwitches
 										id={"mv"}
 										type='3pos'

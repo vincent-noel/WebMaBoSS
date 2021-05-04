@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
-import Dropdown from "../commons/Dropdown";
+import MyDropdown from "../commons/buttons/MyDropdown";
 import APICalls from "../api/apiCalls";
 
 class ExportModelForm extends React.Component {
@@ -63,22 +63,13 @@ class ExportModelForm extends React.Component {
 				<Card>
 					<CardHeader>Export model</CardHeader>
 					<CardBody>
-						<Dropdown
+						<MyDropdown
 							width='25rem'
-							selectedItem={this.dictFormats[this.state.format]}
-						>
-							{
-								Object.keys(this.dictFormats).map((key, index) => {
-									return <a
-										key={index}
-										href=""
-										onClick={(e) => {
-											e.preventDefault(); this.changeFormat(key);
-										}}>{this.dictFormats[key]}
-									</a>
-
-							})}
-						</Dropdown>
+							label={this.dictFormats[this.state.format]}
+							dict={this.dictFormats}
+							callback={key => this.changeFormat(key)}
+						/>
+						
 						<br/>
 						{ this.state.showSecondButton ?
 							<ButtonToolbar className="d-flex">

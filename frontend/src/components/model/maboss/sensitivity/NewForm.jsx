@@ -29,6 +29,7 @@ import TableSwitches from "../../../commons/TableSwitches";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCheck, faTimes} from "@fortawesome/free-solid-svg-icons";
+import MyDropdown from "../../../commons/buttons/MyDropdown";
 
 class NewForm extends React.Component {
 
@@ -86,6 +87,9 @@ class NewForm extends React.Component {
 
 		this.updateOutputVariables = this.updateOutputVariables.bind(this);
 
+		this.getServerStatus = this.getServerStatus.bind(this);
+		this.selectServer = this.selectServer.bind(this);
+		
 		this.createCall = null;
 		this.getSettingsCall = null;
 		this.getServersCall = null;
@@ -93,13 +97,13 @@ class NewForm extends React.Component {
 
 	getServerStatus(id) {
 		if (this.state.statusServer[id] === -1) {
-			return <LoadingInlineIcon width="1rem" className="ml-auto"/>;
+			return <LoadingInlineIcon width="1rem" className="float-right"/>;
 		}
 		if (this.state.statusServer[id] === 1) {
-			return <FontAwesomeIcon icon={faCheck} className="ml-auto"/>;
+			return <FontAwesomeIcon icon={faCheck} className="float-right"/>;
 		}
 		if (this.state.statusServer[id] === 0) {
-			return <FontAwesomeIcon icon={faTimes} className="ml-auto"/>;
+			return <FontAwesomeIcon icon={faTimes} className="float-right"/>;
 		}
 	}
 
@@ -134,8 +138,10 @@ class NewForm extends React.Component {
 		});
 	}
 
-	selectServer(ind, label) {
-		this.setState({selectedServer: ind, selectedServerLabel: label});
+	selectServer(ind) {
+		this.setState({
+			selectedServer: ind, 
+			selectedServerLabel: ind === "-1" ? "Local" : [this.state.listServers[ind].desc, ' ', this.getServerStatus[ind]]});
 	}
 
 	toggleServerDropdown() {
@@ -243,7 +249,7 @@ class NewForm extends React.Component {
 		if (errors.length == 0){
 
 			let server_host, server_port = null;
-			if (this.state.selectedServer >= 0) {
+			if (this.state.selectedServer !== "-1") {
 				server_host = this.state.listServers[this.state.selectedServer].host;
 				server_port = this.state.listServers[this.state.selectedServer].port;
 			}
@@ -397,6 +403,16 @@ class NewForm extends React.Component {
 										</li>
 									</Collapse>
 								</ul>
+								<MyDropdown
+									dict={this.state.listServers.reduce((result, server, ind)=>{
+										result[ind] = [server.desc, ' ', this.getServerStatus(ind)];
+										return result;
+									}, {"-1": "Local"})}
+									label={this.state.selectedServerLabel}
+									width="25rem"
+									callback={(id) => this.selectServer(id)}
+								
+								/>
 								<Dropdown isOpen={this.state.serverDropdownOpen} toggle={this.toggleServerDropdown} className="container-fluid">
 									<DropdownToggle style={{width: '25rem'}} caret>{this.state.selectedServerLabel}</DropdownToggle>
 									<DropdownMenu style={{width: '25rem'}}>

@@ -1,8 +1,8 @@
 import React from "react";
-import {NavLink} from "react-router-dom";
 import {setProject, getProject} from "../commons/sessionVariables";
 import APICalls from "../api/apiCalls";
 import LoadingIcon from "../commons/loaders/LoadingIcon";
+import MyDropdown from "../commons/buttons/MyDropdown";
 
 class ProjectDropdown extends React.Component {
 
@@ -49,10 +49,10 @@ class ProjectDropdown extends React.Component {
 		this.getProjectCall.cancel();
 	}
 
-	onProjectChanged(project_id, name) {
-		setProject(project_id);
-		this.setState({projectName: name});
-		this.props.updateProject(project_id);
+	onProjectChanged(project_ind) {
+		setProject(this.state.projects[project_ind].id);
+		this.setState({projectName: this.state.projects[project_ind].name});
+		this.props.updateProject(this.state.projects[project_ind].id);
 	}
 
 	render() {
@@ -62,26 +62,16 @@ class ProjectDropdown extends React.Component {
 
 		} else {
 			if (this.state.projects.length > 0) {
-				return (
-
-					<div className="dropdown" align="center">
-						<button className="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-								data-toggle="dropdown"
-								aria-haspopup="true" aria-expanded="false" style={{width: '15rem'}}>
-							{this.state.projectName}
-						</button>
-						<div className="dropdown-menu bg-dark" aria-labelledby="dropdownMenuButton" style={{width: '15rem'}}>
-							{this.state.projects.map((project, id) => {
-								return <NavLink
-									to={this.props.path}
-									className="dropdown-item bg-dark" key={project.id}
-									onClick={(e) => this.onProjectChanged(project.id, project.name)}>{project.name}
-								</NavLink>
-
-							})}
-						</div>
-					</div>
-				);
+				return <MyDropdown
+						dict={this.state.projects.reduce((result, project, key) => {
+							result[key] = project.name;
+							return result;
+						},{})}
+						label={this.state.projectName}
+						width={"15rem"}
+						callback={item => this.onProjectChanged(item)}
+					/>;
+				
 			} else {
 				return null;
 			}

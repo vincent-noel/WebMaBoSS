@@ -30,9 +30,7 @@ class ModelGraphRaw extends React.Component {
 		this.getGraphCall.promise.then(
 			data => { this.setState({loaded: true, data: data})}
 		)
-
 	}
-
 
 	componentDidMount() {
 		this.getGraph(this.props.project, this.props.modelId);
@@ -58,7 +56,6 @@ class ModelGraphRaw extends React.Component {
 	render() {
 
 		if (this.state.loaded) {
-
 
 			const elements = Object.values(this.state.data['nodes']).map(
 					(name, index) => {
@@ -86,10 +83,7 @@ class ModelGraphRaw extends React.Component {
 						}
 					}
 				));
-
-				console.log(elements);
-			// return (
-				
+	
 				const layout = { 
 					name: 'cose-bilkent',   
 					quality: 'proof',
@@ -100,7 +94,7 @@ class ModelGraphRaw extends React.Component {
 					// animate: 'during',  
 					// numIter: 1000,
 				};
-				const style = {	minWidth: '800px', minHeight: '600px', width: '100%', height: '100%'};
+				const style = {	minWidth: '800px', minHeight: '550px', width: '100%', height: '100%'};
 				
 				const stylesheet = 
 				[
@@ -138,22 +132,16 @@ class ModelGraphRaw extends React.Component {
 							'text-valign': 'center',
 							'text-outline-width': 2,
 							'text-outline-color': '#fff',
-							'width': 'label',
-							'height': 'label'
+							
 						}
 					}
 				];
 				
-				return <CytoscapeComponent elements={elements} layout={layout} style={style} stylesheet={stylesheet} zoom={-2}/>;
-			// // );
-			// const elements = [
-			// 	{ data: { id: 'one', label: 'Node 1' }, position: { x: 0, y: 0 } },
-			// 	{ data: { id: 'two', label: 'Node 2' }, position: { x: 100, y: 0 } },
-			// 	{ data: { source: 'one', target: 'two', label: 'Edge from Node1 to Node2' } }
-			//  ];
-		 
-			//  return <CytoscapeComponent elements={elements} style={ { width: '600px', height: '600px' } layout } />;
-			// return <LoadingIcon width="3rem"/>;
+				return <CytoscapeComponent 
+					elements={elements} layout={layout} 
+					style={style} stylesheet={stylesheet}
+				/>;
+		
 		} else {
 			return <LoadingIcon width="3rem"/>;
 		}
