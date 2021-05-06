@@ -192,6 +192,7 @@ def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port)
 			maboss_simulation.status = MaBoSSSimulation.ERROR
 			maboss_simulation.error = "Simulation failed"
 			maboss_simulation.save()
+			print("Simulation failed !")
 
 
 class MaBoSSSimulationRemove(HasMaBoSSSimulation):

@@ -104,24 +104,25 @@ CMD bash -c "tail -f /dev/null"
 
 FROM webmaboss-base AS webmaboss
 
-ADD . /var/webmaboss/
+ADD api /var/webmaboss/api
+ADD frontend /var/webmaboss/frontend
+ADD settings /var/webmaboss/settings
+ADD create_default_db.sh create_default_admin.sh install.sh runserver.sh wait_db.sh /var/webmaboss
+ADD .babelrc LICENSE.md manage.py package.json requirements.txt webpack.config.js /var/webmaboss
 
 # Removing node modules, downloading them from scratch, and transpiling the JSX
-RUN rm -fr node_modules/* yarn.lock \
+RUN mkdir node_modules \
     && yarn \
     && npm run dev
 
 # Removing old db and medias, creating a new one, with default user admin:admin
-RUN rm -fr data/ \
-    && mkdir -p data/media \
+RUN mkdir -p data/media \
     && mkdir -p data/db \
     && mkdir -p data/settings \
     && mkdir -p static
-
-#    rm -fr api/migrations/*.py
-
+    
 # Removing old server, and creating it from scratch
-RUN rm -fr server/; python3 manage.py runmodwsgi --setup-only \
+RUN python3 manage.py runmodwsgi --setup-only \
                                 --host 0.0.0.0 --port 8000 \
                                 --user www-data --group www-data \
                                 --server-root=server/ \
@@ -130,11 +131,11 @@ RUN rm -fr server/; python3 manage.py runmodwsgi --setup-only \
                                 --url-alias /data/media media/ \
                                 --reload-on-changes
 
-RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations && chown www-data:www-data .
+RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations \
+    && chown www-data:www-data .
 
-RUN rm -fr /var/webmaboss/static/bootstrap /var/webmaboss/static/jquery && \
-    cp -r /var/webmaboss/node_modules/bootstrap/ /var/webmaboss/static && \
-    cp -r /var/webmaboss/node_modules/jquery/ /var/webmaboss/static
+RUN cp -r /var/webmaboss/node_modules/bootstrap/ /var/webmaboss/static \
+    && cp -r /var/webmaboss/node_modules/jquery/ /var/webmaboss/static
 
 # -------------------------------------------------------------------------------------------------
 # Cleanup    

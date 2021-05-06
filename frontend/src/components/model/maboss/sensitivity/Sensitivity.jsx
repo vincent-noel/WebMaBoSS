@@ -1,6 +1,4 @@
 import React from "react";
-import {Button, Collapse} from "reactstrap";
-
 
 import ModelPage from "../../ModelPage";
 import ModelName from "../../ModelName";
@@ -11,6 +9,7 @@ import NewForm from "./NewForm";
 import OldForm from "./OldForm";
 import SensitivityResult from "./SensitivityResult";
 import APICalls from "../../../api/apiCalls";
+import SensitivityActions from "./SensitivityActions";
 
 
 class Sensitivity extends React.Component {
@@ -30,7 +29,7 @@ class Sensitivity extends React.Component {
 
 			analysisId: null,
 
-			listOfSensitivityAnalysis: null,
+			listOfSensitivityAnalysis: {},
 
 			errorMessages: []
 		};
@@ -42,6 +41,8 @@ class Sensitivity extends React.Component {
 
 		this.startNew = this.startNew.bind(this);
 
+		this.createSensitivityAnalysis = this.createSensitivityAnalysis.bind(this);
+		this.showSensitivityAnalysis = this.showSensitivityAnalysis.bind(this);
 		this.loadExistingAnalysis = this.loadExistingAnalysis.bind(this);
 		this.loadSensitivityAnalyses = this.loadSensitivityAnalyses.bind(this);
 
@@ -67,10 +68,10 @@ class Sensitivity extends React.Component {
 	}
 
 	loadSensitivityAnalyses (project_id, model_id) {
-		if (this.getAnalysesCall !== null) { this.getAnalysesCall.cancel(); }
 		this.setState({listOfSensitivityAnalysis: null});
-		this.getAnalysesCall = APICalls.MaBoSSCalls.getSensitivityAnalysis(project_id, model_id);
 
+		// if (this.getAnalysesCall !== null) { this.getAnalysesCall.cancel(); }
+		this.getAnalysesCall = APICalls.MaBoSSCalls.getSensitivityAnalysis(project_id, model_id);
 		this.getAnalysesCall.promise.then(response => {
 			this.setState({listOfSensitivityAnalysis: response, selectedAnalysis: "Please select a simulation", selectedAnalysisId: null});
 		})
@@ -92,12 +93,11 @@ class Sensitivity extends React.Component {
 		this.setState(prevState => ({analysisId: analysis_id, oldForm: {...prevState.oldForm, show: false}}));
 	}
 
-	componentDidMount() {
+	componentWillUnmount() {
 		if (this.getAnalysesCall !== null) { this.getAnalysesCall.cancel(); }
 	}
 
 	render() {
-
 		return (
 			<ModelPage
 				path={this.props.match.path}
@@ -111,15 +111,14 @@ class Sensitivity extends React.Component {
 
 								<ErrorAlert errorMessages={this.state.errorMessages}/>
 
-								<Button color="default" onClick={() => this.createSensitivityAnalysis()}>New sensitivity analysis</Button>
-								{
-									this.state.listOfSensitivityAnalysis !== null && this.state.listOfSensitivityAnalysis.length > 0
-									? 	<Button color="default" onClick={() => this.showSensitivityAnalysis()}>
-											Existing sensitivity analysis
-										</Button>
-									: null
-								}
+								<SensitivityActions
+									project={projectContext.project} modelId={modelContext.modelId}
+									createSensitivityAnalysis={this.createSensitivityAnalysis}
+									loadSensitivityAnalyses={this.loadSensitivityAnalyses}
+									listOfSensitivityAnalysis={this.state.listOfSensitivityAnalysis}
+									showSensitivityAnalysis={this.showSensitivityAnalysis}
 
+								/>
 								<br/><br/>
 								<NewForm
 									project={projectContext.project} modelId={modelContext.modelId}
@@ -130,7 +129,7 @@ class Sensitivity extends React.Component {
 									project={projectContext.project} modelId={modelContext.modelId}
 									status={this.state.oldForm.show} toggle={this.toggleOldForm}
 									onSubmit={this.loadExistingAnalysis}
-									loadSensitivityAnalyses={this.loadSensitivityAnalyses}
+									// loadSensitivityAnalyses={this.loadSensitivityAnalyses}
 									listOfSensitivityAnalysis={this.state.listOfSensitivityAnalysis}
 								/>
 

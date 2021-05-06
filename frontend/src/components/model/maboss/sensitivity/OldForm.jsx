@@ -1,6 +1,7 @@
 import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import APICalls from "../../../api/apiCalls";
+import MyDropdown from "../../../commons/buttons/MyDropdown";
 import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 
 
@@ -27,28 +28,11 @@ class OldForm extends React.Component {
 		this.props.onSubmit(this.props.project, this.state.selectedAnalysisId);
 	}
 
-	onAnalysisChanged(simulation_id, name) {
+	onAnalysisChanged(simulation_ind) {
 		this.setState({
-			selectedAnalysis: name,
-			selectedAnalysisId: simulation_id
+			selectedAnalysis: this.props.listOfSensitivityAnalysis[simulation_ind].name,
+			selectedAnalysisId: this.props.listOfSensitivityAnalysis[simulation_ind].id
 		})
-	}
-
-	componentDidMount() {
-		this.props.loadSensitivityAnalyses(this.props.project, this.props.modelId);
-	}
-
-	shouldComponentUpdate(nextProps, nextState) {
-		if (nextProps.modelId !== this.props.modelId) {
-			this.props.loadSensitivityAnalyses(nextProps.project, nextProps.modelId);
-			return false;
-		}
-
-		if (nextProps.status && nextProps.status !== this.props.status) {
-			this.props.loadSensitivityAnalyses(nextProps.project, nextProps.modelId);
-		}
-
-		return true;
 	}
 
 	render() {
@@ -59,28 +43,16 @@ class OldForm extends React.Component {
 						<CardHeader>Load existing sensitivity analysis</CardHeader>
 						<CardBody>
                             {
-                            	this.props.listOfSensitivityAnalysis != null ?
-									<div className="dropdown container-fluid">
-										<button className="btn btn-secondary dropdown-toggle" type="button"
-												id="dropdownMenuButton"
-												data-toggle="dropdown"
-												aria-haspopup="true" aria-expanded="false" style={{width: '100%'}}>
-											{this.state.selectedAnalysis}
-										</button>
-										<div className="dropdown-menu" aria-labelledby="dropdownMenuButton"
-											 style={{width: '100%'}}>
-											{
-												this.props.listOfSensitivityAnalysis.length > 0 ?
-												this.props.listOfSensitivityAnalysis.map((analysis, id) => {
-													return <a
-														className="dropdown-item" key={analysis.id}
-														onClick={(e) => this.onAnalysisChanged(analysis.id, analysis.name)}
-													>{analysis.name}</a>
-												})
-												: null
-											}
-										</div>
-									</div>
+								this.props.listOfSensitivityAnalysis !== null && this.props.listOfSensitivityAnalysis.length > 0 ?
+									<MyDropdown 
+									label={this.state.selectedAnalysis}
+									width={"100%"}
+									dict={this.props.listOfSensitivityAnalysis.reduce((result, element, ind)=>{
+										result[ind] = element.name;
+										return result;
+									}, {})}
+									callback={(id)=>{this.onAnalysisChanged(id)}}
+								/>
                                 :
                                 	<LoadingIcon width="3rem"/>
                             }

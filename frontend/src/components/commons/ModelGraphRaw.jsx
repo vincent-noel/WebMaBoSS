@@ -3,8 +3,8 @@ import Cytoscape from 'cytoscape';
 import COSEBilkent from 'cytoscape-cose-bilkent';
 // import edgeEditing from 'cytoscape-edge-editing';
 import CytoscapeComponent from 'react-cytoscapejs';
-import LoadingIcon from "../../commons/loaders/LoadingIcon";
-import APICalls from "../../api/apiCalls";
+import LoadingIcon from "./loaders/LoadingIcon";
+import APICalls from "../api/apiCalls";
 
 Cytoscape.use(COSEBilkent);
 
@@ -68,7 +68,8 @@ class ModelGraphRaw extends React.Component {
 							position: {
 								x: 0,
 								y: 0
-							}
+							},
+							classes: this.props.state !== undefined ? (this.props.state[name] === 1 ? 'positive' : 'negative') : 'default'
 						}
 					}
 				).concat(Object.values(this.state.data['edges']).map(
@@ -117,6 +118,22 @@ class ModelGraphRaw extends React.Component {
 							'target-arrow-shape': 'tee'
 						},
 					},{
+						selector: 'node.positive',
+						style:	{
+							'background-color': '#00ff00'
+						}
+					},{
+						selector: 'node.negative',
+						style:	{
+							'background-color': '#ff0000'	
+						}
+					},{
+						selector: 'node.default',
+						style:	{
+							'background-color': '#fff'	
+						}
+					},{
+						
 						selector: 'node',
 						style:	{
 							'padding-left': 10,
@@ -126,7 +143,6 @@ class ModelGraphRaw extends React.Component {
 							'color': '#000',
 							'border-width': 2,
 							'border-color': '#000',
-							'background-color': '#fff',
 							'shape': 'roundrectangle',
 							'content': 'data(name)',
 							'text-valign': 'center',

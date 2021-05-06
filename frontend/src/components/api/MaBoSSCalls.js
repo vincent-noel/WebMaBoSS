@@ -418,6 +418,18 @@ class MaBoSSCalls {
 		);
 	}
 
+	static getLastStates(project_id, simulation_id) {
+		return makeCancelable(
+			fetch(
+				"/api/maboss/" + project_id + "/" + simulation_id + "/last_states/",
+				{
+					method: "get",
+					headers: getDefaultHeaders()
+				}
+			).then(response => response.json())
+		);
+	}
+	
 	static getNodesProbTraj(project_id, simulation_id) {
 		return makeCancelable(
 			fetch(

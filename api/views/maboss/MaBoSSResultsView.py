@@ -191,6 +191,35 @@ class MaBoSSResultsFixedPoints(HasMaBoSSSimulation):
 
 		fixed_points = None
 
+		if self.simulation.fixpoints is not None:
+			fixed_points = loads(self.simulation.fixpoints)
+			nodes = list(fixed_points.keys())[3:]
+			new_fps = []
+			for i in range(len(fixed_points['FP'])):
+				new_fps.append({
+					"proba": fixed_points['Proba'][str(i)],
+					"nodes": {node:fixed_points[node][str(i)] for node in nodes}
+				})
+			fixed_points = new_fps
+			
+		return Response(
+			{
+				'fixed_points': fixed_points,
+				'status': self.simulation.status
+			},
+			status=status.HTTP_200_OK
+		)
+
+
+
+class MaBoSSResultsLastState(HasMaBoSSSimulation):
+
+	def get(self, request, project_id, simulation_id):
+
+		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
+
+		fixed_points = None
+
 		if self.simulation.states_probtraj is not None:
 			fixed_points = {}
 			for key, values in loads(self.simulation.states_probtraj).items():
@@ -200,7 +229,7 @@ class MaBoSSResultsFixedPoints(HasMaBoSSSimulation):
 
 		return Response(
 			{
-				'fixed_points': fixed_points,
+				'last_states': fixed_points,
 				'status': self.simulation.status
 			},
 			status=status.HTTP_200_OK

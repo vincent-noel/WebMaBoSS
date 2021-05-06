@@ -64,7 +64,10 @@ class MaBoSSSettings extends React.Component {
 	}
 
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
-		if (nextProps.project !== this.props.project || nextProps.modelId !== this.props.modelId) {
+		if (nextProps.project !== this.props.project) {
+			return false;
+		} 
+		if (nextProps.modelId !== this.props.modelId) {
 			this.loadSettings(nextProps.project, nextProps.modelId);
 			return false;
 		}

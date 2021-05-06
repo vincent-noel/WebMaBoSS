@@ -23,14 +23,14 @@ class SideBar extends React.Component {
 					<li>
 						<NavLink to={"/model/overview/"} className='nav-link'>Overview</NavLink>
 					</li>
-					<li>
+					{/* <li>
 						<NavLink to={"/model/fixed_points/"} className='nav-link'>Fixed points</NavLink>
 					</li>
 					<li>
 						<NavLink to={"/model/maboss/simulation/"} className='nav-link'>MaBoSS</NavLink>
 						{
-							this.props.path.startsWith("/model/maboss/") ?
-							<ul className={"sidebar-nav"}>
+							this.props.path.startsWith("/model/maboss/") ? */}
+							{/* <ul className={"sidebar-nav"}> */}
 								<li>
 									<NavLink to="/model/maboss/editing/" className="nav-link">Editing</NavLink>
 								</li>
@@ -40,9 +40,9 @@ class SideBar extends React.Component {
 								<li>
 									<NavLink to="/model/maboss/sensitivity/" className="nav-link">Sensitivity</NavLink>
 								</li>
-							</ul>
+							{/* </ul>
 							: null}
-					</li>
+					</li> */}
 				</ul>
 			</div>
 		)

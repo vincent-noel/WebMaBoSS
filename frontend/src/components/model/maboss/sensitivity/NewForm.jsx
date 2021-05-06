@@ -12,8 +12,7 @@ import {
 	TabPane,
 	Nav,
 	NavItem,
-	NavLink,
-	DropdownToggle, DropdownMenu, DropdownItem, Dropdown
+	NavLink
 } from "reactstrap";
 import PropTypes from "prop-types";
 import ErrorAlert from "../../../commons/ErrorAlert";
@@ -46,6 +45,7 @@ class NewForm extends React.Component {
 			name: "",
 
 			outputVariables: null,
+			allOutputVariables: false,
 
 			singleMutations: {
 			   show: false,
@@ -83,13 +83,13 @@ class NewForm extends React.Component {
 
 		this.toggleInitialStates = this.toggleInitialStates.bind(this);
 		this.toggleRates = this.toggleRates.bind(this);
-		this.toggleServerDropdown = this.toggleServerDropdown.bind(this);
 
 		this.updateOutputVariables = this.updateOutputVariables.bind(this);
-
+		this.toggleAllOutputVariables = this.toggleAllOutputVariables.bind(this);
+		
 		this.getServerStatus = this.getServerStatus.bind(this);
 		this.selectServer = this.selectServer.bind(this);
-		
+		this.onSubmit = this.onSubmit.bind(this);		
 		this.createCall = null;
 		this.getSettingsCall = null;
 		this.getServersCall = null;
@@ -97,13 +97,13 @@ class NewForm extends React.Component {
 
 	getServerStatus(id) {
 		if (this.state.statusServer[id] === -1) {
-			return <LoadingInlineIcon width="1rem" className="float-right"/>;
+			return <LoadingInlineIcon width="1rem" className="float-right" key={"local"}/>;
 		}
 		if (this.state.statusServer[id] === 1) {
-			return <FontAwesomeIcon icon={faCheck} className="float-right"/>;
+			return <FontAwesomeIcon icon={faCheck} className="float-right" key={"on"}/>;
 		}
 		if (this.state.statusServer[id] === 0) {
-			return <FontAwesomeIcon icon={faTimes} className="float-right"/>;
+			return <FontAwesomeIcon icon={faTimes} className="float-right" key={"off"}/>;
 		}
 	}
 
@@ -144,10 +144,6 @@ class NewForm extends React.Component {
 			selectedServerLabel: ind === "-1" ? "Local" : [this.state.listServers[ind].desc, ' ', this.getServerStatus[ind]]});
 	}
 
-	toggleServerDropdown() {
-		this.setState({serverDropdownOpen: !this.state.serverDropdownOpen});
-	}
-
 	toggleTab(tab) {
 		if (this.state.activeTab !== tab) {
 			this.setState({activeTab: tab });
@@ -158,36 +154,40 @@ class NewForm extends React.Component {
 	   this.setState({name: name});
 	}
 
-	toggleSingleMutations(state) {
-		if (state) {
-			this.setState(prevState => ({singleMutations: {...prevState.singleMutations, show: true}}));
-		} else {
-			this.setState(prevState => ({singleMutations: {...prevState.singleMutations, show: false, on: false, off: false}}));
-	   	}
+	toggleSingleMutations() {
+		this.setState(prevState => { 
+			if (prevState.singleMutations.show) {
+				return {singleMutations: {...prevState.singleMutations, show: false, on: false, off: false}};
+			} else {
+				return {singleMutations: {...prevState.singleMutations, show: true}};
+			}
+		});
 	}
 
 	toggleSingleMutationsOn(state) {
-		this.setState(prevState => ({singleMutations: {...prevState.singleMutations, on: state}}));
+		this.setState(prevState => ({singleMutations: {...prevState.singleMutations, on: !prevState.singleMutations.on}}));
 	}
 
 	toggleSingleMutationsOff(state) {
-		this.setState(prevState => ({singleMutations: {...prevState.singleMutations, off: state}}));
+		this.setState(prevState => ({singleMutations: {...prevState.singleMutations, off: !prevState.singleMutations.off}}));
 	}
 
 	toggleDoubleMutations(state) {
-       	if (state) {
-            this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, show: true}}));
-        } else {
-			this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, show: false, on: false, off: false}}));
-		}
+		this.setState(prevState => { 
+			if (prevState.doubleMutations.show) {
+				return {doubleMutations: {...prevState.doubleMutations, show: false, on: false, off: false}};
+			} else {
+				return {doubleMutations: {...prevState.doubleMutations, show: true}};
+			}
+		});
 	}
 
 	toggleDoubleMutationsOn(state) {
-		this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, on: state}}));
+		this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, on: !prevState.doubleMutations.on}}));
 	}
 
 	toggleDoubleMutationsOff(state) {
-		this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, off: state}}));
+		this.setState(prevState => ({doubleMutations: {...prevState.doubleMutations, off: !prevState.doubleMutations.off}}));
 	}
 
 	toggleInitialStates(state) {
@@ -202,6 +202,16 @@ class NewForm extends React.Component {
 		let output_variables = this.state.outputVariables;
 		output_variables[node] = !output_variables[node];
 		this.setState({outputVariables: output_variables});
+	}
+	
+	toggleAllOutputVariables() {
+		let outputs = Object.keys(this.state.outputVariables).reduce(
+			(acc, key) => {
+				acc[key] = !this.state.allOutputVariables;
+				return acc;
+			}, {}
+		);
+		this.setState({allOutputVariables: !this.state.allOutputVariables, outputVariables: outputs});
 	}
 
 	getSettings(project_id, model_id) {
@@ -233,7 +243,7 @@ class NewForm extends React.Component {
 
 		let errors = [];
 
-		if (this.state.selectedServer !== -1 && this.state.statusServer[this.state.selectedServer] !== 1) {
+		if (this.state.selectedServer !== "-1" && this.state.statusServer[this.state.selectedServer] !== 1) {
 			errors.push("Please select an online MaBoSS server")
 		}
 
@@ -276,7 +286,14 @@ class NewForm extends React.Component {
 	}
 
 	componentDidMount() {
+		if (this.getSettingsCall != null) {
+			this.getSettingsCall.cancel();
+		}
 		this.getSettings(this.props.project, this.props.modelId);
+		
+		if (this.getServersCall != null) { 
+			this.getServersCall.cancel(); 
+		}
 		this.getServers();
 	}
 
@@ -284,6 +301,7 @@ class NewForm extends React.Component {
 		if (this.getSettingsCall != null) { this.getSettingsCall.cancel(); }
 		if (this.createCall != null) { this.createCall.cancel(); }
 		if (this.getServersCall != null) { this.getServersCall.cancel(); }
+		
 	}
 
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
@@ -293,7 +311,9 @@ class NewForm extends React.Component {
 		}
 
 		if (nextProps.modelId !== this.props.modelId) {
-			this.getSettingsCall.cancel();
+			if (this.getSettingsCall != null) {
+				this.getSettingsCall.cancel();
+			}
 			this.getSettings(nextProps.project, nextProps.modelId);
 			return false;
 		}
@@ -343,7 +363,7 @@ class NewForm extends React.Component {
 										<span className="value">
 											<Switch
 												checked={this.state.singleMutations.show}
-												updateCallback={this.toggleSingleMutations}
+												toggle={this.toggleSingleMutations}
 												id={"single_mutations"}
 											/>
 										</span>
@@ -354,7 +374,7 @@ class NewForm extends React.Component {
 											<span className="value">
 												<Switch
 													checked={this.state.singleMutations.off}
-													updateCallback={this.toggleSingleMutationsOff}
+													toggle={this.toggleSingleMutationsOff}
 													id={"single_mutations_off"}
 												/>
 											</span>
@@ -364,7 +384,7 @@ class NewForm extends React.Component {
 											<span className="value">
 												<Switch
 													checked={this.state.singleMutations.on}
-													updateCallback={this.toggleSingleMutationsOn}
+													toggle={this.toggleSingleMutationsOn}
 													id={"single_mutations_on"}
 												/>
 											</span>
@@ -375,7 +395,7 @@ class NewForm extends React.Component {
 										<span className="value">
 											<Switch
 												checked={this.state.doubleMutations.show}
-												updateCallback={this.toggleDoubleMutations}
+												toggle={this.toggleDoubleMutations}
 												id={"double_mutations"}
 											/>
 										</span>
@@ -386,7 +406,7 @@ class NewForm extends React.Component {
 											<span className="value">
 												<Switch
 													checked={this.state.doubleMutations.off}
-													updateCallback={this.toggleDoubleMutationsOff}
+													toggle={this.toggleDoubleMutationsOff}
 													id={"double_mutations_off"}
 												/>
 											</span>
@@ -396,7 +416,7 @@ class NewForm extends React.Component {
 											<span className="value">
 												<Switch
 													checked={this.state.doubleMutations.on}
-													updateCallback={this.toggleDoubleMutationsOn}
+													toggle={this.toggleDoubleMutationsOn}
 													id={"double_mutations_on"}
 												/>
 											</span>
@@ -411,22 +431,7 @@ class NewForm extends React.Component {
 									label={this.state.selectedServerLabel}
 									width="25rem"
 									callback={(id) => this.selectServer(id)}
-								
 								/>
-								<Dropdown isOpen={this.state.serverDropdownOpen} toggle={this.toggleServerDropdown} className="container-fluid">
-									<DropdownToggle style={{width: '25rem'}} caret>{this.state.selectedServerLabel}</DropdownToggle>
-									<DropdownMenu style={{width: '25rem'}}>
-										<DropdownItem onClick={() => this.selectServer(-1, "Local")}>Local</DropdownItem>
-										{
-											this.state.listServers.length > 0 ?
-												this.state.listServers.map((server, id) => {
-													return <DropdownItem key={id} className="d-flex"
-														onClick={() => this.selectServer(id, server.desc)}
-													>{server.desc}{this.getServerStatus(id)}</DropdownItem>
-											}) : null
-										}
-									</DropdownMenu>
-							 	</Dropdown>
 							</TabPane>
 							<TabPane tabId="outputs" className="tab-outputs">
 								{
@@ -435,7 +440,9 @@ class NewForm extends React.Component {
 										id={"in"}
 										type='switch'
 										dict={this.state.outputVariables}
-										updateCallback={this.updateOutputVariables}
+										toggleNode={this.updateOutputVariables}
+										allSwitch={this.state.allOutputVariables}
+										allSwitchToggle={this.toggleAllOutputVariables}
 									/> :
 									<LoadingIcon width="3rem"/>
 								}

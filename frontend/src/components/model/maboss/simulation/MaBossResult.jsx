@@ -1,7 +1,7 @@
 import React from "react";
 import {TabContent, TabPane, Nav, NavItem, NavLink, ButtonToolbar, Button, Dropdown, DropdownToggle, DropdownMenu, DropdownItem} from "reactstrap";
 import Settings from "../../../Settings";
-import MaBossFixedPoints from "./MaBossFixedPoints";
+import MaBoSSLastStates from "./MaBossLastStates";
 import MaBossNodesProbTraj from "./MaBossNodesProbTraj";
 import MaBossStatesProbTraj from "./MaBossStatesProbTraj";
 
@@ -10,6 +10,7 @@ import APICalls from "../../../api/apiCalls";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCaretDown} from "@fortawesome/free-solid-svg-icons";
 import MaBossSteadyStatesPCA from "./MaBossSteadyStatesPCA";
+import MaBossFixedPoints from "./MaBossFixedPoints";
 
 
 class MaBossResult extends React.Component {
@@ -19,10 +20,14 @@ class MaBossResult extends React.Component {
 
 		this.toggle = this.toggle.bind(this);
 		this.state = {
-			activeTab: 'fp',
+			activeTab: 'ls',
 			dropdownOpen: false,
 
+			// fptableLoaded: false,
+			// fptable: null,
+			
 			fixedPoints: null,
+			lastStates: null,
 			nodesProbTraj: null,
 			statesProbTraj: null,
 
@@ -39,6 +44,7 @@ class MaBossResult extends React.Component {
 		this.createNewModelCall = null;
 
 		this.getStatusCall = null;
+		this.getLastStatesCall = null;
 		this.getFixedPointsCall = null;
 		this.getNodesProbtrajCall = null;
 		this.getStateProbtrajCall = null;
@@ -53,40 +59,67 @@ class MaBossResult extends React.Component {
 		this.getStatusCall.promise.then((data) => {
 			if (data.done) {
 				clearInterval(this.statusChecker);
-				this.getFixedPoints(project_id, simulation_id);
-				this.getNodesProbtraj(project_id, simulation_id);
-				this.getStateProbtraj(project_id, simulation_id);
+				// this.getLastStates(project_id, simulation_id);
+				// this.getFixedPoints(project_id, simulation_id);
+				// this.getNodesProbtraj(project_id, simulation_id);
+				// this.getStateProbtraj(project_id, simulation_id);
+				this.getResults(project_id, simulation_id);
 				// this.getPCA(project_id, simulation_id);
 			}
 		});
-
 	}
-
-
-	getFixedPoints(project_id, simulation_id) {
-		this.setState({fptableLoaded: false, fptable: null});
+	
+	getResults(project_id, simulation_id) {
+		this.setState({lastStates: null, fixedPoints: null, nodesProbTraj: null, statesProbTraj: null});
+		this.getLastStatesCall = APICalls.MaBoSSCalls.getLastStates(project_id, simulation_id);
 		this.getFixedPointsCall = APICalls.MaBoSSCalls.getFixedPoints(project_id, simulation_id);
-		this.getFixedPointsCall.promise.then(data => {
-			this.setState({fixedPoints: data['fixed_points']})
-		});
-	}
-
-	getNodesProbtraj(project_id, simulation_id) {
-
-		this.setState({nodesProbTraj: null});
 		this.getNodesProbtrajCall = APICalls.MaBoSSCalls.getNodesProbTraj(project_id, simulation_id);
-		this.getNodesProbtrajCall.promise.then(data => {
-			this.setState({nodesProbTraj: data['nodes_probtraj']})
+		this.getStateProbtrajCall = APICalls.MaBoSSCalls.getStatesProbTraj(project_id, simulation_id);
+		Promise.all([
+			this.getLastStatesCall.promise, this.getFixedPointsCall.promise, 
+			this.getNodesProbtrajCall.promise, this.getStateProbtrajCall.promise
+		]).then((data) => {
+			this.setState({
+				lastStates: data[0]['last_states'], fixedPoints: data[1]['fixed_points'], 
+				nodesProbTraj: data[2]['nodes_probtraj'], statesProbTraj: data[3]['states_probtraj']
+			});
 		});
 	}
 
-	getStateProbtraj(project_id, simulation_id) {
-		this.setState({statesProbTraj: null});
-		this.getStateProbtrajCall = APICalls.MaBoSSCalls.getStatesProbTraj(project_id, simulation_id);
-		this.getStateProbtrajCall.promise.then(data => {
-			this.setState({statesProbTraj: data['states_probtraj']})
-		});
-	}
+	// getLastStates(project_id, simulation_id) {
+	// 	this.setState({lastStates: null});
+	// 	this.getLastStatesCall = APICalls.MaBoSSCalls.getLastStates(project_id, simulation_id);
+	// 	this.getLastStatesCall.promise.then(data => {
+	// 		this.setState({lastStates: data['last_states']})
+	// 	});
+	// }
+
+
+	// getFixedPoints(project_id, simulation_id) {
+	// 	this.setState({fixedPoints: null});
+	// 	this.getFixedPointsCall = APICalls.MaBoSSCalls.getFixedPoints(project_id, simulation_id);
+	// 	this.getFixedPointsCall.promise.then(data => {
+			
+	// 		this.setState({fixedPoints: data['fixed_points']})
+	// 	});
+	// }
+
+	// getNodesProbtraj(project_id, simulation_id) {
+
+	// 	this.setState({nodesProbTraj: null});
+	// 	this.getNodesProbtrajCall = APICalls.MaBoSSCalls.getNodesProbTraj(project_id, simulation_id);
+	// 	this.getNodesProbtrajCall.promise.then(data => {
+	// 		this.setState({nodesProbTraj: data['nodes_probtraj']})
+	// 	});
+	// }
+
+	// getStateProbtraj(project_id, simulation_id) {
+	// 	this.setState({statesProbTraj: null});
+	// 	this.getStateProbtrajCall = APICalls.MaBoSSCalls.getStatesProbTraj(project_id, simulation_id);
+	// 	this.getStateProbtrajCall.promise.then(data => {
+	// 		this.setState({statesProbTraj: data['states_probtraj']})
+	// 	});
+	// }
 
 	// getPCA(project_id, simulation_id) {
 	// 	this.setState({pca: null, pcaArrows: null, pcaArrowLabels: null, pcaExplainedVariance: null});
@@ -125,6 +158,7 @@ class MaBossResult extends React.Component {
 		}
 		if (this.getStatusCall !== null) {this.getStatusCall.cancel();}
 		if (this.getFixedPointsCall !== null) {this.getFixedPointsCall.cancel();}
+		if (this.getLastStatesCall !== null) {this.getLastStatesCall.cancel();}
 		if (this.getNodesProbtrajCall !== null) {this.getNodesProbtrajCall.cancel();}
 		if (this.getStateProbtrajCall !== null) {this.getStateProbtrajCall.cancel();}
 		// if (this.getPCACall !== null) {this.getPCACall.cancel();}
@@ -137,6 +171,7 @@ class MaBossResult extends React.Component {
 			if (this.getStatusCall !== null) this.getStatusCall.cancel();
 			this.setState({
 				fixedPoints: null,
+				lastStates: null,
 				nodesProbTraj: null,
 				statesProbTraj: null,
 				// pca: null,
@@ -144,14 +179,13 @@ class MaBossResult extends React.Component {
 				// pcaArrowLabels: null,
 				// pcaExplainedVariance: null,
 			});
-
 			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), Settings.updateRate);
+			this.getStatus(nextProps.project, nextProps.simulationId);
 			return false;
 		}
 		return true;
 	}
 	render() {
-
 		if (this.props.simulationId !== null) {
 			return (
 				<React.Fragment>
@@ -160,9 +194,9 @@ class MaBossResult extends React.Component {
 						<div className={"d-flex"} style={{"justifyContent": "flex-start"}}>
 							<NavItem>
 								<NavLink
-									onClick={() => this.toggle('fp')}
-									className={classnames({ active: this.state.activeTab === 'fp' })}
-								>Steady states distribution</NavLink>
+									onClick={() => this.toggle('ls')}
+									className={classnames({ active: this.state.activeTab === 'ls' })}
+								>Final state distribution</NavLink>
 							</NavItem>
 							<NavItem>
 								<NavLink
@@ -176,6 +210,13 @@ class MaBossResult extends React.Component {
 									className={classnames({ active: this.state.activeTab === 'spt' })}
 								>States probability trajectories</NavLink>
 							</NavItem>
+							<NavItem>
+								<NavLink
+									onClick={() => this.toggle('fp')}
+									className={classnames({ active: this.state.activeTab === 'fp' })}
+								>Fixed points</NavLink>
+							</NavItem>
+							
 							{/* <NavItem>
 								<NavLink
 									onClick={() => this.toggle('pca')}
@@ -193,13 +234,13 @@ class MaBossResult extends React.Component {
 						</Dropdown>
 					</Nav>
 					<TabContent activeTab={this.state.activeTab}>
-						<TabPane tabId="fp">
-							<MaBossFixedPoints
+						<TabPane tabId="ls">
+							<MaBoSSLastStates
 								project={this.props.project}
 								modelId={this.props.modelId}
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
-								fixedPoints={this.state.fixedPoints}
+								fixedPoints={this.state.lastStates}
 							/>
 						</TabPane>
 						<TabPane tabId="npt">
@@ -218,6 +259,15 @@ class MaBossResult extends React.Component {
 								simulationId={this.props.simulationId}
 								simulationName={this.props.simulationName}
 								statesProbas={this.state.statesProbTraj}
+							/>
+						</TabPane>
+						<TabPane tabId="fp">
+							<MaBossFixedPoints
+								project={this.props.project}
+								modelId={this.props.modelId}
+								simulationId={this.props.simulationId}
+								simulationName={this.props.simulationName}
+								fixedPoints={this.state.fixedPoints}
 							/>
 						</TabPane>
 						{/* <TabPane tabId="pca">

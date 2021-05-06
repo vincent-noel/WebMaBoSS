@@ -1,7 +1,7 @@
 import React from "react";
 import ModelPage from "../ModelPage";
 import ModelName from "../ModelName";
-import ModelGraphRaw from "./ModelGraphRaw";
+import ModelGraphRaw from "../../commons/ModelGraphRaw";
 
 import {ProjectContext, ModelContext} from "../../context";
 

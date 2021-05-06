@@ -17,7 +17,7 @@ class NavBar extends React.Component {
 						<div className="collapse navbar-collapse" id="navbarsExampleDefault">
 							<ul className="navbar-nav mr-auto">
 								<NavBarItem url="/models/" name="Models"/>
-								<NavBarItem url="/data/" name="Data"/>
+								{/* <NavBarItem url="/data/" name="Data"/> */}
 							</ul>
 						</div>
 

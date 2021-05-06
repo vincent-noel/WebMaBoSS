@@ -1,6 +1,6 @@
 import React from "react";
 
-const Switch = props => <label className="switch">
+const Switch = props => <label className="switch" key={props.id}>
 	<input
 		type="checkbox"
 		checked={props.checked}

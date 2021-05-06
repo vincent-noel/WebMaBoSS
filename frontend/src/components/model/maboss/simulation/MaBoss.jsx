@@ -113,6 +113,7 @@ class MaBoss extends React.Component {
 								/>
 								<MaBossResult
 									project={projectContext.project}
+									modelId={modelContext.modelId}
 									simulationId={this.state.simulationId}
 									simulationName={this.state.simulationName}
 									getModels={modelContext.getModels}
