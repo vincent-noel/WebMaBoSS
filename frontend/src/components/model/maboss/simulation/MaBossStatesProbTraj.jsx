@@ -9,9 +9,11 @@ class MaBossStatesProbTraj extends React.Component {
 	render() {
 
 		if (this.props.statesProbas !== null) {
-			return <LineChart
-				traj={this.props.statesProbas} colorList={Settings.colormap} title={this.props.simulationName}
-			/>;
+			if (Object.keys(this.props.statesProbas).length > 0) {
+				return <LineChart
+					traj={this.props.statesProbas} colorList={Settings.colormap} title={this.props.simulationName}
+				/>;
+			} else return <div/>;
 
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>;

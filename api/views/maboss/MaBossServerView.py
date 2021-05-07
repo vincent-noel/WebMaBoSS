@@ -6,6 +6,8 @@ from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
 
 from api.models.maboss import MaBoSSServer
+from django.contrib.auth.models import User
+
 from api.serializers import MaBoSSServerSerializer
 from maboss import MaBoSSClient
 from socket import timeout
@@ -19,7 +21,8 @@ class MaBoSSServerView(HasUser):
 
 		try:
 			if server_id is None:
-				servers = MaBoSSServer.objects.filter(user=self.user)
+				servers = MaBoSSServer.objects.all()
+				servers = [server for server in servers if server.user == request.user or server.user.is_staff]
 				serializer = MaBoSSServerSerializer(servers, many=True)
 
 				return Response(serializer.data)

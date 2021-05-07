@@ -7,8 +7,11 @@ class MaBoSSLastStates extends React.Component {
 
 	render() {
 		if (this.props.fixedPoints !== null) {
-			return <PieChart table={this.props.fixedPoints} colorList={Settings.colormap} title={this.props.simulationName}/>
-
+			if (Object.keys(this.props.fixedPoints).length > 0)
+				return <PieChart table={this.props.fixedPoints} colorList={Settings.colormap} title={this.props.simulationName}/>
+			else 
+				return <div/>;
+				
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>
 

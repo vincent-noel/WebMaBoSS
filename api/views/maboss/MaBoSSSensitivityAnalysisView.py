@@ -105,8 +105,9 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 			t_model = maboss_model.copy()
 			t_model.mutate(species, 'ON')
 
-			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
-			thread.start()
+			# thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
+			# thread.start()
+			run_simulation(t_model, maboss_simulation.id, server_host, server_port)
 
 	if analysis_settings['singleMutations']['off']:
 
@@ -120,8 +121,10 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 			t_model = maboss_model.copy()
 			t_model.mutate(species, 'OFF')
 
-			thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
-			thread.start()
+			# thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
+			# thread.start()
+			run_simulation(t_model, maboss_simulation.id, server_host, server_port)
+
 
 	if analysis_settings['doubleMutations']['on']:
 
@@ -139,8 +142,10 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 					t_model.mutate(species, 'ON')
 					t_model.mutate(subspecies, 'ON')
 
-					thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
-					thread.start()
+					# thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
+					# thread.start()
+					run_simulation(t_model, maboss_simulation.id, server_host, server_port)
+
 
 			if analysis_settings['doubleMutations']['off']:
 
@@ -157,8 +162,10 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 						t_model.mutate(species, 'ON')
 						t_model.mutate(subspecies, 'OFF')
 
-						thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
-						thread.start()
+						# thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
+						# thread.start()
+						run_simulation(t_model, maboss_simulation.id, server_host, server_port)
+
 
 	if analysis_settings['doubleMutations']['off']:
 
@@ -176,8 +183,10 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 					t_model.mutate(species, 'OFF')
 					t_model.mutate(subspecies, 'OFF')
 
-					thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
-					thread.start()
+					# thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
+					# thread.start()
+					run_simulation(t_model, maboss_simulation.id, server_host, server_port)
+
 
 			if analysis_settings['doubleMutations']['on']:
 
@@ -194,8 +203,10 @@ def run_analysis(maboss_model, sensitivity_analysis, analysis_settings):
 						t_model.mutate(species, 'OFF')
 						t_model.mutate(subspecies, 'ON')
 
-						thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
-						thread.start()
+						# thread = Thread(target=run_simulation, args=(t_model, maboss_simulation.id, server_host, server_port))
+						# thread.start()
+						run_simulation(t_model, maboss_simulation.id, server_host, server_port)
+
 
 def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port):
 
@@ -204,7 +215,7 @@ def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port)
 			mbcli = MaBoSSClient(server_host, int(server_port))
 			res = mbcli.run(maboss_model)
 		else:
-			res = maboss_model.run()
+			res = maboss_model.run(cmaboss=True)
 
 		fixed_points = res.get_fptable()
 		if fixed_points is not None:
@@ -268,6 +279,10 @@ class MaBoSSSensitivityStatusView(HasMaBoSSSensitivity):
 
 		simulations = MaBoSSSensitivitySimulation.objects.filter(sensitivity_analysis=self.analysis)
 		finished = [simulation.status == MaBoSSSensitivitySimulation.ENDED for simulation in simulations]
-		result = {'done': float(sum(finished))/float(len(simulations)) if len(simulations) > 0 else 0}
+		failed = [simulation.status in [MaBoSSSensitivitySimulation.ERROR, MaBoSSSensitivityAnalysis.INTERRUPTED] for simulation in simulations]
+		result = {
+			'done': float(sum(finished))/float(len(simulations)) if len(simulations) > 0 else 0,
+			'failed': sum(failed) > 0
+		}
 
 		return Response(result, status=status.HTTP_200_OK)

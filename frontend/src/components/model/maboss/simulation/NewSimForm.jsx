@@ -27,13 +27,9 @@ class NewSimForm extends React.Component {
 			settings: {
 				sample_count: 1000,
 				max_time: 1000,
-				time_tick: 50,
 				discrete_time: false,
 				use_physrandgen: true,
 				seed_pseudorandom: 100,
-				statdist_traj_count: 0,
-				statdist_cluster_threshold: 0.98,
-				thread_count: 4,
 			},
 
 			name: "",
@@ -57,11 +53,11 @@ class NewSimForm extends React.Component {
 
 		this.sampleCountRef = React.createRef();
 		this.maxTimeRef = React.createRef();
-		this.timeTickRef = React.createRef();
+		// this.timeTickRef = React.createRef();
 		this.threadCountRef = React.createRef();
 		this.pseudoRandomSeedRef = React.createRef();
-		this.statdistTrajCountRef = React.createRef();
-		this.statdistClusterThresholdRef = React.createRef();
+		// this.statdistTrajCountRef = React.createRef();
+		// this.statdistClusterThresholdRef = React.createRef();
 
         this.handleDiscreteTimeChange = this.handleDiscreteTimeChange.bind(this);
 		this.handlePhysicalRandGen = this.handlePhysicalRandGen.bind(this);
@@ -233,10 +229,10 @@ class NewSimForm extends React.Component {
 		this.setState(prevState => ({settings: {...prevState.settings, sample_count: value}}));
 	}
 
-	handleThreadCountChange(e) {
-		const value = e.target.value;
-		this.setState(prevState => ({settings: {...prevState.settings, thread_count: value}}));
-	}
+	// handleThreadCountChange(e) {
+	// 	const value = e.target.value;
+	// 	this.setState(prevState => ({settings: {...prevState.settings, thread_count: value}}));
+	// }
 
 	handleDiscreteTimeChange(value) {
 		this.setState(prevState => ({settings: {...prevState.settings, discrete_time: value}}))
@@ -247,10 +243,10 @@ class NewSimForm extends React.Component {
 		this.setState(prevState => ({settings: {...prevState.settings, max_time: value}}));
 	}
 
-	handleTimeTickChange(e) {
-		const value = e.target.value;
-		this.setState(prevState => ({settings: {...prevState.settings, time_tick: value}}));
-	}
+	// handleTimeTickChange(e) {
+	// 	const value = e.target.value;
+	// 	this.setState(prevState => ({settings: {...prevState.settings, time_tick: value}}));
+	// }
 
 	handlePhysicalRandGen(value) {
 		this.setState(prevState => ({settings: {...prevState.settings, use_physrandgen: value}}));
@@ -261,15 +257,15 @@ class NewSimForm extends React.Component {
 		this.setState(prevState => ({settings: {...prevState.settings, seed_pseudorandom: value}}));
 	}
 
-	handleStatdistTrajCount(e) {
-		const value = e.target.value;
-		this.setState(prevState => ({settings: {...prevState.settings, statdist_traj_count: value}}));
-	}
+	// handleStatdistTrajCount(e) {
+	// 	const value = e.target.value;
+	// 	this.setState(prevState => ({settings: {...prevState.settings, statdist_traj_count: value}}));
+	// }
 
-	handleStatdistClusterThreshold(e) {
-		const value = e.target.value;
-		this.setState(prevState => ({settings: {...prevState.settings, statdist_cluster_threshold: value}}));
-	}
+	// handleStatdistClusterThreshold(e) {
+	// 	const value = e.target.value;
+	// 	this.setState(prevState => ({settings: {...prevState.settings, statdist_cluster_threshold: value}}));
+	// }
 
 	toggleTab(tab) {
 		if (this.state.activeTab !== tab) {
@@ -304,15 +300,15 @@ class NewSimForm extends React.Component {
 
 		}
 
-		if (!this.state.settings.time_tick) {
-			errors.push("Please provide a value for the time tick");
-			this.timeTickRef.current.focus();
+		// if (!this.state.settings.time_tick) {
+		// 	errors.push("Please provide a value for the time tick");
+		// 	this.timeTickRef.current.focus();
 
-		} else if (isNaN(this.state.settings.time_tick)) {
-			errors.push("Please provide a valid value for the time tick");
-			this.timeTickRef.current.focus();
+		// } else if (isNaN(this.state.settings.time_tick)) {
+		// 	errors.push("Please provide a valid value for the time tick");
+		// 	this.timeTickRef.current.focus();
 
-		}
+		// }
 
 		if (this.state.selectedServer !== "-1" && this.state.statusServer[this.state.selectedServer] !== 1) {
 			errors.push("Please select an online MaBoSS server")
@@ -453,13 +449,13 @@ class NewSimForm extends React.Component {
 											   onChange={(e) => this.handleMaxTimeChange(e)}
 										/>
 									</div>
-									<div className="form-group general">
+									{/* <div className="form-group general">
 										<label htmlFor="timeTick" className="name">Time tick</label>
 										<input type="number" className="form-control" id="timeTick" placeholder="1"
 											   value={this.state.settings.time_tick} ref={this.timeTickRef}
 											   onChange={(e) => this.handleTimeTickChange(e)}
 										/>
-									</div>
+									</div> */}
 										<div className="form-group general">
 										<label htmlFor="sampleCount" className="name">Sample count</label>
 										<input type="number" className="form-control" id="sampleCount" placeholder="1000"
@@ -467,13 +463,13 @@ class NewSimForm extends React.Component {
 										   onChange={(e) => this.handleSampleCountChange(e)}
 										/>
 									</div>
-									<div className="form-group general">
+									{/* <div className="form-group general">
 										<label htmlFor="threadCount" className="name">Thread count</label>
 										<input type="number" className="form-control" id="threadCount" placeholder="4"
 										   value={this.state.settings.thread_count} ref={this.threadCountRef}
 										   onChange={(e) => this.handleThreadCountChange(e)}
 										/>
-									</div>
+									</div> */}
 									<div className="form-group general">
 										<label htmlFor="discreteTime" className="name">Discrete time</label>
 										<Switch checked={this.state.settings.discrete_time} updateCallback={this.handleDiscreteTimeChange} id={"discreteTime"}/>
@@ -489,7 +485,7 @@ class NewSimForm extends React.Component {
 										   onChange={(e) => this.handlePseudoRandomSeed(e)}
 										/>
 									</div>
-									<div className="form-group general">
+									{/* <div className="form-group general">
 										<label htmlFor="statdistTrajCount" className="name">Statdist Traj Count</label>
 										<input type="number" className="form-control" id="statdistTrajCount" placeholder="1000"
 										   value={this.state.settings.statdist_traj_count} ref={this.statdistTrajCountRef}
@@ -502,7 +498,7 @@ class NewSimForm extends React.Component {
 										   value={this.state.settings.statdist_cluster_threshold} ref={this.statdistClusterThresholdRef}
 										   onChange={(e) => this.handleStatdistClusterThreshold(e)}
 										/>
-									</div>
+									</div> */}
 									
 									<MyDropdown
 										dict={

@@ -11,13 +11,14 @@ RUN apt-get update -qq && \
     apt-get install -yq --no-install-recommends ca-certificates wget python3 python3-pip python3-dev\
                           curl software-properties-common nano git apt-transport-https \
                           apache2 apache2-dev mariadb-client libmariadbclient-dev graphviz unzip \
+                          flex bison g++ make cmake libxml2-dev libbz2-dev zlib1g-dev \
     && apt clean -y \
     && python3 -m pip install --no-cache-dir --upgrade setuptools pip wheel
 
 ##-----------------------------------------------------------------------------------------------
 ## base conda environment
 ## 
-RUN CONDA_VERSION="py37_4.8.2" && \
+RUN CONDA_VERSION="py39_4.9.2" && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${CONDA_VERSION}-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh 
@@ -26,7 +27,7 @@ ENV PATH="${PATH}:/opt/conda/bin"
 
 RUN conda config --set auto_update_conda False \
     && conda install --no-update-deps -y \
-        potassco::clingo=5.4.0=py37lua53hf484d3e_0 \
+        potassco::clingo=5.5.0 \
         colomoto::ginsim=3.0.0b=12 \
     && conda clean -y --all && rm -rf /opt/conda/pkgs
 
@@ -39,22 +40,55 @@ RUN curl -sL https://deb.nodesource.com/setup_14.x | bash - \
     && npm install -g yarn
 
 ## -----------------------------------------------------------------------------------------------
+## Installing libSBML
+##
+RUN wget https://sourceforge.net/projects/sbml/files/libsbml/5.19.0/stable/libSBML-5.19.0-core-plus-packages-src.tar.gz \
+    && tar -zxf libSBML-5.19.0-core-plus-packages-src.tar.gz \
+    && cd libSBML-5.19.0-Source \
+    && mkdir build \
+    && cd build \
+    && cmake -DCMAKE_INSTALL_PREFIX=/usr \
+        -DCMAKE_INSTALL_LIBDIR=/usr/lib \
+        -DCMAKE_CXX_COMPILER=g++ \
+        -DCMAKE_C_COMPILER=gcc \
+        -DCMAKE_CXX_STANDARD_LIBRARIES=-lxml2 \
+        -DWITH_SWIG=OFF \
+        -DLIBXML_LIBRARY=/usr/lib \
+        -DLIBXML_INCLUDE_DIR=/usr/include/libxml2 \
+        -DENABLE_COMP=ON \
+        -DENABLE_FBC=ON \
+        -DENABLE_GROUPS=ON \
+        -DENABLE_LAYOUT=ON \
+        -DENABLE_MULTI=ON \
+        -DENABLE_QUAL=ON \
+        -DENABLE_RENDER=ON \
+        -DENABLE_DISTRIB=ON \
+        .. \
+    && make \
+    && make install \
+    && cd ../.. \
+    && rm -fr libSBML-5.19.0-Source
+
+## -----------------------------------------------------------------------------------------------
 ## Installing MaBoSS from github repo
 ##
-RUN apt-get install -y --no-install-recommends flex bison g++ make \
-    && apt clean -y \
-    && git clone https://github.com/maboss-bkmc/MaBoSS-env-2.0 /opt/MaBoSS-env-2.0 \
+RUN git clone https://github.com/vincent-noel/MaBoSS-env-2.0 /opt/MaBoSS-env-2.0 \
     && cd /opt/MaBoSS-env-2.0/engine/src/ \
-    && make install \
-    && make MAXNODES=128 install \
-    && make MAXNODES=256 install \
-    && make MAXNODES=512 install \
-    && make MAXNODES=1024 install \
+    && git checkout feat/sbml \
+    && make install SBML_COMPAT=1 \
+    && make MAXNODES=128 SBML_COMPAT=1 install \
+    && make MAXNODES=256 SBML_COMPAT=1 install \
+    && make MAXNODES=512 SBML_COMPAT=1 install \
+    && make MAXNODES=1024 SBML_COMPAT=1 install \
     && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS /opt/conda/bin \
     && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS_128n /opt/conda/bin \
     && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS_256n /opt/conda/bin \
     && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS_512n /opt/conda/bin \
     && mv /opt/MaBoSS-env-2.0/engine/pub/MaBoSS_1024n /opt/conda/bin \
+    && cd ../python \
+    && cp -r ../src cmaboss/ \
+    && python3 -m pip install numpy \
+    && python3 -m pip install . \
     && rm -fr /opt/MaBoSS-env-2.0
     
 ADD requirements.txt /var/webmaboss/requirements.txt

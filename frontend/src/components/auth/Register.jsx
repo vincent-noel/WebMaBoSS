@@ -6,6 +6,7 @@ import FullPage from "../FullPage";
 import ErrorAlert from "../commons/ErrorAlert";
 import {setAPIKey} from "../commons/sessionVariables";
 import APICalls from "../api/apiCalls";
+import MaBoSSIcon from "../commons/MaBoSSIcon";
 
 
 class Register extends React.Component {
@@ -117,6 +118,10 @@ class Register extends React.Component {
 					<Card style={{width: '20em'}}>
 						<CardHeader>Register to WebMaBoSS</CardHeader>
 						<CardBody>
+						<div className="d-flex justify-content-center">
+							<MaBoSSIcon width={"200px"}/>
+						</div>
+						<br/>
 						<ErrorAlert errorMessages={this.state.errorMessages}/>
 						<div className="form-group">
 							<label htmlFor="username">Username</label>

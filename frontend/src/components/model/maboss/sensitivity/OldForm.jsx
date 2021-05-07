@@ -20,7 +20,7 @@ class OldForm extends React.Component {
 
 	removeOldAnalyses(project_id, analysis_id) {
 		this.removeAnalysesCall = APICalls.MaBoSSCalls.deleteSensitivityAnalysis(project_id, analysis_id);
-		this.removeAnalysesCall.promise.then(response => this.loadSensitivityAnalyses(this.props.project, this.props.modelId))
+		this.removeAnalysesCall.promise.then(response => this.props.loadSensitivityAnalyses(this.props.project, this.props.modelId))
 	}
 
 	onSubmit(e) {

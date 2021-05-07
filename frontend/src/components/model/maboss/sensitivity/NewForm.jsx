@@ -67,7 +67,7 @@ class NewForm extends React.Component {
 			listServers: [],
 			serverDropdownOpen: false,
 			selectedServerLabel: "Local",
-			selectedServer: -1,
+			selectedServer: "-1",
 			statusServer: [],
 
 			errors: []

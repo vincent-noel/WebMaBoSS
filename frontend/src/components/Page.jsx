@@ -4,6 +4,7 @@ import PropTypes from "prop-types";
 import {getProject, isConnected} from "./commons/sessionVariables";
 import history from './history';
 import {ProjectContext} from './context';
+import Home from "./Home";
 
 
 class Page extends React.Component {
@@ -28,9 +29,9 @@ class Page extends React.Component {
 
 
 	componentDidMount() {
-		if (!isConnected() && this.props.path !== "/register/") {
-			history.push("/login/");
-		}
+		// if (!isConnected() && this.props.path !== "/register/") {
+		// 	history.push("/login/");
+		// }
 	}
 
 	render() {
@@ -38,9 +39,13 @@ class Page extends React.Component {
 			<ProjectContext.Provider value={{project: this.state.project, updateProject: this.updateProject}}>
 			<div className="container-fluid">
 				<NavBar path={this.props.path}/>
-				<div className="page">
-					{this.props.children}
-				</div>
+				{
+					!isConnected() && this.props.path !== "/register/" && this.props.path !== "/login/" ?
+					<div className="page"><Home/></div> :
+					<div className="page">
+						{this.props.children}
+					</div>
+				}
 			</div>
 			</ProjectContext.Provider>
 		);

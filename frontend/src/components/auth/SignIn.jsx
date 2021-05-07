@@ -6,6 +6,7 @@ import FullPage from "../FullPage";
 import ErrorAlert from "../commons/ErrorAlert";
 import {isConnected, setAPIKey, setUser} from "../commons/sessionVariables";
 import APICalls from "../api/apiCalls";
+import MaBoSSIcon from "../commons/MaBoSSIcon";
 
 
 class SignIn extends React.Component {
@@ -98,7 +99,11 @@ class SignIn extends React.Component {
 					<Card style={{width: '20em'}}>
 						<CardHeader>Sign in</CardHeader>
 						<CardBody>
-							<ErrorAlert errorMessages={this.state.errorMessages}/>
+							<div className="d-flex justify-content-center">
+								<MaBoSSIcon width={"200px"}/>
+							</div>
+						<br/>
+						<ErrorAlert errorMessages={this.state.errorMessages}/>
 							<div className="form-group">
 								<label htmlFor="username">Username</label>
 								<input

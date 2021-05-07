@@ -8,6 +8,7 @@ import ExportModelForm from "./ExportModelForm";
 import {ProjectContext} from "../context";
 import TagForm from "./TagForm";
 import ImportModel from "./ImportModel";
+import ErrorAlert from "../commons/ErrorAlert";
 
 
 class Models extends React.Component {
@@ -15,6 +16,7 @@ class Models extends React.Component {
 	constructor(props) {
 		super(props);
 
+		this.showErrors = this.showErrors.bind(this);
 		this.showModelForm = this.showModelForm.bind(this);
 		this.hideModelForm = this.hideModelForm.bind(this);
 		this.showExportModelForm = this.showExportModelForm.bind(this);
@@ -32,8 +34,13 @@ class Models extends React.Component {
 			tagExportModelForm: null,
 			showTagModelForm: false,
 			idTagModelForm: null,
-			showModelImport: false
+			showModelImport: false,
+			errors: []
 		}
+	}
+	
+	showErrors(errors) {
+		this.setState({errors: errors});
 	}
 
 	showModelForm(idProjectForm=null) {
@@ -88,6 +95,7 @@ class Models extends React.Component {
 		return (
 			<FullPage path={this.props.match.path}>
 				<h2>Models</h2><br/>
+				<ErrorAlert errorMessages={this.state.errors}/>
 				<ProjectContext.Consumer>
 					{(projectContext => <LogicalModels
 						endpoint="/api/logical_models/"
@@ -136,6 +144,7 @@ class Models extends React.Component {
 									status={this.state.showModelImport}
 									show={this.showModelImport}
 									hide={this.hideModelImport}
+									showErrors={this.showErrors}
 								/>
 							</React.Fragment>
 						}

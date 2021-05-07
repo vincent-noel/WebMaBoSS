@@ -119,6 +119,8 @@ class MaBoSSSimulationView(HasModel):
 
 		cfg_settings = loads(request.POST['settings'])
 		maboss_model.param.update(cfg_settings)
+		maboss_model.param['thread_count'] = 6
+		maboss_model.param['time_tick'] = maboss_model.param['max_time']/100
 
 		mutations = loads(request.POST['mutations'])
 		for var, mutation in mutations.items():
@@ -186,13 +188,14 @@ def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port)
 			maboss_simulation.save()
 			print("Saved results : %.2gs" % (time()-t4))
 
-	except:
+	except Exception as e:
+		
 		with transaction.atomic():
 			maboss_simulation = MaBoSSSimulation.objects.get(id=maboss_simulation_id)
 			maboss_simulation.status = MaBoSSSimulation.ERROR
-			maboss_simulation.error = "Simulation failed"
+			maboss_simulation.error = str(e)
 			maboss_simulation.save()
-			print("Simulation failed !")
+			print("Simulation failed ! : " + str(e))
 
 
 class MaBoSSSimulationRemove(HasMaBoSSSimulation):
@@ -291,6 +294,11 @@ class MaBoSSSimulationStatusView(HasMaBoSSSimulation):
 	def get(self, request, project_id, simulation_id):
 		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)
 
-		result = {'done': self.simulation.status == MaBoSSSimulation.ENDED}
+		result = {
+			'done': self.simulation.status == MaBoSSSimulation.ENDED,
+			'failed': self.simulation.status in [MaBoSSSimulation.ERROR, MaBoSSSimulation.INTERRUPTED]
+		}
+		if self.simulation.status == MaBoSSSimulation.ERROR:
+			result.update({'error': self.simulation.error})
 
 		return Response(result, status=status.HTTP_200_OK)

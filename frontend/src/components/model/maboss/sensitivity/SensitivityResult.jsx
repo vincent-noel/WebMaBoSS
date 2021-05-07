@@ -7,6 +7,7 @@ import APICalls from "../../../api/apiCalls";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faFilter} from "@fortawesome/free-solid-svg-icons";
 import FiltersForm from "./FiltersForm";
+import ErrorAlert from "../../../commons/ErrorAlert";
 
 
 class SensitivityResult extends React.Component {
@@ -26,9 +27,10 @@ class SensitivityResult extends React.Component {
 
 			showFiltersForm: false,
 
-			listStates: null,
+			listStates: [],
 			colorMap: null,
 			analysisStatus: false,
+			errors: []
 		};
 
 		this.getFixedPointsCall = null;
@@ -76,6 +78,10 @@ class SensitivityResult extends React.Component {
 				clearInterval(this.statusChecker);
 				this.getFixedPoints(project_id, analysis_id);
 
+			} else if (data.failed) {
+				clearInterval(this.statusChecker);
+				this.setState({analysisStatus: true, steadyStates: {loaded: true, table: [], filteredTable: {}}, errors: ['Sensitivity analysis has failed']})
+				
 			} else {
 				if (!this.statusChecker) {
 					this.statusChecker = setInterval(
@@ -153,11 +159,14 @@ class SensitivityResult extends React.Component {
 		if (this.props.analysisId !== null) {
 			return (
 				<React.Fragment>
+					<ErrorAlert errorMessages={this.state.errors}/>
+
 					<FiltersForm
 						status={this.state.showFiltersForm} toggle={this.toggleFiltersForm}
 						listStates={this.state.listStates} filterStates={this.filterStates}
 						clearFilters={this.clearFilters}
 					/>
+					
 					<Nav tabs style={{"justifyContent": "space-between"}}>
 						<div className={"d-flex"} style={{"justifyContent": "flex-start"}}>
 							<NavItem>
@@ -179,7 +188,10 @@ class SensitivityResult extends React.Component {
 								{/*>States probability trajectories</NavLink>*/}
 							{/*</NavItem>*/}
 						</div>
-						<Button onClick={this.toggleFiltersForm}><FontAwesomeIcon icon={faFilter}/></Button>
+						{
+							this.state.steadyStates.table !== null && this.state.steadyStates.table.length > 0 ?
+							<Button onClick={this.toggleFiltersForm}><FontAwesomeIcon icon={faFilter}/></Button> : null
+						}
 					</Nav>
 					<TabContent activeTab={this.state.activeTab}>
 						<TabPane tabId="fp">

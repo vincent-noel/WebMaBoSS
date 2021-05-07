@@ -72,7 +72,7 @@ class FiltersForm extends React.Component {
 					<CardHeader>Filter simulations</CardHeader>
 					<CardBody>
 						{
-							this.props.listStates != null ?
+							this.props.listStates != null && this.props.listStates.length > 0 ?
 								<Dropdown isOpen={this.state.statesDropdownOpen} toggle={this.toggleStateDropdown} className="container-fluid">
 									<DropdownToggle style={{width: '100%'}} caret>{this.state.selectedStateLabel}</DropdownToggle>
 									<DropdownMenu style={{width: '100%'}}>

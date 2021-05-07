@@ -8,6 +8,7 @@ services:
     restart: always
     volumes:
       - db:/var/lib/mysql
+    command: --max_allowed_packet=268435456      # Set max_allowed_packet to 256M (or any other value)
     environment:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=webmaboss

@@ -129,7 +129,7 @@ class Sensitivity extends React.Component {
 									project={projectContext.project} modelId={modelContext.modelId}
 									status={this.state.oldForm.show} toggle={this.toggleOldForm}
 									onSubmit={this.loadExistingAnalysis}
-									// loadSensitivityAnalyses={this.loadSensitivityAnalyses}
+									loadSensitivityAnalyses={this.loadSensitivityAnalyses}
 									listOfSensitivityAnalysis={this.state.listOfSensitivityAnalysis}
 								/>
 

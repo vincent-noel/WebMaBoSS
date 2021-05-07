@@ -9,11 +9,13 @@ class MaBossNodesProbTraj extends React.Component {
 	render() {
 
 		if (this.props.nodesProbas !== null) {
-			return <LineChart
-				traj={this.props.nodesProbas}
-				colorList={Settings.colormap}
-				title={this.props.simulationName}
-			/>
+			if (Object.keys(this.props.nodesProbas).length > 0) {
+				return <LineChart
+					traj={this.props.nodesProbas}
+					colorList={Settings.colormap}
+					title={this.props.simulationName}
+				/>;
+			} else return <div/>;
 
 		} else if (this.props.simulationId !== null) {
 			return <LoadingIcon width="3rem"/>

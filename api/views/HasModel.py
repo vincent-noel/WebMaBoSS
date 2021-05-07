@@ -122,7 +122,7 @@ class HasModel(HasProject):
 			return tmp_sbml
 
 		elif self.model.format == LogicalModel.MABOSS:
-			ginsim_model = self.getGINSimModel()
+			ginsim_model = self.getBioLQMModel()
 
 			path = tempfile.mkdtemp()
 			tmp_sbml = tempfile.mkstemp(dir=path, suffix='.sbml')[1]
@@ -142,11 +142,12 @@ class HasModel(HasProject):
 			return join(settings.MEDIA_ROOT, self.model.file.path)
 
 		elif self.model.format == LogicalModel.MABOSS:
-			ginsim_model = self.getGINSimModel()
+			ginsim_model = self.getBioLQMModel()
 
 			path = tempfile.mkdtemp()
 			tmp_zginml = tempfile.mkstemp(dir=path, suffix='.zginml')[1]
-			biolqm.save(ginsim_model)
+			biolqm.save(ginsim_model, tmp_zginml, "ginml")
+			return tmp_zginml
 
 	def getMaBoSSBNDFile(self):
 

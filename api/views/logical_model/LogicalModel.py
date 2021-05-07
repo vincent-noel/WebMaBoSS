@@ -14,7 +14,6 @@ import ginsim
 from json import loads
 import tempfile
 
-
 class LogicalModelFile(HasModel):
 
 	def get(self, request, project_id, model_id):
@@ -27,10 +26,9 @@ class LogicalModelFile(HasModel):
 			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
 
 		return FileResponse(
-			open(join(settings.MEDIA_ROOT, self.model.file.path), 'rb'),
-			as_attachment=True, filename=basename(self.model.file.path)
+			open(model_file, 'rb'),
+			as_attachment=True, filename=basename(model_file)
 		)
-
 
 class LogicalModelSBMLFile(HasModel):
 
@@ -64,8 +62,6 @@ class LogicalModelMaBoSSBNDFile(HasModel):
 			as_attachment=True, filename=basename(bnd_filename)
 		)
 
-
-
 class LogicalModelMaBoSSCFGFile(HasModel):
 
 	def get(self, request, project_id, model_id):
@@ -82,8 +78,6 @@ class LogicalModelMaBoSSCFGFile(HasModel):
 			as_attachment=True, filename=basename(cfg_filename)
 		)
 
-
-
 class LogicalModelName(HasModel):
 
 	def get(self, request, project_id, model_id):
@@ -93,8 +87,6 @@ class LogicalModelName(HasModel):
 		serializer = LogicalModelNameSerializer(self.model)
 
 		return Response(serializer.data)
-
-
 
 class LogicalModelNodes(HasModel):
 
@@ -145,7 +137,6 @@ class LogicalModelNodes(HasModel):
 			self.saveMaBoSSModel(maboss_model)
 
 		return Response(data=data, status=status.HTTP_200_OK)
-
 
 class LogicalModelGraph(HasModel):
 

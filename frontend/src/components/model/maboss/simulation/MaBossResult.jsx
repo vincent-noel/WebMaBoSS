@@ -11,6 +11,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faCaretDown} from "@fortawesome/free-solid-svg-icons";
 import MaBossSteadyStatesPCA from "./MaBossSteadyStatesPCA";
 import MaBossFixedPoints from "./MaBossFixedPoints";
+import ErrorAlert from "../../../commons/ErrorAlert";
 
 
 class MaBossResult extends React.Component {
@@ -36,6 +37,7 @@ class MaBossResult extends React.Component {
 			// pcaArrowLabels: null,
 			// pcaExplainedVariance: null,
 
+			errors: []
 		};
 
 		this.toggleDropdown = this.toggleDropdown.bind(this);
@@ -65,6 +67,14 @@ class MaBossResult extends React.Component {
 				// this.getStateProbtraj(project_id, simulation_id);
 				this.getResults(project_id, simulation_id);
 				// this.getPCA(project_id, simulation_id);
+			}
+			if (data.failed) {
+				clearInterval(this.statusChecker);
+				this.setState({
+					lastStates: {}, fixedPoints: {}, nodesProbTraj: {}, statesProbTraj: {},
+					errors: ["Simulation failed : " + data.error]
+				})
+				
 			}
 		});
 	}
@@ -189,6 +199,7 @@ class MaBossResult extends React.Component {
 		if (this.props.simulationId !== null) {
 			return (
 				<React.Fragment>
+					<ErrorAlert errorMessages={this.state.errors}/>
 
 					<Nav tabs style={{"justifyContent": "space-between"}}>
 						<div className={"d-flex"} style={{"justifyContent": "flex-start"}}>

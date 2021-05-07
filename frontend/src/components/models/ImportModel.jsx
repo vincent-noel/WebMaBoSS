@@ -95,6 +95,7 @@ class ImportModel extends React.Component {
 								project={this.props.project}
 								updateParent={this.props.updateParent}
 								hide={this.props.hide}
+								showErrors={this.props.showErrors}
 							/>
 						</TabPane>
 						<TabPane tabId="cellcollective" style={{overflowY: "auto", height: '400px', width: '760px', textOverflow: 'ellipsis' }}>
@@ -102,6 +103,7 @@ class ImportModel extends React.Component {
 								project={this.props.project}
 								updateParent={this.props.updateParent}
 								hide={this.props.hide}
+								showErrors={this.props.showErrors}
 							/>
 						</TabPane>
 					</TabContent>
