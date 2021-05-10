@@ -9,16 +9,17 @@ class ExportModelForm extends React.Component {
 		super(props);
 
 		this.state = {
-			format: 'zginml',
+			format: 'maboss',
 			buttonLabel: "Download",
 			showSecondButton: false,
 			secondButtonLabel: ""
 		};
 
 		this.dictFormats = {
-			'zginml': "Z-GINML (Extended save)",
+			'maboss': "MaBoSS",
 			'sbml': "SBML qual",
-			'maboss': "MaBoSS"
+			'bnet': 'BNet',
+			'zginml': "GINsim"
 		}
 	}
 
@@ -45,7 +46,10 @@ class ExportModelForm extends React.Component {
 
 			case 'maboss':
 				APICalls.ModelsCalls.downloadModelAsMaBoSS(this.props.project, this.props.id, this.props.tag, file_id);
-
+			
+			case 'bnet':
+				APICalls.ModelsCalls.downloadModelAsBNet(this.props.project, this.props.id, this.props.tag);
+	
 			default:
 				break;
 		}

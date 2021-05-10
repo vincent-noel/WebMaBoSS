@@ -1,8 +1,8 @@
 from django.urls import path, re_path
 
 from api.views.logical_model.LogicalModel import (
-	LogicalModelFile, LogicalModelSBMLFile, LogicalModelMaBoSSBNDFile, LogicalModelMaBoSSCFGFile,
-	LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw
+	LogicalModelFile, LogicalModelSBMLFile, LogicalModelMaBoSSBNDFile, LogicalModelMaBoSSCFGFile, 
+	LogicalModelBNetFile, LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw
 )
 from api.views.logical_model.LogicalModels import LogicalModels
 from api.views.logical_model.LogicalModelsTags import LogicalModelsTags, TaggedLogicalModelFile, TaggedLogicalModelSBMLFile
@@ -57,6 +57,7 @@ urlpatterns = [
 	path('api/logical_models/<int:project_id>/<int:model_id>/sbmlfile', LogicalModelSBMLFile.as_view()),
 	path('api/logical_models/<int:project_id>/<int:model_id>/bndfile', LogicalModelMaBoSSBNDFile.as_view()),
 	path('api/logical_models/<int:project_id>/<int:model_id>/cfgfile', LogicalModelMaBoSSCFGFile.as_view()),
+	path('api/logical_models/<int:project_id>/<int:model_id>/bnetfile', LogicalModelBNetFile.as_view()),
 
 	path('api/logical_model/<int:project_id>/<int:model_id>/name', LogicalModelName.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/nodes', LogicalModelNodes.as_view()),

@@ -51,14 +51,16 @@ class SensitivityResult extends React.Component {
 
 		Object.values(table).map(
 			(condition, index) => {
-				Object.keys(condition).map(
-					(state) => {
-						if (!u.hasOwnProperty(state)) {
-							res.push(state);
-							u[state] = 1;
+				if (condition !== null) {
+					Object.keys(condition).map(
+						(state) => {
+							if (!u.hasOwnProperty(state)) {
+								res.push(state);
+								u[state] = 1;
+							}
 						}
-					}
-				);
+					);
+				}
 			}
 		);
 		res.map((state, index) => {
@@ -79,8 +81,9 @@ class SensitivityResult extends React.Component {
 				this.getFixedPoints(project_id, analysis_id);
 
 			} else if (data.failed) {
+				console.log("Sensitiviry analysis has failed !!!");
 				clearInterval(this.statusChecker);
-				this.setState({analysisStatus: true, steadyStates: {loaded: true, table: [], filteredTable: {}}, errors: ['Sensitivity analysis has failed']})
+				this.setState({analysisStatus: true, steadyStates: {loaded: true, table: null, filteredTable: null}, errors: ['Sensitivity analysis has failed']})
 				
 			} else {
 				if (!this.statusChecker) {
@@ -95,7 +98,7 @@ class SensitivityResult extends React.Component {
 
 	getFixedPoints(project_id, analysis_id) {
 
-		this.setState({steadyStates: {loaded: false, table: null}});
+		this.setState({steadyStates: {loaded: false, table: null, filteredTable: null}});
 		this.getFixedPointsCall = APICalls.MaBoSSCalls.getSensitivityAnalysisSteadyStates(project_id, analysis_id);
 		this.getFixedPointsCall.promise.then(data => {
 			this.setState({steadyStates: {loaded: true, table: data.results, filteredTable: data.results}});
@@ -112,8 +115,8 @@ class SensitivityResult extends React.Component {
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 
 		if (nextProps.analysisId !== this.props.analysisId && nextProps.analysisId !== null) {
+			this.setState({errors: []});
 			this.checkAnalysisStatus(nextProps.project, nextProps.analysisId);
-
 			return false;
 		}
 
@@ -123,6 +126,9 @@ class SensitivityResult extends React.Component {
 	componentWillUnmount() {
 		if (this.getStatus !== null) {
 			this.getStatus.cancel();
+		}
+		if (this.getFixedPointsCall !== null) {
+			this.getFixedPointsCall.cancel();
 		}
 	}
 
@@ -189,7 +195,7 @@ class SensitivityResult extends React.Component {
 							{/*</NavItem>*/}
 						</div>
 						{
-							this.state.steadyStates.table !== null && this.state.steadyStates.table.length > 0 ?
+							this.state.steadyStates.table !== null ?
 							<Button onClick={this.toggleFiltersForm}><FontAwesomeIcon icon={faFilter}/></Button> : null
 						}
 					</Nav>

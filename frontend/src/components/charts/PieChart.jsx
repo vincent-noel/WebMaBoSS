@@ -47,7 +47,11 @@ class PieChart extends React.Component {
 				plugins: {
 					legend: {
 						position: "bottom",
-					}
+					},
+					title: {
+						display: true,
+						text: this.props.title
+					},	
 				},
 
 				legendCallback: (chart) => {
@@ -63,11 +67,6 @@ class PieChart extends React.Component {
 							}
 						)
 					)
-				},
-
-				title: {
-					display: true,
-					text: this.props.title
 				},
 
 				animation : {
@@ -105,7 +104,7 @@ class PieChart extends React.Component {
 					</div>
 				</div>
 			</React.Fragment>;
-		}
+		} else return null;
 	}
 }
 

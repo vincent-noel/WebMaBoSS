@@ -1,6 +1,6 @@
 import React from "react";
 
-const Switch = props => <label className="switch" key={props.id}>
+const Switch = props => <label className="switch" key={props.id} style={{"verticalAlign": "text-bottom"}}>
 	<input
 		type="checkbox"
 		checked={props.checked}

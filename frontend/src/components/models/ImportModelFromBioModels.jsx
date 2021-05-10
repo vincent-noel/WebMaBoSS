@@ -54,7 +54,7 @@ class ImportModelsFromBiomodels extends React.Component {
 		this.setState({importing: true});
 		this.props.showErrors([]);
 		let url = APICalls.BioModelsCalls.getSBMLURLFromBioModels(model_id);
-		this.loadModelCall = APICalls.ModelsCalls.importModel(this.props.project, null, model_name, null, url);
+		this.loadModelCall = APICalls.ModelsCalls.importModel(this.props.project, null, model_name, null, url, this.props.useSBMLNames);
 		this.loadModelCall.promise.then((response) => { 
 			if (response.status !== 200) {
 				response.json().then((data)=>{

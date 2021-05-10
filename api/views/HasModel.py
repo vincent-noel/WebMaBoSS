@@ -135,6 +135,20 @@ class HasModel(HasProject):
 
 		else:
 			raise MethodNotAllowed()
+			
+	def getBNetModelFile(self):
+
+		if self.model.format == LogicalModel.MABOSS:
+			ginsim_model = self.getBioLQMModel()
+
+			path = tempfile.mkdtemp()
+			tmp_sbml = tempfile.mkstemp(dir=path, suffix='.bnet')[1]
+
+			biolqm.save(ginsim_model, tmp_sbml, "bnet")
+			return tmp_sbml
+		
+		else:
+			raise MethodNotAllowed()
 
 	def getZGINMLModelFile(self):
 

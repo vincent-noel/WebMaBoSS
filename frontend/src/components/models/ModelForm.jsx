@@ -9,13 +9,16 @@ class ModelForm extends React.Component {
 		super(props);
 
 		this.dictFormats = {
-			'zginml': "Z-GINML (Extended save)",
+			'maboss': "MaBoSS",
 			'sbml': "SBML qual",
-			'maboss': "MaBoSS"
+			'zginml': "GINsim",
+			'bnet': "BNet"
+			
 		};
 
 		this.dictLabels = {
 			'zginml': ['Z-GINML file'],
+			'bnet': ['BNet file'],
 			'maboss': ['BND file', 'CFG file'],
 			'sbml': ['SBML file'],
 		};
@@ -24,12 +27,14 @@ class ModelForm extends React.Component {
 			'zginml': ['.zginml'],
 			'maboss': ['.bnd', '.cfg'],
 			'sbml': ['.xml, .sbml'],
+			'bnet': ['.bnet'],
 		};
 
 		this.dictNbFiles = {
 			'zginml': 1,
 			'maboss': 2,
-			'sbml': 1
+			'sbml': 1,
+			'bnet': 1
 		};
 
 		this.state = {

@@ -3,6 +3,7 @@ import LoadingIcon from "./loaders/LoadingIcon";
 import Switch from "./buttons/Switch";
 import Switch3Pos from "./buttons/Switch3Pos";
 import Range from "./buttons/Range";
+import BufferedRange from "./buttons/BufferedRange";
 
 class TableSwitches extends React.Component {
 
@@ -15,11 +16,41 @@ class TableSwitches extends React.Component {
 							<tr key={"all"}>
 								<th style={{borderTop: '0'}}></th>
 								<th style={{borderTop: '0'}} className="d-flex justify-content-end">
-									<Switch
-										id={"in-all"}
-										toggle={() => {this.props.allSwitchToggle();}}
-										checked={this.props.allSwitch}
-									/>
+								{ (() => {
+											switch(this.props.type) {
+
+												case '3pos' :
+													return <Switch3Pos
+														id={this.props.id + "-all"}
+														updateCallback={(value) => {this.props.allSwitchToggle(value)}}
+														value={this.props.allSwitch}
+													/>;
+
+												case 'switch' :
+													return <Switch
+														id={this.props.id + "-all"}
+														toggle={() => {this.props.allSwitchToggle()}}
+														checked={this.props.allSwitch}
+													/>;
+
+												case 'range' :
+													return <Range
+														id={this.props.id + "-all"}
+														updateCallback={(value) => {this.props.allSwitchToggle(value)}}
+														value={this.props.allSwitch}
+													/>;
+													
+												case 'bufferedrange' :
+													return <BufferedRange
+														value={this.props.allSwitch} id={this.props.id + "-all"}
+														updateCallback={(value) => this.props.allSwitchToggle(value)}
+														buffer={50} waiting={this.props.allUpdating}
+												   	/>;
+												
+												default: return null;
+											}
+										})()
+									}
 								</th>
 							</tr>
 						</thead> : null}
@@ -52,6 +83,13 @@ class TableSwitches extends React.Component {
 														updateCallback={(value) => {this.props.updateCallback(key, value)}}
 														value={this.props.dict[key]}
 													/>;
+													
+												case 'bufferedrange' :
+													return <BufferedRange
+														value={this.props.dict[key]} id={this.props.id + "-" + index}
+														updateCallback={(value) => this.props.updateCallback(key, value)}
+														buffer={50} waiting={this.props.updating[key]}
+												   	/>;
 												default: return null;
 											}
 										})()

@@ -3,6 +3,7 @@ import {Button, ButtonToolbar, Modal, ModalHeader, ModalBody, ModalFooter, Nav, 
 import ImportModelFromCC from "./ImportModelFromCC";
 import classnames from 'classnames';
 import ImportModelsFromBiomodels from "./ImportModelFromBioModels";
+import Switch from "../commons/buttons/Switch";
 
 class ImportModel extends React.Component {
 
@@ -13,6 +14,7 @@ class ImportModel extends React.Component {
 		
 		this.state = {
 			activeTab: "biomodels",
+			useSBMLNames: true
 		}
 		
 		// this.loadModel = this.loadModel.bind(this);
@@ -20,8 +22,8 @@ class ImportModel extends React.Component {
 		
 		
 		
-		this.toggleTab.bind(this);
-
+		this.toggleTab = this.toggleTab.bind(this);
+		this.toggleSBMLNames = this.toggleSBMLNames.bind(this);
 		// this.state = {
 		// 	format: 'zginml',
 		// 	buttonLabel: "Download",
@@ -40,6 +42,10 @@ class ImportModel extends React.Component {
 		if (this.state.activeTab !== tab) {
 			this.setState({activeTab: tab });
     	}
+	}
+	
+	toggleSBMLNames() {
+		this.setState({useSBMLNames: !this.state.useSBMLNames});
 	}
 
 	componentDidMount() {
@@ -96,6 +102,7 @@ class ImportModel extends React.Component {
 								updateParent={this.props.updateParent}
 								hide={this.props.hide}
 								showErrors={this.props.showErrors}
+								useSBMLNames={this.state.useSBMLNames}
 							/>
 						</TabPane>
 						<TabPane tabId="cellcollective" style={{overflowY: "auto", height: '400px', width: '760px', textOverflow: 'ellipsis' }}>
@@ -104,15 +111,24 @@ class ImportModel extends React.Component {
 								updateParent={this.props.updateParent}
 								hide={this.props.hide}
 								showErrors={this.props.showErrors}
+								useSBMLNames={this.state.useSBMLNames}
 							/>
 						</TabPane>
 					</TabContent>
 				
 				</ModalBody>
 				<ModalFooter>
-					<ButtonToolbar className="d-flex">
+					<div className="container-fluid d-flex justify-content-between">
+						<div className="form-group general mr-auto">
+						<Switch checked={this.state.useSBMLNames} toggle={this.toggleSBMLNames} id={"use_sbml_names"}/>
+						{'\u00A0\u00A0'}
+						<label className="name">Use SBML names</label>
+							
+						</div>
+						{/* <ButtonToolbar className="d-flex"> */}
 						<Button color="danger" className="ml-auto" onClick={() => this.props.hide()}>Close</Button>
-					</ButtonToolbar>
+						{/* </ButtonToolbar> */}
+					</div>
 				</ModalFooter>
 			</Modal>
 		</React.Fragment>;

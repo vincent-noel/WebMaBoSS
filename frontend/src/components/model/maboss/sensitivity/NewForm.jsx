@@ -253,6 +253,17 @@ class NewForm extends React.Component {
 		].some(element => element))) {
 			errors.push("Please select at least one option");
 		}
+		
+		let count_outputs = Object.values(this.state.outputVariables).reduce((result, element) => {
+			if (element){
+				result++;	
+			}		
+			return result;
+		}, 0);
+
+		if (count_outputs > 15) {
+			errors.push("You can only select up to 15 outputs nodes");
+		}
 
 		this.setState({errors: errors});
 

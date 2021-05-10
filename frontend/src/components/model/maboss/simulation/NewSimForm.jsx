@@ -39,6 +39,7 @@ class NewSimForm extends React.Component {
 			listNodes: [],
 			initialStates: {},
 			rawInitialStates: {},
+			allInitialStates: 0,
 			outputVariables: {},
 			allOutputVariables: false,
 			mutatedVariables: {},
@@ -53,18 +54,16 @@ class NewSimForm extends React.Component {
 
 		this.sampleCountRef = React.createRef();
 		this.maxTimeRef = React.createRef();
-		// this.timeTickRef = React.createRef();
 		this.threadCountRef = React.createRef();
 		this.pseudoRandomSeedRef = React.createRef();
-		// this.statdistTrajCountRef = React.createRef();
-		// this.statdistClusterThresholdRef = React.createRef();
-
+		
         this.handleDiscreteTimeChange = this.handleDiscreteTimeChange.bind(this);
 		this.handlePhysicalRandGen = this.handlePhysicalRandGen.bind(this);
 
 		this.toggleTab.bind(this);
 
 		this.updateInitialState = this.updateInitialState.bind(this);
+		this.toggleAllInitialStates = this.toggleAllInitialStates.bind(this);
 		this.updateOutputVariables = this.updateOutputVariables.bind(this);
 		this.toggleAllOutputVariables = this.toggleAllOutputVariables.bind(this);
 		this.updateMutatedVariables = this.updateMutatedVariables.bind(this);
@@ -192,6 +191,16 @@ class NewSimForm extends React.Component {
 		initial_states[node] = value;
 		this.setState({initialStates: initial_states});
 	}
+	
+	toggleAllInitialStates(value) {
+		let initial_states = Object.keys(this.state.initialStates).reduce(
+			(acc, key) => {
+				acc[key] = value;
+				return acc;
+			}, {}
+		);
+		this.setState({allInitialStates: value, initialStates: initial_states});
+	}
 
 	updateOutputVariables(node) {
 		let output_variables = this.state.outputVariables;
@@ -229,11 +238,6 @@ class NewSimForm extends React.Component {
 		this.setState(prevState => ({settings: {...prevState.settings, sample_count: value}}));
 	}
 
-	// handleThreadCountChange(e) {
-	// 	const value = e.target.value;
-	// 	this.setState(prevState => ({settings: {...prevState.settings, thread_count: value}}));
-	// }
-
 	handleDiscreteTimeChange(value) {
 		this.setState(prevState => ({settings: {...prevState.settings, discrete_time: value}}))
 	}
@@ -243,11 +247,6 @@ class NewSimForm extends React.Component {
 		this.setState(prevState => ({settings: {...prevState.settings, max_time: value}}));
 	}
 
-	// handleTimeTickChange(e) {
-	// 	const value = e.target.value;
-	// 	this.setState(prevState => ({settings: {...prevState.settings, time_tick: value}}));
-	// }
-
 	handlePhysicalRandGen(value) {
 		this.setState(prevState => ({settings: {...prevState.settings, use_physrandgen: value}}));
 	}
@@ -256,16 +255,6 @@ class NewSimForm extends React.Component {
 		const value = e.target.value;
 		this.setState(prevState => ({settings: {...prevState.settings, seed_pseudorandom: value}}));
 	}
-
-	// handleStatdistTrajCount(e) {
-	// 	const value = e.target.value;
-	// 	this.setState(prevState => ({settings: {...prevState.settings, statdist_traj_count: value}}));
-	// }
-
-	// handleStatdistClusterThreshold(e) {
-	// 	const value = e.target.value;
-	// 	this.setState(prevState => ({settings: {...prevState.settings, statdist_cluster_threshold: value}}));
-	// }
 
 	toggleTab(tab) {
 		if (this.state.activeTab !== tab) {
@@ -313,7 +302,17 @@ class NewSimForm extends React.Component {
 		if (this.state.selectedServer !== "-1" && this.state.statusServer[this.state.selectedServer] !== 1) {
 			errors.push("Please select an online MaBoSS server")
 		}
+		
+		let count_outputs = Object.values(this.state.outputVariables).reduce((result, element) => {
+			if (element){
+				result++;	
+			}		
+			return result;
+		}, 0);
 
+		if (count_outputs > 15) {
+			errors.push("You can only select up to 15 output nodes");
+		}
 		this.setState({errors: errors});
 
 		if (errors.length === 0) {
@@ -472,11 +471,11 @@ class NewSimForm extends React.Component {
 									</div> */}
 									<div className="form-group general">
 										<label htmlFor="discreteTime" className="name">Discrete time</label>
-										<Switch checked={this.state.settings.discrete_time} updateCallback={this.handleDiscreteTimeChange} id={"discreteTime"}/>
+										<Switch checked={this.state.settings.discrete_time} toggle={this.handleDiscreteTimeChange} id={"discreteTime"}/>
 									</div>
 									<div className="form-group general">
 										<label htmlFor="physicalRandGen" className="name">Use physical random generator</label>
-										<Switch checked={this.state.settings.use_physrandgen} updateCallback={this.handlePhysicalRandGen} id={"physicalRandGen"}/>
+										<Switch checked={this.state.settings.use_physrandgen} toggle={this.handlePhysicalRandGen} id={"physicalRandGen"}/>
 									</div>
 									<div className="form-group general">
 										<label htmlFor="pseudoRandomSeed" className="name">Pseudorandom seed</label>
@@ -514,12 +513,13 @@ class NewSimForm extends React.Component {
 									/>
 								</TabPane>
 								<TabPane tabId="initial_states">
-									<br/>
 									<TableSwitches
 										id={"is"}
 										type='range'
 										dict={this.state.initialStates}
 										updateCallback={this.updateInitialState}
+										allSwitch={this.state.allInitialStates}
+										allSwitchToggle={this.toggleAllInitialStates}
 									/>
 								</TabPane>
 								<TabPane tabId="output_variables">

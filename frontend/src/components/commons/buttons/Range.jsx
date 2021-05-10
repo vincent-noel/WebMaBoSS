@@ -40,7 +40,7 @@ class Range extends Component {
 					   min="0" max="100" step="1"
 					   id={this.props.id + "slider"}
 					   onChange={(e) => {this.changeValue(e.target.value)}}
-					   defaultValue={(isNaN(this.props.value)) ? 50 : this.props.value}
+					   value={(isNaN(this.props.value)) ? 50 : this.props.value}
 					   disabled={isNaN(this.props.value)}
 				/>
 			</label>

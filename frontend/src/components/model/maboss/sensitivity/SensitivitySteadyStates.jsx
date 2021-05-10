@@ -30,14 +30,16 @@ class SensitivitySteadyStates extends React.Component {
 
 		Object.values(table).map(
 			(condition, index) => {
-				Object.keys(condition).map(
-					(state) => {
-						if (!u.hasOwnProperty(state)) {
-							res.push(state);
-							u[state] = 1;
+				if (condition !== null){
+					Object.keys(condition).map(
+						(state) => {
+							if (!u.hasOwnProperty(state)) {
+								res.push(state);
+								u[state] = 1;
+							}
 						}
-					}
-				);
+					);
+				}
 			}
 		);
 		res.map((state, index) => {
@@ -56,7 +58,6 @@ class SensitivitySteadyStates extends React.Component {
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 
 		if (nextProps.steadyStates.loaded && this.props.steadyStates.filteredTable !== nextProps.steadyStates.filteredTable) {
-
 			this.computeStateList(nextProps.steadyStates.filteredTable);
 			this.computePages(nextProps.steadyStates.filteredTable);
 

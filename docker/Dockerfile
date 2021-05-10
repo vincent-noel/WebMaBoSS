@@ -1,4 +1,4 @@
-FROM debian:10.5-slim AS webmaboss-base
+FROM debian:10.9-slim AS webmaboss-base
 
 USER root
 WORKDIR /var/webmaboss

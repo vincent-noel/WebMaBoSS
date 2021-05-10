@@ -184,11 +184,13 @@ class MaBossResult extends React.Component {
 				lastStates: null,
 				nodesProbTraj: null,
 				statesProbTraj: null,
+				errors: []
 				// pca: null,
 				// pcaArrows: null,
 				// pcaArrowLabels: null,
 				// pcaExplainedVariance: null,
 			});
+			
 			this.statusChecker = setInterval(() => this.getStatus(nextProps.project, nextProps.simulationId), Settings.updateRate);
 			this.getStatus(nextProps.project, nextProps.simulationId);
 			return false;

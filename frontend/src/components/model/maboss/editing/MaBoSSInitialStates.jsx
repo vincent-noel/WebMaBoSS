@@ -6,7 +6,8 @@ import LoadingIcon from "../../../commons/loaders/LoadingIcon";
 import "./table-initial-states.scss";
 import BufferedRange from "../../../commons/buttons/BufferedRange";
 import {Button, ButtonToolbar} from "reactstrap";
-
+import TableSwitches from "../../../commons/TableSwitches";
+import { unique } from "jquery";
 
 class MaBoSSInitialStates extends React.Component {
 
@@ -16,11 +17,16 @@ class MaBoSSInitialStates extends React.Component {
 		this.state = {
 			initialStates: {},
 			updatingInitialStates: {},
-			rawInitialStates: {}
+			rawInitialStates: {},
+			allInitialStates: 50.0,
+			allUpdating: false,
 		};
 
 		this.getInitialStatesCall = null;
 		this.saveInitialStatesCall = null;
+		
+		this.setAllInitialVariables = this.setAllInitialVariables.bind(this);
+		this.updateInitialState = this.updateInitialState.bind(this);
 	}
 
 	loadInitialStates(project_id, model_id) {
@@ -35,17 +41,73 @@ class MaBoSSInitialStates extends React.Component {
 					return acc;
 				}, {}
 			);
-			const updatingInitialStates = Object.keys(response['initial_states']).reduce(
+			const updating_initial_states = Object.keys(response['initial_states']).reduce(
 				(acc, key) => {
 					acc[key] = false;
 					return acc;
 				}, {}
 			);
+			// console.log(updatingInitialStates)
+			
+			let unique_values = Object.values(initial_states).filter((x, i, a) => a.indexOf(x) == i)
 
-			this.setState({initialStates: initial_states, updatingInitialStates: updatingInitialStates, rawInitialStates: response['initial_states']});
+			this.setState({
+				initialStates: initial_states, updatingInitialStates: updating_initial_states, 
+				rawInitialStates: response['initial_states'], 
+				allInitialStates: unique_values.length > 1 ? 50.0 : unique_values[0]
+			});
 		});
 	}
 
+	setAllInitialVariables(value) {
+		if (this.saveInitialStatesCall !== null) {
+			this.saveInitialStatesCall.cancel();
+		}
+
+		let updating = this.state.updatingInitialStates;
+		Object.keys(this.state.updatingInitialStates).map(element => {
+			updating[element] = true;
+		});
+		// updating[name] = true;
+		this.setState({allUpdating: true, updatingInitialStates: updating});
+
+		const initial_states = this.state.initialStates;
+		Object.keys(this.state.updatingInitialStates).map(element => {
+			initial_states[element] = value;
+		});
+		
+		const initial_states_post = Object.keys(initial_states).reduce(
+			(acc, key) => {
+				let new_value = this.state.initialStates[key]/100;
+				let old_value = parseFloat(this.state.rawInitialStates[key]['1']);
+				if (new_value !== old_value && !isNaN(old_value) && !isNaN(new_value)) {
+					acc[key] = {
+						"0": (1.0-this.state.initialStates[key]/100).toString(),
+						"1": (this.state.initialStates[key]/100).toString()
+					};
+				} else {
+					acc[key] = this.state.rawInitialStates[key];
+				}
+				return acc;
+			}, {}
+		);
+
+		this.saveInitialStatesCall = APICalls.MaBoSSCalls.saveMaBoSSInitialStates(
+			this.props.project, this.props.modelId, initial_states_post);
+
+		this.saveInitialStatesCall.promise.then((response) => {
+			if (response.status === 200) {
+
+
+				let updating = this.state.updatingInitialStates;
+				Object.keys(this.state.updatingInitialStates).map(element => {
+					updating[element] = false;
+				});
+				this.setState({initialStates: initial_states, allInitialStates: value, updatingInitialStates: updating, allUpdating: false});
+			}
+		});
+	}
+	
 	updateInitialState(name, value) {
 
 		if (this.saveInitialStatesCall !== null) {
@@ -84,7 +146,6 @@ class MaBoSSInitialStates extends React.Component {
 
 				let updating = this.state.updatingInitialStates;
 				updating[name] = false;
-
 				this.setState({initialStates: initial_states, updatingInitialStates: updating});
 			}
 		});
@@ -118,7 +179,18 @@ class MaBoSSInitialStates extends React.Component {
 
 		return (
 			<React.Fragment>
-				<ul className="list-initial-states">
+				<TableSwitches
+					id={"is"}
+					type='bufferedrange'
+					dict={this.state.initialStates}
+					updating={this.state.updatingInitialStates}
+					updateCallback={this.updateInitialState}
+					height={"100%"}
+					allSwitch={this.state.allInitialStates}
+					allSwitchToggle={this.setAllInitialVariables}
+					allUpdating={this.state.allUpdating}
+				/>
+				{/* <ul className="list-initial-states">
 				{
 					this.state.initialStates !== null ?
 					Object.keys(this.state.initialStates).map((name, index) => {
@@ -149,7 +221,7 @@ class MaBoSSInitialStates extends React.Component {
 					}) :
 					<LoadingIcon width="3rem"/>
 				}
-			</ul>
+			</ul> */}
 			</React.Fragment>
 		);
 	}

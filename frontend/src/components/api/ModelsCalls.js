@@ -15,11 +15,11 @@ class ModelsCalls {
 		);
 	}
 
-	static importModel(project_id, file, name, file2, url) {
+	static importModel(project_id, file, name, file2, url, use_sbml_names) {
 
 		const formData = new FormData();
 		formData.append('name', name);
-		
+		formData.append('use_sbml_names', use_sbml_names);
 		if (url !== undefined) {
 			formData.append('url', url);		
 		} else {
@@ -68,6 +68,26 @@ class ModelsCalls {
 			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/sbmlfile";
 		else
 			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/tags/" + tag + "/sbmlfile";
+
+		fetch(endpoint, {
+			method: "get",
+			headers: getDefaultHeaders()
+		}).then(response => checkAuthorization(response))
+		.then(response => Promise.all([
+			extractFilename(response.headers.get('content-disposition')),
+			response.blob()])
+		)
+		.then(([filename, blob]) => FileSaver.saveAs(blob, filename));
+
+	}
+	
+	static downloadModelAsBNet(project_id, model_id, tag) {
+
+		let endpoint = null;
+		if (tag === undefined)
+			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/bnetfile";
+		else
+			endpoint = "/api/logical_models/" + project_id + "/" + model_id + "/tags/" + tag + "/bnetfile";
 
 		fetch(endpoint, {
 			method: "get",

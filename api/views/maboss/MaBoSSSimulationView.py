@@ -120,7 +120,7 @@ class MaBoSSSimulationView(HasModel):
 		cfg_settings = loads(request.POST['settings'])
 		maboss_model.param.update(cfg_settings)
 		maboss_model.param['thread_count'] = 6
-		maboss_model.param['time_tick'] = maboss_model.param['max_time']/100
+		maboss_model.param['time_tick'] = float(maboss_model.param['max_time'])/100
 
 		mutations = loads(request.POST['mutations'])
 		for var, mutation in mutations.items():

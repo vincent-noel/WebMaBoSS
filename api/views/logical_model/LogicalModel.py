@@ -30,6 +30,22 @@ class LogicalModelFile(HasModel):
 			as_attachment=True, filename=basename(model_file)
 		)
 
+class LogicalModelBNetFile(HasModel):
+
+	def get(self, request, project_id, model_id):
+
+		HasModel.load(self, request, project_id, model_id)
+
+		model_file = self.getBNetModelFile()
+
+		if model_file is None:
+			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
+
+		return FileResponse(
+			open(model_file, 'rb'),
+			as_attachment=True, filename=basename(model_file)
+		)
+		
 class LogicalModelSBMLFile(HasModel):
 
 	def get(self, request, project_id, model_id):
