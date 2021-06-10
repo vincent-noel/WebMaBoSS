@@ -1,5 +1,6 @@
 from json import loads, dumps
 from math import isnan
+from collections import OrderedDict
 
 def tryFloat(value):
 	try:
@@ -39,4 +40,4 @@ def dumpIstates(istates):
 		else:
 			fixed_initial_states.update({var: value})
 
-	return fixed_initial_states
+	return OrderedDict(sorted(fixed_initial_states.items()))

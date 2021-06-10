@@ -118,7 +118,7 @@ class LogicalModelNodes(HasModel):
 		HasModel.load(self, request, project_id, model_id)
 		maboss_model = self.getMaBoSSModel()
 
-		return Response(list(maboss_model.network.keys()))
+		return Response(sorted(list(maboss_model.network.keys())))
 
 	def post(self, request, project_id, model_id):
 

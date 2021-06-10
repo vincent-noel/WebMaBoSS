@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.exceptions import NotFound
 import json
-
+import collections
 
 class MaBoSSSpeciesFormulas(HasModel):
 
@@ -28,7 +28,7 @@ class MaBoSSSpeciesFormulas(HasModel):
 
 			data.update({name: node_data})
 
-		return Response(data=json.dumps(data))
+		return Response(data=json.dumps(collections.OrderedDict(sorted(data.items()))))
 
 
 class MaBoSSSpeciesFormula(HasModel):
@@ -179,7 +179,7 @@ class MaBoSSParameters(HasModel):
 			if parameter.startswith("$"):
 				data.update({parameter: value})
 
-		return Response(data=json.dumps(data))
+		return Response(data=json.dumps(collections.OrderedDict(sorted(data.items()))))
 
 
 class MaBoSSParameter(HasModel):
@@ -300,7 +300,7 @@ class MaBoSSOutputs(HasModel):
 		outputs = {label: not node.is_internal for label, node in maboss_model.network.items()}
 
 		return Response({
-			'outputs': outputs,
+			'outputs': collections.OrderedDict(sorted(outputs.items())),
 		})
 
 

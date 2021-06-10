@@ -23,6 +23,8 @@ import ginsim
 import maboss
 from api.views.commons.parse import parseIstates,dumpIstates
 from time import time
+from collections import OrderedDict
+
 class MaBoSSSimulationView(HasModel):
 
 	def get(self, request, project_id, model_id):
@@ -228,9 +230,9 @@ class MaBossSettings(HasModel):
 			settings.update({'discrete_time': bool(settings['discrete_time'])})
 
 		return Response({
-			'output_variables': output_variables,
+			'output_variables': OrderedDict(sorted(output_variables.items())),
 			'initial_states': dumpIstates(initial_states),
-			'mutations': mutations,
+			'mutations': OrderedDict(sorted(mutations)),
 			'settings': settings
 		})
 
