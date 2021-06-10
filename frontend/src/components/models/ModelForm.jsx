@@ -45,7 +45,7 @@ class ModelForm extends React.Component {
 			file2: null,
 			file2Name: "Select file...",
 			modal: false,
-			type: 'zginml'
+			type: 'maboss'
 
 		};
 
@@ -80,21 +80,26 @@ class ModelForm extends React.Component {
 	handleSubmit(e) {
 		e.preventDefault();
 
-		this.importModelCall = APICalls.ModelsCalls.importModel(this.props.project, this.state.file, this.state.name, this.state.file2);
+		if (this.state.id !== null) {
+			this.importModelCall = APICalls.ModelCalls.setName(this.props.project, this.state.id, this.state.name);
+		} else {
+			this.importModelCall = APICalls.ModelsCalls.importModel(this.props.project, this.state.file, this.state.name, this.state.file2);
+		}
+		
 		this.importModelCall.promise.then(response => {
 
 			this.setState({
+				id: null,
 				name: "",
 				file: null,
 				fileName: "Select file...",
 				file2: null,
 				modal: false,
-				type: 'zginml'
+				type: 'maboss'
 			});
 			this.props.hide();
 			this.props.updateParent();
 		});
-
 	};
 
 

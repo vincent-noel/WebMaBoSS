@@ -10,9 +10,9 @@ class ExportModelForm extends React.Component {
 
 		this.state = {
 			format: 'maboss',
-			buttonLabel: "Download",
-			showSecondButton: false,
-			secondButtonLabel: ""
+			buttonLabel: "Download model (bnd)",
+			showSecondButton: true,
+			secondButtonLabel: "Download config (cfg)"
 		};
 
 		this.dictFormats = {
@@ -46,10 +46,12 @@ class ExportModelForm extends React.Component {
 
 			case 'maboss':
 				APICalls.ModelsCalls.downloadModelAsMaBoSS(this.props.project, this.props.id, this.props.tag, file_id);
-			
+				break;
+				
 			case 'bnet':
 				APICalls.ModelsCalls.downloadModelAsBNet(this.props.project, this.props.id, this.props.tag);
-	
+				break;
+				
 			default:
 				break;
 		}
