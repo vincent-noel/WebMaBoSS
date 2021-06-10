@@ -31,6 +31,11 @@ class HasModel(HasProject):
 		except LogicalModel.DoesNotExist:
 			raise NotFound
 
+	def setName(self, name):
+		
+		self.model.name = name
+		self.model.save()
+
 	def getMaBoSSModel(self):
 
 		if self.model.format == LogicalModel.MABOSS:

@@ -14,9 +14,24 @@ class ModelCalls {
 		).then(response => checkAuthorization(response))
 		.then(response => {return response.json()}));
 	}
-
-
-
+	
+	static setName(project_id, model_id, name) {
+		
+		const body = new FormData();
+		body.append('name', name);
+	
+		return makeCancelable(
+			fetch(
+			"/api/logical_model/" + project_id + "/" + model_id + "/name",
+			{
+				method: "post",
+				body: body,
+				headers: getDefaultHeaders()
+			}
+		).then(response => checkAuthorization(response))
+		.then(response => {return response.json()}));
+	}
+	
 	static getGraph(project_id, model_id) {
 		return makeCancelable(
 			fetch(

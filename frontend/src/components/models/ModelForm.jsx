@@ -156,51 +156,55 @@ class ModelForm extends React.Component {
 									required
 								/>
 							</div>
-							<div className="form-group">
-								<label htmlFor="modelFile">Type</label>
-								<MyDropdown
-									dict={this.dictFormats}
-									width={"28rem"}
-									label={this.dictFormats[this.state.type]}
-									callback={item=>this.handleTypeChange(item)}
-								/>
-							</div>
-							<div className="form-group">
-								<label htmlFor="modelFile">{this.dictLabels[this.state.type][0]}</label>
-								<div className="custom-file" id="customFile">
-									<input
-										id="modelFile"
-										type="file"
-										className="custom-file-input"
-										name="file"
-										onChange={(e) => this.handleFileChange(e)}
-										accept={this.dictExtensions[this.state.type][0]}
-										aria-describedby="fileHelp" required/>
-									<label className="custom-file-label"
-										   htmlFor="modelFile">{this.state.fileName}</label>
-								</div>
-							</div>
-							{( this.dictNbFiles[this.state.type] === 2 ?
-							<div className="form-group">
-								<label htmlFor="model2File">{this.dictLabels[this.state.type][1]}</label>
-								<div className="custom-file" id="customFile2">
-									<input
-										id="model2File"
-										type="file"
-										className="custom-file-input"
-										name="file2"
-										onChange={(e) => this.handleFile2Change(e)}
-										accept={this.dictExtensions[this.state.type][1]}
-										aria-describedby="fileHelp" required/>
-									<label className="custom-file-label"
-										   htmlFor="model2File">{this.state.file2Name}</label>
-								</div>
-							</div> : null )}
+							{ this.state.id === null ? 
+								<React.Fragment>
+									<div className="form-group">
+										<label htmlFor="modelFile">Type</label>
+										<MyDropdown
+											dict={this.dictFormats}
+											width={"28rem"}
+											label={this.dictFormats[this.state.type]}
+											callback={item=>this.handleTypeChange(item)}
+										/>
+									</div> 
+									<div className="form-group">
+										<label htmlFor="modelFile">{this.dictLabels[this.state.type][0]}</label>
+										<div className="custom-file" id="customFile">
+											<input
+												id="modelFile"
+												type="file"
+												className="custom-file-input"
+												name="file"
+												onChange={(e) => this.handleFileChange(e)}
+												accept={this.dictExtensions[this.state.type][0]}
+												aria-describedby="fileHelp" required/>
+											<label className="custom-file-label"
+												htmlFor="modelFile">{this.state.fileName}</label>
+										</div>
+									</div>
+									{( this.dictNbFiles[this.state.type] === 2 ?
+									<div className="form-group">
+										<label htmlFor="model2File">{this.dictLabels[this.state.type][1]}</label>
+										<div className="custom-file" id="customFile2">
+											<input
+												id="model2File"
+												type="file"
+												className="custom-file-input"
+												name="file2"
+												onChange={(e) => this.handleFile2Change(e)}
+												accept={this.dictExtensions[this.state.type][1]}
+												aria-describedby="fileHelp" required/>
+											<label className="custom-file-label"
+												htmlFor="model2File">{this.state.file2Name}</label>
+										</div>
+									</div> : null )}
+								</React.Fragment> : null }
+								
 						</CardBody>
 						<CardFooter>
 							<ButtonToolbar className="d-flex">
 								<Button color="danger" className="mr-auto" onClick={() => this.props.hide()}>Close</Button>
-								<Button type="submit" color="primary" className="ml-auto">Load model</Button>
+								<Button type="submit" color="primary" className="ml-auto">{this.state.id !== null ? "Save" : "Load"} model</Button>
 							</ButtonToolbar>
 						</CardFooter>
 					</Card>

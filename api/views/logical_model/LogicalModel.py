@@ -104,6 +104,13 @@ class LogicalModelName(HasModel):
 
 		return Response(serializer.data)
 
+	def post(self, request, project_id, model_id):
+		
+		HasModel.load(self, request, project_id, model_id)
+		HasModel.setName(self, request.POST['name'])
+		serializer = LogicalModelNameSerializer(self.model)
+		return Response(serializer.data)
+
 class LogicalModelNodes(HasModel):
 
 	def get(self, request, project_id, model_id):
