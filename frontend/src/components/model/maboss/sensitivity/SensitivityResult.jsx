@@ -115,7 +115,27 @@ class SensitivityResult extends React.Component {
 	shouldComponentUpdate(nextProps, nextState, nextContext) {
 
 		if (nextProps.analysisId !== this.props.analysisId && nextProps.analysisId !== null) {
-			this.setState({errors: []});
+			this.setState({
+				activeTab: 'fp',
+	
+				steadyStates : {
+					loaded: false,
+					table: null,
+					filteredTable: null,
+				},
+	
+				showFiltersForm: false,
+	
+				listStates: [],
+				colorMap: null,
+				analysisStatus: false,
+				errors: []
+			});
+			clearInterval(this.statusChecker);
+			this.statusChecker = null;
+			if (this.getStatus !== null) {
+				this.getStatus.cancel();
+			}
 			this.checkAnalysisStatus(nextProps.project, nextProps.analysisId);
 			return false;
 		}

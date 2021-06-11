@@ -223,17 +223,17 @@ def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port)
 		else:
 			fixed_points_json = "{}"
 
-		states_probtraj = res.get_states_probtraj()
-		states_probtraj_json = states_probtraj.to_json()
+		# states_probtraj = res.get_states_probtraj()
+		# states_probtraj_json = states_probtraj.to_json()
 
-		nodes_probtraj = res.get_nodes_probtraj()
-		nodes_probtraj_json = nodes_probtraj.to_json()
+		# nodes_probtraj = res.get_nodes_probtraj()
+		# nodes_probtraj_json = nodes_probtraj.to_json()
 
 		with transaction.atomic():
 			maboss_simulation = MaBoSSSensitivitySimulation.objects.get(id=maboss_simulation_id)
 			maboss_simulation.fixpoints = fixed_points_json
-			maboss_simulation.states_probtraj = states_probtraj_json
-			maboss_simulation.nodes_probtraj = nodes_probtraj_json
+			# maboss_simulation.states_probtraj = states_probtraj_json
+			# maboss_simulation.nodes_probtraj = nodes_probtraj_json
 			maboss_simulation.status = MaBoSSSensitivitySimulation.ENDED
 			maboss_simulation.save()
 
@@ -275,6 +275,7 @@ class MaBoSSSensitivityStatusView(HasMaBoSSSensitivity):
 
 	def get(self, request, project_id, analysis_id):
 
+		print("Checking status...")
 		HasMaBoSSSensitivity.load(self, request, project_id, analysis_id)
 
 		simulations = MaBoSSSensitivitySimulation.objects.filter(sensitivity_analysis=self.analysis)

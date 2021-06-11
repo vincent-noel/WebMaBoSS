@@ -23,7 +23,7 @@ class PieChart extends React.Component {
 	}
 
 	render() {
-
+		console.log("Rendering...");
 		if (this.props.table !== null) {
 
 			let data = {
@@ -70,8 +70,9 @@ class PieChart extends React.Component {
 				},
 
 				animation : {
-					onComplete : (animation) => {			
-						if (this.chartInstance !== undefined && this.chartInstance !== null) {
+					onComplete : (animation) => {	
+						console.log("onComplete");		
+						if (this.chartInstance !== undefined && this.chartInstance !== null && this.downloadRef.current !== null) {
 							let myImage = this.chartInstance.canvas.toDataURL();
 							if (myImage.length > 6) {
 								this.downloadRef.current.href = myImage;
