@@ -5,9 +5,9 @@ from rest_framework.exceptions import PermissionDenied, NotFound
 from api.models import LogicalModel
 from api.serializers import LogicalModelSerializer
 from api.views.HasProject import HasProject
-
+from api.views.commons.parseLayout import parseLayout
 from urllib.request import urlretrieve
-import os, tempfile, shutil, biolqm, re, maboss
+import os, tempfile, shutil, biolqm, re, maboss, json
 from django.core.files import File
 from django.core.files.storage import default_storage
 import zipfile
@@ -24,12 +24,20 @@ def sbml_to_maboss(path, use_sbml_names=False):
 	
 	bnd_file = tempfile.mkstemp(suffix=".bnd")
 	cfg_file = tempfile.mkstemp(suffix=".cfg")
+	layout_file = tempfile.mkstemp(suffix=".json")
 	os.close(bnd_file[0])
 	os.close(cfg_file[0])
+	os.close(layout_file[0])
 	maboss.sbml_to_bnd_and_cfg(path, bnd_file[1], cfg_file[1], use_sbml_names)
-	# maboss_model.print_bnd(open(bnd_file[1], 'w'))
-	# maboss_model.print_cfg(open(cfg_file[1], 'w'))
-	return (bnd_file[1], cfg_file[1])
+	
+	layout = parseLayout(path)
+	if layout is None:
+		return (bnd_file[1], cfg_file[1], None)
+	else:
+		with open(layout_file[1], "w") as layout_fd:
+			layout_fd.write(json.dumps(layout))
+		
+		return (bnd_file[1], cfg_file[1], layout_file[1])
 
 def ginsim_to_maboss(path):
 	print("Converting %s to maboss" % path)
@@ -106,7 +114,7 @@ class LogicalModels(HasProject):
 					
 					temp_dir = tempfile.mkdtemp()
 					zip_file.extract(zip_file.namelist()[0], temp_dir)
-					(bnd_file, cfg_file) = sbml_to_maboss(
+					(bnd_file, cfg_file, layout_file) = sbml_to_maboss(
 						os.path.join(temp_dir, zip_file.namelist()[0]), 
 						request.data['use_sbml_names'].lower() == "true"
 					)
@@ -116,10 +124,14 @@ class LogicalModels(HasProject):
 						name=request.data['name'],
 						bnd_file=File(open(bnd_file, 'rb'), name=os.path.basename(bnd_file)),
 						cfg_file=File(open(cfg_file, 'rb'), name=os.path.basename(cfg_file)),
+						layout_file=File(open(layout_file, 'rb'), name=os.path.basename(layout_file)) if layout_file is not None else None,
 						format=LogicalModel.MABOSS
 					).save()
+					
 					os.remove(bnd_file)
 					os.remove(cfg_file)
+					if layout_file is not None:
+						os.remove(layout_file)
 					shutil.rmtree(temp_dir)
 				os.remove(zip_filename[1])
 				
@@ -128,7 +140,7 @@ class LogicalModels(HasProject):
 				sbml_file = tempfile.mkstemp(suffix=".sbml")
 				os.close(sbml_file[0])
 				urlretrieve(request.data['url'], sbml_file[1])
-				(bnd_file, cfg_file) = sbml_to_maboss(
+				(bnd_file, cfg_file, layout_file) = sbml_to_maboss(
 					sbml_file[1], 
 					request.data['use_sbml_names'].lower() == "true"
 				)
@@ -138,10 +150,13 @@ class LogicalModels(HasProject):
 					name=request.data['name'],
 					bnd_file=File(open(bnd_file, 'rb'), name=os.path.basename(bnd_file)),
 					cfg_file=File(open(cfg_file, 'rb'), name=os.path.basename(cfg_file)),
+					layout_file=File(open(layout_file, 'rb'), name=os.path.basename(layout_file)) if layout_file is not None else None,
 					format=LogicalModel.MABOSS
 				).save()
 				os.remove(bnd_file)
 				os.remove(cfg_file)
+				if layout_file is not None:
+					os.remove(layout_file)
 				os.remove(sbml_file[1])
 			
 		elif 'file2' in request.data.keys():
@@ -174,8 +189,6 @@ class LogicalModels(HasProject):
 				f.write(request.data['file'].read())
 
 			bnd_file, cfg_file = bnet_to_maboss(bnet_file[1])
-			print(bnd_file)
-			print(cfg_file)
 			LogicalModel(
 				project=self.project,
 				name=request.data['name'],
@@ -189,15 +202,23 @@ class LogicalModels(HasProject):
 			with open(sbml_file[0], 'wb') as f:				
 				f.write(request.data['file'].read())
 
-			bnd_file, cfg_file = ginsim_to_maboss(sbml_file[1])
+			bnd_file, cfg_file, layout_file = sbml_to_maboss(
+				sbml_file[1], request.data['use_sbml_names'].lower() == "true"
+			)
 			
 			LogicalModel(
 				project=self.project,
 				name=request.data['name'],
 				bnd_file=File(open(bnd_file, 'rb'), name=os.path.basename(bnd_file)),
 				cfg_file=File(open(cfg_file, 'rb'), name=os.path.basename(cfg_file)),
+				layout_file=File(open(layout_file, 'rb'), name=os.path.basename(layout_file)) if layout_file is not None else None,
 				format=LogicalModel.MABOSS			
 			).save()
+			os.remove(bnd_file)
+			os.remove(cfg_file)
+			if layout_file is not None:
+				os.remove(layout_file)
+			os.remove(sbml_file[1])
 
 		return Response(status=status.HTTP_200_OK)
 		# except Exception as e:

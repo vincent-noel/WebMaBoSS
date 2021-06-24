@@ -10,6 +10,7 @@ import ginsim
 import biolqm
 import tempfile
 import re
+import json
 from time import time
 class HasModel(HasProject):
 
@@ -197,3 +198,10 @@ class HasModel(HasProject):
 				maboss_model.print_cfg(out=file)
 
 			return tmp_cfg
+			
+	def getLayout(self):
+		
+		if self.model.layout_file:
+			with open(self.model.layout_file.path, 'r') as layout_fd:
+				layout = json.loads(layout_fd.read())
+				return layout

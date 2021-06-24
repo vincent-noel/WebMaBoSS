@@ -11,3 +11,4 @@ PyYAML
 scikit-learn
 networkx
 pydot
+python-libsbml

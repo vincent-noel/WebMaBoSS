@@ -2,6 +2,7 @@ import React from "react";
 import {Button, ButtonToolbar, Modal, Card, CardHeader, CardBody, CardFooter} from "reactstrap";
 import APICalls from "../api/apiCalls";
 import MyDropdown from "../commons/buttons/MyDropdown";
+import Switch from "../commons/buttons/Switch";
 
 class ModelForm extends React.Component {
 
@@ -45,8 +46,8 @@ class ModelForm extends React.Component {
 			file2: null,
 			file2Name: "Select file...",
 			modal: false,
-			type: 'maboss'
-
+			type: 'maboss',
+			useSBMLNames: true
 		};
 
 		this.toggle = this.toggle.bind(this);
@@ -83,7 +84,7 @@ class ModelForm extends React.Component {
 		if (this.state.id !== null) {
 			this.importModelCall = APICalls.ModelCalls.setName(this.props.project, this.state.id, this.state.name);
 		} else {
-			this.importModelCall = APICalls.ModelsCalls.importModel(this.props.project, this.state.file, this.state.name, this.state.file2);
+			this.importModelCall = APICalls.ModelsCalls.importModel(this.props.project, this.state.file, this.state.name, this.state.file2, undefined, this.state.useSBMLNames);
 		}
 		
 		this.importModelCall.promise.then(response => {
@@ -102,6 +103,10 @@ class ModelForm extends React.Component {
 		});
 	};
 
+
+	toggleSBMLNames() {
+		this.setState({useSBMLNames: !this.state.useSBMLNames});
+	}
 
 	shouldComponentUpdate(nextProps, nextState) {
 
@@ -197,6 +202,13 @@ class ModelForm extends React.Component {
 											<label className="custom-file-label"
 												htmlFor="model2File">{this.state.file2Name}</label>
 										</div>
+									</div> : null )}
+									{( this.state.type === "sbml" ?
+									<div className="form-group general mr-auto">
+									<Switch checked={this.state.useSBMLNames} toggle={this.toggleSBMLNames} id={"use_sbml_names"}/>
+									{'\u00A0\u00A0'}
+									<label className="name">Use SBML names</label>
+										
 									</div> : null )}
 								</React.Fragment> : null }
 								

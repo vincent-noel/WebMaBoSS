@@ -51,6 +51,8 @@ class LogicalModel(models.Model):
 	bnd_file = models.FileField(upload_to=path_logical_model, blank=True)
 	cfg_file = models.FileField(upload_to=path_logical_model, blank=True)
 
+	layout_file = models.FileField(upload_to=path_logical_model, blank=True)
+
 	def save(self, *args, **kwargs):
 
 		if self.project:

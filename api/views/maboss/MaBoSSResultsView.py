@@ -193,7 +193,7 @@ class MaBoSSResultsFixedPoints(HasMaBoSSSimulation):
 
 		if self.simulation.fixpoints is not None:
 			fixed_points = loads(self.simulation.fixpoints)
-			print(fixed_points)
+			# print(fixed_points)
 			nodes = list(fixed_points.keys())[3:]
 			new_fps = []
 			for i in range(len(fixed_points['FP'])):
