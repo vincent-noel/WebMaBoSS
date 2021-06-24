@@ -23,7 +23,7 @@ class LogicalModelEntry extends Component {
                     edit={this.props.edit}
                     update={this.props.updateParent}
                 />
-                <TagButton project={this.props.project} id={this.props.entry.id} tag={this.props.tag}/>
+                {/* <TagButton project={this.props.project} id={this.props.entry.id} tag={this.props.tag}/> */}
                 <DownloadButton
                     onClick={() => this.props.download(this.props.entry.id)}
                 />

@@ -130,14 +130,14 @@ class Models extends React.Component {
 									show={this.showExportModelForm}
 									hide={this.hideExportModelForm}
 								/>
-								<TagForm
+								{/* <TagForm
 									project={projectContext.project}
 									id={this.state.idTagModelForm}
 									status={this.state.showTagModelForm}
 									show={this.showTagModelForm}
 									hide={this.hideTagModelForm}
 									showExport={this.showExportModelForm}
-								/>
+								/> */}
 								<ImportModel
 									project={projectContext.project}
 									updateParent={updateParent}
