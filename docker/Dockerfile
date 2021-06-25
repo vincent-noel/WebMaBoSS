@@ -162,8 +162,8 @@ RUN python3 manage.py runmodwsgi --setup-only \
                                 --server-root=server/ \
                                 --settings=settings.prod_settings \
                                 --url-alias /static static/ \
-                                --url-alias /data/media media/ \
-                                --reload-on-changes
+                                --url-alias /data/media media/ 
+                                # --reload-on-changes
 
 RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations \
     && chown www-data:www-data .
