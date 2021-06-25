@@ -54,6 +54,7 @@ class ModelForm extends React.Component {
 		this.handleNameChange.bind(this);
 		this.handleFileChange.bind(this);
 		this.handleSubmit.bind(this);
+		this.toggleSBMLNames = this.toggleSBMLNames.bind(this);
 
 		this.importModelCall = null;
 	}

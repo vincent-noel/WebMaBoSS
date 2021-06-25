@@ -115,6 +115,8 @@ class MaBoSSSensitivityAnalysis(models.Model):
 	bnd_file = models.FileField(upload_to=path_sensitivityanalysis_model)
 	cfg_file = models.FileField(upload_to=path_sensitivityanalysis_model)
 
+	nsimulations = models.IntegerField(default=0)
+
 	QUEUED = 'Queued'
 	INTERRUPTED = 'Interrupted'
 	BUSY = 'Running'

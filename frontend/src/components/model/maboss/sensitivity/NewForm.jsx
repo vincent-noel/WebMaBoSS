@@ -46,6 +46,9 @@ class NewForm extends React.Component {
 
 			outputVariables: null,
 			allOutputVariables: false,
+			
+			candidateVariables: null,
+			allCandidateVariables: true,
 
 			singleMutations: {
 			   show: false,
@@ -86,6 +89,9 @@ class NewForm extends React.Component {
 
 		this.updateOutputVariables = this.updateOutputVariables.bind(this);
 		this.toggleAllOutputVariables = this.toggleAllOutputVariables.bind(this);
+	
+		this.updateCandidateVariables = this.updateCandidateVariables.bind(this);
+		this.toggleAllCandidateVariables = this.toggleAllCandidateVariables.bind(this);
 		
 		this.getServerStatus = this.getServerStatus.bind(this);
 		this.selectServer = this.selectServer.bind(this);
@@ -214,10 +220,28 @@ class NewForm extends React.Component {
 		this.setState({allOutputVariables: !this.state.allOutputVariables, outputVariables: outputs});
 	}
 
+	updateCandidateVariables(node) {
+		let candidate_variables = this.state.candidateVariables;
+		candidate_variables[node] = !candidate_variables[node];
+		this.setState({candidateVariables: candidate_variables});
+	}
+	
+	toggleAllCandidateVariables() {
+		let candidates = Object.keys(this.state.candidateVariables).reduce(
+			(acc, key) => {
+				acc[key] = !this.state.allCandidateVariables;
+				return acc;
+			}, {}
+		);
+		this.setState({allCandidateVariables: !this.state.allCandidateVariables, candidateVariables: candidates});
+	}
+
+	
 	getSettings(project_id, model_id) {
 		if (project_id !== undefined && model_id !== undefined) {
 
 			this.setState({
+				candidateVariables: null,
 				outputVariables: null,
 			});
 
@@ -229,10 +253,18 @@ class NewForm extends React.Component {
 						return acc;
 					}, {}
 				);
+				
+				const candidate_variables = Object.keys(response['output_variables']).reduce(
+					(acc, key) => {
+						acc[key] = true;
+						return acc;
+					}, {}
+				);
 
 				this.setState(
 				{
 					outputVariables: output_variables,
+					candidateVariables: candidate_variables
 				}
 			)})
 		}
@@ -286,6 +318,7 @@ class NewForm extends React.Component {
 					off: this.state.doubleMutations.off,
 				},
 				outputVariables: this.state.outputVariables,
+				candidateVariables: this.state.candidateVariables,
 				serverHost: server_host,
 				serverPort: server_port,
 			});
@@ -348,6 +381,12 @@ class NewForm extends React.Component {
 									  	className={classnames({ active: this.state.activeTab === 'general' })}
               							onClick={() => { this.toggleTab('general'); }}
 									>General</NavLink>
+								</NavItem>
+								<NavItem>
+									<NavLink
+									  	className={classnames({ active: this.state.activeTab === 'candidates' })}
+              							onClick={() => { this.toggleTab('candidates'); }}
+									>Candidates</NavLink>
 								</NavItem>
 								<NavItem>
 									<NavLink
@@ -443,6 +482,20 @@ class NewForm extends React.Component {
 									width="25rem"
 									callback={(id) => this.selectServer(id)}
 								/>
+							</TabPane>
+							<TabPane tabId="candidates" className="candidates-outputs">
+								{
+									this.state.candidateVariables != null ?
+									<TableSwitches
+										id={"in"}
+										type='switch'
+										dict={this.state.candidateVariables}
+										toggleNode={this.updateCandidateVariables}
+										allSwitch={this.state.allCandidateVariables}
+										allSwitchToggle={this.toggleAllCandidateVariables}
+									/> :
+									<LoadingIcon width="3rem"/>
+								}
 							</TabPane>
 							<TabPane tabId="outputs" className="tab-outputs">
 								{

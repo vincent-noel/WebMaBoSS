@@ -89,7 +89,7 @@ class SensitivityResult extends React.Component {
 				if (!this.statusChecker) {
 					this.statusChecker = setInterval(
 						() => this.checkAnalysisStatus(project_id, analysis_id),
-						Settings.updateRate
+						Settings.updateRate*5
 					);
 				}
 			}
