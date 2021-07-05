@@ -1,8 +1,10 @@
 from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
+from django.core.files import File
 
-from api.models.project import Project
+from api.models.project import Project, add_default_project
+from django.contrib.auth.models import User
 
 from random import choice
 from string import ascii_uppercase, ascii_lowercase, digits
@@ -84,3 +86,29 @@ class TaggedLogicalModel(models.Model):
 	cfg_file = models.FileField(upload_to=path_tagged_logical_model, blank=True)
 
 pre_delete.connect(remove_tagged_logical_model, sender=TaggedLogicalModel)
+	
+def add_default_models(sender, instance, **kwargs):
+	
+	default_project = add_default_project(sender, instance, **kwargs)
+	if default_project is not None:
+		metastasis_path = join(settings.BASE_DIR, "api", "defaults", "models", "metastasis")
+		LogicalModel(
+			project=default_project,
+			name="Cohen2015 - Tumour Cell Invasion and Migration",
+			bnd_file=File(open(join(metastasis_path, "metastasis.bnd"), 'rb'), name="metastasis.bnd"),
+			cfg_file=File(open(join(metastasis_path, "metastasis.cfg"), 'rb'), name="metastasis.cfg"),
+			format=LogicalModel.MABOSS			
+		).save()
+		
+		corral_path = join(settings.BASE_DIR, "api", "defaults", "models", "corral")
+		LogicalModel(
+			project=default_project,
+			name="Corral2021 - Interplay between SMAD2 and STAT5A regulating IL-17A/F expression in Th cells",
+			bnd_file=File(open(join(corral_path, "corral.bnd"), 'rb'), name="corral.bnd"),
+			cfg_file=File(open(join(corral_path, "corral.cfg"), 'rb'), name="corral.cfg"),
+			format=LogicalModel.MABOSS			
+		).save()
+	
+
+
+post_save.connect(add_default_models, sender=User)

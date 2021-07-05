@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.db.models.signals import pre_delete, post_save
 from django.contrib.auth.models import User
+# from api.models.logical_model import LogicalModel
 
 from random import choice
 from string import ascii_uppercase, ascii_lowercase, digits
@@ -13,6 +14,8 @@ def add_default_project(sender, instance, **kwargs):
 	if len(Project.objects.filter(user=instance)) == 0:
 		default_project = Project(user=instance, name="My Project")
 		default_project.save()
+		return default_project
+		# add_default_models(default_project)	
 
 def new_project_path():
 	rand_string = ''.join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(12))
@@ -36,4 +39,4 @@ class Project(models.Model):
 
 
 pre_delete.connect(remove_project_path, sender=Project)
-post_save.connect(add_default_project, sender=User)
+# post_save.connect(add_default_project, sender=User)
