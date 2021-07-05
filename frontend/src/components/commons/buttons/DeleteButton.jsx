@@ -30,7 +30,7 @@ class DeleteButton extends Component {
   	render() {
 
 		return (
-				<button type="submit"
+				<button type="submit" title={this.props.title ? this.props.title : "Delete"}
 						className={"btn btn-danger ml-1" + (this.props.size !== undefined ? " btn-" + this.props.size : "")}
 						onClick={this.delete}>
 					<FontAwesomeIcon

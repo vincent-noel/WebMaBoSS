@@ -22,15 +22,18 @@ class LogicalModelEntry extends Component {
                     id={this.props.entry.id}
                     edit={this.props.edit}
                     update={this.props.updateParent}
+                    title={"Edit model's name"}
                 />
                 {/* <TagButton project={this.props.project} id={this.props.entry.id} tag={this.props.tag}/> */}
                 <DownloadButton
                     onClick={() => this.props.download(this.props.entry.id)}
+                    title={"Export model"}
                 />
                 <DeleteButton
                     endpoint={"/api/logical_models/" + this.props.project + "/"}
                     update={this.props.updateParent}
                     id={this.props.entry.id}
+                    title={"Delete model"}
                 />
             </ButtonToolbar>
         </td>

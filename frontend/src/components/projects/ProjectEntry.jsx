@@ -15,8 +15,8 @@ class ProjectEntry extends Component {
         <td>
             <ButtonToolbar className="justify-content-end">
                 {/*<DownloadProject url={this.props.entry.file} />*/}
-                <EditButton endpoint="/api/projects/" update={this.props.updateProjects} id={this.props.entry.id} edit={this.props.edit}/>
-                <DeleteButton endpoint="/api/projects/" update={this.props.updateProjects} id={this.props.entry.id}/>
+                <EditButton endpoint="/api/projects/" update={this.props.updateProjects} id={this.props.entry.id} edit={this.props.edit} title="Edit project"/>
+                <DeleteButton endpoint="/api/projects/" update={this.props.updateProjects} id={this.props.entry.id} title="Delete project"/>
             </ButtonToolbar>
         </td>
     </tr>;

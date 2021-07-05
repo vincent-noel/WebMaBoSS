@@ -12,7 +12,7 @@ class DownloadButton extends Component {
 
   	render() {
 		return (
-				<button type="button"
+				<button type="button" title={this.props.title ? this.props.title : "Download"}
 						className={"btn btn-info ml-1" + (this.props.size !== undefined ? " btn-" + this.props.size : "")}
 						onClick={this.props.onClick}>
 					<FontAwesomeIcon icon={faSave} size={this.props.size !== undefined ? this.props.size : null}/>

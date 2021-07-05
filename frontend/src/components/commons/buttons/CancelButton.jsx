@@ -15,7 +15,7 @@ class CancelButton extends Component {
 
   	render() {
   		return (
-				<button type="submit"
+				<button type="submit" title={this.props.title ? this.props.title : "Cancel"}
 						className={"btn btn-danger ml-1" + (this.props.size !== undefined ? " btn-" + this.props.size : "")}
 						onClick={this.props.onClick}>
 					<FontAwesomeIcon icon={faTimes} size={this.props.size !== undefined ? this.props.size : null}/>
