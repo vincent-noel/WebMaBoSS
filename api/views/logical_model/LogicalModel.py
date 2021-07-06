@@ -186,6 +186,39 @@ class LogicalModelGraph(HasModel):
 
 class LogicalModelGraphRaw(HasModel):
 
+	def post(self, request, project_id, model_id):
+		
+		HasModel.load(self, request, project_id, model_id)
+		
+		positions = loads(request.POST["positions"])
+		
+		min_x = 0
+		max_x = 0
+		min_y = 0
+		max_y = 0
+		new_positions = {}
+		
+		for position in positions:
+			min_x = min(position['x'], min_x)
+			max_x = max(position['x'], max_x)
+			min_y = min(position['y'], min_y)
+			max_y = max(position['y'], max_y)
+			new_positions.update({position['name']: {
+				'pos': [position['x'] + 30, position['y'] + 30],
+				'dim': [60.0, 30.0]
+			}})
+		
+		
+		# print(min_x)
+		# print(max_x)
+		# print(min_y)
+		# print(max_y)
+		
+		
+		self.setLayout(((60.0 + max_x - min_x, 60 + max_y - min_y), new_positions))
+		
+		return Response(status=status.HTTP_200_OK)
+
 	def get(self, request, project_id, model_id):
 
 		HasModel.load(self, request, project_id, model_id)
@@ -209,11 +242,66 @@ class LogicalModelGraphRaw(HasModel):
 				edges.append((a, b, (1 if sign == "->" else 0)))
 
 		nodes = list(set(nodes))
+		nodes_dict = {}
+		layout = self.getLayout()
+		# print(layout)
+		for i, node in enumerate(nodes):
+			if isinstance(nodes_dict, dict):
+				if i not in nodes_dict.keys():
+					nodes_dict.update({i: {}})
+				nodes_dict[i].update({'name': node})
+				
+				if layout is not None and isinstance(layout[1], dict):
+					if node in layout[1].keys():
+						nodes_dict[i].update({
+							'x': layout[1][node]['pos'][0],
+							'y': layout[1][node]['pos'][1],
+						})
+					else:
+						
+						candidates = [layout_node for layout_node in layout[1].keys() if node.startswith(layout_node + '_b')]
+						if len(candidates) == 1:
+							nodes_dict[i].update({
+								'x': layout[1][candidates[0]]['pos'][0],
+								'y': layout[1][candidates[0]]['pos'][1],
+							})	
+				# 		for j, candidate in enumerate(candidates):
+				# 			nodes_dict[i].update({
+				# 				'x': layout[1][candidate]['pos'][0]+j*10,
+				# 				'y': layout[1][candidate]['pos'][1]+j*10
+				# 			})
+			# if layout is not None:	
+			# 	for node in layout[1].keys():
+			# 		if node in nodes:
+			# 			nodes_dict[i].update({
+				# 			'x': layout[1][node]['pos'][0],
+				# 			'y': layout[1][node]['pos'][1],
+				# 		})
+								
+			
 
 		return Response(
 			{
 				'nodes': nodes,
-				'edges': edges
+				'edges': edges,
+				'dims': layout[0] if layout is not None else None,
+				'nodes_dict': nodes_dict
 			},
 			status=status.HTTP_200_OK
 		)
+
+class LogicalModelGraphRawModify(HasModel):
+	
+	def post(self, request, project_id, model_id, node):
+		
+		HasModel.load(self, request, project_id, model_id)
+		raw_layout = self.getLayout()
+		if raw_layout is not None:
+			dims, layout = raw_layout
+			new_pos = loads(request.POST["position"]) 
+			
+			layout[node].update({"pos": [new_pos["x"], new_pos["y"]]})
+			self.updateLayout((dims, layout))
+		
+		return Response(status=status.HTTP_200_OK)
+		

@@ -2,7 +2,8 @@ from django.urls import path, re_path
 
 from api.views.logical_model.LogicalModel import (
 	LogicalModelFile, LogicalModelSBMLFile, LogicalModelMaBoSSBNDFile, LogicalModelMaBoSSCFGFile, 
-	LogicalModelBNetFile, LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw
+	LogicalModelBNetFile, LogicalModelName, LogicalModelNodes, LogicalModelGraph, LogicalModelGraphRaw,
+	LogicalModelGraphRawModify
 )
 from api.views.logical_model.LogicalModels import LogicalModels
 from api.views.logical_model.LogicalModelsTags import LogicalModelsTags, TaggedLogicalModelFile, TaggedLogicalModelSBMLFile
@@ -63,6 +64,7 @@ urlpatterns = [
 	path('api/logical_model/<int:project_id>/<int:model_id>/nodes', LogicalModelNodes.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph', LogicalModelGraph.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/graph_raw', LogicalModelGraphRaw.as_view()),
+	path('api/logical_model/<int:project_id>/<int:model_id>/graph_raw/<str:node>', LogicalModelGraphRawModify.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/steady_states', LogicalModelSteadyStates.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss', MaBoSSSimulationView.as_view()),
 	path('api/logical_model/<int:project_id>/<int:model_id>/maboss_sensitivity', MaBoSSSensitivityAnalysisView.as_view()),

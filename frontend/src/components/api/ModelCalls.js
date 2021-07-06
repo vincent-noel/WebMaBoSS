@@ -69,6 +69,41 @@ class ModelCalls {
 			.then(response => response.json())
 		);
 	}
+	static setGraphPositions(project_id, model_id, positions) {
+		
+		const body = new FormData();
+		body.append('positions', JSON.stringify(positions));
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/graph_raw",
+				{
+					method: "post",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
+	
+	static updateGraphPosition(project_id, model_id, node, position) {
+		
+		const body = new FormData();
+		body.append('position', JSON.stringify(position));
+
+		return makeCancelable(
+			fetch(
+				"/api/logical_model/" + project_id + "/" + model_id + "/graph_raw/" + node,
+				{
+					method: "post",
+					body: body,
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+			.then(response => response.json())
+		);
+	}
 
 	static getNodes(project_id, model_id) {
 

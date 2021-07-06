@@ -1,7 +1,7 @@
 from api.views.HasProject import HasProject
 from rest_framework.exceptions import NotFound, MethodNotAllowed, PermissionDenied
 from django.conf import settings
-
+from django.core.files.base import ContentFile
 from api.models import LogicalModel
 from os.path import join, splitext, basename
 
@@ -202,6 +202,25 @@ class HasModel(HasProject):
 	def getLayout(self):
 		
 		if self.model.layout_file:
-			with open(self.model.layout_file.path, 'r') as layout_fd:
-				layout = json.loads(layout_fd.read())
-				return layout
+			# print(self.model.layout_file)
+			try:
+				with open(self.model.layout_file.path, 'r') as layout_fd:
+					layout = json.loads(layout_fd.read())
+					# print(layout)
+					return layout
+			except:
+				return None	
+	def setLayout(self, layout):
+		if self.model.layout_file:
+			
+			with open(self.model.layout_file.path, 'w') as layout_fd:
+				layout_fd.write(json.dumps(layout))
+		else:
+			self.model.layout_file.save(basename(self.model.bnd_file.path), ContentFile(json.dumps(layout)))
+			# print("Layout file created")
+	
+	def updateLayout(self, layout):
+		if self.model.layout_file:
+			with open(self.model.layout_file.path, 'w') as layout_fd:
+				layout_fd.write(json.dumps(layout))
+			

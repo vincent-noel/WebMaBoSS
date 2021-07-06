@@ -5,9 +5,14 @@ import COSEBilkent from 'cytoscape-cose-bilkent';
 import CytoscapeComponent from 'react-cytoscapejs';
 import LoadingIcon from "./loaders/LoadingIcon";
 import APICalls from "../api/apiCalls";
+import {Button } from "reactstrap";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faSyncAlt} from "@fortawesome/free-solid-svg-icons";
 
+// import konva from 'konva';
+// import jquery from 'jquery';
 Cytoscape.use(COSEBilkent);
-
+// edgeEditing(Cytoscape, jquery, konva);
 class ModelGraphRaw extends React.Component {
 
 	constructor(props) {
@@ -18,8 +23,26 @@ class ModelGraphRaw extends React.Component {
 			loaded: false,
 		};
 
+		this.cy = null;
+		
 		this.getGraphCall = false;
-
+		this.setGraphCall = false;
+		this.setNodePosition = false;
+		this.setCy = this.setCy.bind(this);
+		
+		this.layout = { 
+			name: 'cose-bilkent',   
+			quality: 'proof',
+			nodeDimensionsIncludeLabels: true,   
+			idealEdgeLength: '200',
+			edgeElasticity: 1.0,
+			// nodeRepulsion: 100000,
+			// gravity: 0.1,
+			// animate: 'during',  
+			// numIter: 1000,
+		};
+		this.style = {	minWidth: '800px', minHeight: '550px', width: '100%', height: '100%'};
+		
 	}
 
 	getGraph(project_id, model_id) {
@@ -29,6 +52,29 @@ class ModelGraphRaw extends React.Component {
 
 		this.getGraphCall.promise.then(
 			data => { this.setState({loaded: true, data: data})}
+		)
+	}
+	
+	updatePosition(project_id, model_id, node, position) {
+		
+		this.setNodePosition = APICalls.ModelCalls.updateGraphPosition(project_id, model_id, node, position);
+		this.setNodePosition.promise.then(
+			(data) => {
+				nodes_dict = this.state.data.nodes_dict;
+				new_nodes = nodes_dict.reduce((result, t_node) => {
+					result.push({
+						"name": t_node.name,
+						"x": t_node.name === node ? position[0] : t_node.x,
+						"y": t_node.name === node ? position[1] : t_node.y
+					})
+					return result;
+				}, {});
+				// print(nodes_dict)
+				new_data = this.state.data;
+				new_data.nodes_dict = new_nodes;
+				this.setState({data: data});
+			
+			}
 		)
 	}
 
@@ -52,7 +98,53 @@ class ModelGraphRaw extends React.Component {
 		}
 		return true;
 	}
+	
+	resetLayout() {
+		var layout = this.cy.layout(this.layout);
 
+		layout.run();
+
+		// some time later...
+		setTimeout(function(){
+		  layout.stop();
+		}, 1000);
+	}
+
+	setCy(cy) {
+		this.cy = cy;
+		this.cy.on('dragfree', 'node', 
+			(node) => {
+				console.log(node.target.id() + " position changed");
+				this.updatePosition(this.props.project, this.props.modelId, node.target.id(), node.target.position());
+			} 
+		); 
+		
+		this.cy.on('zoom', (event)=>{
+			console.log("Zoom changed")
+			// console.log(event)
+		})
+		
+		this.cy.on('layoutstop', (event) => {
+			console.log("Layout stopped")
+			// console.log(event);
+			// console.log(machin);
+			
+			let raw_layout = event.layout.idToLNode;
+			
+			console.log(raw_layout)
+			if (raw_layout !== undefined) {
+				let new_layout = Object.keys(raw_layout).reduce((result, node)=>{
+					result.push({"name": node, "x": raw_layout[node].rect.x, "y": raw_layout[node].rect.y});
+					return result;
+				}, []);
+				
+				this.setGraphCall = APICalls.ModelCalls.setGraphPositions(this.props.project, this.props.modelId, new_layout);
+			}
+			// console.log(new_layout);
+		});
+		
+	}
+	
 	render() {
 
 		if (this.state.loaded) {
@@ -66,8 +158,8 @@ class ModelGraphRaw extends React.Component {
 								name: name
 							},
 							position: {
-								x: 0,
-								y: 0
+								x: this.state.data['nodes_dict'][index]['x'],
+								y: this.state.data['nodes_dict'][index]['y']
 							},
 							classes: this.props.state !== undefined ? (this.props.state[name] === 1 ? 'positive' : 'negative') : 'default'
 						}
@@ -85,17 +177,6 @@ class ModelGraphRaw extends React.Component {
 					}
 				));
 	
-				const layout = { 
-					name: 'cose-bilkent',   
-					quality: 'proof',
-					nodeDimensionsIncludeLabels: true,   
-					// idealEdgeLength: '1000',
-					nodeRepulsion: 100000,
-					// gravity: 0.1,
-					// animate: 'during',  
-					// numIter: 1000,
-				};
-				const style = {	minWidth: '800px', minHeight: '550px', width: '100%', height: '100%'};
 				
 				const stylesheet = 
 				[
@@ -152,11 +233,14 @@ class ModelGraphRaw extends React.Component {
 						}
 					}
 				];
-				
-				return <CytoscapeComponent 
-					elements={elements} layout={layout} 
-					style={style} stylesheet={stylesheet}
-				/>;
+				// console.log(this.state.data['nodes_dict'])
+				return <React.Fragment>
+					<Button onClick={()=>{this.resetLayout();}}><FontAwesomeIcon icon={faSyncAlt}/></Button>
+					<CytoscapeComponent 
+						elements={elements} layout={this.state.data['dims'] !== null ? undefined : this.layout }
+						style={this.style} stylesheet={stylesheet} cy={(cy) => { this.setCy(cy); }}
+					/>
+				</React.Fragment>;
 		
 		} else {
 			return <LoadingIcon width="3rem"/>;
