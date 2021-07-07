@@ -141,8 +141,8 @@ FROM webmaboss-base AS webmaboss
 ADD api /var/webmaboss/api
 ADD frontend /var/webmaboss/frontend
 ADD settings /var/webmaboss/settings
-ADD create_default_db.sh create_default_admin.sh install.sh runserver.sh wait_db.sh /var/webmaboss
-ADD .babelrc LICENSE.md manage.py package.json requirements.txt webpack.config.js /var/webmaboss
+ADD create_default_db.sh create_default_admin.sh install.sh runserver.sh wait_db.sh /var/webmaboss/
+ADD .babelrc LICENSE.md manage.py package.json requirements.txt webpack.config.js /var/webmaboss/
 
 # Removing node modules, downloading them from scratch, and transpiling the JSX
 RUN mkdir node_modules \
