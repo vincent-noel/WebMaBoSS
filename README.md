@@ -21,22 +21,29 @@ For more information, consult the tutorials.
 Launch WebMaBoSS's container using :
 
 ```
-git clone https://github.com/vincent-noel/WebMaBoSS
+git clone https://github.com/sysbio-curie/WebMaBoSS
 cd WebMaBoSS
+docker pull sysbiocurie/webmaboss:1.0.0b17
 docker-compose up -d webmaboss
 ```
 	
 And then open your browser to this url : http://localhost:8000/
 
 
-By default, this will use the docker image from [DockerHub](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general). If you want to build your image locally, use : 
-```
-docker-compose build webmaboss
-```
-before launching WebMaBoSS's container.
-
+This will use the docker image from sysbiocurie/webmaboss on [DockerHub](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general). If you want to build your image locally, remove the docker pull command.
 ### Run locally with Docker
-First launch the container of the database. Note that you should modify the password. 
+If you don't want to build the image (this can take 10-20 min), you can first download it from [DockerHub](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general) : 
+
+```
+docker pull sysbiocurie/webmaboss:1.0.0b17
+```
+
+Otherwise :
+```
+docker build -f docker/Dockerfile -t sysbiocurie/webmaboss:1.0.0b17 
+```
+
+Then launch the container of the database. Note that you should modify the password. 
 ```
 docker run -d --name webmaboss-db \
 	--restart=always \
@@ -65,11 +72,6 @@ docker run -d --name webmaboss \
 ```
 And finally open your browser to this url : http://localhost:8000/
 
-By default, this will use the docker image from [DockerHub](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general). If you want to build your image locally, use : 
-```
-docker build -f docker/Dockerfile -t sysbiocurie/webmaboss:1.0.0b17 
-```
-before launching WebMaBoSS's container.
 ### Tutorials
 
 The directory tutorial contains two tutorials based on the two models in the default project :

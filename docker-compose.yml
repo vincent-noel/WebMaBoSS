@@ -20,7 +20,7 @@ services:
       context: ./
       dockerfile: docker/Dockerfile
 
-    image: vnoel/webmaboss:1.0.0b17
+    image: sysbiocurie/webmaboss:1.0.0b17
     container_name: webmaboss
     volumes:
       - data:/var/webmaboss/data
