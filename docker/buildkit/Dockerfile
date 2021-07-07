@@ -1,4 +1,4 @@
-FROM debian:10.9-slim
+FROM debian:10.9-slim AS webmaboss-base
 
 USER root
 WORKDIR /var/webmaboss
@@ -98,6 +98,45 @@ RUN python3 -m pip install --no-cache-dir --upgrade -r /var/webmaboss/requiremen
 EXPOSE 8000
 
 
+FROM webmaboss-base AS webmaboss-base-with-test
+# -------------------------------------------------------------------------------------------------
+# Test environment : Firefox, Geckodriver, Chrome, Chromedriver
+RUN \
+    # Google chrome sources
+    wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb http://dl.google.com/linux/chrome/deb/ stable main" | tee /etc/apt/sources.list.d/google.list \
+    # Firefox sources
+    # && echo "deb http://http.debian.net/debian unstable main" | tee /etc/apt/sources.list.d/debian-unstable.list \
+    && apt-get -qq update \
+    && apt-get install -y --no-install-recommends google-chrome-stable firefox-esr \
+    && apt clean -y
+
+    
+    
+RUN \
+    # Installing chromedriver
+    wget https://chromedriver.storage.googleapis.com/84.0.4147.30/chromedriver_linux64.zip \
+    && unzip chromedriver_linux64.zip \
+    && mv chromedriver /usr/local/bin \
+    && chmod 775 /usr/local/bin/chromedriver \
+    && rm chromedriver_linux64.zip
+
+RUN \
+    # Installing geckodriver
+    wget https://github.com/mozilla/geckodriver/releases/download/v0.27.0/geckodriver-v0.27.0-linux64.tar.gz \
+    && tar xvfz geckodriver-v0.27.0-linux64.tar.gz \
+    && mv geckodriver /usr/local/bin \
+    && rm geckodriver-v0.27.0-linux64.tar.gz
+
+RUN \
+    # Installing selenium
+    python3 -m pip install --no-cache-dir --upgrade selenium
+
+FROM webmaboss-base-with-test AS webmaboss-dev
+
+CMD bash -c "tail -f /dev/null"
+
+FROM webmaboss-base AS webmaboss
 
 ADD api /var/webmaboss/api
 ADD frontend /var/webmaboss/frontend
@@ -123,7 +162,7 @@ RUN python3 manage.py runmodwsgi --setup-only \
                                 --server-root=server/ \
                                 --settings=settings.prod_settings \
                                 --url-alias /static static/ \
-                                --url-alias /data/media media/ \ 
+                                --url-alias /data/media media/ \
                                 --reload-on-changes
 
 RUN chown -R www-data:www-data settings data server static api/migrations frontend/migrations \
@@ -146,3 +185,25 @@ CMD /var/webmaboss/wait_db.sh; \
     /bin/bash /var/webmaboss/create_default_db.sh --settings=settings.prod_settings; \
     /var/webmaboss/server/apachectl -D FOREGROUND
 
+FROM webmaboss-base-with-test AS webmaboss-test
+
+ADD . /var/webmaboss/
+
+# Removing old db and medias, creating a new one, with default user admin:admin
+RUN rm -fr /var/webmaboss/data/ /var/webmaboss/api/migrations/*.py && \
+    ls /var/webmaboss/api && \
+    mkdir -p /var/webmaboss/data/media && \
+    mkdir -p /var/webmaboss/data/db && \
+    mkdir -p /var/webmaboss/data/settings && \
+    mkdir -p /var/webmaboss/static && \
+    chown -R www-data:www-data /var/webmaboss/settings /var/webmaboss/data /var/webmaboss/static /var/webmaboss/api/migrations && chown www-data:www-data /var/webmaboss && \
+    mkdir /home/www-data && \
+    usermod -d /home/www-data www-data && \
+    chown -R www-data:www-data /home/www-data
+
+RUN yarn && \
+    npm run dev
+
+USER www-data
+
+CMD bash -c "tail -f /dev/null"
