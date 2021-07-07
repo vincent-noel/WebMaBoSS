@@ -13,14 +13,14 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD=yes
       - MYSQL_DATABASE=webmaboss
       - MYSQL_USER=webmaboss
-      - MYSQL_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
+      - MYSQL_PASSWORD=InsertAPassWordForTheDatabase
 
   webmaboss:
     build:
       context: ./
       dockerfile: docker/Dockerfile
 
-    image: webmaboss
+    image: vnoel/webmaboss:1.0.0b17
     container_name: webmaboss
     volumes:
       - data:/var/webmaboss/data
@@ -30,30 +30,7 @@ services:
     environment:
       - DB_NAME=webmaboss
       - DB_USER=webmaboss
-      - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
-      - DB_HOST=webmaboss-db
-      - DB_PORT=3306
-
-    depends_on:
-      - webmaboss-db
-
-  webmaboss-dev:
-    build:
-      context: ./
-      dockerfile: docker/buildkit/Dockerfile
-      target: webmaboss-dev
-
-    image: webmaboss-dev
-    container_name: webmaboss-dev
-    ports:
-      - "8000:8000"
-
-    volumes:
-      - .:/var/webmaboss
-    environment:
-      - DB_NAME=webmaboss
-      - DB_USER=webmaboss
-      - DB_PASSWORD=J4*wxQ5sd7F79ZpHHP8*%J#e
+      - DB_PASSWORD=InsertAPassWordForTheDatabase
       - DB_HOST=webmaboss-db
       - DB_PORT=3306
 

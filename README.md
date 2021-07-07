@@ -1,4 +1,5 @@
 # WebMaboSS : a web interface for simulating Boolean models stochastically
+[![Docker image](https://img.shields.io/docker/v/sysbiocurie/webmaboss?logo=docker&sort=date)](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general)
 <img align="right" height="100" src="https://maboss.curie.fr/images/maboss_logo.jpg">
 
 
@@ -6,7 +7,8 @@ WebMaBoSS is a web interface for the MaBoSS, the Markovian Boolean Stochastic Si
 
 WebMaBoSS allows you to store, modify, and simulate MaBoSS models. You can also import/export models in other compatible formats (SBML-qual, GINsim, BNet). Models can also be imported from public databases (BioModels, CellCollective).
 
-WebMaBoSS is available as a docker container that can quickly be developped locally. A live version is deployed at [https://maboss.curie.fr/WebMaBoSS/](https://maboss.curie.fr/WebMaBoSS).
+WebMaBoSS is available as a docker container that can quickly be deployed locally. You will need [Docker](https://docs.docker.com/get-docker/) and optionally [Docker-Compose](https://docs.docker.com/compose/install/).
+A live version is deployed at [https://maboss.curie.fr/WebMaBoSS/](https://maboss.curie.fr/WebMaBoSS).
 
 ### Use live version
 
@@ -16,6 +18,8 @@ For more information, consult the tutorials.
 
 
 ### Run locally with Docker and Docker-compose
+Launch WebMaBoSS's container using :
+
 ```
 git clone https://github.com/vincent-noel/WebMaBoSS
 cd WebMaBoSS
@@ -25,9 +29,53 @@ docker-compose up -d webmaboss
 And then open your browser to this url : http://localhost:8000/
 
 
+By default, this will use the docker image from [DockerHub](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general). If you want to build your image locally, use : 
+```
+docker-compose build webmaboss
+```
+before launching WebMaBoSS's container.
+
+### Run locally with Docker
+First launch the container of the database. Note that you should modify the password. 
+```
+docker run -d --name webmaboss-db \
+	--restart=always \
+	-v webmaboss_db:/var/lib/mysql \
+	-e MYSQL_RANDOM_ROOT_PASSWORD=yes \
+	-e MYSQL_DATABASE=webmaboss \
+	-e MYSQL_USER=webmaboss \
+	-e MYSQL_PASSWORD=InsertAPassWordForTheDatabase \
+	mariadb \
+	--max_allowed_packet=268435456 
+```
+Then launch WebMaBoSS' container
+```
+docker run -d --name webmaboss \
+	--restart=always \
+	-v webmaboss_data:/var/webmaboss/data \
+	-p 8000:8000 \
+	--link webmaboss-db \
+	-u www-data \
+	-e DB_HOST=webmaboss-db \
+	-e DB_PORT=3306 \
+	-e DB_NAME=webmaboss \
+	-e DB_USER=webmaboss \
+	-e DB_PASSWORD=InsertAPassWordForTheDatabase \
+	sysbiocurie/webmaboss:1.0.0b17 
+```
+And finally open your browser to this url : http://localhost:8000/
+
+By default, this will use the docker image from [DockerHub](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general). If you want to build your image locally, use : 
+```
+docker build -f docker/Dockerfile -t sysbiocurie/webmaboss:1.0.0b17 
+```
+before launching WebMaBoSS's container.
 ### Tutorials
 
-The directory tutorial contains two tutorials (in pdf) based on an example. In order to follow a tutorial, the necessary files are provided.
+The directory tutorial contains two tutorials based on the two models in the default project :
+
+- [Tutorial on Cohen 2015 : Tumor Cell Invasion and Migration](https://github.com/sysbio-curie/WebMaBoSS/raw/master/tutorials/Tutorial_Cohen.pdf)
+- [Tutorial on Corral 2020 : Interplay between SMAD2 and STAT5A regulating IL-17A/F expression in Th cells](https://github.com/sysbio-curie/WebMaBoSS/raw/master/tutorials/Tutorial_Corral.pdf)
 
 ### License
 
