@@ -34,8 +34,8 @@ class ModelGraphRaw extends React.Component {
 			name: 'cose-bilkent',   
 			quality: 'proof',
 			nodeDimensionsIncludeLabels: true,   
-			idealEdgeLength: '200',
-			edgeElasticity: 1.0,
+			// idealEdgeLength: '200',
+			// edgeElasticity: 1.0,
 			// nodeRepulsion: 100000,
 			// gravity: 0.1,
 			// animate: 'during',  
@@ -69,7 +69,7 @@ class ModelGraphRaw extends React.Component {
 					})
 					return result;
 				}, {});
-				// print(nodes_dict)
+
 				new_data = this.state.data;
 				new_data.nodes_dict = new_nodes;
 				this.setState({data: data});
@@ -237,7 +237,7 @@ class ModelGraphRaw extends React.Component {
 				return <React.Fragment>
 					<Button onClick={()=>{this.resetLayout();}}><FontAwesomeIcon icon={faSyncAlt}/></Button>
 					<CytoscapeComponent 
-						elements={elements} layout={this.state.data['dims'] !== null ? undefined : this.layout }
+						elements={elements} layout={this.layout }
 						style={this.style} stylesheet={stylesheet} cy={(cy) => { this.setCy(cy); }}
 					/>
 				</React.Fragment>;
