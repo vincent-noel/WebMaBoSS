@@ -95,7 +95,7 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 			return Response(status=status.HTTP_501_NOT_IMPLEMENTED)
 
 		maboss_model.param['thread_count'] = 6
-		maboss_model.param['time_tick'] = float(maboss_model.param['max_time'])/100
+		maboss_model.param['time_tick'] = float(maboss_model.param['max_time'])/10
 
 		thread = Thread(target=run_analysis, args=(maboss_model, sensitivity_analysis, analysis_settings, candidate_variables))
 		thread.start()
