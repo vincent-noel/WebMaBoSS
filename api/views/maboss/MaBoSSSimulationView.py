@@ -154,7 +154,7 @@ def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port)
 		# t0 = time()
 		# print("Started thread")
 		if server_host is None:
-			res = maboss_model.run(cmaboss=True)
+			res = maboss_model.run()
 		else:
 			mbcli = maboss.MaBoSSClient(server_host, int(server_port))
 			res = mbcli.run(maboss_model)

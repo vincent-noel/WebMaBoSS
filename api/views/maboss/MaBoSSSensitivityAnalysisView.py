@@ -238,7 +238,7 @@ def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port)
 			mbcli = MaBoSSClient(server_host, int(server_port))
 			res = mbcli.run(maboss_model)
 		else:
-			res = maboss_model.run(cmaboss=True)
+			res = maboss_model.run()
 
 		fixed_points = res.get_fptable()
 		if fixed_points is not None:
