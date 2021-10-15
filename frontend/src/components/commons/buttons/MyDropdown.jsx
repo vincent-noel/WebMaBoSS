@@ -17,7 +17,12 @@ class MyDropdown extends React.Component {
 	}
 	
 	render() {
-		return <Dropdown isOpen={this.state.open} toggle={this.toggle} style={{textAlign: "center"}}>
+		let style = {"textAlign": "center"};
+		if (this.props.inline === true) { 
+			style["display"] = "inline";
+		}
+		console.log(style);
+		return <Dropdown isOpen={this.state.open} toggle={this.toggle} style={style}>
 			<DropdownToggle style={{width: this.props.width, overflowX: "hidden", textOverflow: "ellipsis"}} caret>{this.props.label}</DropdownToggle>
 			<DropdownMenu style={{width: this.props.width}} className={"bg-dark"}>
 			{
