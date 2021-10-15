@@ -1,11 +1,16 @@
 function getProject() {
+    
     if (sessionStorage.getItem("project") !== null) {
         return parseInt(sessionStorage.getItem("project"));
-    }
+    } else return 0;
 }
 
 function setProject(project) {
     return sessionStorage.setItem("project", project);
+}
+
+function clearProject() {
+    sessionStorage.removeItem("project");
 }
 
 function getModel() {
@@ -50,7 +55,7 @@ function clearAPIKey() {
     sessionStorage.removeItem("api_key");
 }
 export {
-    getProject, setProject,
+    getProject, setProject, clearProject,
     getModel, setModel, clearModel,
     setAPIKey, getAPIKey, clearAPIKey,
     setUser, getUsername, clearUser,

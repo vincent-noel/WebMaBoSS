@@ -3,7 +3,7 @@ import $ from 'jquery';
 
 function getCSRFToken() {
     var name="csrftoken";
-    var cookieValue = null;
+    var cookieValue = "";
     if (document.cookie && document.cookie !== '') {
         var cookies = document.cookie.split(';');
         for (var i = 0; i < cookies.length; i++) {

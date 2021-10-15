@@ -2,6 +2,7 @@ import React from "react";
 import NavBar from "./navbar/NavBar";
 import PropTypes from "prop-types";
 import {getProject, isConnected} from "./commons/sessionVariables";
+import isAccessibleAnonymously from "./commons/isAccessibleAnonymously";
 import history from './history';
 import {ProjectContext} from './context';
 import Home from "./Home";
@@ -40,7 +41,7 @@ class Page extends React.Component {
 			<div className="container-fluid">
 				<NavBar path={this.props.path}/>
 				{
-					!isConnected() && this.props.path !== "/register/" && this.props.path !== "/login/" ?
+					!isConnected() && !isAccessibleAnonymously(this.props.path) ?
 					<div className="page"><Home/></div> :
 					<div className="page">
 						{this.props.children}

@@ -14,7 +14,8 @@ from api.views.HasModel import HasModel
 from api.views.HasMaBoSSSimulation import HasMaBoSSSimulation
 from api.serializers import MaBoSSSimulationSerializer
 from api.models import LogicalModel, MaBoSSSimulation, Project
-
+from api.models.common import clean_guest_account
+from django.contrib.auth.models import User
 from threading import Thread
 from os.path import join, exists, splitext, basename
 from os import remove
@@ -35,6 +36,9 @@ class MaBoSSSimulationView(HasModel):
 		return Response(serializer.data)
 
 	def post(self, request, project_id, model_id):
+		print("Submitted new simulation")
+		print("> User : %s" % request.user.username)
+		print("> Is anonymous : %s" % request.user.is_anonymous)
 		# print("Entering post function")
 		t0 = time()
 		HasModel.load(self, request, project_id, model_id)
@@ -145,7 +149,11 @@ class MaBoSSSimulationView(HasModel):
 		# print("Thread built (%.2gs)" % (t3-t2))
 
 		thread.start()
-
+		
+		# Here we want to check if there are some models we need to clean
+		if request.user.is_anonymous:
+			clean_guest_account()
+				
 		return Response({'simulation_id': maboss_simulation.id}, status=status.HTTP_200_OK)
 
 def run_simulation(maboss_model, maboss_simulation_id, server_host, server_port):

@@ -1,4 +1,4 @@
-import {getAPIKey, clearAPIKey} from "../commons/sessionVariables";
+import {getAPIKey, clearAPIKey, isConnected} from "../commons/sessionVariables";
 
 function checkAuthorization(response) {
 	if (response.status === 401) {
@@ -28,7 +28,11 @@ const makeCancelable = (promise) => {
 };
 
 function getDefaultHeaders() {
-	return new Headers({'Authorization': "Token " + getAPIKey()})
+  if (isConnected()) {
+	  return new Headers({'Authorization': "Token " + getAPIKey()})
+  } else {
+    return new Headers({})
+  }
 }
 
 function extractFilename(content_disposition) {

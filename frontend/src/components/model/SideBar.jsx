@@ -1,7 +1,7 @@
 import React from "react";
 import {NavLink} from "react-router-dom";
+import { isConnected } from "../commons/sessionVariables";
 import ModelDropdown from "./ModelDropdown";
-
 
 class SideBar extends React.Component {
 
@@ -31,15 +31,15 @@ class SideBar extends React.Component {
 						{
 							this.props.path.startsWith("/model/maboss/") ? */}
 							{/* <ul className={"sidebar-nav"}> */}
-								<li>
+								{ isConnected() ? <li>
 									<NavLink to="/model/maboss/editing/" className="nav-link">Editing</NavLink>
-								</li>
+								</li> : null }
 								<li>
 									<NavLink to="/model/maboss/simulation/" className="nav-link">Simulation</NavLink>
 								</li>
-								<li>
+								{ isConnected() ? <li>
 									<NavLink to="/model/maboss/sensitivity/" className="nav-link">Sensitivity</NavLink>
-								</li>
+								</li> : null }
 							{/* </ul>
 							: null}
 					</li> */}

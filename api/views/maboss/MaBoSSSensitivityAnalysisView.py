@@ -1,5 +1,6 @@
 from rest_framework.response import Response
 from rest_framework import status
+from rest_framework.exceptions import PermissionDenied
 
 from django.core.files import File
 from django.conf import settings
@@ -19,6 +20,9 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 
 	def get(self, request, project_id, model_id):
 
+		if request.user.is_anonymous:
+			raise PermissionDenied
+		
 		HasModel.load(self, request, project_id, model_id)
 
 		simulations = MaBoSSSensitivityAnalysis.objects.filter(model=self.model)
@@ -27,6 +31,9 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 
 	def post(self, request, project_id, model_id):
 
+		if request.user.is_anonymous:
+			raise PermissionDenied
+			
 		HasModel.load(self, request, project_id, model_id)
 
 		maboss_model = self.getMaBoSSModel()		

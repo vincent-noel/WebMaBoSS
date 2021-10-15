@@ -9,6 +9,7 @@ import {ProjectContext} from "../context";
 import TagForm from "./TagForm";
 import ImportModel from "./ImportModel";
 import ErrorAlert from "../commons/ErrorAlert";
+import { isConnected } from "../commons/sessionVariables";
 
 
 class Models extends React.Component {
@@ -110,18 +111,20 @@ class Models extends React.Component {
 									download={this.showExportModelForm}
 									tag={this.showTagModelForm}
 								/>
-								<ButtonToolbar className="justify-content-start">
-									<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelForm(null)}}>Load model</Button>
-									<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelImport(null)}}>Import model</Button>
-								</ButtonToolbar>
-								<ModelForm
-									project={projectContext.project}
-									updateParent={updateParent}
-									status={this.state.showModelForm}
-									id={this.state.idModelForm}
-									show={this.showModelForm}
-									hide={this.hideModelForm}
-								/>
+								{ isConnected() ? <React.Fragment>
+									<ButtonToolbar className="justify-content-start">
+										<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelForm(null)}}>Load model</Button>
+										<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelImport(null)}}>Import model</Button>
+									</ButtonToolbar>
+									<ModelForm
+										project={projectContext.project}
+										updateParent={updateParent}
+										status={this.state.showModelForm}
+										id={this.state.idModelForm}
+										show={this.showModelForm}
+										hide={this.hideModelForm}
+									/>
+								</React.Fragment> : null }
 								<ExportModelForm
 									project={projectContext.project}
 									id={this.state.idExportModelForm}
@@ -138,14 +141,14 @@ class Models extends React.Component {
 									hide={this.hideTagModelForm}
 									showExport={this.showExportModelForm}
 								/> */}
-								<ImportModel
+								{ isConnected() ? <ImportModel
 									project={projectContext.project}
 									updateParent={updateParent}
 									status={this.state.showModelImport}
 									show={this.showModelImport}
 									hide={this.hideModelImport}
 									showErrors={this.showErrors}
-								/>
+								/> : null }
 							</React.Fragment>
 						}
 					}

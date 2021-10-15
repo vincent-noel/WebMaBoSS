@@ -11,7 +11,10 @@ class HasMaBoSSSensitivity(HasProject):
 		self.analysis = None
 
 	def load(self, request, project_id, analysis_id):
-
+		
+		if request.user.is_anonymous:
+			raise PermissionDenied
+		
 		HasProject.load(self, request, project_id)
 
 		try:

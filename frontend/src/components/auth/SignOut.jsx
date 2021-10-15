@@ -1,6 +1,6 @@
 import React from "react";
 import history from '../history';
-import {clearAPIKey, clearUser} from "../commons/sessionVariables";
+import {clearAPIKey, clearModel, clearUser, clearProject} from "../commons/sessionVariables";
 import APICalls from "../api/apiCalls";
 
 
@@ -21,6 +21,8 @@ class SignOut extends React.Component {
 		this.logoutCall.promise.then(response => {
 			clearAPIKey();
 			clearUser();
+			clearProject();
+			clearModel();
 			history.push("/login/");
 		});
 

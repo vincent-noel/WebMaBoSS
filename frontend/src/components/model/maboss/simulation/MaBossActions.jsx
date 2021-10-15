@@ -2,6 +2,7 @@ import React from "react";
 import NewSimForm from "./NewSimForm";
 import OldSimForm from "./OldSimForm";
 import {Button, ButtonToolbar} from "reactstrap";
+import { isConnected } from "../../../commons/sessionVariables";
 
 
 class MaBossActions extends React.Component {
@@ -60,7 +61,7 @@ class MaBossActions extends React.Component {
 				<ButtonToolbar className="justify-content-start">
 					<Button className="mr-1" onClick={() => {this.toggleNewSimForm();}}>New simulation</Button>
 					{
-						this.props.listOfSimulations !== null && this.props.listOfSimulations.length > 0
+						isConnected() && this.props.listOfSimulations !== null && this.props.listOfSimulations.length > 0
 						? 	<Button className="mr-1" onClick={() => {this.toggleOldSimForm();}}>
 								Load old simulation
 							</Button>
@@ -75,7 +76,7 @@ class MaBossActions extends React.Component {
 					status={this.state.showNewSimForm}
 					toggle={this.toggleNewSimForm}
 				/>
-				<OldSimForm
+				{ isConnected() ? <OldSimForm
 					project={this.props.project}
 					modelId={this.props.modelId}
 					onSubmit={this.onSubmitOldSim}
@@ -84,7 +85,7 @@ class MaBossActions extends React.Component {
 					listOfSimulations={this.props.listOfSimulations}
 					loadListSimulations={this.props.loadListSimulations}
 					removeOldSim={this.props.removeOldSim}
-				/>
+				/> : null }
 			</React.Fragment>
 		);
 	}

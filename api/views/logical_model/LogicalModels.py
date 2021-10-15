@@ -11,7 +11,7 @@ import os, tempfile, shutil, biolqm, re, maboss, json
 from django.core.files import File
 from django.core.files.storage import default_storage
 import zipfile
-
+from rest_framework import authentication, permissions
 def sbml_to_maboss(path, use_sbml_names=False):
 	print("Converting %s to maboss" % path)
 	# biolqm_model = biolqm.load(path)
@@ -70,11 +70,12 @@ def bnet_to_maboss(path):
 	return (bnd_file[1], cfg_file[1])
 	
 class LogicalModels(HasProject):
+	permission_classes = (permissions.AllowAny,)
 
 	def get(self, request, project_id, model_id=None):
-
+		
 		HasProject.load(self, request, project_id)
-
+		
 		try:
 			if model_id is None:
 

@@ -17,6 +17,8 @@ class Home extends React.Component {
            			<h3>A web tool for simulating Boolean models</h3>
 					<br/>
 					<h5>Click <a href="/login/">here</a> to login if you already have an account, overwise you can quickly create one <a href="/register/">here</a>.</h5>
+					<h5>If you want to quickly test WebMaBoSS, you can have a look at our <a href="/models/">demo project</a>.</h5>
+
 				</Col>
 			</Row>
 			<br/><br/>

@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from api.models.project import Project
 from api.models.logical_model import LogicalModel
+from api.models.TimeStampMixin import TimeStampMixin
 
 from os import remove, mkdir
 from os.path import join, isdir, exists, basename
@@ -43,7 +44,8 @@ def create_path(sender, instance, **kwargs):
 def create_path_sensitivityanalysis(sender, instance, **kwargs):
 	if not isdir(join(settings.MEDIA_ROOT, instance.project.path, 'sensitivity_analysis')):
 		mkdir(join(settings.MEDIA_ROOT, instance.project.path, 'sensitivity_analysis'))
-class MaBoSSSimulation(models.Model):
+		
+class MaBoSSSimulation(TimeStampMixin):
 	project = models.ForeignKey(Project, on_delete=models.CASCADE)
 	model = models.ForeignKey(LogicalModel, on_delete=models.CASCADE)
 
@@ -104,7 +106,7 @@ class MaBoSSServer(models.Model):
 	host = models.CharField(max_length=256)
 	port = models.IntegerField()
 
-class MaBoSSSensitivityAnalysis(models.Model):
+class MaBoSSSensitivityAnalysis(TimeStampMixin):
 
 	project = models.ForeignKey(Project, on_delete=models.CASCADE)
 	model = models.ForeignKey(LogicalModel, on_delete=models.CASCADE)
@@ -145,7 +147,7 @@ class MaBoSSSensitivityAnalysis(models.Model):
 pre_delete.connect(remove_sensitivityanalysis_path, sender=MaBoSSSensitivityAnalysis)
 pre_save.connect(create_path, sender=MaBoSSSensitivityAnalysis)
 
-class MaBoSSSensitivitySimulation(models.Model):
+class MaBoSSSensitivitySimulation(TimeStampMixin):
 	sensitivity_analysis = models.ForeignKey(MaBoSSSensitivityAnalysis, on_delete=models.CASCADE)
 
 	name = models.CharField(max_length=256)
