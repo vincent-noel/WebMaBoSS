@@ -28,8 +28,7 @@ class MaBoSSServerView(HasUser):
 				return Response(serializer.data)
 			else:
 				server = MaBoSSServer.objects.get(id=server_id)
-
-				if server.user != self.user:
+				if server.user != self.user and not server.user.is_staff:
 					raise PermissionDenied
 
 				serializer = MaBoSSServerSerializer(server)
@@ -97,7 +96,7 @@ class CheckServerView(HasUser):
 		try:
 			server = MaBoSSServer.objects.get(id=server_id)
 
-			if server.user != self.user:
+			if server.user != self.user and not server.user.is_staff:
 				raise PermissionDenied
 
 			mbcli = MaBoSSClient(server.host, int(server.port), timeout=1)

@@ -90,7 +90,7 @@ class NewSimForm extends React.Component {
 		for (let i=0; i < servers.length; i++) {
 			serversCalls[i] = APICalls.MaBoSSServerCalls.checkMaBoSSServer(servers[i].id);
 			serversCalls[i].promise.then(response => {
-				if (response) {
+				if (response && response.detail === undefined) {
 					this.setState(prevState => {
 						let t_states = prevState.statusServer;
 						t_states[i] = 1;
@@ -111,21 +111,22 @@ class NewSimForm extends React.Component {
 
 		this.getServersCall = APICalls.MaBoSSServerCalls.getMaBoSSServers();
 		this.getServersCall.promise.then(response => {
-			this.buildServersStatus(response);
 			this.setState({listServers: response, statusServer: new Array(response.length).fill(-1)});
+			this.buildServersStatus(response);
 		});
 	}
 
-	selectServer(ind) {
-		console.log("Selecting server " + ind);
-		this.setState({
-			selectedServer: ind, 
-			selectedServerLabel: ind === "-1" ? "Local" : [
-				this.state.listServers[ind].desc, 
-				' ',
-				this.getServerStatus(ind)
-			]
-		});
+	selectServer(ind, e) {
+		if (this.state.statusServer[ind] === 1) {
+			this.setState({
+				selectedServer: ind, 
+				selectedServerLabel: ind === "-1" ? "Local" : [
+					this.state.listServers[ind].desc, 
+					' ',
+					this.getServerStatus(ind)
+				]
+			});
+		} else {e.preventDefault();}
 	}
 
 	getSettings(project_id, model_id) {
@@ -509,7 +510,7 @@ class NewSimForm extends React.Component {
 										}
 										label={this.state.selectedServerLabel}
 										width={"25rem"}
-										callback={(id)=>this.selectServer(id)}
+										callback={(id, e)=>this.selectServer(id, e)}
 									/>
 								</TabPane>
 								<TabPane tabId="initial_states">

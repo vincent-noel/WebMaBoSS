@@ -30,7 +30,7 @@ class MyDropdown extends React.Component {
 					Object.keys(this.props.dict).map((key, id) => {
 						return <DropdownItem key={id} className={"bg-dark"}
 							style={{ overflowX: "hidden", textOverflow: "ellipsis", color: "#fff"}}
-							onClick={() => this.props.callback(key)}
+							onClick={(e) => this.props.callback(key, e)}
 						>{this.props.dict[key]}</DropdownItem>
 				}) : null
 			}
