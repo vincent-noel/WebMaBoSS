@@ -12,6 +12,7 @@ import {faCaretDown} from "@fortawesome/free-solid-svg-icons";
 import MaBossSteadyStatesPCA from "./MaBossSteadyStatesPCA";
 import MaBossFixedPoints from "./MaBossFixedPoints";
 import ErrorAlert from "../../../commons/ErrorAlert";
+import { isConnected } from "../../../commons/sessionVariables";
 
 
 class MaBossResult extends React.Component {
@@ -240,7 +241,7 @@ class MaBossResult extends React.Component {
 						<Dropdown isOpen={this.state.dropdownOpen} toggle={this.toggleDropdown}>
 							<DropdownToggle><FontAwesomeIcon icon={faCaretDown}/></DropdownToggle>
 							<DropdownMenu right>
-								<DropdownItem onClick={() => {this.createNewModel();}}>Save as new model</DropdownItem>
+								{ isConnected() ? <DropdownItem onClick={() => {this.createNewModel();}}>Save as new model</DropdownItem> : null }
 								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "bnd_file")}}>Download BND file</DropdownItem>
 								<DropdownItem onClick={() => {APICalls.MaBoSSCalls.downloadMaBoSSModel(this.props.project, this.props.simulationId, "cfg_file")}}>Download CFG file</DropdownItem>
 							</DropdownMenu>
