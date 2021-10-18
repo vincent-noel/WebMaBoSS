@@ -17,12 +17,16 @@ import Register from "./auth/Register";
 import ProjectsPage from "./projects/ProjectsPage";
 import Models from "./models/Models";
 import Data from "./Data";
+import Tutorials from './Tutorials';
+import About from './About';
 import {OverviewWrapper} from "./model/overview/OverviewWrapper";
 import {SteadyStatesWrapper} from "./model/steady_states/SteadyStatesWrapper";
 import {MaBoSSSimulationWrapper} from "./model/maboss/simulation/MaBoSSSimulationWrapper";
 import MaBossEditing from "./model/maboss/editing/Editing";
 import MaBoSSSettings from "./profile/maboss_settings/MaBoSSSettings";
 import Sensitivity from "./model/maboss/sensitivity/Sensitivity";
+import CohenTutorial from './CohenTutorial';
+import CorralTutorial from './CorralTutorial';
 
 class App extends Component {
 
@@ -38,6 +42,10 @@ class App extends Component {
 
 					<Route exact path="/models/" component={Models} />
 					<Route exact path="/data/" component={Data} />
+					<Route exact path="/tutorials/" component={Tutorials} />
+					<Route exact path="/tutorials/cohen/" component={CohenTutorial} />
+					<Route exact path="/tutorials/corral/" component={CorralTutorial} />
+					<Route exact path="/about/" component={About} />
 
 					<Route exact path="/model/overview/" component={OverviewWrapper} />
 					<Route exact path="/model/fixed_points/" component={SteadyStatesWrapper} />

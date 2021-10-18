@@ -12,13 +12,23 @@ class NavBar extends React.Component {
 		return (
 			<nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
 				<NavBarBrand/>
-					{ isConnected() && this.props.path !== "/" ? <React.Fragment>
-						<div className="collapse navbar-collapse" id="navbarsExampleDefault">
-							<ul className="navbar-nav mr-auto">
-								<NavBarItem url="/models/" name="Models"/>
-								{/* <NavBarItem url="/data/" name="Data"/> */}
-							</ul>
-						</div>
+					<div className="collapse navbar-collapse" id="navbarsExampleDefault">
+					<ul className="navbar-nav mr-auto">
+						
+					{ isConnected() && this.props.path !== "/" ? 
+					
+						<NavBarItem url="/models/" name="Models"/>
+						// {/* <NavBarItem url="/data/" name="Data"/> */}
+						: null
+					}
+		
+					<NavBarItem url="/tutorials/" name="Tutorials"/>
+					<NavBarItem url="/about/" name="About"/>
+					
+					</ul>
+					</div>
+						
+					{ isConnected() && this.props.path !== "/" ?
 						<div className="collapse navbar-collapse" id="navbarsExampleDefault">
 							<ul className="navbar-nav mr-auto">
 								<ProjectContext.Consumer>
@@ -29,8 +39,7 @@ class NavBar extends React.Component {
 								/>}
 								</ProjectContext.Consumer>
 							</ul>
-						</div>
-					</React.Fragment> : null
+						</div> : null
 					}
 				
 

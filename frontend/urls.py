@@ -12,5 +12,7 @@ urlpatterns = [
 	path('data/', views.index, name="data"),
 	re_path('model/.*', views.index, name="model"),
 	re_path('profile/.*', views.index, name="model"),
+	re_path('tutorials/.*', views.index, name="model"),
+	re_path('about/.*', views.index, name="model"),
 	# re_path('images/.*', views.index, name="images"),
 ]

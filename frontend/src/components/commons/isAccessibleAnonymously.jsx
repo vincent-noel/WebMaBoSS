@@ -6,6 +6,10 @@ function isAccessibleAnonymously(page)
         (
             page.startsWith("/model/") && !page.startsWith("/model/maboss/sensitivity/")
         )
+        || 
+        page.startsWith("/tutorials/")
+        || 
+        page === "/about/"
     );
 }
 
