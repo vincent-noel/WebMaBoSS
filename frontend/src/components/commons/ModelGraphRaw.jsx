@@ -9,6 +9,8 @@ import {Button } from "reactstrap";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faSyncAlt} from "@fortawesome/free-solid-svg-icons";
 import MyDropdown from "./buttons/MyDropdown";
+import { isConnected } from "./sessionVariables";
+
 import avsdf from 'cytoscape-avsdf';
 import dagre from 'cytoscape-dagre';
 import spread from 'cytoscape-spread';
@@ -95,8 +97,10 @@ class ModelGraphRaw extends React.Component {
 		this.cy = cy;
 		this.cy.on('dragfree', 'node', 
 			(node) => {
-				console.log(node.target.id() + " position changed");
-				this.updatePosition(this.props.project, this.props.modelId, node.target.id(), node.target.position());
+				if (isConnected()) {
+					console.log(node.target.id() + " position changed");
+					this.updatePosition(this.props.project, this.props.modelId, node.target.id(), node.target.position());
+				}
 			} 
 		); 
 		
@@ -107,7 +111,7 @@ class ModelGraphRaw extends React.Component {
 		this.cy.on('layoutstop', (event) => {
 			console.log("Layout stopped")
 			let raw_layout = event.target.options.eles;
-			if (raw_layout !== undefined) {
+			if ( isConnected() &&  raw_layout !== undefined) {
 				let new_layout = Object.values(raw_layout).reduce((result, node)=>{
 					
 					if (typeof node === 'object' && typeof node.data === "function" && typeof node.position === "function") {
