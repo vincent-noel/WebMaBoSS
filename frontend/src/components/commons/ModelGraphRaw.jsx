@@ -27,7 +27,7 @@ class ModelGraphRaw extends React.Component {
 		this.state = {
 			data: undefined,
 			loaded: false,
-			layout: 'dagre',
+			layout: 'preset',
 		};
 
 		this.cy = null;
@@ -39,15 +39,16 @@ class ModelGraphRaw extends React.Component {
 		this.setLayout = this.setLayout.bind(this);
 		
 		this.layouts = {
-			0: "grid",
-			1: "circle",
-			2: "concentric",
-			3: "breadthfirst",
-			4: "avsdf",
-			5: "dagre",
-			6: "spread",
-			7: "cose",
-			8: 'cose-bilkent'
+			0: "preset",
+			1: "grid",
+			2: "circle",
+			3: "concentric",
+			4: "breadthfirst",
+			5: "avsdf",
+			6: "dagre",
+			7: "spread",
+			8: "cose",
+			9: 'cose-bilkent'
 		}
 		
 		this.style = {	minWidth: '800px', minHeight: '550px', width: '100%', height: '100%'};
@@ -60,7 +61,10 @@ class ModelGraphRaw extends React.Component {
 		this.getGraphCall = APICalls.ModelCalls.getGraphRaw(project_id, model_id);
 
 		this.getGraphCall.promise.then(
-			data => { this.setState({loaded: true, data: data})}
+			data => { 
+				let preset_layout = Object.values(data.nodes_dict).reduce((result, element) => { return result & (element.x !== undefined);}, true);
+				this.setState({loaded: true, data: data, layout:(preset_layout ? "preset" : "dagre")});
+			}
 		)
 	}
 	
@@ -102,12 +106,15 @@ class ModelGraphRaw extends React.Component {
 		
 		this.cy.on('layoutstop', (event) => {
 			console.log("Layout stopped")
-			
-			let raw_layout = event.layout.idToLNode;
-			
+			let raw_layout = event.target.options.eles;
 			if (raw_layout !== undefined) {
-				let new_layout = Object.keys(raw_layout).reduce((result, node)=>{
-					result.push({"name": node, "x": raw_layout[node].rect.x, "y": raw_layout[node].rect.y});
+				let new_layout = Object.values(raw_layout).reduce((result, node)=>{
+					
+					if (typeof node === 'object' && typeof node.data === "function" && typeof node.position === "function") {
+						if (node.data().label !== undefined) {
+							result.push({"name": node.data().label, "x": node.position().x, "y": node.position().y});
+						}
+					}
 					return result;
 				}, []);
 				
@@ -159,106 +166,106 @@ class ModelGraphRaw extends React.Component {
 		if (this.state.loaded) {
 
 			const elements = Object.values(this.state.data['nodes']).map(
-					(name, index) => {
-						return {
-							data: {
-								id: name,
-								label: name,
-								name: name
-							},
-							position: {
-								x: this.state.data['nodes_dict'][index]['x'],
-								y: this.state.data['nodes_dict'][index]['y']
-							},
-							classes: this.props.state !== undefined ? (this.props.state[name] === 1 ? 'positive' : 'negative') : 'default'
-						}
-					}
-				).concat(Object.values(this.state.data['edges']).map(
-					(values, index) => {
-						return {
-							data: {
-								id: "edge_" + index,
-								source: values[0],
-								target: values[1]
-							},
-							classes: values[2] === 1 ?  'positive' : 'negative'
-						}
-					}
-				));
-	
-				
-				const stylesheet = 
-				[
-					{
-						selector: 'edge.positive',
-						style: {
-								'curve-style': ' unbundled-bezier',
-							'line-color': '#00ff00',
-							'source-arrow-color': '#00ff00',
-							'target-arrow-color': '#00ff00',
-							'target-arrow-shape': 'triangle'
+				(name, index) => {
+					return {
+						data: {
+							id: name,
+							label: name,
+							name: name
 						},
-					}, {
-						selector: 'edge.negative',
-						style: {
-								'curve-style': ' unbundled-bezier',
-							'line-color': '#ff0000',
-							'source-arrow-color': '#ff0000',
-							'target-arrow-color': '#ff0000',
-							'target-arrow-shape': 'tee'
+						position: {
+							x: this.state.data['nodes_dict'][index]['x'],
+							y: this.state.data['nodes_dict'][index]['y']
 						},
-					},{
-						selector: 'node.positive',
-						style:	{
-							'background-color': '#00ff00'
-						}
-					},{
-						selector: 'node.negative',
-						style:	{
-							'background-color': '#ff0000'	
-						}
-					},{
-						selector: 'node.default',
-						style:	{
-							'background-color': '#fff'	
-						}
-					},{
+						classes: this.props.state !== undefined ? (this.props.state[name] === 1 ? 'positive' : 'negative') : 'default'
+					}
+				}
+			).concat(Object.values(this.state.data['edges']).map(
+				(values, index) => {
+					return {
+						data: {
+							id: "edge_" + index,
+							source: values[0],
+							target: values[1]
+						},
+						classes: values[2] === 1 ?  'positive' : 'negative'
+					}
+				}
+			));
+
+			
+			const stylesheet = 
+			[
+				{
+					selector: 'edge.positive',
+					style: {
+							'curve-style': ' unbundled-bezier',
+						'line-color': '#00ff00',
+						'source-arrow-color': '#00ff00',
+						'target-arrow-color': '#00ff00',
+						'target-arrow-shape': 'triangle'
+					},
+				}, {
+					selector: 'edge.negative',
+					style: {
+							'curve-style': ' unbundled-bezier',
+						'line-color': '#ff0000',
+						'source-arrow-color': '#ff0000',
+						'target-arrow-color': '#ff0000',
+						'target-arrow-shape': 'tee'
+					},
+				},{
+					selector: 'node.positive',
+					style:	{
+						'background-color': '#00ff00'
+					}
+				},{
+					selector: 'node.negative',
+					style:	{
+						'background-color': '#ff0000'	
+					}
+				},{
+					selector: 'node.default',
+					style:	{
+						'background-color': '#fff'	
+					}
+				},{
+					
+					selector: 'node',
+					style:	{
+						'padding-left': 10,
+						'padding-right': 10,
+						'padding-bottom': 10,
+						'padding-top': 10,
+						'color': '#000',
+						'border-width': 2,
+						'border-color': '#000',
+						'shape': 'roundrectangle',
+						'content': 'data(name)',
+						'text-valign': 'center',
+						'text-outline-width': 2,
+						'text-outline-color': '#fff',
+						'width': 'label'
 						
-						selector: 'node',
-						style:	{
-							'padding-left': 10,
-							'padding-right': 10,
-							'padding-bottom': 10,
-							'padding-top': 10,
-							'color': '#000',
-							'border-width': 2,
-							'border-color': '#000',
-							'shape': 'roundrectangle',
-							'content': 'data(name)',
-							'text-valign': 'center',
-							'text-outline-width': 2,
-							'text-outline-color': '#fff',
-							'width': 'label'
-							
-						}
 					}
-				];
-				// console.log(this.state.data['nodes_dict'])
-				return <React.Fragment>
-					<Button onClick={()=>{this.resetLayout();}} className="mr-1"><FontAwesomeIcon icon={faSyncAlt}/></Button>
-					<MyDropdown
-						label={this.state.layout}
-						dict={this.layouts}
-						callback={ind=>{ this.setLayout(this.layouts[ind]); }} //this.props.onModelChanged(this.props.project, this.props.models[ind].id);}}
-						width={"12rem"}
-						inline={true}
-					/>
-					<CytoscapeComponent 
-						elements={elements} layout={{name: this.state.layout}}
-						style={this.style} stylesheet={stylesheet} cy={(cy) => { this.setCy(cy); }}
-					/>
-				</React.Fragment>;
-		
+				}
+			];
+
+			return <React.Fragment>
+				<Button onClick={()=>{this.resetLayout();}} className="mr-1"><FontAwesomeIcon icon={faSyncAlt}/></Button>
+				<MyDropdown
+					label={this.state.layout}
+					dict={this.layouts}
+					callback={ind=>{ this.setLayout(this.layouts[ind]); }} //this.props.onModelChanged(this.props.project, this.props.models[ind].id);}}
+					width={"12rem"}
+					inline={true}
+				/>
+				<CytoscapeComponent 
+					elements={elements} layout={{name: this.state.layout}}
+					style={this.style} stylesheet={stylesheet} cy={(cy) => { this.setCy(cy); }}
+				/>
+			</React.Fragment>;
+	
 		} else {
 			return <LoadingIcon width="3rem"/>;
 		}
