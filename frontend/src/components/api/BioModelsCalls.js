@@ -11,6 +11,7 @@ class BioModelsCalls {
 				"/api/biomodels/all",
 				{
 					method: "get",
+					headers: getDefaultHeaders()
 				}
 			).then(response => response.json())
 		);
@@ -26,6 +27,7 @@ class BioModelsCalls {
 				this.getSBMLURLFromBioModels(model_id),
 				{
 					method: "get",
+					headers: getDefaultHeaders()
 				}
 			).then(response => Promise.all([
 				response.blob()])

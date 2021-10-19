@@ -11,6 +11,7 @@ class CellCollectiveCalls {
 				"https://research.cellcollective.org/_api/model/cards/count/research?modelTypes=boolean",
 				{
 					method: "get",
+					headers: getDefaultHeaders()
 				}
 			).then(response => response.json())
 		);
@@ -23,6 +24,7 @@ class CellCollectiveCalls {
 				"/api/ccapi/all",
 				{
 					method: "get",
+					headers: getDefaultHeaders()
 				}
 			).then(response => response.json())
 		);
@@ -41,7 +43,8 @@ class CellCollectiveCalls {
 					// 	"Pragma": "no-cache"
 					// },
 					// headers: { "Access-Control-Allow-Origin": "*"},
-					referrerPolicy: "unsafe-url"//"origin",//no-referrer-when-downgrade",
+					referrerPolicy: "unsafe-url",//"origin",//no-referrer-when-downgrade",
+					headers: getDefaultHeaders()
 				}
 			).then(response => response.json())
 		);
@@ -57,6 +60,7 @@ class CellCollectiveCalls {
 				this.getSBMLURLFromCC(model_id),
 				{
 					method: "get",
+					headers: getDefaultHeaders()
 				}
 			).then(response => Promise.all([
 				response.blob()])
