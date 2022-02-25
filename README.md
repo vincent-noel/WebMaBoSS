@@ -10,6 +10,10 @@ WebMaBoSS allows you to store, modify, and simulate MaBoSS models. You can also 
 WebMaBoSS is available as a docker container that can quickly be deployed locally. You will need [Docker](https://docs.docker.com/get-docker/) and optionally [Docker-Compose](https://docs.docker.com/compose/install/).
 A live version is deployed at [https://maboss.curie.fr/WebMaBoSS/](https://maboss.curie.fr/WebMaBoSS).
 
+### Reference
+
+Noël, V., Ruscone, M., Stoll, G., Viara, E., Zinovyev, A., Barillot, E., & Calzone, L. (2021). WebMaBoSS: A Web Interface for Simulating Boolean Models Stochastically. *Frontiers in molecular biosciences, 8.*. DOI : [10.3389/fmolb.2021.754444](https://www.frontiersin.org/articles/10.3389/fmolb.2021.754444/full)
+
 ### Use live version
 
 To use the version available at [https://maboss.curie.fr/WebMaBoSS/](https://maboss.curie.fr/WebMaBoSS), you will need to create a user account. Once created, you can immediately login and start discovering the default project.
@@ -81,4 +85,8 @@ The directory tutorial contains two tutorials based on the two models in the def
 
 ### License
 
-[GNU Lesser General Public License v3](https://github.com/vincent-noel/WebMaBoSS/blob/master/LICENSE.md)
+[GNU Lesser General Public License v3](https://github.com/sysbio-curie/WebMaBoSS/blob/master/LICENSE.md)
+
+### Acknowledgements
+
+The development was supported by European Union's Horizon 2020 Programme under agreement no. 668858 (PrECISE project) and agreement no. 951773 (PerMedCoE project). It was also partially funded by Agence Nationale de la Recherche in the program Investissements d’Avenir (project No. ANR-19-P3IA-0001; PRAIRIE 3IA Institute).
