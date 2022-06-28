@@ -65,5 +65,4 @@ module.exports = {
 	filename: 'index.js',
 	chunkFilename: '[name].js'
   },
-  stats: 'verbose',
 };
