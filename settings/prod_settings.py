@@ -101,6 +101,8 @@ if settings is not None and 'admin' in settings.keys():
     # Database
     # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
 
+    DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+    
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',
@@ -249,6 +251,8 @@ else:
 
     # Database
     # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
+    
+    DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
     DATABASES = {
         'default': {
