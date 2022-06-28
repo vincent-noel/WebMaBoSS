@@ -14,7 +14,7 @@ $switch_button_color: white;
   display: inline-block;
   width: $switch_width;
   height: $switch_height;
-  margin: (($line_height - $switch_height)/2) 0;
+  margin: calc(($line_height - $switch_height)/2) 0;
 
   input {
     display: none
@@ -34,8 +34,8 @@ $switch_button_color: white;
     &:before {
       position: absolute;
       content: "";
-      height: $switch_height - (2 * $switch_border);
-      width: $switch_height - (2 * $switch_border);
+      height: calc($switch_height - (2 * $switch_border));
+      width: calc($switch_height - (2 * $switch_border));
       left: $switch_border;
       bottom: $switch_border;
       background-color: $switch_button_color;
@@ -61,9 +61,9 @@ $switch_button_color: white;
   }
 
   input:checked + .slider:before {
-    -webkit-transform: translateX($switch_width / 2);
-    -ms-transform: translateX($switch_width / 2);
-    transform: translateX($switch_width / 2);
+    -webkit-transform: translateX(calc($switch_width / 2));
+    -ms-transform: translateX(calc($switch_width / 2));
+    transform: translateX(calc($switch_width / 2));
   }
 }
 
@@ -83,7 +83,7 @@ $switch3_button_color: white;
   display: inline-block;
   width: $switch3_width;
   height: $switch3_height;
-  margin: (($line_height - $switch3_height)/2) 0;
+  margin: calc(($line_height - $switch3_height)/2) 0;
 
   input {
     display: none
@@ -93,23 +93,23 @@ $switch3_button_color: white;
     position: absolute;
     left: 0;
     top: 0;
-    width: $switch3_width / 3;
+    width: calc($switch3_width / 3);
     height: $switch3_height;
   }
 
   .switch-3-label-na {
     position: absolute;
-    left: $switch3_width / 3;
+    left: calc($switch3_width / 3);
     top: 0;
-    width: $switch3_width / 3;
+    width: calc($switch3_width / 3);
     height: $switch3_height;
   }
 
   .switch-3-label-on {
     position: absolute;
-    left: $switch3_width * 2 / 3;
+    left: calc($switch3_width * 2 / 3);
     top: 0;
-    width: $switch3_width / 3;
+    width: calc($switch3_width / 3);
     height: $switch3_height;
   }
 
@@ -128,8 +128,8 @@ $switch3_button_color: white;
     &:before {
       position: absolute;
       content: "";
-      height: $switch3_height - ($switch3_border*2);
-      width: $switch3_height - ($switch3_border*2);
+      height: calc($switch3_height - ($switch3_border*2));
+      width: calc($switch3_height - ($switch3_border*2));
       left: $switch3_border;
       bottom: $switch3_border;
       background-color: $switch3_button_color;
@@ -153,18 +153,18 @@ $switch3_button_color: white;
   input:not(:checked) + label + input:checked + label + input:not(:checked) + label + .slider-3 {
     background-color: $switch3_RAND_color;
       &:before {
-        -webkit-transform: translateX(($switch3_width - $switch3_height)/2);
-        -ms-transform: translateX(($switch3_width - $switch3_height)/2);
-        transform: translateX(($switch3_width - $switch3_height)/2);
+        -webkit-transform: translateX(calc(($switch3_width - $switch3_height)/2));
+        -ms-transform: translateX(calc(($switch3_width - $switch3_height)/2));
+        transform: translateX(calc(($switch3_width - $switch3_height)/2));
     }
   }
 
   input:not(:checked) + label + input:not(:checked) + label + input:checked + label + .slider-3 {
     background-color: $switch3_ON_color;
       &:before {
-        -webkit-transform: translateX($switch3_width - $switch3_height);
-        -ms-transform: translateX($switch3_width - $switch3_height);
-        transform: translateX($switch3_width - $switch3_height);
+        -webkit-transform: translateX(calc($switch3_width - $switch3_height));
+        -ms-transform: translateX(calc($switch3_width - $switch3_height));
+        transform: translateX(calc($switch3_width - $switch3_height));
     }
   }
 
@@ -198,8 +198,8 @@ $range-button-border: 0.2rem;
     bottom: $range-button-border;
       -webkit-appearance: none;  /* Override default CSS styles */
       appearance: none;
-      width: $range-width - (2 * $range-button-border); /* Full-width */
-      height: $range-height - (2 * $range-button-border); /* Specified height */
+      width: calc($range-width - (2 * $range-button-border)); /* Full-width */
+      height: calc($range-height - (2 * $range-button-border)); /* Specified height */
       background: $range-background-color; /* Grey background */
       outline: none; /* Remove outline */
       -webkit-transition: .2s; /* 0.2 seconds transition on hover */
@@ -218,16 +218,16 @@ $range-button-border: 0.2rem;
       -webkit-appearance: none; /* Override default look */
       appearance: none;
       border-radius: $range-thumb-radius;
-      width: $range-height - (2 * $range-button-border); /* Set a specific slider handle width */
-      height: $range-height - (2 * $range-button-border); /* Slider handle height */
+      width: calc($range-height - (2 * $range-button-border)); /* Set a specific slider handle width */
+      height: calc($range-height - (2 * $range-button-border)); /* Slider handle height */
       background: $range-button-color;
       cursor: pointer; /* Cursor on hover */
   }
 
   .slider::-moz-range-thumb {
     border-radius: $range-thumb-radius;
-      width: $range-height - (2 * $range-button-border); /* Set a specific slider handle width */
-      height: $range-height - (2 * $range-button-border); /* Slider handle height */
+      width: calc($range-height - (2 * $range-button-border)); /* Set a specific slider handle width */
+      height: calc($range-height - (2 * $range-button-border)); /* Slider handle height */
       background: $range-button-color;
       cursor: pointer; /* Cursor on hover */
   }
