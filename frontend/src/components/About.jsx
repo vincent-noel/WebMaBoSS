@@ -11,11 +11,11 @@ class About extends React.Component {
 			<br/><br/>
 			<h3>Publications</h3><br/>
 			<ul>
-				<li>Noel V, Ruscone M, Stoll G, Viara E, Zinovyev A, Barillot E, Calzone L. WebMaBoSS: A web interface for simulating Boolean models stochastically. <i>In Preparation</i>.</li>
+				<li>Noel V, Ruscone M, Stoll G, Viara E, Zinovyev A, Barillot E, Calzone L. WebMaBoSS: A web interface for simulating Boolean models stochastically. <i>Frontiers in molecular biosciences 2021; 8: 754444</i>. doi: <a href="https://doi.org/10.3389/fmolb.2021.754444">10.3389/fmolb.2021.754444</a></li>
 				<br/>
-				<li>Stoll G, Viara E, Barillot E, Calzone L. Continuous time Boolean modeling for biological signaling: application of Gillespie algorithm. BMC Syst Biol. 2012 Aug 29;6:116. doi: <a href="https://doi.org/10.1186/1752-0509-6-116">10.1186/1752-0509-6-116</a>.</li>
+				<li>Stoll G, Viara E, Barillot E, Calzone L. Continuous time Boolean modeling for biological signaling: application of Gillespie algorithm. <i>BMC Syst Biol. 2012 Aug 29;6:116</i>. doi: <a href="https://doi.org/10.1186/1752-0509-6-116">10.1186/1752-0509-6-116</a>.</li>
 				<br/>
-				<li>Stoll G, Caron B, Viara E, Dugourd A, Zinovyev A, Naldi A, Kroemer G, Barillot E, Calzone L.  MaBoSS 2.0: an environment for stochastic Boolean modeling. Bioinformatics btx123. 2017 Mar. DOI: <a href="https://doi.org/10.1093/bioinformatics/btx123">10.1093/bioinformatics/btx123</a>.</li>
+				<li>Stoll G, Caron B, Viara E, Dugourd A, Zinovyev A, Naldi A, Kroemer G, Barillot E, Calzone L.  MaBoSS 2.0: an environment for stochastic Boolean modeling. <i>Bioinformatics btx123. 2017 Mar</i>. doi: <a href="https://doi.org/10.1093/bioinformatics/btx123">10.1093/bioinformatics/btx123</a>.</li>
 			</ul>
 	  		
 		
