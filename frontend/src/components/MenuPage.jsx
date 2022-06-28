@@ -4,7 +4,7 @@ import Page from "./Page";
 
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import "../scss/sidebar.scss";
+import "../scss/custom.scss";
 
 
 class MenuPage extends React.Component {
