@@ -27,7 +27,7 @@ Launch WebMaBoSS's container using :
 ```
 git clone https://github.com/sysbio-curie/WebMaBoSS
 cd WebMaBoSS
-docker pull sysbiocurie/webmaboss:1.0.0
+docker pull sysbiocurie/webmaboss:1.0.1
 docker-compose up -d webmaboss
 ```
 	
@@ -39,12 +39,12 @@ This will use the docker image from sysbiocurie/webmaboss on [DockerHub](https:/
 If you don't want to build the image (this can take 10-20 min), you can first download it from [DockerHub](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general) : 
 
 ```
-docker pull sysbiocurie/webmaboss:1.0.0
+docker pull sysbiocurie/webmaboss:1.0.1
 ```
 
 Otherwise :
 ```
-docker build -f docker/Dockerfile -t sysbiocurie/webmaboss:1.0.0
+docker build -f docker/Dockerfile -t sysbiocurie/webmaboss:1.0.1
 ```
 
 Then launch the container of the database. Note that you should modify the password. 
@@ -72,7 +72,7 @@ docker run -d --name webmaboss \
 	-e DB_NAME=webmaboss \
 	-e DB_USER=webmaboss \
 	-e DB_PASSWORD=InsertAPassWordForTheDatabase \
-	sysbiocurie/webmaboss:1.0.0
+	sysbiocurie/webmaboss:1.0.1
 ```
 And finally open your browser to this url : http://localhost:8000/
 
