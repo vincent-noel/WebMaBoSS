@@ -60,6 +60,8 @@ class MaBoSSSensitivityAnalysisView(HasModel):
 		if analysis_settings['doubleMutations']['on'] and analysis_settings['doubleMutations']['off']:
 			nsimulations += 2*(len(candidate_variables) * (len(candidate_variables)-1))
 			
+		if nsimulations > 1000:
+			return Response({'analysis_id': -1, 'error': "too_much_simulations"}, status=status.HTTP_200_OK)
 
 		if self.model.format == LogicalModel.ZGINML:
 

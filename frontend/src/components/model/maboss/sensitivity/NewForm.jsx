@@ -297,6 +297,34 @@ class NewForm extends React.Component {
 			errors.push("You can only select up to 15 outputs nodes");
 		}
 
+		let nsimulations = 0
+		let nb_candidates = Object.values(this.state.candidateVariables).reduce((result, element) => {
+			if (element) {
+				result++;
+			}
+			return result;
+		});
+
+		if (this.state.singleMutations.on)
+			nsimulations += nb_candidates;
+			
+		if (this.state.singleMutations.off)
+			nsimulations += nb_candidates;
+			
+		if (this.state.doubleMutations.on)
+			nsimulations += nb_candidates * (nb_candidates-1);
+			
+		if (this.state.doubleMutations.off)
+			nsimulations += nb_candidates * (nb_candidates-1);
+			
+		if (this.state.doubleMutations.on && this.state.doubleMutations.off)
+			nsimulations += 2*(nb_candidates * (nb_candidates-1))
+
+		if (nsimulations > 1000) {
+			errors.push("This would simulate more than a thousand conditions. Please select less candidates");
+		}
+
+
 		this.setState({errors: errors});
 
 		if (errors.length == 0){
