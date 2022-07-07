@@ -1,6 +1,6 @@
 coreapi
 mod_wsgi
-Django
+Django<4.0
 django-allauth
 django-rest-auth[with_social]
 djangorestframework
