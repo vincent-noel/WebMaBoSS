@@ -222,29 +222,15 @@ class LogicalModelGraphRaw(HasModel):
 	def get(self, request, project_id, model_id):
 
 		HasModel.load(self, request, project_id, model_id)
-		ginsim_model = self.getGINSimModel()
 
-		# from ginsim.gateway import japi
-		# This won't work in parallel... but that's ok for now
-
-		path = tempfile.mkdtemp()
-		tmp_reggraph = tempfile.mkstemp(dir=path, suffix='.reg')[1]
-
-		ginsim.gateway.japi.gs.service("reggraph").export(ginsim_model, tmp_reggraph)
-
-		edges = []
-		nodes = []
-		with open(tmp_reggraph, 'r') as reggraph:
-			for line in reggraph.readlines():
-				(a, sign, b) = line.strip().split()
-				nodes.append(a)
-				nodes.append(b)
-				edges.append((a, b, (1 if sign == "->" else 0)))
-
-		nodes = list(set(nodes))
+		minibn = self.getMinibnModel()
+		ig = minibn.influence_graph()
+		nodes = list(ig.nodes.keys())
+		edges = [(source, dest, sign if sign == 1 else 0) for source, dest, sign in ig.edges(data="sign")]
+	
 		nodes_dict = {}
 		layout = self.getLayout()
-		# print(layout)
+	
 		for i, node in enumerate(nodes):
 			if isinstance(nodes_dict, dict):
 				if i not in nodes_dict.keys():

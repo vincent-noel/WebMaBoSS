@@ -90,6 +90,21 @@ class HasModel(HasProject):
 		else:
 			raise MethodNotAllowed()
 
+	def getMinibnModel(self):
+
+		if self.model.format == LogicalModel.MABOSS:
+			maboss_sim = maboss.load(
+				join(settings.MEDIA_ROOT, self.model.bnd_file.path),
+				join(settings.MEDIA_ROOT, self.model.cfg_file.path)
+			)
+			return maboss.to_minibn(maboss_sim)
+		elif self.model.format == LogicalModel.SBML:
+			maboss_sim = maboss.loadSBML(join(settings.MEDIA_ROOT, self.model.file.path))
+			return maboss.to_minibn(maboss_sim)
+		else:
+			raise MethodNotAllowed()
+
+
 	def getGINSimModel(self):
 
 		if self.model.format == LogicalModel.ZGINML:
