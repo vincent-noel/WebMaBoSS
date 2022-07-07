@@ -1,4 +1,4 @@
-FROM debian:10.9-slim
+FROM debian:11.3-slim
 
 USER root
 WORKDIR /var/webmaboss
@@ -10,7 +10,7 @@ WORKDIR /var/webmaboss
 RUN apt-get update -qq && \
     apt-get install -yq --no-install-recommends ca-certificates wget python3 python3-pip python3-dev\
                           curl software-properties-common nano git apt-transport-https \
-                          apache2 apache2-dev mariadb-client libmariadbclient-dev graphviz unzip \
+                          apache2 apache2-dev mariadb-client libmariadb-dev graphviz unzip \
                           flex bison g++ make cmake libxml2-dev libbz2-dev zlib1g-dev \
     && apt clean -y \
     && python3 -m pip install --no-cache-dir --upgrade setuptools pip wheel
@@ -18,7 +18,7 @@ RUN apt-get update -qq && \
 ##-----------------------------------------------------------------------------------------------
 ## base conda environment
 ## 
-RUN CONDA_VERSION="py39_4.9.2" && \
+RUN CONDA_VERSION="py39_4.12.0" && \
     wget --quiet https://repo.continuum.io/miniconda/Miniconda3-${CONDA_VERSION}-Linux-x86_64.sh -O ~/miniconda.sh && \
     /bin/bash ~/miniconda.sh -b -p /opt/conda && \
     rm ~/miniconda.sh 
@@ -27,7 +27,7 @@ ENV PATH="${PATH}:/opt/conda/bin"
 
 RUN conda config --set auto_update_conda False \
     && conda install --no-update-deps -y \
-        potassco::clingo=5.5.0 \
+        potassco::clingo=5.5.2=py39h3fd9d12_0 \
         colomoto::ginsim=3.0.0b=12 \
     && conda clean -y --all && rm -rf /opt/conda/pkgs
 

@@ -5,7 +5,7 @@ django-allauth
 django-rest-auth[with_social]
 djangorestframework
 ginsim
-git+https://github.com/vincent-noel/pyMaBoSS.git
+git+https://github.com/colomoto/pyMaBoSS.git
 mysqlclient
 PyYAML
 scikit-learn
