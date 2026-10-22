@@ -36,12 +36,12 @@ ENV PATH="${PATH}:/opt/conda/bin"
 ENV JDK_JAVA_OPTIONS="--add-opens=java.base/java.util=ALL-UNNAMED"
 
 ## -----------------------------------------------------------------------------------------------
-## NodeJS & Yarn install
+## NodeJS & Yarn install, only used to build the javascript of the interface
 ##
-RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
-    && apt-get install -y --no-install-recommends nodejs \
+RUN curl -sL https://deb.nodesource.com/setup_24.x | bash - \
+    && apt-get install -y --no-install-recommends nodejs=24.21.0-1nodesource1 \
     && apt clean -y \
-    && npm install -g yarn
+    && npm install -g yarn@1.22.22
 
 ## -----------------------------------------------------------------------------------------------
 ## Installing libSBML
