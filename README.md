@@ -76,6 +76,12 @@ docker run -d --name webmaboss \
 ```
 And finally open your browser to this url : http://localhost:8000/
 
+### Behind a reverse proxy serving https
+The server of the container only speaks http. If it is published in https through a reverse proxy, add its public address to `settings/config.yml` in the data volume, and restart the container. Otherwise the forms of the administration pages are refused (403, CSRF verification failed) :
+```
+csrf_trusted_origins: ['https://maboss.curie.fr']
+```
+
 ### Tests
 
 The tests run against a docker image, in throwaway containers with an empty database : the unit tests, a smoke test of the API, and a smoke test of the web interface in a browser. The smoke tests are compared with reference snapshots, recorded with the last release, or when the behaviour is changed on purpose. They run on GitHub for every push, and can be run locally :

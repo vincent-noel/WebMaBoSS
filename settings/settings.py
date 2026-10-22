@@ -22,6 +22,10 @@ if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
         Loader=yaml.FullLoader
     )
 
+# Since Django 4, the forms (admin login, install) check the Origin header. Behind a reverse proxy serving
+# https, the public origins must be listed in config.yml, e.g. csrf_trusted_origins: ['https://maboss.curie.fr']
+CSRF_TRUSTED_ORIGINS = settings.get('csrf_trusted_origins', []) if settings is not None else []
+
 if settings is not None and 'admin' in settings.keys():
 
     RUN_INSTALL = False
@@ -150,8 +154,6 @@ if settings is not None and 'admin' in settings.keys():
 
     USE_I18N = True
 
-    USE_L10N = True
-
     USE_TZ = True
 
 
@@ -269,8 +271,6 @@ else:
     TIME_ZONE = 'UTC'
 
     USE_I18N = True
-
-    USE_L10N = True
 
     USE_TZ = True
 

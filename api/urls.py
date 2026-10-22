@@ -1,4 +1,4 @@
-from django.urls import path, re_path
+from django.urls import path, re_path, include
 
 from api.views.logical_model.LogicalModel import (
 	LogicalModelFile, LogicalModelSBMLFile, LogicalModelMaBoSSBNDFile, LogicalModelMaBoSSCFGFile, 
@@ -26,8 +26,6 @@ from api.views.CCApi import CCApi
 from api.views.BioModelsAPI import BioModelsAPI
 from dj_rest_auth.views import LoginView, PasswordChangeView
 from dj_rest_auth.registration.views import RegisterView, VerifyEmailView
-
-from django.conf.urls import include
 
 urlpatterns = [
 	re_path('api-auth/', include('rest_framework.urls')),

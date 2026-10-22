@@ -20,8 +20,8 @@ defusedxml==0.7.1
 depinfo==2.2.0
 dj-rest-auth==2.2.8
 django-allauth==0.51.0
-django==3.2.14
-djangorestframework==3.13.1
+django==4.2.30
+djangorestframework==3.17.2
 elementpath==5.1.1
 et-xmlfile==2.0.0
 fastapi==0.136.0

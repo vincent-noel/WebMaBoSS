@@ -41,6 +41,12 @@ IGNORED_FAILED_REQUESTS = [
 	("anonymous", r"/api/auth/is_logged_in$", 401),
 ]
 
+# Console errors due to the tests, which reach the server over http with a hostname other than localhost.
+# Django >= 4 sends a Cross-Origin-Opener-Policy header, which browsers only apply over https.
+IGNORED_CONSOLE_ERRORS = [
+	r"^The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy",
+]
+
 
 class Prepared:
 	""" User, project, model, simulation and sensitivity analysis, created through the API """
@@ -126,7 +132,7 @@ class Browser:
 		events = {"js_errors": [], "failed_requests": []}
 
 		def on_console(message):
-			if message.type == "error":
+			if message.type == "error" and not any(re.search(p, message.text) for p in IGNORED_CONSOLE_ERRORS):
 				events["js_errors"].append("console: " + message.text[:300])
 
 		def on_page_error(error):
