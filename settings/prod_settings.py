@@ -36,7 +36,7 @@ if settings is not None and 'admin' in settings.keys():
     SECRET_KEY = settings['secret_key']
 
     # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = True
+    DEBUG = False
 
     ALLOWED_HOSTS = settings['allowed_hosts']
 
@@ -53,8 +53,8 @@ if settings is not None and 'admin' in settings.keys():
         'django.contrib.sites',
         'rest_framework',
         'rest_framework.authtoken',
-        'rest_auth',
-        'rest_auth.registration',
+        'dj_rest_auth',
+        'dj_rest_auth.registration',
         'allauth',
         'allauth.account',
         'allauth.socialaccount',
@@ -186,7 +186,7 @@ else:
         SECRET_KEY = ''.join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(24))
 
     # SECURITY WARNING: don't run with debug turned on in production!
-    DEBUG = True
+    DEBUG = False
 
     if settings is not None and 'allowed_hosts' in settings.keys():
         ALLOWED_HOSTS = settings['allowed_hosts']
@@ -205,8 +205,9 @@ else:
 
         'django.contrib.sites',
         'rest_framework',
-        'rest_auth',
-        'rest_auth.registration',
+        'rest_framework.authtoken',
+        'dj_rest_auth',
+        'dj_rest_auth.registration',
         'allauth',
         'allauth.account',
         'allauth.socialaccount',
@@ -277,3 +278,16 @@ else:
         'DEFAULT_AUTHENTICATION_CLASSES': [],
         'DEFAULT_PERMISSION_CLASSES': []
     }
+
+# Without DEBUG, Django only mails the errors to the ADMINS (there are none) : the tracebacks of the
+# server errors are written to stderr instead, which ends up in the apache error log (server/error_log).
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {'class': 'logging.StreamHandler'},
+    },
+    'loggers': {
+        'django.request': {'handlers': ['console'], 'level': 'ERROR'},
+    },
+}

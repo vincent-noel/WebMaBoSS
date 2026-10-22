@@ -87,3 +87,20 @@ class TestAuthentication(TestCase):
 		request = self.client.get('/api/projects/')
 		self.assertEqual(request.status_code, status.HTTP_401_UNAUTHORIZED)
 
+
+	def testChangeEmail(self):
+
+		# Logging in
+		request = self.client.post('/api/auth/login', {
+			'username': 'admin', 'password': 'test_password'
+		})
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+		self.client.credentials(HTTP_AUTHORIZATION='Token ' + loads(request.content)["key"])
+
+		# Changing the email, as the profile page does
+		request = self.client.put('/api/auth/email', {'email': 'new@mail.com'})
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+		request = self.client.get('/api/auth/email')
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+		self.assertEqual(loads(request.content), {'email': 'new@mail.com'})

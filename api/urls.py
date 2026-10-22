@@ -24,14 +24,12 @@ from api.views.InstallStatus import InstallStatus
 
 from api.views.CCApi import CCApi
 from api.views.BioModelsAPI import BioModelsAPI
-from rest_auth.views import LoginView, PasswordChangeView
-from rest_auth.registration.views import RegisterView, VerifyEmailView
+from dj_rest_auth.views import LoginView, PasswordChangeView
+from dj_rest_auth.registration.views import RegisterView, VerifyEmailView
 
-from rest_framework.documentation import include_docs_urls
 from django.conf.urls import include
 
 urlpatterns = [
-	path('api/', include_docs_urls(title='WebMaBoSS API')),
 	re_path('api-auth/', include('rest_framework.urls')),
 	path('api/auth/is_logged_in', TestAuthView.as_view(), name='is_logged_in', ),
 	path('api/auth/logout', LogoutViewEx.as_view(), name='logout', ),

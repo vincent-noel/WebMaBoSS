@@ -11,7 +11,8 @@
 #   --record : records the reference snapshots with IMAGE, instead of comparing with them
 #              (the unit tests are skipped). References are recorded with the last release.
 #
-# Snapshots, screenshots and logs are written in $OUT (default: tests-output).
+# Snapshots, screenshots and logs (app.log, and error_log with the tracebacks of the server errors)
+# are written in $OUT (default: tests-output).
 # It is used by .github/workflows/tests.yml, and can be run locally.
 
 set -uo pipefail
@@ -33,6 +34,7 @@ FAILED=()
 
 cleanup() {
 	docker logs $NAME-app > "$OUT/app.log" 2>&1
+	docker cp $NAME-app:/var/webmaboss/server/error_log "$OUT/error_log" > /dev/null 2>&1
 	docker rm -f $NAME-db $NAME-app > /dev/null 2>&1
 	docker volume rm $NAME-data > /dev/null 2>&1
 	docker network rm $NAME > /dev/null 2>&1

@@ -12118,7 +12118,7 @@
  },
  "smoke maboss tag get": {
   "body": {
-   "html_title": "ValueError\n          at /api/logical_models/<id>/<id>/tags/v1"
+   "html_title": "Server Error (500)"
   },
   "status": 500
  },
@@ -20208,7 +20208,7 @@
  },
  "smoke sbml tag get": {
   "body": {
-   "html_title": "ValueError\n          at /api/logical_models/<id>/<id>/tags/v1"
+   "html_title": "Server Error (500)"
   },
   "status": 500
  },
@@ -28949,7 +28949,7 @@
  },
  "smoke zginml tag get": {
   "body": {
-   "html_title": "ValueError\n          at /api/logical_models/<id>/<id>/tags/v1"
+   "html_title": "Server Error (500)"
   },
   "status": 500
  },
