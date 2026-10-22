@@ -45,14 +45,13 @@ class TestModels(TestCase):
 		for model in loads(request.content):
 			self.assertEqual(model['project'], guest_project.id)
 
-		# Checking if we can remove a model with a bad id
+		# Anonymous users can't remove models, even before checking they exist
 		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, 0))
-		self.assertEqual(request_del.status_code, status.HTTP_404_NOT_FOUND)
+		self.assertEqual(request_del.status_code, status.HTTP_403_FORBIDDEN)
 
-	@expectedFailure
 	def testAnonymousCannotModifyDemoProject(self):
 
-		# Known bug : anonymous users can add models to the demo project, and delete them
+		# Anonymous users can't add models to the demo project (see also test_demo)
 		request_add = self.client.post(
 			'/api/logical_models/%d/' % self.project_id,
 			{

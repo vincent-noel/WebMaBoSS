@@ -10,6 +10,8 @@ import TagForm from "./TagForm";
 import ImportModel from "./ImportModel";
 import ErrorAlert from "../commons/ErrorAlert";
 import { isConnected } from "../commons/sessionVariables";
+import ConfirmationModal from "../commons/ConfirmationModal";
+import APICalls from "../api/apiCalls";
 
 
 class Models extends React.Component {
@@ -26,6 +28,7 @@ class Models extends React.Component {
 		this.hideTagModelForm = this.hideTagModelForm.bind(this);
 		this.showModelImport = this.showModelImport.bind(this);
 		this.hideModelImport = this.hideModelImport.bind(this);
+		this.restoreDemoModels = this.restoreDemoModels.bind(this);
 
 		this.state = {
 			showModelForm: false,
@@ -36,12 +39,29 @@ class Models extends React.Component {
 			showTagModelForm: false,
 			idTagModelForm: null,
 			showModelImport: false,
+			showRestoreDemo: false,
 			errors: []
 		}
 	}
 	
 	showErrors(errors) {
 		this.setState({errors: errors});
+	}
+
+	restoreDemoModels(project, updateParent) {
+		this.setState({showRestoreDemo: false});
+		this.restoreDemoCall = APICalls.ProjectCalls.restoreDemoModels(project);
+		this.restoreDemoCall.promise.then(response => {
+			if (response.ok) {
+				updateParent();
+			} else {
+				this.showErrors(["Could not restore the demo models"]);
+			}
+		});
+	}
+
+	componentWillUnmount() {
+		if (this.restoreDemoCall) this.restoreDemoCall.cancel();
 	}
 
 	showModelForm(idProjectForm=null) {
@@ -115,7 +135,14 @@ class Models extends React.Component {
 									<ButtonToolbar className="justify-content-start">
 										<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelForm(null)}}>Load model</Button>
 										<Button className="mr-1" type="button" color="primary" onClick={() => {this.showModelImport(null)}}>Import model</Button>
+										<Button className="mr-1" type="button" color="secondary" onClick={() => {this.setState({showRestoreDemo: true})}}>Restore demo models</Button>
 									</ButtonToolbar>
+									<ConfirmationModal
+										status={this.state.showRestoreDemo}
+										message="Fresh copies of the demo models will be added to this project. Your models, including your modified copies of the demo models, are kept."
+										yes={() => this.restoreDemoModels(projectContext.project, updateParent)}
+										no={() => this.setState({showRestoreDemo: false})}
+									/>
 									<ModelForm
 										project={projectContext.project}
 										updateParent={updateParent}

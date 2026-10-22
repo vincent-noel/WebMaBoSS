@@ -7,7 +7,6 @@ from rest_framework import permissions
 
 class HasProject(HasUser):
 
-    permission_classes = (permissions.AllowAny,)
 
     def __init__(self, *args, **kwargs):
         

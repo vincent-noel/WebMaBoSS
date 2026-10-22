@@ -55,7 +55,8 @@ class Smoke:
 	def placeholder(self, value, name):
 		""" Registers a run-specific value (id, token, username...) to be hidden in the snapshot """
 		if value is not None and str(value) != "":
-			self.replacements[str(value)] = "<%s>" % name
+			# Ids of different tables can be equal : they all get the same placeholder
+			self.replacements[str(value)] = "<id>" if str(value).isdigit() else "<%s>" % name
 
 	def request(self, step, method, path, expect=(200,), record=True, **kwargs):
 		try:
@@ -118,6 +119,7 @@ class Smoke:
 		self.request("static_js", "get", "/static/js/index.js", record=False)
 		self.request("anonymous_is_logged_in", "get", "/api/auth/is_logged_in", expect=None)
 		self.request("anonymous_projects", "get", "/api/projects/", expect=None)
+		self.demo()
 
 		# Authentication
 		username = "smoke_" + uuid.uuid4().hex[:10]
@@ -222,12 +224,66 @@ class Smoke:
 				self.simulate(project_id, model_ids[name], name)
 				self.sensitivity(project_id, model_ids[name], name)
 
+		# Restoring the demo models in the project
+		self.request("restore_demo_models", "post", "/api/projects/%d/demo_models" % project_id)
+		model_ids = self.list_models(project_id, "models_after_restore")
+
 		# Cleanup
 		for name, model_id in sorted(model_ids.items()):
 			self.request("delete_model %s" % name, "delete", "/api/logical_models/%d/%d" % (project_id, model_id))
 		self.request("models_after_delete", "get", models)
 		self.request("project_delete", "delete", "/api/projects/%d" % project_id)
 		self.request("logout_end", "post", "/api/auth/logout")
+
+	def demo(self):
+		""" Anonymous users can look at the demo project and run simulations, but can't modify it """
+
+		# The project id doesn't matter, anonymous users always get the demo project
+		response = self.request("anonymous demo models", "get", "/api/logical_models/0/")
+		demo = response.json() if response is not None else []
+		if len(demo) == 0:
+			self.failures.append("anonymous demo models: no model, stopping the demo checks")
+			return
+		for i, model in enumerate(demo):
+			self.placeholder(model["id"], "demo_model_%d" % i)
+		model = "/api/logical_model/0/%d" % demo[0]["id"]
+		files = "/api/logical_models/0/%d" % demo[0]["id"]
+
+		forbidden = (403,)
+		self.request("anonymous delete demo model", "delete", files, expect=forbidden)
+		with open(os.path.join(FILES, "Metastasis_Master_Model.zginml"), "rb") as f:
+			self.request("anonymous add demo model", "post", "/api/logical_models/0/", expect=forbidden,
+				data={"name": "anonymous model", "use_sbml_names": "false"}, files={"file": ("model.zginml", f)})
+		self.request("anonymous rename demo model", "post", model + "/name", data={"name": "renamed"}, expect=forbidden)
+		self.request("anonymous edit demo formula", "post", model + "/formula/CDH1/logic", data={"formula": "1"}, expect=forbidden)
+		self.request("anonymous edit demo settings", "put", model + "/settings", data={"settings": "{}"}, expect=forbidden)
+		self.request("anonymous restore demo models", "post", "/api/projects/0/demo_models", expect=forbidden)
+		self.request("anonymous demo models after", "get", "/api/logical_models/0/")
+
+		# Simulations are allowed, and cleaned after a day
+		response = self.request("anonymous simulation settings", "get", model + "/maboss/settings/")
+		if response is None or response.status_code != 200:
+			return
+		defaults = response.json()
+		name = "anonymous smoke " + uuid.uuid4().hex
+		self.request("anonymous simulation create", "post", model + "/maboss", data={
+			"name": name,
+			"settings": json.dumps(dict(defaults["settings"], sample_count=1000, max_time=10)),
+			"initialStates": json.dumps(defaults["initial_states"]),
+			"outputVariables": json.dumps(defaults["output_variables"]),
+			"mutations": json.dumps({}),
+		})
+		# Simulations of all anonymous users are listed : not recorded
+		response = self.request("anonymous simulations", "get", model + "/maboss", record=False)
+		simulations = [s for s in (response.json() if response is not None else []) if s["name"] == name]
+		if len(simulations) != 1:
+			self.failures.append("anonymous simulation: not found")
+			return
+		self.placeholder(simulations[0]["id"], "anonymous_simulation_id")
+		simulation = "/api/maboss/0/%d" % simulations[0]["id"]
+		self.wait("anonymous simulation status", simulation + "/status", lambda s: s.get("done"))
+		self.request("anonymous simulation nodes_trajs/", "get", simulation + "/nodes_trajs/")
+		self.request("anonymous simulation new model", "get", simulation + "/new_model", expect=forbidden)
 
 	def login(self, response):
 		if response is None or response.status_code != 200:
@@ -357,6 +413,8 @@ class Smoke:
 			self.replacements[v]
 		) for v in values]
 		date = re.compile(r'\d{4}-\d\d-\d\d[T ]\d\d:\d\d:\d\d(\.\d+)?(Z|[+-]\d\d:\d\d)?')
+		# Directories of projects and models, which are random, in urls of files
+		media = re.compile(r'(?<=/media/)[A-Za-z0-9]{12}(?=/)|(?<=/logical_models/)[A-Za-z0-9]{12}(?=/)')
 
 		def normalize(value, key=None):
 			if isinstance(value, dict):
@@ -372,7 +430,9 @@ class Smoke:
 			if isinstance(value, str):
 				for pattern, replacement in patterns:
 					value = pattern.sub(replacement, value)
-				return date.sub("<date>", value)
+				if key == "path" and re.fullmatch(r'[A-Za-z0-9]{12}', value):
+					return "<path>"
+				return media.sub("<path>", date.sub("<date>", value))
 			return value
 
 		return normalize(self.records)

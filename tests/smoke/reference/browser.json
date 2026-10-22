@@ -894,11 +894,45 @@
   "buttons": [
    "My Project",
    "Load model",
-   "Import model"
+   "Import model",
+   "Restore demo models"
   ],
   "counts": {
    "charts": 0,
    "images": 9,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 1
+  },
+  "failed_requests": [],
+  "headings": [
+   "Models"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/models/"
+ },
+ "user /models/ restore demo models": {
+  "buttons": [
+   "My Project",
+   "Load model",
+   "Import model",
+   "Restore demo models"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 15,
    "inputs": 0,
    "modals": 0,
    "percentages": 0,

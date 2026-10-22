@@ -28,8 +28,10 @@ class APITestCase(TestCase):
 	def tearDown(self):
 		TestCase.tearDown(self)
 
+		# Emptied, but kept : the next tests' fixtures create users, whose projects are created there
 		if exists(settings.MEDIA_ROOT):
 			rmtree(settings.MEDIA_ROOT)
+		makedirs(settings.MEDIA_ROOT, exist_ok=True)
 
 	def login(self):
 		# Logging in

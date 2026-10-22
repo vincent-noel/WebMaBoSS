@@ -3,11 +3,16 @@ from rest_framework import status
 from rest_framework.exceptions import PermissionDenied, NotFound
 
 from api.models import Project
+from api.models.logical_model import add_demo_models
 from api.serializers import ProjectSerializer
 from api.views.HasUser import HasUser
+from api.views.HasProject import HasProject
 
 
 class Projects(HasUser):
+
+	# Anonymous users have no project, they only see the demo project
+	anonymous_methods = ()
 
 	def get(self, request, project_id=None):
 
@@ -79,3 +84,13 @@ class Projects(HasUser):
 		except Project.DoesNotExist:
 			raise NotFound
 
+
+class ProjectDemoModels(HasProject):
+
+	def post(self, request, project_id):
+		""" Adds fresh copies of the demo models to a project, for instance to start again after modifying them """
+
+		HasProject.load(self, request, project_id)
+		add_demo_models(self.project)
+
+		return Response(status=status.HTTP_200_OK)

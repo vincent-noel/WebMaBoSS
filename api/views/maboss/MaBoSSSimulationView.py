@@ -28,6 +28,9 @@ from collections import OrderedDict
 
 class MaBoSSSimulationView(HasModel):
 
+	# Anonymous users can run simulations on the demo models
+	anonymous_methods = HasModel.anonymous_methods + ('POST',)
+
 	def get(self, request, project_id, model_id):
 
 		HasModel.load(self, request, project_id, model_id)
@@ -267,6 +270,9 @@ class MaBoSSSimulationCFGFile(HasMaBoSSSimulation):
 
 
 class MaBoSSSimulationNewModel(HasMaBoSSSimulation):
+
+	# Creates a model, despite being a GET
+	anonymous_methods = ()
 
 	def get(self, request, project_id, simulation_id):
 		HasMaBoSSSimulation.load(self, request, project_id, simulation_id)

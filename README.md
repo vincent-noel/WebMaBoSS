@@ -78,12 +78,12 @@ And finally open your browser to this url : http://localhost:8000/
 
 ### Tests
 
-The tests run against a docker image, in throwaway containers with an empty database : the unit tests, a smoke test of the API, and a smoke test of the web interface in a browser. The smoke tests are compared with reference snapshots, recorded with the last release. They run on GitHub for every push, and can be run locally :
+The tests run against a docker image, in throwaway containers with an empty database : the unit tests, a smoke test of the API, and a smoke test of the web interface in a browser. The smoke tests are compared with reference snapshots, recorded with the last release, or when the behaviour is changed on purpose. They run on GitHub for every push, and can be run locally :
 ```
 docker build -f docker/Dockerfile -t webmaboss:test .
 tests/run_ci.sh webmaboss:test
 ```
-Snapshots, screenshots and logs are written in `tests-output`. To record new references (for instance after a release) : `tests/run_ci.sh sysbiocurie/webmaboss:1.1.0 --record`.
+Snapshots, screenshots and logs are written in `tests-output`. To record new references, after checking that all the differences are expected : `tests/run_ci.sh webmaboss:test --record`.
 
 The versions of all dependencies are fixed : conda packages in `docker/conda-linux-64.lock`, python packages in `docker/constraints.txt` and javascript packages in `yarn.lock`, so that rebuilding the image always gives the same environment.
 

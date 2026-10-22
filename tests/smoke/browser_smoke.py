@@ -236,8 +236,17 @@ def close_modal(page):
 	page.locator(".modal.show").wait_for(state="hidden")
 
 
+def restore_demo_models(page):
+	page.get_by_role("button", name="Restore demo models").click()
+	page.locator(".modal.show").get_by_role("button", name="Yes").click()
+	page.locator(".modal.show").wait_for(state="hidden")
+
+
 # Interactions done on a page after loading it
 ACTIONS = {
+	"/models/": [
+		("restore demo models", restore_demo_models),
+	],
 	"/model/maboss/editing/": [
 		("tab Initial values", open_tab("Initial values")),
 	],

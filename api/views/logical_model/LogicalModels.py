@@ -92,7 +92,6 @@ def check_maboss_model(bnd_file, cfg_file):
 	
 	return message
 class LogicalModels(HasProject):
-	permission_classes = (permissions.AllowAny,)
 
 	def get(self, request, project_id, model_id=None):
 		

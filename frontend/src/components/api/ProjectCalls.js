@@ -50,5 +50,18 @@ class ProjectCalls {
 			).then(response => checkAuthorization(response))
 		);
 	}
+
+	static restoreDemoModels(id) {
+
+		return makeCancelable(
+			fetch(
+				"/api/projects/" + id + "/demo_models",
+				{
+					method: "post",
+					headers: getDefaultHeaders()
+				}
+			).then(response => checkAuthorization(response))
+		);
+	}
 }
 export default ProjectCalls;

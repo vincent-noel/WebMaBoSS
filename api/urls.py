@@ -7,7 +7,7 @@ from api.views.logical_model.LogicalModel import (
 )
 from api.views.logical_model.LogicalModels import LogicalModels
 from api.views.logical_model.LogicalModelsTags import LogicalModelsTags, TaggedLogicalModelFile, TaggedLogicalModelSBMLFile
-from api.views.Projects import Projects
+from api.views.Projects import Projects, ProjectDemoModels
 from api.views.BioLQMSimulation import LogicalModelSteadyStates
 
 from api.views.maboss.MaBossServerView import MaBoSSServerView, CheckServerView
@@ -44,6 +44,7 @@ urlpatterns = [
 
 	path('api/projects/', Projects.as_view()),
 	path('api/projects/<int:project_id>', Projects.as_view()),
+	path('api/projects/<int:project_id>/demo_models', ProjectDemoModels.as_view()),
 
 	# path('api/logical_models/', LogicalModels.as_view()),
 	path('api/logical_models/<int:project_id>/', LogicalModels.as_view()),

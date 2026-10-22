@@ -18,6 +18,9 @@ import ginsim
 
 class LogicalModelsTags(HasModel):
 
+	# Restores a tagged version, despite being a GET
+	anonymous_methods = ()
+
 	def get(self, request, project_id, model_id, tag=None):
 
 		HasModel.load(self, request, project_id, model_id)

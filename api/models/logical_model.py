@@ -87,28 +87,31 @@ class TaggedLogicalModel(models.Model):
 
 pre_delete.connect(remove_tagged_logical_model, sender=TaggedLogicalModel)
 	
+# Demo models, from api/defaults/models : copied in the first project of every user, and in the
+# demo project shown to anonymous users (the project of the guest account)
+DEMO_MODELS = [
+	("Cohen2015 - Tumour Cell Invasion and Migration", "metastasis"),
+	("Corral2021 - Interplay between SMAD2 and STAT5A regulating IL-17A/F expression in Th cells", "corral"),
+]
+
+def add_demo_models(project):
+	for name, directory in DEMO_MODELS:
+		path = join(settings.BASE_DIR, "api", "defaults", "models", directory)
+		with open(join(path, directory + ".bnd"), 'rb') as bnd_file, open(join(path, directory + ".cfg"), 'rb') as cfg_file:
+			LogicalModel(
+				project=project,
+				name=name,
+				bnd_file=File(bnd_file, name=directory + ".bnd"),
+				cfg_file=File(cfg_file, name=directory + ".cfg"),
+				format=LogicalModel.MABOSS
+			).save()
+
 def add_default_models(sender, instance, **kwargs):
-	
+
 	default_project = add_default_project(sender, instance, **kwargs)
 	if default_project is not None:
-		metastasis_path = join(settings.BASE_DIR, "api", "defaults", "models", "metastasis")
-		LogicalModel(
-			project=default_project,
-			name="Cohen2015 - Tumour Cell Invasion and Migration",
-			bnd_file=File(open(join(metastasis_path, "metastasis.bnd"), 'rb'), name="metastasis.bnd"),
-			cfg_file=File(open(join(metastasis_path, "metastasis.cfg"), 'rb'), name="metastasis.cfg"),
-			format=LogicalModel.MABOSS			
-		).save()
-		
-		corral_path = join(settings.BASE_DIR, "api", "defaults", "models", "corral")
-		LogicalModel(
-			project=default_project,
-			name="Corral2021 - Interplay between SMAD2 and STAT5A regulating IL-17A/F expression in Th cells",
-			bnd_file=File(open(join(corral_path, "corral.bnd"), 'rb'), name="corral.bnd"),
-			cfg_file=File(open(join(corral_path, "corral.cfg"), 'rb'), name="corral.cfg"),
-			format=LogicalModel.MABOSS			
-		).save()
-	
+		add_demo_models(default_project)
+
 
 
 post_save.connect(add_default_models, sender=User)
