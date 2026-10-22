@@ -30,6 +30,11 @@ RUN wget --quiet https://github.com/mamba-org/micromamba-releases/releases/downl
 
 ENV PATH="${PATH}:/opt/conda/bin"
 
+# GINsim 3.1.post20261018 requires Java >= 25, which forbids the py4j 0.10.9.5 bundled in GINsim.jar
+# from iterating over Java collections (InaccessibleObjectException) : biolqm.fixpoints and the other
+# tools would silently return nothing. Can be removed once the GINsim launcher or its py4j handles it.
+ENV JDK_JAVA_OPTIONS="--add-opens=java.base/java.util=ALL-UNNAMED"
+
 ## -----------------------------------------------------------------------------------------------
 ## NodeJS & Yarn install
 ##

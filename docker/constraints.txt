@@ -12,7 +12,7 @@ blinker==1.9.0
 cachetools==7.0.5
 chardet==5.2.0
 click==8.3.2
-cmaboss==1.0.0b32
+cmaboss==1.0.0b33
 colorbrewer==0.3
 colour==0.1.5
 coreapi==2.3.3
@@ -30,7 +30,7 @@ fastapi==0.136.0
 fastobo==0.14.1
 flexcache==0.3
 flexparser==0.4
-ginsim==0.4.8
+ginsim==0.4.10
 gitdb==4.0.12
 gitpython==3.1.46
 h11==0.16.0
@@ -41,7 +41,7 @@ jsonschema-specifications==2025.9.1
 jsonschema==4.26.0
 libroadrunner==2.9.2
 lxml==6.0.4
-maboss==0.8.13
+maboss==0.8.16
 markdown-it-py==4.0.0
 markupsafe==3.0.3
 mdurl==0.1.2

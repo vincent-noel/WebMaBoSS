@@ -38,6 +38,10 @@ def dumpIstates(istates):
 			fixed_initial_states.update(t_values)
 
 		else:
-			fixed_initial_states.update({var: value})
+			# Since pymaboss 0.8.16, "node.istate = 1;" is parsed as {0: False, 1: True}. The interface
+			# expects probabilities (parseFloat(true) is NaN), so booleans are converted to numbers
+			fixed_initial_states.update({var: {
+				state: int(proba) if isinstance(proba, bool) else proba for state, proba in value.items()
+			}})
 
 	return OrderedDict(sorted(fixed_initial_states.items()))
