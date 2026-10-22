@@ -82,6 +82,13 @@ The server of the container only speaks http. If it is published in https throug
 csrf_trusted_origins: ['https://maboss.curie.fr']
 ```
 
+### Upgrading an installation from 1.0.x
+The data volumes are kept : the database is migrated when the container starts. Then :
+- behind a reverse proxy serving https, add `csrf_trusted_origins` to `settings/config.yml` (see above), as the administration pages would refuse their forms.
+- `allowed_hosts` in `settings/config.yml` can stay as older versions wrote it (`allowed_hosts: '*'`, a single string instead of a list) : it is read as a list.
+- Anonymous users can't modify the demo project anymore. Restore the demo models once, in case they were modified : `docker exec webmaboss /opt/conda/bin/python3 manage.py reset_demo --settings=settings.prod_settings`
+- The email addresses of the accounts are converted to lower case. Users log in with their username, so it changes nothing for them.
+
 ### Tests
 
 The tests run against a docker image, in throwaway containers with an empty database : the unit tests, a smoke test of the API, and a smoke test of the web interface in a browser. The smoke tests are compared with reference snapshots, recorded with the last release, or when the behaviour is changed on purpose. They run on GitHub for every push, and can be run locally :
