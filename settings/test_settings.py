@@ -9,6 +9,5 @@ makedirs(MEDIA_ROOT, exist_ok=True)
 
 FIXTURE_DIRS = (
     os.path.join(BASE_DIR, 'api/tests/fixtures'),
-    os.path.join(BASE_DIR, 'frontend/tests/fixtures')
 )
 

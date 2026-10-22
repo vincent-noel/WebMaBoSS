@@ -7,7 +7,7 @@ WebMaBoSS is a web interface for the MaBoSS, the Markovian Boolean Stochastic Si
 
 WebMaBoSS allows you to store, modify, and simulate MaBoSS models. You can also import/export models in other compatible formats (SBML-qual, GINsim, BNet). Models can also be imported from public databases (BioModels, CellCollective).
 
-WebMaBoSS is available as a docker container that can quickly be deployed locally. You will need [Docker](https://docs.docker.com/get-docker/) and optionally [Docker-Compose](https://docs.docker.com/compose/install/).
+WebMaBoSS is available as a docker container that can quickly be deployed locally. You will need [Docker](https://docs.docker.com/get-docker/), with its [Compose](https://docs.docker.com/compose/install/) plugin if you want to use it.
 A live version is deployed at [https://maboss.curie.fr/WebMaBoSS/](https://maboss.curie.fr/WebMaBoSS).
 
 ### Reference
@@ -27,8 +27,8 @@ Launch WebMaBoSS's container using :
 ```
 git clone https://github.com/sysbio-curie/WebMaBoSS
 cd WebMaBoSS
-docker pull sysbiocurie/webmaboss:1.0.1
-docker-compose up -d webmaboss
+docker pull sysbiocurie/webmaboss:1.1.0
+docker compose up -d webmaboss
 ```
 	
 And then open your browser to this url : http://localhost:8000/
@@ -39,12 +39,12 @@ This will use the docker image from sysbiocurie/webmaboss on [DockerHub](https:/
 If you don't want to build the image (this can take 10-20 min), you can first download it from [DockerHub](https://hub.docker.com/repository/docker/sysbiocurie/webmaboss/general) : 
 
 ```
-docker pull sysbiocurie/webmaboss:1.0.1
+docker pull sysbiocurie/webmaboss:1.1.0
 ```
 
 Otherwise :
 ```
-docker build -f docker/Dockerfile -t sysbiocurie/webmaboss:1.0.1
+docker build -f docker/Dockerfile -t sysbiocurie/webmaboss:1.1.0 .
 ```
 
 Then launch the container of the database. Note that you should modify the password. 
@@ -56,7 +56,7 @@ docker run -d --name webmaboss-db \
 	-e MYSQL_DATABASE=webmaboss \
 	-e MYSQL_USER=webmaboss \
 	-e MYSQL_PASSWORD=InsertAPassWordForTheDatabase \
-	mariadb \
+	mariadb:12.3.3 \
 	--max_allowed_packet=268435456 
 ```
 Then launch WebMaBoSS' container
@@ -72,9 +72,20 @@ docker run -d --name webmaboss \
 	-e DB_NAME=webmaboss \
 	-e DB_USER=webmaboss \
 	-e DB_PASSWORD=InsertAPassWordForTheDatabase \
-	sysbiocurie/webmaboss:1.0.1
+	sysbiocurie/webmaboss:1.1.0
 ```
 And finally open your browser to this url : http://localhost:8000/
+
+### Tests
+
+The tests run against a docker image, in throwaway containers with an empty database : the unit tests, a smoke test of the API, and a smoke test of the web interface in a browser. The smoke tests are compared with reference snapshots, recorded with the last release. They run on GitHub for every push, and can be run locally :
+```
+docker build -f docker/Dockerfile -t webmaboss:test .
+tests/run_ci.sh webmaboss:test
+```
+Snapshots, screenshots and logs are written in `tests-output`. To record new references (for instance after a release) : `tests/run_ci.sh sysbiocurie/webmaboss:1.1.0 --record`.
+
+The versions of all dependencies are fixed : conda packages in `docker/conda-linux-64.lock`, python packages in `docker/constraints.txt` and javascript packages in `yarn.lock`, so that rebuilding the image always gives the same environment.
 
 ### Tutorials
 

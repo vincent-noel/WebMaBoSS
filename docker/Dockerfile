@@ -19,16 +19,16 @@ RUN apt-get update -qq && \
 ##-----------------------------------------------------------------------------------------------
 ## base conda environment
 ## 
-RUN wget --quiet https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O ~/miniforge.sh && \
-    /bin/bash ~/miniforge.sh -b -p /opt/conda && \
-    rm ~/miniforge.sh 
-    
-ENV PATH="${PATH}:/opt/conda/bin"
+## Exact versions of all conda packages (python, GINsim, MaBoSS...) are listed in docker/conda-linux-64.lock
+## It is installed without solving, so rebuilding the image always gives the same environment.
+## To update it : install the new packages in an image, and export them with 'conda list --explicit --md5'
+ADD docker/conda-linux-64.lock /tmp/conda-linux-64.lock
+RUN wget --quiet https://github.com/mamba-org/micromamba-releases/releases/download/2.9.0-0/micromamba-linux-64 -O /usr/local/bin/micromamba \
+    && chmod +x /usr/local/bin/micromamba \
+    && micromamba create -y -p /opt/conda --file /tmp/conda-linux-64.lock \
+    && micromamba clean -y --all && rm -rf /opt/conda/pkgs /tmp/conda-linux-64.lock /root/.cache/mamba
 
-RUN conda config --set auto_update_conda False \
-    && conda install --no-update-deps -y \
-        -c colomoto -c conda-forge ginsim pymaboss python=3.12 'expat<2.7.2' \
-    && conda clean -y --all && rm -rf /opt/conda/pkgs
+ENV PATH="${PATH}:/opt/conda/bin"
 
 ## -----------------------------------------------------------------------------------------------
 ## NodeJS & Yarn install
@@ -90,9 +90,9 @@ RUN curl -sL https://deb.nodesource.com/setup_20.x | bash - \
 #     && rm -fr /opt/MaBoSS \
 #     && ls /var/ \
 #     && ls /var/webmaboss
-RUN /opt/conda/bin/python3 -m pip install --upgrade wheel setuptools==81.0.0 numpy
-ADD ../../requirements.txt /var/webmaboss/requirements.txt
-RUN /opt/conda/bin/python3 -m pip install --no-cache-dir --upgrade -r /var/webmaboss/requirements.txt 
+ADD requirements.txt docker/constraints.txt /var/webmaboss/
+RUN /opt/conda/bin/python3 -m pip install -c /var/webmaboss/constraints.txt --upgrade wheel setuptools numpy
+RUN /opt/conda/bin/python3 -m pip install --no-cache-dir -c /var/webmaboss/constraints.txt --upgrade -r /var/webmaboss/requirements.txt
 # Exposing port 8000 for server access
 EXPOSE 8000
 
@@ -102,11 +102,11 @@ ADD api /var/webmaboss/api
 ADD frontend /var/webmaboss/frontend
 ADD settings /var/webmaboss/settings
 ADD create_default_db.sh create_default_admin.sh install.sh runserver.sh wait_db.sh /var/webmaboss/
-ADD .babelrc LICENSE.md manage.py package.json requirements.txt webpack.config.js /var/webmaboss/
+ADD .babelrc LICENSE.md manage.py package.json yarn.lock webpack.config.js /var/webmaboss/
 
-# Removing node modules, downloading them from scratch, and transpiling the JSX
+# Downloading node modules with the exact versions of yarn.lock, and transpiling the JSX
 RUN mkdir node_modules \
-    && yarn \
+    && yarn install --frozen-lockfile \
     && npm run dev
 
 # Removing old db and medias, creating a new one, with default user admin:admin

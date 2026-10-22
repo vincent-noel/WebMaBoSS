@@ -15,9 +15,6 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-# Yarn lock file
-yarn.lock
-
 # Log files
 yarn-error.log
 chromedriver.log
@@ -28,3 +25,6 @@ docker-compose.override.yml
 
 # Compiled js files
 static/js/*
+
+# Output of tests/run_ci.sh
+tests-output/

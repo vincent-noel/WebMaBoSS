@@ -104,7 +104,8 @@ if settings is not None and 'admin' in settings.keys():
             'PASSWORD': os.environ.get('DB_PASSWORD'),
             'HOST': os.environ.get('DB_HOST'),
             'PORT': os.environ.get('DB_PORT'),
-            'TEST': {'NAME': os.environ.get('DB_NAME')}
+            # Never the main database : the test runner drops it. Defaults to test_<DB_NAME>
+            'TEST': {'NAME': os.environ.get('DB_TEST_NAME')}
         }
     }
     ACCOUNT_EMAIL_VERIFICATION = 'none'
@@ -255,7 +256,8 @@ else:
             'PASSWORD': os.environ.get('DB_PASSWORD'),
             'HOST': os.environ.get('DB_HOST'),
             'PORT': os.environ.get('DB_PORT'),
-            'TEST': {'NAME': os.environ.get('DB_NAME')}
+            # Never the main database : the test runner drops it. Defaults to test_<DB_NAME>
+            'TEST': {'NAME': os.environ.get('DB_TEST_NAME')}
         }
     }
 

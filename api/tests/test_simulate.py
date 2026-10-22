@@ -41,7 +41,7 @@ class TestSimulate(APITestCase):
 
 		settings = loads(request.content.decode())
 
-		self.assertEquals(
+		self.assertEqual(
 			settings["output_variables"],
 			{"ECMicroenv": False, "DNAdamage": False, "Metastasis": True, "Migration": True, "Invasion": True,
 			 "EMT": False, "Apoptosis": True, "CellCycleArrest": True, "GF": False, "TGFbeta": False, "p21": False,
@@ -50,7 +50,7 @@ class TestSimulate(APITestCase):
 			 "p73": False, "miR200": False, "miR203": False, "miR34": False, "AKT2": False, "ERK": False, "SMAD": False}
 		)
 		
-		self.assertEquals(
+		self.assertEqual(
 			settings["initial_states"],
 			{'ECMicroenv': {'0': 0.5, '1': 0.5}, 'DNAdamage': {'0': 0.5, '1': 0.5}, 
 			 'Metastasis': {'0': 1.0, '1': 0.0}, 'Migration': {'0': 1.0, '1': 0.0}, 

@@ -1,6 +1,8 @@
 #!/bin/bash
 
-/opt/conda/bin/python3 manage.py makemigrations api -v 2 "$@"
+# Migrations are committed in the repository, they must never be generated in production.
+# This only warns if the models and the migrations are out of sync.
+/opt/conda/bin/python3 manage.py makemigrations api --check --dry-run "$@" || echo "WARNING: api models have changes without migrations"
 /opt/conda/bin/python3 manage.py migrate -v 2 "$@"
 /opt/conda/bin/python3 manage.py collectstatic --noinput "$@" > /dev/null
 if [ ! -f /var/webmaboss/data/settings/config.yml ]; then

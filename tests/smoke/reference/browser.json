@@ -1,0 +1,993 @@
+{
+ "anonymous /": {
+  "buttons": [],
+  "counts": {
+   "charts": 0,
+   "images": 1,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "WebMaBoSS",
+   "A web tool for simulating Boolean models",
+   "If you want to quickly test WebMaBoSS, you can have a look at our demo project."
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/"
+ },
+ "anonymous /about/": {
+  "buttons": [],
+  "counts": {
+   "charts": 0,
+   "images": 2,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "About",
+   "Publications",
+   "Funding"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/about/"
+ },
+ "anonymous /login/": {
+  "buttons": [
+   "Sign in"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 1,
+   "inputs": 2,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [],
+  "js_errors": [],
+  "labels": [
+   "Username",
+   "Password"
+  ],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/login/"
+ },
+ "anonymous /models/": {
+  "buttons": [],
+  "counts": {
+   "charts": 0,
+   "images": 2,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 1
+  },
+  "failed_requests": [],
+  "headings": [
+   "Models"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/models/"
+ },
+ "anonymous /register/": {
+  "buttons": [
+   "Register"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 1,
+   "inputs": 4,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [],
+  "js_errors": [],
+  "labels": [
+   "Username",
+   "E-mail (optional)",
+   "Password",
+   "Confirm password"
+  ],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/register/"
+ },
+ "anonymous /tutorials/": {
+  "buttons": [],
+  "counts": {
+   "charts": 0,
+   "images": 2,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Tutorials"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/tutorials/"
+ },
+ "anonymous /tutorials/cohen/": {
+  "buttons": [],
+  "counts": {
+   "charts": 0,
+   "images": 15,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Cohen's Tutorial",
+   "Starting a Project",
+   "Overview Tab",
+   "Editing tab",
+   "Simulation tab"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/tutorials/cohen/"
+ },
+ "anonymous /tutorials/corral/": {
+  "buttons": [],
+  "counts": {
+   "charts": 0,
+   "images": 21,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Corral's Tutorial",
+   "Sign in / Register",
+   "Starting a Project",
+   "View the content of the model",
+   "Overview Tab",
+   "Editing tab",
+   "Simulation tab",
+   "Sensitivity analysis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/tutorials/corral/"
+ },
+ "login": {
+  "api_key_set": true,
+  "url": "/"
+ },
+ "logout": {
+  "api_key_set": false
+ },
+ "user /": {
+  "buttons": [
+   "New project"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 2,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 1
+  },
+  "failed_requests": [],
+  "headings": [
+   "Projects"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/"
+ },
+ "user /data/": {
+  "buttons": [
+   "My Project"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 0,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/data/"
+ },
+ "user /logout/": {
+  "buttons": [
+   "Sign in"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 1,
+   "inputs": 2,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [],
+  "js_errors": [],
+  "labels": [
+   "Username",
+   "Password"
+  ],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Tutorials",
+   "About",
+   "Demo",
+   "Sign in",
+   "Register"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/login/"
+ },
+ "user /model/fixed_points/": {
+  "buttons": [
+   "My Project",
+   "Metastasis"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 9,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 1
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/fixed_points/"
+ },
+ "user /model/maboss/editing/": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New node"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 64,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 32
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "Rates",
+   "Initial values",
+   "Outputs",
+   "Parameters",
+   "Settings"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/editing/"
+ },
+ "user /model/maboss/editing/ tab Initial values": {
+  "buttons": [
+   "My Project",
+   "Metastasis"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 0,
+   "inputs": 33,
+   "modals": 0,
+   "percentages": 33,
+   "tables": 1
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "Rates",
+   "Initial values",
+   "Outputs",
+   "Parameters",
+   "Settings"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/editing/"
+ },
+ "user /model/maboss/sensitivity/": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New sensitivity analysis",
+   "Existing sensitivity analysis"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 0,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/sensitivity/"
+ },
+ "user /model/maboss/sensitivity/ load analysis": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New sensitivity analysis",
+   "Existing sensitivity analysis"
+  ],
+  "counts": {
+   "charts": 4,
+   "images": 5,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "Steady states distribution"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/sensitivity/"
+ },
+ "user /model/maboss/simulation/": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New simulation",
+   "Load old simulation"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 0,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/simulation/"
+ },
+ "user /model/maboss/simulation/ load simulation": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New simulation",
+   "Load old simulation"
+  ],
+  "counts": {
+   "charts": 1,
+   "images": 2,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "Final state distribution",
+   "Nodes probability trajectories",
+   "States probability trajectories",
+   "Fixed points"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/simulation/"
+ },
+ "user /model/maboss/simulation/ new simulation Initial states": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New simulation",
+   "Load old simulation",
+   "Close",
+   "Submit"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 0,
+   "inputs": 33,
+   "modals": 1,
+   "percentages": 33,
+   "tables": 1
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "General",
+   "Initial states",
+   "Output",
+   "Mutations"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/simulation/"
+ },
+ "user /model/maboss/simulation/ new simulation closed": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New simulation",
+   "Load old simulation"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 0,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/simulation/"
+ },
+ "user /model/maboss/simulation/ tab Final state distribution": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New simulation",
+   "Load old simulation"
+  ],
+  "counts": {
+   "charts": 1,
+   "images": 2,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "Final state distribution",
+   "Nodes probability trajectories",
+   "States probability trajectories",
+   "Fixed points"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/simulation/"
+ },
+ "user /model/maboss/simulation/ tab Fixed points": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New simulation",
+   "Load old simulation"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 10,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 1
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "Final state distribution",
+   "Nodes probability trajectories",
+   "States probability trajectories",
+   "Fixed points"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/simulation/"
+ },
+ "user /model/maboss/simulation/ tab Nodes probability trajectories": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New simulation",
+   "Load old simulation"
+  ],
+  "counts": {
+   "charts": 1,
+   "images": 2,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "Final state distribution",
+   "Nodes probability trajectories",
+   "States probability trajectories",
+   "Fixed points"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/simulation/"
+ },
+ "user /model/maboss/simulation/ tab States probability trajectories": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "New simulation",
+   "Load old simulation"
+  ],
+  "counts": {
+   "charts": 1,
+   "images": 2,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity",
+   "Final state distribution",
+   "Nodes probability trajectories",
+   "States probability trajectories",
+   "Fixed points"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/maboss/simulation/"
+ },
+ "user /model/overview/": {
+  "buttons": [
+   "My Project",
+   "Metastasis",
+   "dagre"
+  ],
+  "counts": {
+   "charts": 3,
+   "images": 1,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Model Metastasis"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout",
+   "Overview",
+   "Editing",
+   "Simulation",
+   "Sensitivity"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/model/overview/"
+ },
+ "user /models/": {
+  "buttons": [
+   "My Project",
+   "Load model",
+   "Import model"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 9,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 1
+  },
+  "failed_requests": [],
+  "headings": [
+   "Models"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/models/"
+ },
+ "user /profile/account/": {
+  "buttons": [
+   "My Project",
+   "Save",
+   "Save"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 0,
+   "inputs": 4,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "Account settings"
+  ],
+  "js_errors": [],
+  "labels": [
+   "Email",
+   "Old Password",
+   "New Password",
+   "New Password confirmation"
+  ],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/profile/account/"
+ },
+ "user /profile/maboss/": {
+  "buttons": [
+   "My Project",
+   "New server"
+  ],
+  "counts": {
+   "charts": 0,
+   "images": 0,
+   "inputs": 0,
+   "modals": 0,
+   "percentages": 0,
+   "tables": 0
+  },
+  "failed_requests": [],
+  "headings": [
+   "MaBoSS servers"
+  ],
+  "js_errors": [],
+  "labels": [],
+  "nan": 0,
+  "navigation": [
+   "WebMaBoSS",
+   "Models",
+   "Tutorials",
+   "About",
+   "Profile",
+   "Logout"
+  ],
+  "title": "WebMaBoSS",
+  "url": "/profile/maboss/"
+ }
+}

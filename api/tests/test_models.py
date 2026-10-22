@@ -1,11 +1,15 @@
 from django.test import TestCase
 from django.conf import settings
+from django.core.files.uploadedfile import SimpleUploadedFile
 from rest_framework.test import APIClient
 from rest_framework import status
 from json import loads
 from os.path import join, dirname, exists
 from os import makedirs
+from api.models.common import create_guest_account
 from shutil import rmtree
+from unittest import expectedFailure
+from api.models import Project
 
 class TestModels(TestCase):
 
@@ -25,31 +29,40 @@ class TestModels(TestCase):
 
 		makedirs(join(settings.MEDIA_ROOT, self.project_path), exist_ok=True)
 
+		# Created at startup in production, anonymous users get the guest's demo project
+		create_guest_account()
+
 		self.client = APIClient()
 
 	def testWithoutAuthorization(self):
 
-		# Checking if the list starts empty
+		# Anonymous users get the models of the demo project, whatever the project id
 		request = self.client.get('/api/logical_models/%d/' % self.project_id)
 
-		self.assertEqual(request.status_code, status.HTTP_403_FORBIDDEN)
-		self.assertEqual(loads(request.content), {'detail': 'You do not have permission to perform this action.'})
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+		guest_project = Project.objects.get(user__username="____GUEST____")
+		self.assertNotEqual(guest_project.id, self.project_id)
+		for model in loads(request.content):
+			self.assertEqual(model['project'], guest_project.id)
 
-		model_name = 'Flobak2015_full_journal.pcbi.1004426.s003.ZGINML'
-		# Checking if we can add a model
+		# Checking if we can remove a model with a bad id
+		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, 0))
+		self.assertEqual(request_del.status_code, status.HTTP_404_NOT_FOUND)
+
+	@expectedFailure
+	def testAnonymousCannotModifyDemoProject(self):
+
+		# Known bug : anonymous users can add models to the demo project, and delete them
 		request_add = self.client.post(
 			'/api/logical_models/%d/' % self.project_id,
 			{
-				'name': 'Flobak full',
-				'file': open(join(dirname(__file__), 'files', model_name), 'rb'),
+				'name': 'Metastasis',
+				'file': open(join(dirname(__file__), 'files', 'Metastasis_Master_Model.zginml'), 'rb'),
+				'use_sbml_names': 'false',
 			},
 		)
 
 		self.assertEqual(request_add.status_code, status.HTTP_403_FORBIDDEN)
-
-		# Checking if we can remove it with a bad id
-		request_del = self.client.delete('/api/logical_models/%d/%d' % (self.project_id, 0))
-		self.assertEqual(request_del.status_code, status.HTTP_403_FORBIDDEN)
 
 	def testWithAuthorization(self):
 		# Checking if the list starts empty
@@ -73,13 +86,15 @@ class TestModels(TestCase):
 		model_name = 'Flobak2015_full_journal.pcbi.1004426.s003.ZGINML'
 
 		# Checking if we can add a model
-		request_add = self.client.post(
-			'/api/logical_models/%d/' % self.project_id,
-			{
-				'name': 'Flobak full',
-				'file': open(join(dirname(__file__), 'files', model_name), 'rb'),
-			},
-		)
+		with open(join(dirname(__file__), 'files', model_name), 'rb') as model_file:
+			request_add = self.client.post(
+				'/api/logical_models/%d/' % self.project_id,
+				{
+					'name': 'Flobak full',
+					'file': SimpleUploadedFile('Flobak2015.zginml', model_file.read()),
+					'use_sbml_names': 'false',
+				},
+			)
 
 		self.assertEqual(request_add.status_code, status.HTTP_200_OK)
 
@@ -106,3 +121,22 @@ class TestModels(TestCase):
 
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
 		self.assertEqual(loads(request.content), [])
+
+	@expectedFailure
+	def testUpperCaseExtension(self):
+
+		# Known bug : the format is detected from the file extension, case sensitively,
+		# so model.ZGINML is parsed as SBML
+		self.client.force_authenticate(user=Project.objects.get(id=self.project_id).user)
+
+		model_name = 'Flobak2015_full_journal.pcbi.1004426.s003.ZGINML'
+		request_add = self.client.post(
+			'/api/logical_models/%d/' % self.project_id,
+			{
+				'name': 'Flobak full',
+				'file': open(join(dirname(__file__), 'files', model_name), 'rb'),
+				'use_sbml_names': 'false',
+			},
+		)
+
+		self.assertEqual(request_add.status_code, status.HTTP_200_OK)

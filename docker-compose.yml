@@ -3,7 +3,7 @@ version: '3.4'
 services:
 
   webmaboss-db:
-    image: mariadb:11.3.2
+    image: mariadb:12.3.3
     container_name: webmaboss-db
     restart: always
     volumes:

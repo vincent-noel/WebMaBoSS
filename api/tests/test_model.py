@@ -7,6 +7,7 @@ from rest_framework import status
 from json import loads
 from os.path import join, dirname, exists
 from os import makedirs
+from api.models.common import create_guest_account
 from shutil import copytree, rmtree
 from filecmp import cmp
 
@@ -32,6 +33,9 @@ class TestModel(TestCase):
 			join(dirname(__file__), 'fixtures', 'model', self.project_path),
 			join(settings.MEDIA_ROOT, self.project_path)
 		)
+
+		# Created at startup in production, anonymous users get the guest's demo project
+		create_guest_account()
 
 		self.client = APIClient()
 
@@ -84,7 +88,7 @@ class TestModel(TestCase):
 
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
 
-		self.assertEqual(sorted(list(loads(request.content).keys())), ['edges', 'nodes'])
+		self.assertEqual(sorted(list(loads(request.content).keys())), ['dims', 'edges', 'nodes', 'nodes_dict'])
 		self.assertEqual(sorted(list(loads(request.content)['nodes'])), [
 			'AKT1', 'AKT2', 'Apoptosis', 'CDH1', 'CDH2', 'CTNNB1', 'CellCycleArrest', 'DKK1', 'DNAdamage',
 			'ECMicroenv', 'EMT', 'ERK', 'GF', 'Invasion', 'Metastasis', 'Migration', 'NICD', 'SMAD',
@@ -103,8 +107,8 @@ class TestModel(TestCase):
 			['CDH2', 'GF', 1], ['CDH2', 'Invasion', 1], ['CTNNB1', 'AKT1', 1], ['CTNNB1', 'DKK1', 1],
 			['CTNNB1', 'Invasion', 1], ['CTNNB1', 'SNAI1', 0], ['CTNNB1', 'SNAI2', 1],
 			['CTNNB1', 'TGFbeta', 0], ['CTNNB1', 'TWIST1', 1], ['CTNNB1', 'VIM', 1],
-			['CTNNB1', 'ZEB1', 1], ['CTNNB1', 'p53', 1], ['DKK1', 'CTNNB1', 0], ['DNAdamage', 'p53', 1],
-			['DNAdamage', 'p63', 1], ['DNAdamage', 'p73', 1], ['ECMicroenv', 'NICD', 1],
+			['CTNNB1', 'ZEB1', 1], ['CTNNB1', 'p53', 1], ['DKK1', 'CTNNB1', 0], ['DNAdamage', 'DNAdamage', 1], ['DNAdamage', 'p53', 1],
+			['DNAdamage', 'p63', 1], ['DNAdamage', 'p73', 1], ['ECMicroenv', 'ECMicroenv', 1], ['ECMicroenv', 'NICD', 1],
 			['ECMicroenv', 'TGFbeta', 1], ['EMT', 'Migration', 1], ['ERK', 'Apoptosis', 0],
 			['ERK', 'Migration', 1], ['ERK', 'p21', 0], ['GF', 'AKT1', 1], ['GF', 'AKT2', 1],
 			['GF', 'ERK', 1], ['GF', 'GF', 1], ['Invasion', 'Migration', 1],
@@ -141,11 +145,12 @@ class TestModel(TestCase):
 		request = self.client.get('/api/logical_model/%d/%d/nodes' % (self.project_id, self.model_id))
 
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
-		self.assertEqual(loads(request.content), [
+		# Nodes are sorted by name
+		self.assertEqual(loads(request.content), sorted([
 			"ECMicroenv", "DNAdamage", "Metastasis", "Migration", "Invasion", "EMT", "Apoptosis", "CellCycleArrest",
 			"GF", "TGFbeta", "p21", "CDH1", "CDH2", "VIM", "TWIST1", "SNAI1", "SNAI2", "ZEB1", "ZEB2", "AKT1", "DKK1",
 			"CTNNB1", "NICD", "p63", "p53", "p73", "miR200", "miR203", "miR34", "AKT2", "ERK", "SMAD"
-		])
+		]))
 
 		request = self.client.get('/api/logical_model/%d/%d/steady_states' % (self.project_id, self.model_id))
 
