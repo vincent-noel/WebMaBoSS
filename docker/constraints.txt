@@ -18,9 +18,9 @@ colour==0.1.5
 cryptography==46.0.7
 defusedxml==0.7.1
 depinfo==2.2.0
-dj-rest-auth==2.2.8
-django-allauth==0.51.0
-django==4.2.30
+dj-rest-auth==7.2.0
+django-allauth==65.19.7
+django==5.2.18
 djangorestframework==3.17.2
 elementpath==5.1.1
 et-xmlfile==2.0.0
@@ -42,11 +42,11 @@ maboss==0.8.16
 markdown-it-py==4.0.0
 markupsafe==3.0.3
 mdurl==0.1.2
-mod-wsgi==4.9.2
-mysqlclient==2.1.1
+mod-wsgi==6.1.0
+mysqlclient==2.3.0
 narwhals==2.19.0
 numpy==2.4.4
-oauthlib==3.3.1
+oauthlib==4.0.0
 openpyxl==3.1.5
 pint==0.25.3
 pronto==2.7.3

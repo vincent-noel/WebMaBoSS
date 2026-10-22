@@ -22,9 +22,18 @@ if os.path.exists(os.path.join(BASE_DIR, "data", "settings", "config.yml")):
         Loader=yaml.FullLoader
     )
 
+
+def as_list(value):
+    """ Lists of config.yml can be a single string, like the allowed_hosts: '*' written by older installations """
+    return [value] if isinstance(value, str) else value
+
+
 # Since Django 4, the forms (admin login, install) check the Origin header. Behind a reverse proxy serving
 # https, the public origins must be listed in config.yml, e.g. csrf_trusted_origins: ['https://maboss.curie.fr']
-CSRF_TRUSTED_ORIGINS = settings.get('csrf_trusted_origins', []) if settings is not None else []
+CSRF_TRUSTED_ORIGINS = as_list(settings.get('csrf_trusted_origins', [])) if settings is not None else []
+
+# MariaDB has no unique constraints with conditions, which allauth declares: it also checks them itself
+SILENCED_SYSTEM_CHECKS = ['models.W036']
 
 if settings is not None and 'admin' in settings.keys():
 
@@ -36,7 +45,7 @@ if settings is not None and 'admin' in settings.keys():
     # SECURITY WARNING: don't run with debug turned on in production!
     DEBUG = True
 
-    ALLOWED_HOSTS = settings['allowed_hosts']
+    ALLOWED_HOSTS = as_list(settings['allowed_hosts'])
 
     # Application definition
 
@@ -72,6 +81,7 @@ if settings is not None and 'admin' in settings.keys():
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
         'django.middleware.gzip.GZipMiddleware',
+        'allauth.account.middleware.AccountMiddleware',
     ]
 
     ROOT_URLCONF = 'settings.urls'
@@ -113,8 +123,10 @@ if settings is not None and 'admin' in settings.keys():
         }
     }
     ACCOUNT_EMAIL_VERIFICATION = 'none'
-    OLD_PASSWORD_FIELD_ENABLED = True
-    LOGOUT_ON_PASSWORD_CHANGE = False
+    REST_AUTH = {
+        'OLD_PASSWORD_FIELD_ENABLED': True,
+        'LOGOUT_ON_PASSWORD_CHANGE': False,
+    }
 
     # Password validation
     # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
@@ -188,7 +200,7 @@ else:
     DEBUG = True
 
     if settings is not None and 'allowed_hosts' in settings.keys():
-        ALLOWED_HOSTS = settings['allowed_hosts']
+        ALLOWED_HOSTS = as_list(settings['allowed_hosts'])
     else:
         ALLOWED_HOSTS = []
 
@@ -224,6 +236,7 @@ else:
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
         'django.middleware.gzip.GZipMiddleware',
+        'allauth.account.middleware.AccountMiddleware',
     ]
 
     ROOT_URLCONF = 'settings.install_urls'

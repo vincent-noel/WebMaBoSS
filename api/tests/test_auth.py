@@ -104,3 +104,34 @@ class TestAuthentication(TestCase):
 		request = self.client.get('/api/auth/email')
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
 		self.assertEqual(loads(request.content), {'email': 'new@mail.com'})
+
+	def testChangePassword(self):
+
+		# Logging in
+		request = self.client.post('/api/auth/login', {
+			'username': 'admin', 'password': 'test_password'
+		})
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+		self.client.credentials(HTTP_AUTHORIZATION='Token ' + loads(request.content)["key"])
+
+		# The old password is required, as the profile page expects
+		request = self.client.post('/api/auth/password/change', {
+			'old_password': 'wrong_password', 'new_password1': 'new-Password-42', 'new_password2': 'new-Password-42'
+		})
+		self.assertEqual(request.status_code, status.HTTP_400_BAD_REQUEST)
+		self.assertIn('old_password', loads(request.content))
+
+		request = self.client.post('/api/auth/password/change', {
+			'old_password': 'test_password', 'new_password1': 'new-Password-42', 'new_password2': 'new-Password-42'
+		})
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+		# Still logged in, and the new password works
+		request = self.client.get('/api/projects/')
+		self.assertEqual(request.status_code, status.HTTP_200_OK)
+
+		self.client.credentials()
+		request = self.client.post('/api/auth/login', {
+			'username': 'admin', 'password': 'new-Password-42'
+		})
+		self.assertEqual(request.status_code, status.HTTP_200_OK)

@@ -72,10 +72,11 @@ if [ "$RECORD" != "--record" ]; then
 fi
 
 step "Starting the application"
-# Installed as the installation page would do : migrations first, then the admin is declared
+# Installed as the installation page would do : migrations first, then the admin is declared.
+# allowed_hosts is a string, as older installations wrote it (the unit tests use a list)
 docker run --rm -v $NAME-data:/var/webmaboss/data --network $NAME $(limit 2g) "${DB[@]}" -e DB_NAME=webmaboss -e DB_USER=webmaboss \
 	--entrypoint bash $IMAGE -c "
-	mkdir -p data/settings data/media && printf 'secret_key: ci\nallowed_hosts: [\"*\"]\n' > data/settings/config.yml &&
+	mkdir -p data/settings data/media && printf \"secret_key: ci\nallowed_hosts: '*'\n\" > data/settings/config.yml &&
 	$PYTHON manage.py migrate --settings=settings.prod_settings > /dev/null &&
 	printf 'admin: admin\n' >> data/settings/config.yml
 " || { echo "Installation failed"; exit 1; }

@@ -47,7 +47,7 @@ class InstallView(TemplateView):
 		settings = {
 			'admin': admin.username,
 			'admin_address': admin.email,
-			'allowed_hosts': '*',
+			'allowed_hosts': ['*'],
 			'secret_key': ''.join(choice(ascii_uppercase + ascii_lowercase + digits) for _ in range(60))
 		}
 
