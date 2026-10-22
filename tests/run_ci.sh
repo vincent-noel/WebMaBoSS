@@ -25,6 +25,10 @@ MARIADB=mariadb:12.3.3
 NAME=webmaboss-ci-$$
 DB_PASSWORD=ci-$$
 
+# Memory limits (without swap) : the java of GINsim and the MaBoSS threads would otherwise size themselves
+# on the whole machine. At most app + database + browser run at the same time : 6GB.
+limit() { echo "--memory $1 --memory-swap $1"; }
+
 FAILED=()
 
 cleanup() {
@@ -44,7 +48,7 @@ mkdir -p "$OUT" && chmod 777 "$OUT"
 docker network create $NAME > /dev/null
 
 step "Starting $MARIADB"
-docker run -d --name $NAME-db --network $NAME \
+docker run -d --name $NAME-db --network $NAME $(limit 1g) \
 	-e MARIADB_ROOT_PASSWORD=$DB_PASSWORD -e MARIADB_DATABASE=webmaboss \
 	-e MARIADB_USER=webmaboss -e MARIADB_PASSWORD=$DB_PASSWORD \
 	$MARIADB --max_allowed_packet=268435456 > /dev/null
@@ -57,7 +61,7 @@ if [ "$RECORD" != "--record" ]; then
 	step "Unit tests"
 	# On their own database. The application checks the guest account at startup, so it must be migrated first
 	docker exec $NAME-db mariadb -uroot -p$DB_PASSWORD -e "CREATE DATABASE unit"
-	docker run --rm --network $NAME "${DB[@]}" -e DB_NAME=unit -e DB_USER=root --user root --entrypoint bash $IMAGE -c "
+	docker run --rm --network $NAME $(limit 2g) "${DB[@]}" -e DB_NAME=unit -e DB_USER=root --user root --entrypoint bash $IMAGE -c "
 		mkdir -p data/settings && printf 'secret_key: ci\nallowed_hosts: [\"*\"]\n' > data/settings/config.yml &&
 		$PYTHON manage.py migrate --settings=settings.test_settings > /dev/null &&
 		printf 'admin: admin\n' >> data/settings/config.yml &&
@@ -67,7 +71,7 @@ fi
 
 step "Starting the application"
 # Installed as the installation page would do : migrations first, then the admin is declared
-docker run --rm -v $NAME-data:/var/webmaboss/data --network $NAME "${DB[@]}" -e DB_NAME=webmaboss -e DB_USER=webmaboss \
+docker run --rm -v $NAME-data:/var/webmaboss/data --network $NAME $(limit 2g) "${DB[@]}" -e DB_NAME=webmaboss -e DB_USER=webmaboss \
 	--entrypoint bash $IMAGE -c "
 	mkdir -p data/settings data/media && printf 'secret_key: ci\nallowed_hosts: [\"*\"]\n' > data/settings/config.yml &&
 	$PYTHON manage.py migrate --settings=settings.prod_settings > /dev/null &&
@@ -75,7 +79,7 @@ docker run --rm -v $NAME-data:/var/webmaboss/data --network $NAME "${DB[@]}" -e 
 " || { echo "Installation failed"; exit 1; }
 
 start_app() {
-	docker run -d --name $NAME-app --network $NAME -v $NAME-data:/var/webmaboss/data \
+	docker run -d --name $NAME-app --network $NAME $(limit 3g) -v $NAME-data:/var/webmaboss/data \
 		"${DB[@]}" -e DB_NAME=webmaboss -e DB_USER=webmaboss $IMAGE > /dev/null
 	wait_app
 }
@@ -91,13 +95,13 @@ wait_app() {
 start_app
 
 api_smoke() {
-	docker run --rm --user $(id -u):$(id -g) --network $NAME -v "$SRC":/src:ro -v "$OUT":/out \
+	docker run --rm --user $(id -u):$(id -g) --network $NAME $(limit 512m) -v "$SRC":/src:ro -v "$OUT":/out \
 		--entrypoint $PYTHON $IMAGE -I /src/tests/smoke/api_smoke.py --url http://$NAME-app:8000 "$@"
 }
 
 browser_smoke() {
 	docker build -q -f "$SRC/tests/smoke/Dockerfile.browser" -t webmaboss-browser-test "$SRC/tests/smoke" > /dev/null
-	docker run --rm --user $(id -u):$(id -g) -e HOME=/tmp --memory 2g --shm-size 512m --network $NAME \
+	docker run --rm --user $(id -u):$(id -g) -e HOME=/tmp $(limit 2g) --shm-size 512m --network $NAME \
 		-v "$SRC":/src:ro -v "$OUT":/out \
 		webmaboss-browser-test python3 /src/tests/smoke/browser_smoke.py --url http://$NAME-app:8000 --screenshots /out/screenshots "$@"
 }
