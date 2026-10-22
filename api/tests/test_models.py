@@ -8,7 +8,6 @@ from os.path import join, dirname, exists
 from os import makedirs
 from api.models.common import create_guest_account
 from shutil import rmtree
-from unittest import expectedFailure
 from api.models import Project
 
 class TestModels(TestCase):
@@ -121,11 +120,9 @@ class TestModels(TestCase):
 		self.assertEqual(request.status_code, status.HTTP_200_OK)
 		self.assertEqual(loads(request.content), [])
 
-	@expectedFailure
 	def testUpperCaseExtension(self):
 
-		# Known bug : the format is detected from the file extension, case sensitively,
-		# so model.ZGINML is parsed as SBML
+		# The format is detected from the file extension, whatever its case : model.ZGINML is a GINsim model
 		self.client.force_authenticate(user=Project.objects.get(id=self.project_id).user)
 
 		model_name = 'Flobak2015_full_journal.pcbi.1004426.s003.ZGINML'

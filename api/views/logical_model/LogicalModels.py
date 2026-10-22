@@ -124,7 +124,10 @@ class LogicalModels(HasProject):
 	def post(self, request, project_id):
 
 		HasProject.load(self, request, project_id)
-		
+
+		# The format is given by the extension, in lowercase : model.ZGINML is a GINsim model
+		extension = os.path.splitext(request.data['file'].name)[1].lower() if 'file' in request.data.keys() else None
+
 		# try:
 		if 'url' in request.data.keys():
 			print(request.data['url'])
@@ -207,7 +210,7 @@ class LogicalModels(HasProject):
 			os.remove(tmp_bnd_path[1])
 			os.remove(tmp_cfg_path[1])
 
-		elif request.data['file'].name.endswith(".zginml"):
+		elif extension == ".zginml":
 			ginsim_file = tempfile.mkstemp(suffix=".zginml")
 			with open(ginsim_file[0], 'wb') as f:				
 				f.write(request.data['file'].read())
@@ -234,7 +237,7 @@ class LogicalModels(HasProject):
 			os.remove(bnd_file)
 			os.remove(cfg_file)
 		
-		elif request.data['file'].name.endswith(".bnet"):
+		elif extension == ".bnet":
 			bnet_file = tempfile.mkstemp(suffix=".bnet")
 			with open(bnet_file[0], 'wb') as f:				
 				f.write(request.data['file'].read())
@@ -261,7 +264,7 @@ class LogicalModels(HasProject):
 			os.remove(bnd_file)
 			os.remove(cfg_file)
 			
-		elif request.data['file'].name.endswith(".xlsx"):
+		elif extension == ".xlsx":
 			tabularqual_file = tempfile.mkstemp(suffix=".xlsx")
 			with open(tabularqual_file[0], 'wb') as f:				
 				f.write(request.data['file'].read())
