@@ -1,5 +1,7 @@
 import React from "react";
 import {Pie} from "react-chartjs-2";
+// Registers all the chart types, scales and plugins of Chart.js
+import "chart.js/auto";
 import ReactDOMServer from "react-dom/server";
 import "./chart-legend.scss"
 import {Button} from "reactstrap";

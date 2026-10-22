@@ -1,6 +1,8 @@
 import React from "react";
 import LoadingIcon from "../commons/loaders/LoadingIcon";
 import {Bubble} from "react-chartjs-2";
+// Registers all the chart types, scales and plugins of Chart.js
+import "chart.js/auto";
 import "./chart-legend.scss"
 import ReactDOMServer from "react-dom/server";
 
