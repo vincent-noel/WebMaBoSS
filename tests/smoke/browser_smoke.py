@@ -45,6 +45,10 @@ IGNORED_FAILED_REQUESTS = [
 # Django >= 4 sends a Cross-Origin-Opener-Policy header, which browsers only apply over https.
 IGNORED_CONSOLE_ERRORS = [
 	r"^The Cross-Origin-Opener-Policy header has been ignored, because the URL's origin was untrustworthy",
+	# React 18.3 warns about what React 19 removes, here in libraries (reactstrap 8, react-fontawesome 0.1, the
+	# transitions of reactstrap). To remove before React 19, and as soon as the libraries don't need them anymore
+	r"^Warning: %s: Support for defaultProps will be removed from function components",
+	r"^Warning: findDOMNode is deprecated and will be removed",
 ]
 
 

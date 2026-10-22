@@ -1,8 +1,8 @@
 import App from "./components/App";
-import ReactDOM from "react-dom";
+import { createRoot } from "react-dom/client";
 import React from "react";
 
 
 const wrapper = document.getElementById("app");
 
-wrapper ? ReactDOM.render(<App />, wrapper) : null;
+wrapper ? createRoot(wrapper).render(<App />) : null;
