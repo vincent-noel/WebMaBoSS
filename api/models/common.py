@@ -5,16 +5,18 @@ from .project import Project
 from .logical_model import LogicalModel
 from .maboss import MaBoSSSimulation
 
+# The account of the anonymous users, who share the demo project
+GUEST_USERNAME = "____GUEST____"
 
 def create_guest_account():
 
     try:
-        guest_account = User.objects.get(username="____GUEST____")
+        guest_account = User.objects.get(username=GUEST_USERNAME)
         return guest_account    
 
     except User.DoesNotExist as e:
         guest_account = User(
-            username="____GUEST____",
+            username=GUEST_USERNAME,
         )
         guest_account.save()
         
@@ -27,7 +29,7 @@ def create_guest_account():
 
 def clean_guest_account():
     
-    guest_account = User.objects.get(username="____GUEST____")
+    guest_account = User.objects.get(username=GUEST_USERNAME)
     guest_project = Project.objects.get(user=guest_account)
     
     for model in LogicalModel.objects.filter(project=guest_project):

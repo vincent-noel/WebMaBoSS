@@ -24,6 +24,7 @@ import {SteadyStatesWrapper} from "./model/steady_states/SteadyStatesWrapper";
 import {MaBoSSSimulationWrapper} from "./model/maboss/simulation/MaBoSSSimulationWrapper";
 import {EditingWrapper} from "./model/maboss/editing/EditingWrapper";
 import MaBoSSSettings from "./profile/maboss_settings/MaBoSSSettings";
+import Monitor from "./profile/monitor/Monitor";
 import {SensitivityWrapper} from "./model/maboss/sensitivity/SensitivityWrapper";
 import CohenTutorial from './CohenTutorial';
 import CorralTutorial from './CorralTutorial';
@@ -55,6 +56,7 @@ class App extends Component {
 
 					<Route exact path="/profile/account/" component={Profile} />
 					<Route exact path="/profile/maboss/" component={MaBoSSSettings} />
+					<Route exact path="/profile/monitor/" component={Monitor} />
 
 				</React.Fragment>
 			</Router>

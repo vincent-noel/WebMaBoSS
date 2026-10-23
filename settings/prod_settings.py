@@ -153,7 +153,8 @@ if settings is not None and 'admin' in settings.keys():
 
     REST_FRAMEWORK = {
         'DEFAULT_AUTHENTICATION_CLASSES': (
-            'rest_framework.authentication.TokenAuthentication',
+            # Token authentication, which also records the days on which the users are active
+            'api.authentication.ActivityTokenAuthentication',
         ),
         'DEFAULT_PERMISSION_CLASSES': (
             'rest_framework.permissions.IsAuthenticated',

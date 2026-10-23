@@ -21,6 +21,9 @@ from api.views.maboss.MaBoSSModel import (
 )
 from api.views.AuthView import TestAuthView, LogoutViewEx, UserEmailView
 from api.views.InstallStatus import InstallStatus
+from api.views.Monitoring import (
+	MonitoringAccess, MonitoringActivity, MonitoringStorage, MonitoringOptimize, MonitoringUsers, MonitoringCleanup
+)
 
 from api.views.CCApi import CCApi
 from api.views.BioModelsAPI import BioModelsAPI
@@ -37,6 +40,13 @@ urlpatterns = [
 	path('api/auth/password/change', PasswordChangeView.as_view(), name='password_change'),
 	path('api/auth/account-confirm-email', VerifyEmailView.as_view(), name='account_email_verification_sent'),
 	path('api/auth/account-confirm-email/<str:key>', VerifyEmailView.as_view(), name='account_confirm_email'),
+
+	path('api/monitoring/', MonitoringAccess.as_view()),
+	path('api/monitoring/activity', MonitoringActivity.as_view()),
+	path('api/monitoring/storage', MonitoringStorage.as_view()),
+	path('api/monitoring/storage/optimize', MonitoringOptimize.as_view()),
+	path('api/monitoring/users', MonitoringUsers.as_view()),
+	path('api/monitoring/cleanup', MonitoringCleanup.as_view()),
 
 	path('api/projects/', Projects.as_view()),
 	path('api/projects/<int:project_id>', Projects.as_view()),

@@ -82,6 +82,9 @@ The server of the container only speaks http. If it is published in https throug
 csrf_trusted_origins: ['https://maboss.curie.fr']
 ```
 
+### Monitoring
+Administrators (accounts with the staff status, given in the administration pages at `/admin/`) have a Monitoring page in their profile : the number of active users in time, the space used by the database and the data, the list of the users with the space they use, and the cleanup of old or failed simulations, of the simulations of anonymous users, and of inactive accounts.
+
 ### Upgrading an installation from 1.0.x
 The data volumes are kept : the database is migrated when the container starts. Then :
 - behind a reverse proxy serving https, add `csrf_trusted_origins` to `settings/config.yml` (see above), as the administration pages would refuse their forms.
