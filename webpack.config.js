@@ -1,6 +1,8 @@
 const path = require('path');
 
-module.exports = {
+// A function, to give the mode (development or production) to Babel : its react preset compiles the JSX
+// for the runtime of the same mode, which webpack then chooses
+module.exports = (env, argv) => ({
   module: {
 	rules: [
 	  {
@@ -12,6 +14,7 @@ module.exports = {
   		},
 		use: {
 		  loader: "babel-loader",
+		  options: { envName: argv.mode },
 		}
 	  }, {
         test: /\.css$/,
@@ -50,6 +53,8 @@ module.exports = {
   output: {
 	path: path.resolve(__dirname, "frontend/static/js"),
 	filename: 'index.js',
-	chunkFilename: '[name].js'
+	chunkFilename: '[name].js',
+	// Without the bundles of previous builds
+	clean: true,
   },
-};
+});

@@ -109,10 +109,10 @@ ADD settings /var/webmaboss/settings
 ADD create_default_db.sh create_default_admin.sh install.sh runserver.sh wait_db.sh /var/webmaboss/
 ADD .babelrc LICENSE.md manage.py package.json yarn.lock webpack.config.js /var/webmaboss/
 
-# Downloading node modules with the exact versions of yarn.lock, and transpiling the JSX
+# Downloading node modules with the exact versions of yarn.lock, and building the javascript (production mode)
 RUN mkdir node_modules \
     && yarn install --frozen-lockfile \
-    && npm run dev
+    && npm run build
 
 # Removing old db and medias, creating a new one, with default user admin:admin
 RUN mkdir -p data/media \
