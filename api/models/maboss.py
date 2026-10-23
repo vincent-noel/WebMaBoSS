@@ -7,7 +7,7 @@ from api.models.project import Project
 from api.models.logical_model import LogicalModel
 from api.models.TimeStampMixin import TimeStampMixin
 
-from os import remove, mkdir
+from os import remove, mkdir, rmdir, listdir
 from os.path import join, isdir, exists, basename
 from random import choice
 from string import ascii_uppercase, ascii_lowercase, digits
@@ -25,15 +25,25 @@ def path_simulation_model(instance, filename):
 def path_sensitivityanalysis_model(instance, filename):
 	return join(instance.project.path, 'sensitivity_analysis', instance.path, basename(filename))
 
+def simulation_folder(simulation):
+	return join(settings.MEDIA_ROOT, simulation.project.path, 'simulations', simulation.path)
+
+def sensitivityanalysis_folder(analysis):
+	return join(settings.MEDIA_ROOT, analysis.project.path, 'sensitivity_analysis', analysis.path)
+
 def remove_simulation_model(sender, instance, **kwargs):
 	if instance.bnd_file and exists(join(settings.MEDIA_ROOT, instance.bnd_file.path)):
 		remove(join(settings.MEDIA_ROOT, instance.bnd_file.path))
 	if instance.cfg_file and exists(join(settings.MEDIA_ROOT, instance.cfg_file.path)):
 		remove(join(settings.MEDIA_ROOT, instance.cfg_file.path))
+	# The folder of the simulation, if nothing else is in it. Without a path, it would be the one of all of them
+	if instance.path and isdir(simulation_folder(instance)) and not listdir(simulation_folder(instance)):
+		rmdir(simulation_folder(instance))
 
 def remove_sensitivityanalysis_path(sender, instance, **kwargs):
-	if exists(join(settings.MEDIA_ROOT, instance.path)):
-		rmtree(join(settings.MEDIA_ROOT, instance.path))
+	# Without a path, it would be the folder of all the analyses of the project
+	if instance.path and exists(sensitivityanalysis_folder(instance)):
+		rmtree(sensitivityanalysis_folder(instance))
 
 
 
